@@ -54,7 +54,6 @@ public class Dialogue {
         for (int i = 0; i < dialogue.size(); i++) {
             int words = dialogue.get(i).split(" ").length;
             long delay = (long) (words / wordsPerSecond) * 20;
-            totalTime += delay;
             int index = i;
             new BukkitRunnable() {
                 @Override
@@ -68,6 +67,7 @@ public class Dialogue {
                     }
                 }
             }.runTaskLater(Expunge.instance, totalTime);
+            totalTime += delay;
         }
         new BukkitRunnable() {
             @Override
