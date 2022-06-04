@@ -1,6 +1,5 @@
 package me.chimkenu.expunge.game;
 
-import me.chimkenu.expunge.Utils;
 import me.chimkenu.expunge.enums.Weapons;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -35,11 +34,9 @@ public class SetSet {
 
     public static ItemStack[] getDefaultHotbar() {
         ItemStack[] defaultHotbar = new ItemStack[5];
-        defaultHotbar[0] = Utils.newItem(Material.GLOW_ITEM_FRAME, "&ePrimary");
-        defaultHotbar[1] = Utils.newItem(Material.GLOW_ITEM_FRAME, "&eSecondary");
-        defaultHotbar[2] = Utils.newItem(Material.GLOW_ITEM_FRAME, "&eThrowable");
-        defaultHotbar[3] = Utils.newItem(Material.GLOW_ITEM_FRAME, "&eMain Healing");
-        defaultHotbar[4] = Utils.newItem(Material.GLOW_ITEM_FRAME, "&eAuxiliary Healing");
+        for (int i = 0; i < 5; i++) {
+            defaultHotbar[i] = new ItemStack(Material.AIR);
+        }
         return defaultHotbar;
     }
 
