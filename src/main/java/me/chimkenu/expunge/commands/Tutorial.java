@@ -128,7 +128,7 @@ public class Tutorial implements CommandExecutor {
                 "&b[Tutorial] » To save a knocked down teammate, simply hold sneak near them.",
                 "&b[Tutorial] » &eNote: Using a medkit will restore your 3 lives.",
                 "&b[Tutorial] » In the unfortunate event that you do die, it is not the end! If one of your teammates find a defibrillator, they can use it to revive you.",
-                "&b[Tutorial] » Additionally, if your teammates reach the next safe-zone without you, you will be respawn at their location."
+                "&b[Tutorial] » Additionally, if your teammates reach the next safe-zone without you, you will respawn at their location."
         ));
         dialogues.add(new Dialogue(player -> {
             TextComponent proceed = new TextComponent("[Proceed] ");
@@ -140,7 +140,7 @@ public class Tutorial implements CommandExecutor {
             proceed.addExtra(back);
             player.spigot().sendMessage(proceed);
         },
-                "&b[Tutorial] » Safe-zones. These represent which part of the map you are currently in.",
+                "&b[Tutorial] » Safe-zones. These are your checkpoints in the game.",
                 "&b[Tutorial] » When you and all your teammates die, you will all be sent back to the last safe-zone you reached.",
                 "&b[Tutorial] » Safe-zones with &6spruce doors&f will have good weapons and healing items for you to use before going out again.",
                 "&b[Tutorial] » To reach a safe-zone, &epress the button&r inside while all your teammates (that are alive) are within the safe-zone."

@@ -67,7 +67,7 @@ public class Dialogue {
                         p.sendMessage(message);
                     }
                 }
-            }.runTaskLater(Expunge.instance, i * delay);
+            }.runTaskLater(Expunge.instance, totalTime);
         }
         new BukkitRunnable() {
             @Override
