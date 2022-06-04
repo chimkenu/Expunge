@@ -214,6 +214,7 @@ public class Tutorial implements CommandExecutor {
 
         player.teleport(locations.get(index));
         dialogues.get(index).displayDialogue(new ArrayList<>(List.of(player)));
+        player.setAllowFlight(true);
         player.setFlying(true);
         return true;
     }
