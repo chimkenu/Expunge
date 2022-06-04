@@ -62,14 +62,14 @@ public class Dialogue {
                         p.sendMessage(message);
                     }
                 }
-            }.runTaskLater(Expunge.instance, i * 20 * 3L);
+            }.runTaskLater(Expunge.instance, i * 20 * 2L);
         }
         new BukkitRunnable() {
             @Override
             public void run() {
                 actionAtEnd.run(players.get(0));
             }
-        }.runTaskLater(Expunge.instance, ((dialogue.size() - 1) * 20 * 3L) + 1);
+        }.runTaskLater(Expunge.instance, ((dialogue.size() - 1) * 20 * 2L) + 1);
     }
 
     public void displayDialogue() {
