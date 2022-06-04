@@ -54,8 +54,8 @@ public class PickUp implements Listener {
         return null;
     }
 
-    private boolean isItemValid(ItemStack item) {
-        return getValidItemStack(item) != null;
+    private boolean isItemInvalid(ItemStack item) {
+        return getValidItemStack(item) == null;
     }
 
     private int getHotbarSlot(ItemStack item) {
@@ -91,7 +91,7 @@ public class PickUp implements Listener {
             return;
         }
 
-        if (!isItemValid(item.getItemStack())) {
+        if (isItemInvalid(item.getItemStack())) {
             player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§cYou can't pick this up."));
             e.setCancelled(true);
             return;
@@ -141,7 +141,7 @@ public class PickUp implements Listener {
         }
 
         ItemStack item = e.getItemDrop().getItemStack();
-        if (!isItemValid(item)) {
+        if (isItemInvalid(item)) {
             // fix item if broken
             if (item.getItemMeta() != null && item.getItemMeta() instanceof Damageable damageable) {
                 // this is added to fix reload as it may break from time to time, however it can be abused
