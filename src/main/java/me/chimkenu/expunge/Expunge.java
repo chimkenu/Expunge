@@ -119,11 +119,11 @@ public final class Expunge extends JavaPlugin {
         if (playing.getKeys().contains(player)) {
             // this is reached when the player is already in the game but will respawn
             // give player lower tier items (if they had an item to begin with)
-            if (playing.getHotbar(player)[0].getType() != Material.AIR) {
+            if (playing.getHotbar(player)[0] != null && playing.getHotbar(player)[0].getType() != Material.AIR) {
                 ArrayList<Gun> guns = Utils.getTier1Guns();
                 itemStacks[0] = guns.get(ThreadLocalRandom.current().nextInt(0, guns.size())).getGun();
             }
-            if (playing.getHotbar(player)[1].getType() != Material.AIR) {
+            if (playing.getHotbar(player)[1] != null && playing.getHotbar(player)[1].getType() != Material.AIR) {
                 itemStacks[1] = new Pistol().getGun();
             }
         }
