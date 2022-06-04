@@ -29,7 +29,8 @@ public class Tutorial implements CommandExecutor {
             player.spigot().sendMessage(proceed);
         },
                 "&b[Tutorial] » Welcome to &aExpunge&r!",
-                "&b[Tutorial] » This is a &eFirst-Person-Shooter Survival &rgame where you have to survive the &2Zombie Apocalpse&r!"
+                "&b[Tutorial] » This is a &eFirst-Person-Shooter Survival &fgame where you have to get through the &2Zombie Apocalpse&f!",
+                "&b[Tutorial] » Try to &eget to safety&f alone or with friends using weapons and items found throughout the map!"
         ));
         dialogues.add(new Dialogue(player -> {
             TextComponent proceed = new TextComponent("[Proceed] ");
@@ -41,8 +42,8 @@ public class Tutorial implements CommandExecutor {
             proceed.addExtra(back);
             player.spigot().sendMessage(proceed);
         },
-                "&b[Tutorial] » Welcome to Expunge!",
-                "&b[Tutorial] » test test 1 1 1 1"
+                "&b[Tutorial] » Progress through the game by reaching safe-zones.",
+                "&b[Tutorial] » But be careful, zombies will try to stop you at every opportunity!"
         ));
         dialogues.add(new Dialogue(player -> {
             TextComponent proceed = new TextComponent("[Proceed] ");
@@ -54,8 +55,9 @@ public class Tutorial implements CommandExecutor {
             proceed.addExtra(back);
             player.spigot().sendMessage(proceed);
         },
-                "&b[Tutorial] » Welcome to Expunge!",
-                "&b[Tutorial] » test test 2 2"
+                "&b[Tutorial] » Throughout the map, you will find &cweapons&r, &bitems&r, and &9ammo piles&r.",
+                "&b[Tutorial] » To pick up items, hold sneak near the item. To get ammo from ammo piles, right click the ammo pile.",
+                "&b[Tutorial] » &eNote: There is a limit to the certain amount of items you can hold."
         ));
         dialogues.add(new Dialogue(player -> {
             TextComponent proceed = new TextComponent("[Proceed] ");
@@ -67,8 +69,8 @@ public class Tutorial implements CommandExecutor {
             proceed.addExtra(back);
             player.spigot().sendMessage(proceed);
         },
-                "&b[Tutorial] » Welcome to Expunge!",
-                "&b[Tutorial] » test test 3 3 3"
+                "&b[Tutorial] » You can find &chealing items&r and &6throwable items &rthroughout the map.",
+                "&b[Tutorial] » To use them, simply right click holding the item. Some items will take time to use, and some will require you to stand still."
         ));
         dialogues.add(new Dialogue(player -> {
             TextComponent proceed = new TextComponent("[Proceed] ");
@@ -80,8 +82,9 @@ public class Tutorial implements CommandExecutor {
             proceed.addExtra(back);
             player.spigot().sendMessage(proceed);
         },
-                "&b[Tutorial] » Welcome to Expunge!",
-                "&b[Tutorial] » test test 4"
+                "&b[Tutorial] » Guns. The amount of items represent the clip, and the xp bar shows your total ammo left.",
+                "&b[Tutorial] » Right click to shoot, left click to reload. For laggy people, you may have to aim ahead rather than where the enemy currently is.",
+                "&b[Tutorial] » &eNote: if the gun gets stuck reloading, drop it. It should fix it."
         ));
         dialogues.add(new Dialogue(player -> {
             TextComponent proceed = new TextComponent("[Proceed] ");
@@ -93,8 +96,7 @@ public class Tutorial implements CommandExecutor {
             proceed.addExtra(back);
             player.spigot().sendMessage(proceed);
         },
-                "&b[Tutorial] » Welcome to Expunge!",
-                "&b[Tutorial] » test test 5 5 5"
+                "&b[Tutorial] » Melee weapons. Right click to use."
         ));
         dialogues.add(new Dialogue(player -> {
             TextComponent proceed = new TextComponent("[Proceed] ");
@@ -106,8 +108,10 @@ public class Tutorial implements CommandExecutor {
             proceed.addExtra(back);
             player.spigot().sendMessage(proceed);
         },
-                "&b[Tutorial] » Welcome to Expunge!",
-                "&b[Tutorial] » test test 6 6 6 6"
+                "&b[Tutorial] » Shove. When you left click a zombie, it will shove them.",
+                "&b[Tutorial] » Shoving knocks zombies back and stuns them for a short duration.",
+                "&b[Tutorial] » This is useful when dealing with hordes, however repeatedly shoving will increase its cooldown.",
+                "&b[Tutorial] » &eNote: You can shove while holding a gun, but if you are not aiming at a zombie it will make the gun reload."
         ));
         dialogues.add(new Dialogue(player -> {
             TextComponent proceed = new TextComponent("[Proceed] ");
@@ -119,8 +123,12 @@ public class Tutorial implements CommandExecutor {
             proceed.addExtra(back);
             player.spigot().sendMessage(proceed);
         },
-                "&b[Tutorial] » Welcome to Expunge!",
-                "&b[Tutorial] » test test 7 7 7"
+                "&b[Tutorial] » You are given 3 lives. You get knocked down the first two times you are killed, giving a chance to your teammates (if any) to revive you.",
+                "&b[Tutorial] » While knocked down, you are given a pistol to shoot zombies. You will have to be saved by a teammate.",
+                "&b[Tutorial] » To save a knocked down teammate, simply hold sneak near them.",
+                "&b[Tutorial] » &eNote: Using a medkit will restore your 3 lives.",
+                "&b[Tutorial] » In the unfortunate event that you do die, it is not the end! If one of your teammates find a defibrillator, they can use it to revive you.",
+                "&b[Tutorial] » Additionally, if your teammates reach the next safe-zone without you, you will be respawn at their location."
         ));
         dialogues.add(new Dialogue(player -> {
             TextComponent proceed = new TextComponent("[Proceed] ");
@@ -132,8 +140,10 @@ public class Tutorial implements CommandExecutor {
             proceed.addExtra(back);
             player.spigot().sendMessage(proceed);
         },
-                "&b[Tutorial] » Welcome to Expunge!",
-                "&b[Tutorial] » test test 8"
+                "&b[Tutorial] » Safe-zones. These represent which part of the map you are currently in.",
+                "&b[Tutorial] » When you and all your teammates die, you will all be sent back to the last safe-zone you reached.",
+                "&b[Tutorial] » Safe-zones with &6spruce doors&f will have good weapons and healing items for you to use before going out again.",
+                "&b[Tutorial] » To reach a safe-zone, &epress the button&r inside while all your teammates (that are alive) are within the safe-zone."
         ));
         dialogues.add(new Dialogue(player -> {
             TextComponent proceed = new TextComponent("[Finish] ");
@@ -145,8 +155,7 @@ public class Tutorial implements CommandExecutor {
             proceed.addExtra(back);
             player.spigot().sendMessage(proceed);
         },
-                "&b[Tutorial] » Welcome to Expunge!",
-                "&b[Tutorial] » test test 9 9"
+                "&b[Tutorial] » This concludes the tutorial. To begin, press the &a[Finish]&r button then type the command &e/join&r to join the current game or to start a new one."
         ));
         return dialogues;
     }
