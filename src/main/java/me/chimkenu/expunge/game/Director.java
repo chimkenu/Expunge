@@ -18,6 +18,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
+import org.bukkit.util.Vector;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -27,6 +28,7 @@ public class Director extends BukkitRunnable implements Listener {
     private long sceneTime = 0;
     private int sceneAttempts = 0;
     public final HashSet<LivingEntity> activeMobs = new HashSet<>();
+    public boolean chillOut = false;
 
     public <T extends LivingEntity> LivingEntity spawnMob(World world, Location loc, Class<T> mob) {
         LivingEntity spawnedMob = world.spawn(loc, mob);
@@ -39,20 +41,29 @@ public class Director extends BukkitRunnable implements Listener {
         // get a random player
         Player player = Expunge.playing.getKeys().get(ThreadLocalRandom.current().nextInt(0, Expunge.playing.getKeys().size()));
 
-        // grab the nearest spawn location to the player
+        // sort locations based on distance to player
         ArrayList<Location> spawnLocations = map.getScenes().get(sceneIndex).spawnLocations();
-        Location nearest = spawnLocations.get(0);
-        double nearestDistance = nearest.distanceSquared(player.getLocation());
+        ArrayList<Double> distancesSquared = new ArrayList<>();
         for (Location loc : spawnLocations) {
-            double distance = loc.distanceSquared(player.getLocation());
-            if (distance < nearestDistance) {
-                nearest = loc;
-                nearestDistance = distance;
+            distancesSquared.add(loc.distanceSquared(player.getLocation()));
+        }
+        for(int i = 0; i < distancesSquared.size(); ++i){
+            int j = i;
+            while(j > 0 && distancesSquared.get(j - 1) > distancesSquared.get(j)){
+                double key = distancesSquared.get(j);
+                distancesSquared.set(j, distancesSquared.get(j - 1));
+                distancesSquared.set(j - 1, key);
+
+                Location loc = spawnLocations.get(j);
+                spawnLocations.set(j, spawnLocations.get(j - 1));
+                spawnLocations.set(j - 1, loc);
+
+                j--;
             }
         }
 
-        // spawn at nearest
-        LivingEntity spawnedMob = spawnMob(map.getWorld(), nearest, mob);
+        // spawn at random nearest
+        LivingEntity spawnedMob = spawnMob(map.getWorld(), spawnLocations.get(ThreadLocalRandom.current().nextInt(0, Math.min(3, spawnLocations.size()))), mob);
         spawnedMob.addScoreboardTag("HORDE");
         spawnedMob.setRemoveWhenFarAway(false);
     }
@@ -63,6 +74,43 @@ public class Director extends BukkitRunnable implements Listener {
         Location loc = spawnLocations.get(random.nextInt(spawnLocations.size()));
         LivingEntity spawnedMob = spawnMob(map.getWorld(), loc, mob);
         spawnedMob.addScoreboardTag("BOSS");
+    }
+
+    public void spawnAtRandomLocations(World world, BoundingBox b, int numToSpawn, boolean hasWandererTag) {
+        ArrayList<Location> savedLocations = new ArrayList<>();
+        int minX = (int) b.getMinX();
+        int minZ = (int) b.getMinZ();
+        int y = (int) b.getMinY();
+        int maxX = (int) b.getMaxX();
+        int maxZ = (int) b.getMaxZ();
+
+        for (int i = 0; i < numToSpawn; i++) {
+            Location loc;
+            boolean isValid = false;
+            int attempts = 0;
+            do {
+                attempts++;
+                int x = ThreadLocalRandom.current().nextInt(minX, maxX + 1);
+                int z = ThreadLocalRandom.current().nextInt(minZ, maxZ + 1);
+                loc = new Location(world, x, y, z);
+                if (world.getBlockAt(loc.clone().add(0, 1, 0)).getType().equals(Material.AIR) && world.getBlockAt(loc.clone().add(0, 2, 0)).getType().equals(Material.AIR)) isValid = true;
+                else loc = null;
+            } while (!isValid || attempts < 15);
+
+            if (loc == null) {
+                // spawn in a valid known location
+                if (savedLocations.size() > 0) loc = savedLocations.get(ThreadLocalRandom.current().nextInt(0, savedLocations.size()));
+                else continue;
+            } else {
+                loc.add(0.5, 1, 0.5);
+                savedLocations.add(loc);
+            }
+
+            Zombie zombie = (Zombie) spawnMob(world, loc, Zombie.class);
+            if (hasWandererTag) zombie.addScoreboardTag("WANDERER");
+            else zombie.addScoreboardTag("WANDERER?");
+            activeMobs.add(zombie);
+        }
     }
 
     public static void spawnWeapon(World world, Location loc, Gun gun, boolean isInvulnerable) {
@@ -127,13 +175,23 @@ public class Director extends BukkitRunnable implements Listener {
         }
     }
 
+    private double playerNearestDistanceFrom(Vector loc) {
+        double nearestDistance = 0;
+        for (Player p : Expunge.playing.getKeys()) {
+            double distance = p.getLocation().toVector().distanceSquared(loc);
+            if (distance < nearestDistance) {
+                nearestDistance = distance;
+            }
+        }
+        return nearestDistance;
+    }
+
     @Override
     public void run() {
         gameTime++;
         sceneTime++;
 
-        if (Expunge.isSpawningEnabled) {
-
+        if (Expunge.isSpawningEnabled && !chillOut) {
             // spawning based on difficulty
             if (activeMobs.size() < (Expunge.difficulty + 1) * 15) {
                 if (Expunge.difficulty < 1 && (sceneTime % (20 * 10)) == 0)
@@ -142,28 +200,53 @@ public class Director extends BukkitRunnable implements Listener {
                     spawnAdditionalMob(Expunge.currentMap, Expunge.currentSceneIndex, Zombie.class);
                 else if ((sceneTime % (20 * 15)) == 0)
                     spawnAdditionalMob(Expunge.currentMap, Expunge.currentSceneIndex, Zombie.class);
-            }
 
-            for (Player p : Expunge.playing.getKeys()) {
-                // decrease absorption points & kill down players
-                if (p.getAbsorptionAmount() > 0) {
-                    if ((sceneTime % (20 * 15)) == 0) p.setAbsorptionAmount(Math.max(0, p.getAbsorptionAmount() - 1));
-                }
-                if (!Expunge.playing.isAlive(p)) {
-                    if ((sceneTime % (20 * 10)) == 0) {
-                        p.damage(1);
+                // spawn additional mobs if number of mobs are too low
+                if (activeMobs.size() < 10) {
+                    chillOut = true;
+                    for (int i = 0; i < ThreadLocalRandom.current().nextInt(20, 30); i++) {
+                        spawnAdditionalMob(Expunge.currentMap, Expunge.currentSceneIndex, Zombie.class);
                     }
                 }
-
-                // give slow to low players
-                if (p.getHealth() + p.getAbsorptionAmount() <= 6) {
-                    p.setFoodLevel(6);
-                    if (p.getHealth() + p.getAbsorptionAmount() <= 1)
-                        p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 2, 0, false, false, true));
-                }
-                else if (p.getFoodLevel() < 20)
-                    p.setFoodLevel(20);
             }
+        } else if (chillOut && activeMobs.size() <= 5) chillOut = false;
+
+        // look through every mob if its alive && look at its distance from the nearest player
+        if ((sceneTime % (20 * 15)) == 0) {
+            HashSet<LivingEntity> mobsToRemove = new HashSet<>();
+            for (LivingEntity mob : activeMobs) {
+                if (mob.isDead()) {
+                    mobsToRemove.add(mob);
+                    continue;
+                }
+                if (playerNearestDistanceFrom(mob.getLocation().toVector()) > 30 * 30) {
+                    mob.remove();
+                    mobsToRemove.add(mob);
+                }
+            }
+            activeMobs.removeAll(mobsToRemove);
+        }
+
+        // players
+        for (Player p : Expunge.playing.getKeys()) {
+            // decrease absorption points & kill down players
+            if (p.getAbsorptionAmount() > 0) {
+                if ((sceneTime % (20 * 15)) == 0) p.setAbsorptionAmount(Math.max(0, p.getAbsorptionAmount() - 1));
+            }
+            if (!Expunge.playing.isAlive(p)) {
+                if ((sceneTime % (20 * 10)) == 0) {
+                    p.damage(1);
+                }
+            }
+
+            // give slow to low players
+            if (p.getHealth() + p.getAbsorptionAmount() <= 6) {
+                p.setFoodLevel(6);
+                if (p.getHealth() + p.getAbsorptionAmount() <= 1)
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 2, 0, false, false, true));
+            }
+            else if (p.getFoodLevel() < 20)
+                p.setFoodLevel(20);
         }
 
         if (this != Expunge.runningDirector || !Expunge.isGameRunning) {
@@ -194,42 +277,6 @@ public class Director extends BukkitRunnable implements Listener {
         return total / (20 * Expunge.playing.getKeys().size());
     }
 
-    public void spawnAtRandomLocations(World world, BoundingBox b, int numToSpawn) {
-        ArrayList<Location> savedLocations = new ArrayList<>();
-        int minX = (int) b.getMinX();
-        int minZ = (int) b.getMinZ();
-        int y = (int) b.getMinY();
-        int maxX = (int) b.getMaxX();
-        int maxZ = (int) b.getMaxZ();
-
-        for (int i = 0; i < numToSpawn; i++) {
-            Location loc;
-            boolean isValid = false;
-            int attempts = 0;
-            do {
-                attempts++;
-                int x = ThreadLocalRandom.current().nextInt(minX, maxX + 1);
-                int z = ThreadLocalRandom.current().nextInt(minZ, maxZ + 1);
-                loc = new Location(world, x, y, z);
-                if (world.getBlockAt(loc.clone().add(0, 1, 0)).getType().equals(Material.AIR) && world.getBlockAt(loc.clone().add(0, 2, 0)).getType().equals(Material.AIR)) isValid = true;
-                else loc = null;
-            } while (!isValid || attempts < 15);
-
-            if (loc == null) {
-                // spawn in a valid known location
-                if (savedLocations.size() > 0) loc = savedLocations.get(ThreadLocalRandom.current().nextInt(0, savedLocations.size()));
-                else continue;
-            } else {
-                loc.add(0.5, 1, 0.5);
-                savedLocations.add(loc);
-            }
-
-            Zombie zombie = (Zombie) spawnMob(world, loc, Zombie.class);
-            zombie.addScoreboardTag("WANDERER");
-            activeMobs.add(zombie);
-        }
-    }
-
     public void spawnStartingMobs() {
         World world = Expunge.currentMap.getWorld();
 
@@ -247,7 +294,7 @@ public class Director extends BukkitRunnable implements Listener {
         totalMobs = totalMobs / 3;
 
         for (int i = 0; i < Math.min(path.size(), 3); i++) {
-            spawnAtRandomLocations(world, path.get(i), totalMobs);
+            spawnAtRandomLocations(world, path.get(i), totalMobs, true);
         }
     }
 
