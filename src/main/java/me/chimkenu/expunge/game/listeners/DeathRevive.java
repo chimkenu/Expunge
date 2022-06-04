@@ -48,7 +48,6 @@ public class DeathRevive implements Listener {
             Expunge.playing.setIsAlive(player, false);
             Expunge.playing.putLives(player, 0);
         }
-        player.teleport(player.getLocation());
     }
 
     @EventHandler
@@ -61,6 +60,7 @@ public class DeathRevive implements Listener {
         if (!Expunge.playing.isAlive(player)) {
             // player died while down
             e.setDeathMessage(ChatColor.RED + player.getName() + " died.");
+            player.leaveVehicle();
             dead(player);
         }
 
