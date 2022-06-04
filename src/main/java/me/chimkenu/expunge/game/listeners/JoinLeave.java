@@ -16,6 +16,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 public class JoinLeave implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
+        e.getPlayer().sendMessage(ChatColor.GREEN + "New? Do " + ChatColor.YELLOW + "/tutorial" + ChatColor.GREEN + " to learn the mechanics!");
         Expunge.setSpectator(e.getPlayer());
     }
 
