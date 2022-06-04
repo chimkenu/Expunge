@@ -54,6 +54,7 @@ public class Director extends BukkitRunnable implements Listener {
         // spawn at nearest
         LivingEntity spawnedMob = spawnMob(map.getWorld(), nearest, mob);
         spawnedMob.addScoreboardTag("HORDE");
+        spawnedMob.setRemoveWhenFarAway(false);
     }
 
     private <T extends LivingEntity> void spawnBossMob(Map map, int sceneIndex, Class<T> mob) {

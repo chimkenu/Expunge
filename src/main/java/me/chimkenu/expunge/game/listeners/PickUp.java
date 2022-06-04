@@ -175,4 +175,9 @@ public class PickUp implements Listener {
     public void onItemMerge(ItemMergeEvent e) {
         e.setCancelled(true);
     }
+
+    @EventHandler
+    public void onItemDespawn(ItemDespawnEvent e) {
+        e.setCancelled(true);
+    }
 }
