@@ -236,6 +236,8 @@ public class TheDeparture extends Map {
                     for (int i = 0; i < 4; i++) {
                         Director.spawnUtility(world, new Location(world, 877.5, 44, 910.5), new Medkit());
                     }
+                    Director.spawnWeapon(world, new Location(world, 873.5, 44, 907.5), Director.getRandomGun(Weapons.Tier.TIER2), true);
+                    Director.spawnWeapon(world, new Location(world, 875.5, 44, 907.5), Director.getRandomGun(Weapons.Tier.TIER2), true);
 
                     Director.spawnUtility(world, new Location(world, 1135, 44, 919), new Medkit());
                     Director.spawnWeapon(world, new Location(world, 857.5, 44, 910.5), Director.getRandomGun(Weapons.Tier.TIER1), false);
@@ -243,7 +245,7 @@ public class TheDeparture extends Map {
                     Director.spawnWeapon(world, new Location(world, 1135, 44, 910), Director.getRandomGun(Weapons.Tier.TIER1), false);
                     Director.spawnWeapon(world, new Location(world, 1135, 44, 907), Director.getRandomMelee(), false);
 
-                    Expunge.runningDirector.spawnAtRandomLocations(world, new BoundingBox(863, 41, 889, 1112, 41, 863), 30);
+                    Expunge.runningDirector.spawnAtRandomLocations(world, new BoundingBox(863, 41, 889, 1112, 41, 863), 30, false);
                 },
                 null,
                 new Listener() {
@@ -353,7 +355,7 @@ public class TheDeparture extends Map {
                     Director.spawnWeapon(world, new Location(world, 1138, 44, 914.3), Director.getRandomGun(Weapons.Tier.TIER1), true);
                     Director.spawnWeapon(world, new Location(world, 1138, 44, 917.7), Director.getRandomMelee(), false);
 
-                    Expunge.runningDirector.spawnAtRandomLocations(world, new BoundingBox(1140, 42, 973, 1175, 42, 970), 10);
+                    Expunge.runningDirector.spawnAtRandomLocations(world, new BoundingBox(1140, 42, 973, 1175, 42, 970), 20, false);
                 },
                 null,
                 null,
