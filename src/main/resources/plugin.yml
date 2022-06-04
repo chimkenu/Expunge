@@ -1,0 +1,23 @@
+name: Expunge
+version: '${project.version}'
+main: me.chimkenu.expunge.Expunge
+api-version: 1.18
+authors: [ Chimkenu ]
+description: me when expunge
+commands:
+  join:
+    description: joins a game (or starts one if there is none)
+  values:
+    description: sends important data about the game
+  bye:
+    description: bye bye
+  getgun:
+    description: gets all the guns
+  getutility:
+    description: gets all the utilities
+  getmelee:
+    description: gets all the melees
+  startgame:
+    description: starts the game
+  tutorial:
+    description: for all the new people
