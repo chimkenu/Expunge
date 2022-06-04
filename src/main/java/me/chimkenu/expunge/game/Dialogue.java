@@ -49,7 +49,12 @@ public class Dialogue {
         }
         String speakerA = players.get(0).getDisplayName();
         String speakerB = players.get(Math.min(1, players.size() - 1)).getDisplayName();
+        int totalTime = 0;
+        double wordsPerSecond = 1.6;
         for (int i = 0; i < dialogue.size(); i++) {
+            int words = dialogue.get(i).split(" ").length;
+            long delay = (long) (words / wordsPerSecond) * 20;
+            totalTime += delay;
             int index = i;
             new BukkitRunnable() {
                 @Override
@@ -62,14 +67,14 @@ public class Dialogue {
                         p.sendMessage(message);
                     }
                 }
-            }.runTaskLater(Expunge.instance, i * 20 * 2L);
+            }.runTaskLater(Expunge.instance, i * delay);
         }
         new BukkitRunnable() {
             @Override
             public void run() {
                 actionAtEnd.run(players.get(0));
             }
-        }.runTaskLater(Expunge.instance, ((dialogue.size() - 1) * 20 * 2L) + 1);
+        }.runTaskLater(Expunge.instance, totalTime + 1);
     }
 
     public void displayDialogue() {
