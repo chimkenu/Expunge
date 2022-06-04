@@ -67,7 +67,7 @@ public class Dialogue {
                     }
                 }
             }.runTaskLater(Expunge.instance, totalTime);
-            totalTime += delay;
+            if (i < dialogue.size()) totalTime += delay;
         }
         new BukkitRunnable() {
             @Override
