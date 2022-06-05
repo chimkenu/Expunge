@@ -5,7 +5,7 @@ import me.chimkenu.expunge.Utils;
 import me.chimkenu.expunge.enums.Utilities;
 import me.chimkenu.expunge.enums.Weapons;
 import me.chimkenu.expunge.guns.guns.Gun;
-import me.chimkenu.expunge.guns.utilities.Utility;
+import me.chimkenu.expunge.guns.utilities.Healing;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
@@ -39,10 +39,10 @@ public class PickUp implements Listener {
         for (Weapons.Melees weapon : Weapons.Melees.values()) {
             items.put(weapon.getMelee().getMelee(), 1);
         }
-        for (Utilities.Throwable util : Utilities.Throwable.values()) {
+        for (Utilities.Throwables util : Utilities.Throwables.values()) {
             items.put(util.getUtility().getUtility(), 2);
         }
-        for (Utilities.Healing util : Utilities.Healing.values()) {
+        for (Utilities.Healings util : Utilities.Healings.values()) {
             items.put(util.getUtility().getUtility(), util.isMain() ? 3 : 4);
         }
         return items;
@@ -81,7 +81,7 @@ public class PickUp implements Listener {
             e.setCancelled(true);
             return;
         }
-        if (Utility.usingUtility.contains(player)) {
+        if (Healing.usingUtility.contains(player)) {
             e.setCancelled(true);
             return;
         }

@@ -1,7 +1,5 @@
-package me.chimkenu.expunge.guns.shoot;
+package me.chimkenu.expunge.guns;
 
-import me.chimkenu.expunge.guns.HeadshotCalculator;
-import me.chimkenu.expunge.guns.RayTrace;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;

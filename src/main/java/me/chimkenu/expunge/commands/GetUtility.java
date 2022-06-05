@@ -18,7 +18,7 @@ public class GetUtility implements CommandExecutor {
                 return true;
             }
 
-            for (Utility utility : Utils.getUtilities()) {
+            for (Utility utility : Utils.getHealings()) {
                 player.getInventory().addItem(utility.getUtility());
             }
             player.sendMessage(ChatColor.GREEN + "Here you go.");

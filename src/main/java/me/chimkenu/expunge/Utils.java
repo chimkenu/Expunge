@@ -4,9 +4,11 @@ import me.chimkenu.expunge.enums.Weapons;
 import me.chimkenu.expunge.guns.guns.*;
 import me.chimkenu.expunge.guns.melees.Melee;
 import me.chimkenu.expunge.guns.utilities.*;
+import me.chimkenu.expunge.guns.utilities.Throwable;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Projectile;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -69,16 +71,12 @@ public class Utils {
         return guns;
     }
 
-    public static ArrayList<Utility> getUtilities() {
-        ArrayList<Utility> utilities = new ArrayList<>();
-        utilities.add(new Grenade());
-        utilities.add(new Smoke());
-        utilities.add(new Molotov());
-        utilities.add(new Flash());
-        utilities.add(new Adrenaline());
-        utilities.add(new Pills());
-        utilities.add(new Medkit());
-        return utilities;
+    public static ArrayList<Healing> getHealings() {
+        ArrayList<Healing> healings = new ArrayList<>();
+        healings.add(new Adrenaline());
+        healings.add(new Pills());
+        healings.add(new Medkit());
+        return healings;
     }
 
     public static ArrayList<Melee> getMelees() {
@@ -87,6 +85,13 @@ public class Utils {
             melees.add(weapon.getMelee());
         }
         return melees;
+    }
+
+    public static ArrayList<Throwable> getThrowables() {
+        ArrayList<Throwable> throwables = new ArrayList<>();
+        throwables.add(new Grenade());
+        throwables.add(new Molotov());
+        return throwables;
     }
 
     public static Gun getPlayerHeldGun(ItemStack item) {
@@ -99,7 +104,10 @@ public class Utils {
     }
 
     public static Utility getPlayerHeldUtility(ItemStack item) {
-        for (Utility utility : getUtilities()) {
+        ArrayList<Utility> utilities = new ArrayList<>();
+        utilities.addAll(getHealings());
+        utilities.addAll(getThrowables());
+        for (Utility utility : utilities) {
             if (item.isSimilar(utility.getUtility())) {
                 return utility;
             }
@@ -111,6 +119,15 @@ public class Utils {
         for (Melee melee : getMelees()) {
             if (item.isSimilar(melee.getMelee())) {
                 return melee;
+            }
+        }
+        return null;
+    }
+
+    public static Throwable getThrowableFromProjectile(Projectile projectile) {
+        for (Throwable throwable : getThrowables()) {
+            if (projectile.getScoreboardTags().contains(throwable.getTag())) {
+                return throwable;
             }
         }
         return null;

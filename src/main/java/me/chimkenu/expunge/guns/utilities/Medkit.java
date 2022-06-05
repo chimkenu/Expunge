@@ -6,7 +6,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-public class Medkit extends Utility {
+public class Medkit extends Healing {
     public Medkit() {
         super(20, Material.BRICK, "&cMedkit", false);
     }
@@ -17,11 +17,11 @@ public class Medkit extends Utility {
             player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§cYou still have some health left..."));
             return;
         }
-        if (Utility.usingUtility.contains(player)) {
+        if (Healing.usingUtility.contains(player)) {
             return;
         }
 
-        Utility.usingUtility.add(player);
+        Healing.usingUtility.add(player);
         attemptUse(player, getUtility().getType(), 20 * 5, true, "§eUsing medkit...",
                 player1 -> {
                     player1.setHealth(player1.getHealth() + ((20 - player1.getHealth()) * 0.8));

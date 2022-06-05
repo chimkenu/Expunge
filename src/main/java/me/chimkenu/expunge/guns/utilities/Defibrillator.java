@@ -5,7 +5,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-public class Defibrillator extends Utility {
+public class Defibrillator extends Healing {
     public Defibrillator() {
         super(20, Material.NETHERITE_SCRAP, "&9Defibrillator", false);
     }

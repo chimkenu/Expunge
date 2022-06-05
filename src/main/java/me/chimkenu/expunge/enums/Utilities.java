@@ -1,21 +1,22 @@
 package me.chimkenu.expunge.enums;
 
 import me.chimkenu.expunge.guns.utilities.*;
+import me.chimkenu.expunge.guns.utilities.Throwable;
 
 public class Utilities {
-    public enum Throwable {
+    public enum Throwables {
         MOLOTOV {
-            public Utility getUtility() {
+            public Throwable getUtility() {
                 return new Molotov();
             }
         };
 
-        public abstract Utility getUtility();
+        public abstract Throwable getUtility();
     }
 
-    public enum Healing {
+    public enum Healings {
         DEFIBRILLATOR {
-            public Utility getUtility() {
+            public Healing getUtility() {
                 return new Defibrillator();
             }
             public boolean isMain() {
@@ -23,7 +24,7 @@ public class Utilities {
             }
         },
         MEDKIT {
-            public Utility getUtility() {
+            public Healing getUtility() {
                 return new Medkit();
             }
             public boolean isMain() {
@@ -32,7 +33,7 @@ public class Utilities {
         },
 
         PILLS {
-            public Utility getUtility() {
+            public Healing getUtility() {
                 return new Pills();
             }
             public boolean isMain() {
@@ -40,7 +41,7 @@ public class Utilities {
             }
         },
         ADRENALINE {
-            public Utility getUtility() {
+            public Healing getUtility() {
                 return new Adrenaline();
             }
             public boolean isMain() {
@@ -48,7 +49,7 @@ public class Utilities {
             }
         };
 
-        public abstract Utility getUtility();
+        public abstract Healing getUtility();
         public abstract boolean isMain();
     }
 }
