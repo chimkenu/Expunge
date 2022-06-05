@@ -5,40 +5,12 @@ import me.chimkenu.expunge.guns.guns.*;
 import me.chimkenu.expunge.guns.melees.Melee;
 import me.chimkenu.expunge.guns.utilities.*;
 import me.chimkenu.expunge.guns.utilities.Throwable;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Projectile;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 
 public class Utils {
-    public static ItemStack newItem(Material material, String displayName, boolean isGlowing, int amount) {
-        ItemStack item = new ItemStack(material);
-        item.setAmount(amount);
-        ItemMeta meta = item.getItemMeta();
-        if (meta != null) {
-            meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', displayName));
-            if (isGlowing) {
-                meta.addEnchant(Enchantment.DURABILITY, 1, true);
-                meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-            }
-            item.setItemMeta(meta);
-        }
-        return item;
-    }
-
-    public static ItemStack newItem(Material material, String displayName, boolean isGlowing) {
-        return newItem(material, displayName, isGlowing, 1);
-    }
-
-    public static ItemStack newItem(Material material, String displayName) {
-        return newItem(material, displayName, false);
-    }
-
     public static ArrayList<Gun> getGuns() {
         ArrayList<Gun> guns = new ArrayList<>();
         for (Weapons.Guns gun : Weapons.Guns.values()) {
