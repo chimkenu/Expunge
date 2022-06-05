@@ -7,10 +7,7 @@ import me.chimkenu.expunge.guns.shoot.*;
 import me.chimkenu.expunge.guns.utilities.Utility;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -101,7 +98,25 @@ public class UtilityListener implements Listener {
             entity.setCustomName("" + bounceNum);
 
         } else {
-            if (projectile.getScoreboardTags().contains("GUNS-PLUGIN_GRENADE")) projectile.getWorld().createExplosion(projectile.getLocation(), 2, false, false, (Entity) projectile.getShooter());
+            if (projectile.getScoreboardTags().contains("GUNS-PLUGIN_GRENADE")) {
+                projectile.getWorld().spawnParticle(Particle.EXPLOSION_HUGE, projectile.getLocation(), 1);
+                projectile.getWorld().playSound(projectile.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, SoundCategory.PLAYERS, 1, 1);
+                for (Entity entity : projectile.getWorld().getNearbyEntities(projectile.getLocation(), 4, 4, 4)) {
+                    if (!(entity instanceof LivingEntity livingEntity)) {
+                        continue;
+                    }
+                    if (livingEntity instanceof ArmorStand) {
+                        continue;
+                    }
+                    if (livingEntity instanceof Player player) {
+                        if (player.getGameMode() == GameMode.ADVENTURE)
+                            livingEntity.damage(1, (Entity) projectile.getShooter());
+                        continue;
+                    }
+                    livingEntity.getWorld().spawnParticle(Particle.BLOCK_CRACK, livingEntity.getLocation().add(0, .5, 0), 50, 0.2, 0.2, 0.2, Material.NETHER_WART_BLOCK.createBlockData());
+                    livingEntity.damage(80, (Entity) projectile.getShooter());
+                }
+            }
             else if (projectile.getScoreboardTags().contains("GUNS-PLUGIN_SMOKE")) {
                 Location loc = projectile.getLocation();
                 World world = projectile.getWorld();
