@@ -3,6 +3,7 @@ package me.chimkenu.expunge.game.listeners;
 import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.enums.Utilities;
 import me.chimkenu.expunge.enums.Weapons;
+import me.chimkenu.expunge.guns.utilities.Utility;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
@@ -78,6 +79,10 @@ public class PickUp implements Listener {
             e.setCancelled(true);
             return;
         }
+        if (Utility.usingUtility.contains(player)) {
+            e.setCancelled(true);
+            return;
+        }
         if (!player.isSneaking()) {
             player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§eSneak to pick up."));
             e.setCancelled(true);
@@ -103,19 +108,19 @@ public class PickUp implements Listener {
         int hotbarSlot = getHotbarSlot(item.getItemStack());
         ItemStack hotbarItem = player.getInventory().getItem(hotbarSlot);
 
-        if (hotbarItem != null && !(hotbarItem.getType().equals(Material.AIR) || hotbarItem.getType().equals(Material.GLOW_ITEM_FRAME))) {
-            player.getWorld().dropItem(player.getLocation(), hotbarItem);
+        if (hotbarItem != null && !(hotbarItem.getType().equals(Material.AIR))) {
+            Item itemSwapped =  player.getWorld().dropItem(player.getLocation(), hotbarItem);
+            itemSwapped.setPickupDelay(20);
+            itemSwapped.addScoreboardTag("ITEM");
         }
 
         player.getInventory().setItem(hotbarSlot, item.getItemStack());
 
         // invulnerable items can be picked up more than once
-        if (item.isInvulnerable()) {
-            item.setPickupDelay(20 * 3);
-        }
-        else {
+        if (item.isInvulnerable())
+            item.setPickupDelay(20);
+        else
             item.remove();
-        }
     }
 
     @EventHandler
