@@ -135,21 +135,4 @@ public class Shoot implements Listener {
             fireGun(player, gun);
         }
     }
-
-    // custom weapon really broken
-    @EventHandler
-    public void onClick(PlayerInteractEvent e) {
-        ItemStack item = e.getPlayer().getInventory().getItemInMainHand();
-        if (item.getType().equals(Material.SHEARS) && item.getItemMeta() != null && item.getItemMeta().getDisplayName().contains("RAILGUN")) {
-            item.setAmount(item.getAmount()-1);
-
-            Vector direction = e.getPlayer().getEyeLocation().getDirection();
-            RayTrace ray = new RayTrace(e.getPlayer().getEyeLocation().toVector(), direction);
-            ArrayList<Vector> positions = ray.traverse(50, 1);
-
-            for (Vector v : positions) {
-                e.getPlayer().getWorld().createExplosion(v.toLocation(e.getPlayer().getWorld()), 4, false, false);
-            }
-        }
-    }
 }
