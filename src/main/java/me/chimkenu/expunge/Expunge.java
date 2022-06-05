@@ -56,7 +56,6 @@ public final class Expunge extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new NextScene(), instance);
         getServer().getPluginManager().registerEvents(new DeathRevive(), instance);
         getServer().getPluginManager().registerEvents(new PickUp(), instance);
-        getServer().getPluginManager().registerEvents(new Chat(), instance);
 
         getServer().getPluginManager().registerEvents(new Shoot(), this);
         getServer().getPluginManager().registerEvents(new Reload(), this);
