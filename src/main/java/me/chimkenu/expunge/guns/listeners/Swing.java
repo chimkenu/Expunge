@@ -34,6 +34,9 @@ public class Swing implements Listener {
                 if (e instanceof ArmorStand) {
                     continue;
                 }
+                if (e instanceof Player p && p.getGameMode() != GameMode.ADVENTURE) {
+                    continue;
+                }
                 if (entities.contains(living)) {
                     continue;
                 }

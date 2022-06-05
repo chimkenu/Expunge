@@ -2,10 +2,7 @@ package me.chimkenu.expunge.guns.shoot;
 
 import me.chimkenu.expunge.guns.HeadshotCalculator;
 import me.chimkenu.expunge.guns.RayTrace;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.Particle;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -37,6 +34,9 @@ public class ShootParticle {
                         continue;
                     }
                     if (entities.contains(livingEntity)) {
+                        continue;
+                    }
+                    if (livingEntity instanceof Player player && player.getGameMode() != GameMode.ADVENTURE) {
                         continue;
                     }
                     if (ray.intersects(e.getBoundingBox(), range, ACCURACY_TRUE) && !e.getType().equals(EntityType.ARMOR_STAND)) {
