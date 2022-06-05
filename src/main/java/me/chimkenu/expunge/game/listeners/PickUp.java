@@ -1,8 +1,10 @@
 package me.chimkenu.expunge.game.listeners;
 
 import me.chimkenu.expunge.Expunge;
+import me.chimkenu.expunge.Utils;
 import me.chimkenu.expunge.enums.Utilities;
 import me.chimkenu.expunge.enums.Weapons;
+import me.chimkenu.expunge.guns.guns.Gun;
 import me.chimkenu.expunge.guns.utilities.Utility;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -106,6 +108,8 @@ public class PickUp implements Listener {
         player.getWorld().playSound(item.getLocation(), Sound.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 1f, 1f);
 
         int hotbarSlot = getHotbarSlot(item.getItemStack());
+        Gun gun = Utils.getPlayerHeldGun(item.getItemStack());
+        if (gun != null && Utils.getEnumFromGun(gun.getClass()) == Weapons.Guns.PISTOL) hotbarSlot = 1;
         ItemStack hotbarItem = player.getInventory().getItem(hotbarSlot);
 
         if (hotbarItem != null && !(hotbarItem.getType().equals(Material.AIR))) {
