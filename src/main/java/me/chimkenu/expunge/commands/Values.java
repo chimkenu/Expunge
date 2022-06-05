@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 public class Values implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        sender.sendMessage(ChatColor.GRAY + "" + ChatColor.BOLD + "Shove Stats:");
+        sender.sendMessage(ChatColor.GRAY + "" + ChatColor.BOLD + "Game Stats:");
         sender.sendMessage(ChatColor.GRAY + "  isGameRunning: " + Expunge.isGameRunning);
         sender.sendMessage(ChatColor.GRAY + "  isSpawningEnabled: " + Expunge.isSpawningEnabled);
         sender.sendMessage(ChatColor.GRAY + "  players: " + Expunge.playing.getKeys().size());
