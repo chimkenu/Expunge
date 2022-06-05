@@ -158,6 +158,8 @@ public class DeathRevive implements Listener {
                 inventory.setItem(i + 9, new ItemStack(Material.AIR));
             }
 
+            inventory.setItem(5, new ItemStack(Material.AIR)); // clear pistol
+
             if (currentLives.get(target) <= 1) {
                 new BukkitRunnable() {
                     @Override
