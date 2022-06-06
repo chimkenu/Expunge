@@ -1,7 +1,6 @@
 package me.chimkenu.expunge;
 
 import me.chimkenu.expunge.commands.*;
-import me.chimkenu.expunge.enums.Weapons;
 import me.chimkenu.expunge.game.Director;
 import me.chimkenu.expunge.game.SetSet;
 import me.chimkenu.expunge.game.listeners.*;
@@ -25,7 +24,6 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -109,6 +107,7 @@ public final class Expunge extends JavaPlugin {
         }
 
         player.setGameMode(GameMode.ADVENTURE);
+        player.getInventory().clear();
         player.setPlayerListName(ChatColor.YELLOW + player.getName());
         newPlayerStats(player);
     }
@@ -175,8 +174,8 @@ public final class Expunge extends JavaPlugin {
                 }
             }.runTaskLater(instance, 1);
 
-            p.getInventory().clear();
             p.setGameMode(GameMode.ADVENTURE);
+            p.getInventory().clear();
 
             loadPlayerStats(p);
             playing.setIsAlive(p, true);
