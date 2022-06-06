@@ -39,6 +39,7 @@ public class Shove implements Listener {
         }
         shove.put(attacker, System.currentTimeMillis());
 
+        attacker.setCooldown(attacker.getInventory().getItemInMainHand().getType(), 1);
         int cooldown = shoveCount.get(attacker) > 7 ? 3 : 1;
         attacker.playSound(attacker.getLocation(), Sound.ITEM_ARMOR_EQUIP_IRON, SoundCategory.PLAYERS, 1f, 1f);
         attacker.playSound(attacker.getLocation(), Sound.ENTITY_PLAYER_ATTACK_KNOCKBACK, SoundCategory.PLAYERS, 1f, 1f);
@@ -46,7 +47,7 @@ public class Shove implements Listener {
         attacker.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 20 * cooldown, 4, false, false, true));
 
         Location loc = attacker.getEyeLocation().add(attacker.getLocation().getDirection().multiply(1.5));
-        attacker.getWorld().spawnParticle(Particle.EXPLOSION_LARGE, loc, 1);
+        attacker.getWorld().spawnParticle(Particle.SWEEP_ATTACK, loc, 1);
         for (Entity entity : attacker.getWorld().getNearbyEntities(loc, 1.5, 1.5, 1.5)) {
             if (entity instanceof LivingEntity livingEntity) {
                 if (livingEntity instanceof Player) {

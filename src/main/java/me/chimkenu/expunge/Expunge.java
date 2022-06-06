@@ -138,23 +138,11 @@ public final class Expunge extends JavaPlugin {
         }
         playing.putHotbar(player, itemStacks);
         playing.putLives(player, DeathRevive.currentLives.get(player));
-
-        HashMap<Weapons.Guns, Integer> ammoMap = new HashMap<>();
-        for (Weapons.Guns gun : Shoot.getAmmo(player).keySet()) {
-            ammoMap.put(gun, Shoot.getAmmo(player, gun));
-        }
-        playing.putAmmo(player, ammoMap);
     }
 
     public static void loadPlayerStats(Player player) {
         player.setHealth(playing.getHealth(player)[0]);
         player.setAbsorptionAmount(playing.getHealth(player)[1]);
-
-        HashMap<Weapons.Guns, Integer> ammoMap = new HashMap<>();
-        for (Weapons.Guns gun : Expunge.playing.getAmmo(player).keySet()) {
-            ammoMap.put(gun, Expunge.playing.getAmmo(player).get(gun));
-        }
-        Shoot.setAmmo(player, ammoMap);
 
         for (int i = 0; i < 5; i++) {
             player.getInventory().setItem(i, playing.getHotbar(player)[i]);

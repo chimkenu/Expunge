@@ -4,6 +4,7 @@ import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.Utils;
 import me.chimkenu.expunge.enums.Utilities;
 import me.chimkenu.expunge.enums.Weapons;
+import me.chimkenu.expunge.guns.listeners.Shoot;
 import me.chimkenu.expunge.guns.weapons.guns.Gun;
 import me.chimkenu.expunge.guns.utilities.healing.Healing;
 import net.md_5.bungee.api.ChatMessageType;
@@ -20,6 +21,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.HashMap;
 
@@ -49,6 +51,8 @@ public class PickUp implements Listener {
     }
 
     private ItemStack getValidItemStack(ItemStack item) {
+        Gun gun = Utils.getPlayerHeldGun(item);
+        if (gun != null) return gun.getWeapon();
         for (ItemStack itemStack : getItems().keySet()) {
             if (item.isSimilar(itemStack)) {
                 return itemStack;
@@ -58,6 +62,8 @@ public class PickUp implements Listener {
     }
 
     private boolean isItemInvalid(ItemStack item) {
+        ItemMeta meta = item.getItemMeta();
+        if (meta != null && meta.getLore() != null && meta.getLore().contains("invulnerable")) return true;
         return getValidItemStack(item) == null;
     }
 
@@ -92,34 +98,48 @@ public class PickUp implements Listener {
         }
 
         Item item = e.getItem();
-        if (player.getInventory().containsAtLeast(item.getItemStack(), 1)) {
-            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§cYou cannot carry any more of this item."));
-            e.setCancelled(true);
-            return;
-        }
-
         if (isItemInvalid(item.getItemStack())) {
             player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§cYou can't pick this up."));
             e.setCancelled(true);
             return;
         }
 
+        int hotbarSlot = getHotbarSlot(item.getItemStack());
+        Gun gun = Utils.getPlayerHeldGun(item.getItemStack());
+
+        if (player.getInventory().containsAtLeast(item.getItemStack(), 1)) {
+            e.setCancelled(true);
+
+            // add to ammo if gun
+            if (gun != null) {
+                ItemStack gunInHotbar = player.getInventory().getItem(hotbarSlot);
+                if (gunInHotbar != null) Shoot.setAmmo(gunInHotbar, Math.min(Shoot.getAmmo(gunInHotbar) + Shoot.getAmmo(item.getItemStack()), gun.getMaxAmmo()));
+                player.playSound(player.getLocation(), Sound.ITEM_ARMOR_EQUIP_LEATHER, SoundCategory.PLAYERS, 1, 1);
+                player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§9+Ammo"));
+                item.setPickupDelay(20);
+                if (!item.isInvulnerable()) item.remove();
+                return;
+            }
+            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§cYou cannot carry any more of this item."));
+            return;
+        }
+
         e.setCancelled(true);
         player.getWorld().playSound(item.getLocation(), Sound.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 1f, 1f);
 
-        int hotbarSlot = getHotbarSlot(item.getItemStack());
-        Gun gun = Utils.getPlayerHeldGun(item.getItemStack());
         if (gun != null && Utils.getEnumFromGun(gun.getClass()) == Weapons.Guns.PISTOL) hotbarSlot = 1;
         ItemStack hotbarItem = player.getInventory().getItem(hotbarSlot);
 
         if (hotbarItem != null && !(hotbarItem.getType().equals(Material.AIR))) {
-            Item itemSwapped =  player.getWorld().dropItem(player.getLocation(), hotbarItem);
-            itemSwapped.setPickupDelay(20);
-            itemSwapped.addScoreboardTag("ITEM");
+            ItemMeta meta = hotbarItem.getItemMeta();
+            if (!(meta != null && meta.getLore() != null && meta.getLore().contains("invulnerable"))) {
+                Item itemSwapped = player.getWorld().dropItem(player.getLocation(), hotbarItem);
+                itemSwapped.setPickupDelay(20);
+                itemSwapped.addScoreboardTag("ITEM");
+            }
         }
 
         player.getInventory().setItem(hotbarSlot, item.getItemStack());
-
         // invulnerable items can be picked up more than once
         if (item.isInvulnerable())
             item.setPickupDelay(20);
@@ -153,7 +173,7 @@ public class PickUp implements Listener {
         if (isItemInvalid(item)) {
             // fix item if broken
             if (item.getItemMeta() != null && item.getItemMeta() instanceof Damageable damageable) {
-                // this is added to fix reload as it may break from time to time, however it can be abused
+                // this is added to fix reload as it breaks when opening the inventory, however it can be abused
                 // to avoid such, add a cooldown longer than all reload times
                 if (damageable.getDamage() > 0) {
                     damageable.setDamage(0);

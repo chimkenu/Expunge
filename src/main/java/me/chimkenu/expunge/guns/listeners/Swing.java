@@ -24,8 +24,7 @@ public class Swing implements Listener {
         Location loc = player.getEyeLocation();
         for (int i = 0; i < melee.getRange(); i++) {
             loc.add(loc.getDirection());
-            world.spawnParticle(Particle.SWEEP_ATTACK, loc, 1);
-            for (Entity e : world.getNearbyEntities(loc, 1.5, 2, 1.5)) {
+            for (Entity e : world.getNearbyEntities(loc, 1.5, 1.5, 1.5)) {
                 if (e == player) {
                     continue;
                 }
@@ -82,22 +81,5 @@ public class Swing implements Listener {
         }
         e.getPlayer().setCooldown(mainHand.getType(), weapon.getCooldown());
         swing(e.getPlayer(), weapon);
-    }
-
-    @EventHandler
-    public void onSwing(EntityDamageByEntityEvent e) {
-        if (!(e.getDamager() instanceof Player player)) {
-            return;
-        }
-        ItemStack mainHand = player.getInventory().getItemInMainHand();
-        if (player.getCooldown(mainHand.getType()) > 1) {
-            return;
-        }
-        Melee weapon = Utils.getPlayerHeldMelee(mainHand);
-        if (weapon == null) {
-            return;
-        }
-        player.setCooldown(mainHand.getType(), weapon.getCooldown());
-        swing(player, weapon);
     }
 }

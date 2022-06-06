@@ -13,6 +13,8 @@ import me.chimkenu.expunge.guns.utilities.healing.Medkit;
 import me.chimkenu.expunge.guns.utilities.healing.Pills;
 import org.bukkit.entity.Projectile;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 
@@ -73,8 +75,14 @@ public class Utils {
     }
 
     public static Gun getPlayerHeldGun(ItemStack item) {
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) return null;
+        Damageable damageable = (Damageable) meta;
+        if (damageable.getDamage() > 0) return null;
         for (Gun gun : getGuns()) {
-            if (item.isSimilar(gun.getWeapon())) {
+            ItemMeta gunMeta = gun.getWeapon().getItemMeta();
+            if (gunMeta == null) continue;
+            if (item.getType() == gun.getWeapon().getType() && meta.hasDisplayName() && gunMeta.hasDisplayName() && meta.getDisplayName().equals(gunMeta.getDisplayName())) {
                 return gun;
             }
         }
@@ -94,8 +102,12 @@ public class Utils {
     }
 
     public static Melee getPlayerHeldMelee(ItemStack item) {
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) return null;
         for (Melee melee : getMelees()) {
-            if (item.isSimilar(melee.getWeapon())) {
+            ItemMeta meleeMeta = melee.getWeapon().getItemMeta();
+            if (meleeMeta == null) continue;
+            if (item.getType() == melee.getWeapon().getType() && meta.hasDisplayName() && meleeMeta.hasDisplayName() && meta.getDisplayName().equals(meleeMeta.getDisplayName())) {
                 return melee;
             }
         }

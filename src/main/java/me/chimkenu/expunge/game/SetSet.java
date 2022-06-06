@@ -1,6 +1,5 @@
 package me.chimkenu.expunge.game;
 
-import me.chimkenu.expunge.enums.Weapons;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -14,7 +13,6 @@ public class SetSet {
     final HashMap<Player, ItemStack[]> hotbar;
     final HashMap<Player, Boolean> isAlive;
     final HashMap<Player, Integer> lives;
-    final HashMap<Player, HashMap<Weapons.Guns, Integer>> ammo;
 
     public SetSet() {
         keys = new ArrayList<>();
@@ -22,7 +20,6 @@ public class SetSet {
         hotbar = new HashMap<>();
         isAlive = new HashMap<>();
         lives = new HashMap<>();
-        ammo = new HashMap<>();
     }
 
     public static Double[] getDefaultHealth() {
@@ -44,14 +41,6 @@ public class SetSet {
         return 3;
     }
 
-    public static HashMap<Weapons.Guns, Integer> getDefaultAmmo() {
-        HashMap<Weapons.Guns, Integer> ammoMap = new HashMap<>();
-        for (Weapons.Guns gun : Weapons.Guns.values()) {
-            ammoMap.put(gun, gun.getGun().getMaxAmmo());
-        }
-        return ammoMap;
-    }
-
     public void putDefaults(Player player) {
         if (!keys.contains(player)) {
             keys.add(player);
@@ -59,7 +48,6 @@ public class SetSet {
         health.put(player, getDefaultHealth());
         hotbar.put(player, getDefaultHotbar());
         lives.put(player, getDefaultLives());
-        ammo.put(player, getDefaultAmmo());
         isAlive.put(player, true);
     }
 
@@ -91,10 +79,6 @@ public class SetSet {
         lives.put(player, newLives);
     }
 
-    public void putAmmo(Player player, HashMap<Weapons.Guns, Integer> ammoMap) {
-        ammo.put(player, ammoMap);
-    }
-
     public ArrayList<Player> getKeys() {
         return keys;
     }
@@ -119,18 +103,12 @@ public class SetSet {
         return lives.get(player);
     }
 
-    public HashMap<Weapons.Guns, Integer> getAmmo(Player player) {
-        ammo.putIfAbsent(player, getDefaultAmmo());
-        return ammo.get(player);
-    }
-
     public void remove(Player player) {
         keys.remove(player);
         health.remove(player);
         hotbar.remove(player);
         isAlive.remove(player);
         lives.remove(player);
-        ammo.remove(player);
     }
 
     public void clear() {
@@ -139,6 +117,5 @@ public class SetSet {
         hotbar.clear();
         isAlive.clear();
         lives.clear();
-        ammo.clear();
     }
 }

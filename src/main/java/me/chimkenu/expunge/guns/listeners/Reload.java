@@ -17,16 +17,20 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class Reload implements Listener {
-    public static boolean reload(Player player) {
+    public static void reload(Player player) {
         ItemStack item = player.getInventory().getItemInMainHand();
         Gun gun = Utils.getPlayerHeldGun(item);
 
-        if (gun == null) return false;
-        if (item.getAmount() == gun.getClipSize()) return false;
+        if (gun == null) return;
+        if (item.getAmount() == gun.getClipSize()) return;
 
         Weapons.Guns weapon = Utils.getEnumFromGun(gun.getClass());
-        if (Shoot.getAmmo(player, weapon) < 1) return false;
-        if (Shoot.getAmmo(player, weapon) <= item.getAmount()) return false;
+        if (Shoot.getAmmo(item) < 1) return;
+        if (Shoot.getAmmo(item) == item.getAmount()) return;
+        else if (Shoot.getAmmo(item) + 1 < item.getAmount()) {
+            item.setAmount(Shoot.getAmmo(item) + 1);
+            return;
+        }
 
         new BukkitRunnable() {
             int t = 1;
@@ -52,21 +56,13 @@ public class Reload implements Listener {
         new BukkitRunnable() {
             @Override
             public void run() {
-                item.setAmount(Math.min(gun.getClipSize(), Shoot.getAmmo(player, weapon)));
+                item.setAmount(Math.min(gun.getClipSize(), Shoot.getAmmo(item)));
                 Damageable damageable = (Damageable) item.getItemMeta();
                 if (damageable != null) damageable.setDamage(0);
                 item.setItemMeta(damageable);
                 player.updateInventory();
             }
         }.runTaskLater(Expunge.instance, gun.getReload());
-        return true;
-    }
-
-    private void refill(Player player) {
-        player.playSound(player.getLocation(), Sound.BLOCK_CHAIN_PLACE, 1, 1);
-        for (Weapons.Guns gun : Weapons.Guns.values()) {
-            Shoot.setAmmo(player, gun, gun.getGun().getMaxAmmo());
-        }
     }
 
     @EventHandler
@@ -80,13 +76,17 @@ public class Reload implements Listener {
         e.setCancelled(true);
 
         // player clicked an ammo refill thing
-        refill(e.getPlayer());
-        e.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§9+Ammo"));
+        Player player = e.getPlayer();
         // update ammo if holding gun
-        Gun gun = Utils.getPlayerHeldGun(e.getPlayer().getInventory().getItemInMainHand());
+        ItemStack itemStack = player.getInventory().getItemInMainHand();
+        Gun gun = Utils.getPlayerHeldGun(itemStack);
         if (gun == null) {
             return;
         }
-        e.getPlayer().setLevel(Shoot.getAmmo(e.getPlayer(), Utils.getEnumFromGun(gun.getClass())));
+        player.playSound(player.getLocation(), Sound.BLOCK_CHAIN_PLACE, 1, 1);
+        e.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§9+Ammo"));
+        Shoot.setAmmo(itemStack, gun.getMaxAmmo());
+        itemStack.setAmount(gun.getClipSize());
+        e.getPlayer().setLevel(Shoot.getAmmo(itemStack));
     }
 }

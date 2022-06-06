@@ -20,36 +20,41 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Shoot implements Listener {
-    public static final HashMap<Player, HashMap<Weapons.Guns, Integer>> playerAmmo = new HashMap<>();
-    public static int getAmmo(Player player, Weapons.Guns gun) {
-        playerAmmo.putIfAbsent(player, new HashMap<>());
-        playerAmmo.get(player).putIfAbsent(gun, gun.getGun().getMaxAmmo());
-        return playerAmmo.get(player).get(gun);
+    public static int getAmmo(ItemStack item) {
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) return 0;
+        List<String> lore = meta.getLore();
+        if (lore == null) return 0;
+        int ammo;
+        try {
+            ammo = Integer.parseInt(meta.getLore().get(0));
+        } catch (NumberFormatException ignored) {
+            return 0;
+        }
+        return ammo;
     }
-    public static HashMap<Weapons.Guns, Integer> getAmmo(Player player) {
-        playerAmmo.putIfAbsent(player, SetSet.getDefaultAmmo());
-        return playerAmmo.get(player);
-    }
-    public static void setAmmo(Player player, Weapons.Guns gun, int amount) {
-        playerAmmo.putIfAbsent(player, new HashMap<>());
-        HashMap<Weapons.Guns, Integer> ammoMap = playerAmmo.get(player);
-        ammoMap.put(gun, Math.max(0, amount));
-        playerAmmo.put(player, ammoMap);
-    }
-    public static void setAmmo(Player player, HashMap<Weapons.Guns, Integer> ammoMap) {
-        playerAmmo.put(player, ammoMap);
+    public static boolean setAmmo(ItemStack item, int newAmmo) {
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) return false;
+        List<String> lore = new ArrayList<>();
+        lore.add(String.valueOf(newAmmo));
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+        return true;
     }
 
     private void fireGun(Player player, Gun gun) {
         ItemStack item = player.getInventory().getItemInMainHand();
 
-        Weapons.Guns weaponGun = Utils.getEnumFromGun(gun.getClass());
-        if (getAmmo(player, weaponGun) < 1) {
+        int currentAmmo = getAmmo(item);
+        if (currentAmmo < 1) {
             player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§c§lOut of Ammo!"));
             return;
         }
@@ -57,8 +62,9 @@ public class Shoot implements Listener {
             return;
         }
 
-        setAmmo(player, weaponGun, getAmmo(player, weaponGun) - 1);
-        player.setLevel(getAmmo(player, weaponGun));
+        currentAmmo--;
+        setAmmo(item, currentAmmo);
+        player.setLevel(currentAmmo);
 
         // OFFSET MODIFICATION : Offset is increased based on certain actions/conditions
         double offset = 0.001;

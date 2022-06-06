@@ -30,6 +30,6 @@ public class InventoryListener implements Listener {
         if (gun == null) {
             return;
         }
-        player.setLevel(Shoot.getAmmo(player, Utils.getEnumFromGun(gun.getClass())));
+        player.setLevel(Shoot.getAmmo(item));
     }
 }
