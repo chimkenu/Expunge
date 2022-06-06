@@ -193,7 +193,7 @@ public class DeathRevive implements Listener {
         for (Entity entity : player.getNearbyEntities(1, 1, 1)) {
             if (entity instanceof Player target && target != player) {
                 if (beingRevived.contains(target)) {
-                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§b" + target + " §eis already being revived."));
+                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§b" + target.getDisplayName() + " §eis already being revived."));
                     return;
                 }
                 if (Expunge.playing.getKeys().contains(target) && !Expunge.playing.isAlive(target) && currentLives.get(target) > 1) {
