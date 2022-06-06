@@ -6,14 +6,15 @@ import me.chimkenu.expunge.enums.Utilities;
 import me.chimkenu.expunge.enums.Weapons;
 import me.chimkenu.expunge.game.maps.Map;
 import me.chimkenu.expunge.game.maps.Scene;
-import me.chimkenu.expunge.guns.guns.Gun;
-import me.chimkenu.expunge.guns.melees.Melee;
+import me.chimkenu.expunge.guns.weapons.guns.Gun;
+import me.chimkenu.expunge.guns.weapons.melees.Melee;
 import me.chimkenu.expunge.guns.utilities.Utility;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -29,6 +30,7 @@ public class Director extends BukkitRunnable implements Listener {
     private int sceneAttempts = 0;
     public final HashSet<LivingEntity> activeMobs = new HashSet<>();
     public boolean chillOut = false;
+    public long timeSinceLastHorde = 0;
 
     public <T extends LivingEntity> LivingEntity spawnMob(World world, Location loc, Class<T> mob) {
         LivingEntity spawnedMob = world.spawn(loc, mob);
@@ -114,7 +116,13 @@ public class Director extends BukkitRunnable implements Listener {
     }
 
     public static void spawnWeapon(World world, Location loc, Gun gun, boolean isInvulnerable) {
-        Item item = world.dropItem(loc, gun.getGun());
+        Item item = world.dropItem(loc, gun.getWeapon());
+        if (isInvulnerable) {
+            ItemMeta meta = item.getItemStack().getItemMeta();
+            if (meta != null && meta.getLore() != null) {
+                meta.getLore().add("invulnerable");
+            }
+        }
         item.addScoreboardTag("ITEM");
         item.setInvulnerable(isInvulnerable);
     }
@@ -128,7 +136,7 @@ public class Director extends BukkitRunnable implements Listener {
     }
 
     public static void spawnWeapon(World world, Location loc, Melee melee, boolean isInvulnerable) {
-        Item item = world.dropItem(loc, melee.getMelee());
+        Item item = world.dropItem(loc, melee.getWeapon());
         item.addScoreboardTag("ITEM");
         item.setInvulnerable(isInvulnerable);
     }
@@ -202,24 +210,29 @@ public class Director extends BukkitRunnable implements Listener {
                     spawnAdditionalMob(Expunge.currentMap, Expunge.currentSceneIndex, Zombie.class);
 
                 // spawn additional mobs if number of mobs are too low
-                if (activeMobs.size() < 10) {
+                if (activeMobs.size() < 10 && sceneTime > 30 * 10) {
                     chillOut = true;
-                    for (int i = 0; i < ThreadLocalRandom.current().nextInt(20, 30); i++) {
+                    timeSinceLastHorde = sceneTime;
+                    for (int i = 0; i < (20 + (Expunge.playing.getKeys().size() * 5)); i++) {
                         spawnAdditionalMob(Expunge.currentMap, Expunge.currentSceneIndex, Zombie.class);
                     }
                 }
             }
-        } else if (chillOut && activeMobs.size() <= 5) chillOut = false;
+        } else if (chillOut && activeMobs.size() <= 5 && sceneTime - timeSinceLastHorde > 20 * 30) chillOut = false;
 
         // look through every mob if its alive && look at its distance from the nearest player
-        if ((sceneTime % (20 * 15)) == 0) {
+        if ((sceneTime % (20 * 5)) == 0) {
             HashSet<LivingEntity> mobsToRemove = new HashSet<>();
             for (LivingEntity mob : activeMobs) {
                 if (mob.isDead()) {
                     mobsToRemove.add(mob);
                     continue;
                 }
-                if (playerNearestDistanceFrom(mob.getLocation().toVector()) > 30 * 30) {
+                if (mob instanceof Zombie zombie && zombie.getTarget() != null && zombie.getTarget() instanceof Player target && Expunge.playing.getKeys().contains(target)) {
+                    if (zombie.getLocation().distanceSquared(target.getLocation()) < 20 * 20)
+                    continue;
+                }
+                if (playerNearestDistanceFrom(mob.getLocation().toVector()) > 20 * 20) {
                     mob.remove();
                     mobsToRemove.add(mob);
                 }
@@ -308,15 +321,15 @@ public class Director extends BukkitRunnable implements Listener {
 
             // throwable - 40% chance
             if (r < 0.2) {
-                Utilities.Throwable[] throwables = Utilities.Throwable.values();
+                Utilities.Throwables[] throwables = Utilities.Throwables.values();
                 spawnUtilityAtRandom(Expunge.currentMap, Expunge.currentSceneIndex, throwables[ThreadLocalRandom.current().nextInt(0, throwables.length)].getUtility());
             }
 
             // healing item - 60% chance
             else {
-                Utilities.Healing[] healings = new Utilities.Healing[2];
-                healings[0] = Utilities.Healing.PILLS;
-                healings[1] = Utilities.Healing.ADRENALINE;
+                Utilities.Healings[] healings = new Utilities.Healings[2];
+                healings[0] = Utilities.Healings.PILLS;
+                healings[1] = Utilities.Healings.ADRENALINE;
                 spawnUtilityAtRandom(Expunge.currentMap, Expunge.currentSceneIndex, healings[ThreadLocalRandom.current().nextInt(0, healings.length)].getUtility());
             }
         }
