@@ -28,7 +28,7 @@ public class TheDeparture extends Map {
         World world = Bukkit.getWorld("world");
         if (world == null) return scenes;
 
-        // scene 1 - office
+        // scene 0 - office
         ArrayList<BoundingBox> pathRegions = new ArrayList<>();
         pathRegions.add(new BoundingBox(950, 8, 891, 963, 8, 901));
         pathRegions.add(new BoundingBox(963, 8, 903, 955, 8, 915));
@@ -84,7 +84,7 @@ public class TheDeparture extends Map {
                 null
         ));
 
-        // scene 2 - office
+        // scene 1 - office
         pathRegions = new ArrayList<>();
         pathRegions.add(new BoundingBox(853, 76, 921, 845, 76, 940));
         pathRegions.add(new BoundingBox(854, 76, 938, 878, 76, 915));
@@ -133,6 +133,7 @@ public class TheDeparture extends Map {
                 null,
                 player -> {
                     world.getBlockAt(new Location(world, 872, 43, 910)).setType(Material.BEEHIVE);
+                    world.getBlockAt(new Location(world, 1139, 43, 914)).setType(Material.AIR);
                     Director.spawnWeapon(world, new Location(world, 864.5, 54, 909.5), new FryingPan(), false);
                 },
                 null,
@@ -177,7 +178,7 @@ public class TheDeparture extends Map {
                 null
         ));
 
-        // scene 3 - streets
+        // scene 2 - streets
         pathRegions = new ArrayList<>();
         pathRegions.add(new BoundingBox(870, 42, 908, 864, 42, 921));
         pathRegions.add(new BoundingBox(861, 42, 916, 854, 42, 922));
@@ -233,6 +234,7 @@ public class TheDeparture extends Map {
                 player -> {
                     world.getBlockAt(new Location(world, 872, 43, 910)).setType(Material.AIR);
                     world.getBlockAt(new Location(world, 1139, 43, 918)).setType(Material.BEEHIVE);
+                    world.getBlockAt(new Location(world, 1139, 43, 914)).setType(Material.AIR);
                     for (int i = 0; i < 4; i++) {
                         Director.spawnUtility(world, new Location(world, 877.5, 44, 910.5), new Medkit());
                     }
@@ -293,7 +295,7 @@ public class TheDeparture extends Map {
                 null
         ));
 
-        // scene 4 - alleyway streets
+        // scene 3 - alleyway streets
         pathRegions = new ArrayList<>();
         pathRegions.add(new BoundingBox(1143, 42, 916, 1156, 42, 923));
         pathRegions.add(new BoundingBox(1151, 42, 922, 1155, 42, 938));
@@ -349,6 +351,7 @@ public class TheDeparture extends Map {
                 player -> {
                     world.getBlockAt(new Location(world, 1139, 43, 918)).setType(Material.AIR);
                     world.getBlockAt(new Location(world, 1119, 43, 988)).setType(Material.BEEHIVE);
+                    world.getBlockAt(new Location(world, 1139, 43, 914)).setType(Material.BEEHIVE);
 
                     Director.spawnUtility(world, new Location(world, 1140.7, 44, 917), new Pills());
                     Director.spawnUtility(world, new Location(world, 1140.7, 44, 915), new Adrenaline());
