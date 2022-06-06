@@ -11,6 +11,8 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public abstract class Gun {
@@ -106,7 +108,11 @@ public abstract class Gun {
             modifier = new AttributeModifier(UUID.fromString("d0538ce4-708b-463b-ac91-cfd57d6adbd2"), "generic.attack_speed", 1, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HAND);
             meta.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED, modifier);
             meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+
             meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
+            List<String> lore = new ArrayList<>();
+            lore.add(String.valueOf(maxAmmo));
+            meta.setLore(lore);
         }
         gun.setItemMeta(meta);
         return gun;

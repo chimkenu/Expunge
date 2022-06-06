@@ -9,7 +9,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -30,7 +29,7 @@ public class UtilityListener implements Listener {
 
     @EventHandler
     public void onClickBlock(PlayerInteractEvent e) {
-        if (e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+        if (e.getAction().equals(Action.LEFT_CLICK_AIR) || e.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
 
             Player player = e.getPlayer();
             Utility util = Utils.getPlayerHeldUtility(player.getInventory().getItemInMainHand());
@@ -39,17 +38,6 @@ public class UtilityListener implements Listener {
                 e.setCancelled(true);
                 useUtil(player, util);
             }
-        }
-    }
-
-    @EventHandler
-    public void onClickEntity(PlayerInteractEntityEvent e) {
-        Player player = e.getPlayer();
-        Utility util = Utils.getPlayerHeldUtility(player.getInventory().getItemInMainHand());
-
-        if (util != null) {
-            e.setCancelled(true);
-            useUtil(player, util);
         }
     }
 

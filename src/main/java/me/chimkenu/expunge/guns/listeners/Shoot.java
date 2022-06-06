@@ -14,12 +14,10 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.SoundCategory;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -104,13 +102,13 @@ public class Shoot implements Listener {
         if (item.getAmount() == 1) {
             Reload.reload(player);
         } else {
-            item.setAmount(item.getAmount()-1);
+            item.setAmount(item.getAmount() - 1);
         }
     }
 
     @EventHandler
     public void onClickBlock(PlayerInteractEvent e) {
-        if (e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+        if (e.getAction().equals(Action.LEFT_CLICK_AIR) || e.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
 
             Player player = e.getPlayer();
             Gun gun = Utils.getPlayerHeldGun(player.getInventory().getItemInMainHand());
@@ -119,21 +117,6 @@ public class Shoot implements Listener {
                 e.setCancelled(true);
                 fireGun(player, gun);
             }
-        }
-    }
-
-    @EventHandler
-    public void onClickEntity(PlayerInteractEntityEvent e) {
-        // see if it was an ammo pile
-        if (e.getRightClicked() instanceof ArmorStand armorStand && armorStand.getScoreboardTags().contains("AMMO_PILE")) {
-            return;
-        }
-
-        Player player = e.getPlayer();
-        Gun gun = Utils.getPlayerHeldGun(player.getInventory().getItemInMainHand());
-        if (gun != null) {
-            e.setCancelled(true);
-            fireGun(player, gun);
         }
     }
 }

@@ -4,7 +4,10 @@ import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -42,7 +45,8 @@ public class Shove implements Listener {
         attacker.playSound(attacker.getLocation(), Sound.ENTITY_TURTLE_EGG_CRACK, SoundCategory.PLAYERS, 0.2f, 1f);
         attacker.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 20 * cooldown, 4, false, false, true));
 
-        Location loc = attacker.getEyeLocation().add(attacker.getLocation().getDirection());
+        Location loc = attacker.getEyeLocation().add(attacker.getLocation().getDirection().multiply(1.5));
+        attacker.getWorld().spawnParticle(Particle.EXPLOSION_LARGE, loc, 1);
         for (Entity entity : attacker.getWorld().getNearbyEntities(loc, 1.5, 1.5, 1.5)) {
             if (entity instanceof LivingEntity livingEntity) {
                 if (livingEntity instanceof Player) {
@@ -63,10 +67,20 @@ public class Shove implements Listener {
     }
 
     @EventHandler
-    public void onShove(EntityDamageByEntityEvent e) {
-        if (e.getDamager() instanceof Player player && e.getDamage() <= 1.5) {
-            boolean isSuccessful = onShove(player);
+    public void onShove(PlayerInteractEvent e) {
+        if (e.getAction() == Action.RIGHT_CLICK_AIR) {
+            boolean isSuccessful = onShove(e.getPlayer());
             if (isSuccessful) e.setCancelled(true);
         }
+    }
+
+    @EventHandler
+    public void onShove(PlayerInteractEntityEvent e) {
+        if (e.getRightClicked() instanceof ArmorStand armorStand && armorStand.getScoreboardTags().contains("AMMO_PILE")) {
+            e.setCancelled(true);
+            return;
+        }
+        boolean isSuccessful = onShove(e.getPlayer());
+        if (isSuccessful) e.setCancelled(true);
     }
 }

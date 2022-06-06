@@ -6,16 +6,12 @@ import me.chimkenu.expunge.enums.Weapons;
 import me.chimkenu.expunge.guns.guns.Gun;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -64,32 +60,6 @@ public class Reload implements Listener {
             }
         }.runTaskLater(Expunge.instance, gun.getReload());
         return true;
-    }
-
-    @EventHandler
-    public void onClick(PlayerInteractEvent e) {
-        if (e.getHand() == null || e.getHand().equals(EquipmentSlot.OFF_HAND)) {
-            return;
-        }
-
-        // check if player could be shoving enemy
-        Location loc = e.getPlayer().getEyeLocation().add(e.getPlayer().getLocation().getDirection());
-        for (Entity entity : e.getPlayer().getWorld().getNearbyEntities(loc, 1.5, 1.5, 1.5)) {
-            if (entity instanceof LivingEntity livingEntity) {
-                if (livingEntity instanceof Player) {
-                    continue;
-                }
-                if (livingEntity instanceof ArmorStand) {
-                    continue;
-                }
-                // there is a valid enemy
-                return;
-            }
-        }
-
-        if (e.getAction().equals(Action.LEFT_CLICK_AIR) || e.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
-            if (reload(e.getPlayer())) e.setCancelled(true);
-        }
     }
 
     private void refill(Player player) {

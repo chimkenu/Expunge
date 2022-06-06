@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -66,7 +67,7 @@ public class Swing implements Listener {
         if (e.getHand() == null || e.getHand().equals(EquipmentSlot.OFF_HAND)) {
             return;
         }
-        if (!(e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK))) {
+        if (!(e.getAction().equals(Action.LEFT_CLICK_AIR) || e.getAction().equals(Action.LEFT_CLICK_BLOCK))) {
             return;
         }
 
@@ -81,5 +82,22 @@ public class Swing implements Listener {
         }
         e.getPlayer().setCooldown(mainHand.getType(), weapon.getCooldown());
         swing(e.getPlayer(), weapon);
+    }
+
+    @EventHandler
+    public void onSwing(EntityDamageByEntityEvent e) {
+        if (!(e.getDamager() instanceof Player player)) {
+            return;
+        }
+        ItemStack mainHand = player.getInventory().getItemInMainHand();
+        if (player.getCooldown(mainHand.getType()) > 1) {
+            return;
+        }
+        Melee weapon = Utils.getPlayerHeldMelee(mainHand);
+        if (weapon == null) {
+            return;
+        }
+        player.setCooldown(mainHand.getType(), weapon.getCooldown());
+        swing(player, weapon);
     }
 }
