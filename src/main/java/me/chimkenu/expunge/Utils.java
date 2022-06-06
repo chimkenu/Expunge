@@ -1,10 +1,16 @@
 package me.chimkenu.expunge;
 
 import me.chimkenu.expunge.enums.Weapons;
-import me.chimkenu.expunge.guns.guns.*;
-import me.chimkenu.expunge.guns.melees.Melee;
+import me.chimkenu.expunge.guns.weapons.guns.*;
+import me.chimkenu.expunge.guns.weapons.melees.Melee;
 import me.chimkenu.expunge.guns.utilities.*;
-import me.chimkenu.expunge.guns.utilities.Throwable;
+import me.chimkenu.expunge.guns.utilities.throwable.Grenade;
+import me.chimkenu.expunge.guns.utilities.throwable.Molotov;
+import me.chimkenu.expunge.guns.utilities.throwable.Throwable;
+import me.chimkenu.expunge.guns.utilities.healing.Adrenaline;
+import me.chimkenu.expunge.guns.utilities.healing.Healing;
+import me.chimkenu.expunge.guns.utilities.healing.Medkit;
+import me.chimkenu.expunge.guns.utilities.healing.Pills;
 import org.bukkit.entity.Projectile;
 import org.bukkit.inventory.ItemStack;
 
@@ -68,7 +74,7 @@ public class Utils {
 
     public static Gun getPlayerHeldGun(ItemStack item) {
         for (Gun gun : getGuns()) {
-            if (item.isSimilar(gun.getGun())) {
+            if (item.isSimilar(gun.getWeapon())) {
                 return gun;
             }
         }
@@ -89,7 +95,7 @@ public class Utils {
 
     public static Melee getPlayerHeldMelee(ItemStack item) {
         for (Melee melee : getMelees()) {
-            if (item.isSimilar(melee.getMelee())) {
+            if (item.isSimilar(melee.getWeapon())) {
                 return melee;
             }
         }

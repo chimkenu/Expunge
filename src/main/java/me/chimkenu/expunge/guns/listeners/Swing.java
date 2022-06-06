@@ -1,7 +1,7 @@
 package me.chimkenu.expunge.guns.listeners;
 
 import me.chimkenu.expunge.Utils;
-import me.chimkenu.expunge.guns.melees.Melee;
+import me.chimkenu.expunge.guns.weapons.melees.Melee;
 import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
@@ -22,7 +22,7 @@ public class Swing implements Listener {
         ArrayList<LivingEntity> entities = new ArrayList<>();
         World world = player.getWorld();
         Location loc = player.getEyeLocation();
-        for (int i = 0; i < melee.getReach(); i++) {
+        for (int i = 0; i < melee.getRange(); i++) {
             loc.add(loc.getDirection());
             world.spawnParticle(Particle.SWEEP_ATTACK, loc, 1);
             for (Entity e : world.getNearbyEntities(loc, 1.5, 2, 1.5)) {
@@ -49,7 +49,7 @@ public class Swing implements Listener {
 
         // play sound depending on whether an entity was hit
         if (entities.size() < 1) {
-            if (melee.getReach() <= 2) player.getWorld().playSound(loc, Sound.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 1, 1);
+            if (melee.getRange() <= 2) player.getWorld().playSound(loc, Sound.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 1, 1);
             else player.getWorld().playSound(loc, Sound.ENTITY_PLAYER_ATTACK_KNOCKBACK, SoundCategory.PLAYERS, 1, 1);
             return;
         }

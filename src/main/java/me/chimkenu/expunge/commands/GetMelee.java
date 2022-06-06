@@ -1,7 +1,7 @@
 package me.chimkenu.expunge.commands;
 
 import me.chimkenu.expunge.Utils;
-import me.chimkenu.expunge.guns.melees.Melee;
+import me.chimkenu.expunge.guns.weapons.melees.Melee;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -22,7 +22,7 @@ public class GetMelee implements CommandExecutor {
         }
 
         for (Melee melee : Utils.getMelees()) {
-            player.getInventory().addItem(melee.getMelee());
+            player.getInventory().addItem(melee.getWeapon());
         }
         player.sendMessage(ChatColor.GREEN + "Here you go.");
         return true;

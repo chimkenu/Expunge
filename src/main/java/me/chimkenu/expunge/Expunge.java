@@ -6,8 +6,8 @@ import me.chimkenu.expunge.game.Director;
 import me.chimkenu.expunge.game.SetSet;
 import me.chimkenu.expunge.game.listeners.*;
 import me.chimkenu.expunge.game.maps.*;
-import me.chimkenu.expunge.guns.guns.Gun;
-import me.chimkenu.expunge.guns.guns.Pistol;
+import me.chimkenu.expunge.guns.weapons.guns.Gun;
+import me.chimkenu.expunge.guns.weapons.guns.Pistol;
 import me.chimkenu.expunge.guns.listeners.*;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -120,10 +120,10 @@ public final class Expunge extends JavaPlugin {
             // give player lower tier items (if they had an item to begin with)
             if (playing.getHotbar(player)[0] != null && playing.getHotbar(player)[0].getType() != Material.AIR) {
                 ArrayList<Gun> guns = Utils.getTier1Guns();
-                itemStacks[0] = guns.get(ThreadLocalRandom.current().nextInt(0, guns.size())).getGun();
+                itemStacks[0] = guns.get(ThreadLocalRandom.current().nextInt(0, guns.size())).getWeapon();
             }
             if (playing.getHotbar(player)[1] != null && playing.getHotbar(player)[1].getType() != Material.AIR) {
-                itemStacks[1] = new Pistol().getGun();
+                itemStacks[1] = new Pistol().getWeapon();
             }
         }
         playing.putDefaults(player);

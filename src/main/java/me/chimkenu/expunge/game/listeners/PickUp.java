@@ -4,8 +4,8 @@ import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.Utils;
 import me.chimkenu.expunge.enums.Utilities;
 import me.chimkenu.expunge.enums.Weapons;
-import me.chimkenu.expunge.guns.guns.Gun;
-import me.chimkenu.expunge.guns.utilities.Healing;
+import me.chimkenu.expunge.guns.weapons.guns.Gun;
+import me.chimkenu.expunge.guns.utilities.healing.Healing;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
@@ -34,10 +34,10 @@ public class PickUp implements Listener {
     private HashMap<ItemStack, Integer> getItems() {
         HashMap<ItemStack, Integer> items = new HashMap<>();
         for (Weapons.Guns weapon : Weapons.Guns.values()) {
-            items.put(weapon.getGun().getGun(), 0);
+            items.put(weapon.getGun().getWeapon(), 0);
         }
         for (Weapons.Melees weapon : Weapons.Melees.values()) {
-            items.put(weapon.getMelee().getMelee(), 1);
+            items.put(weapon.getMelee().getWeapon(), 1);
         }
         for (Utilities.Throwables util : Utilities.Throwables.values()) {
             items.put(util.getUtility().getUtility(), 2);

@@ -3,7 +3,7 @@ package me.chimkenu.expunge.guns.listeners;
 import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.Utils;
 import me.chimkenu.expunge.enums.Weapons;
-import me.chimkenu.expunge.guns.guns.Gun;
+import me.chimkenu.expunge.guns.weapons.guns.Gun;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Sound;

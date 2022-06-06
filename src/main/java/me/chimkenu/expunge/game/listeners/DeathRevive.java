@@ -91,7 +91,7 @@ public class DeathRevive implements Listener {
                 inventory.setItem(i + 9, inventory.getItem(i));
                 inventory.setItem(i, new ItemStack(Material.AIR));
             }
-            inventory.setItem(5, Weapons.Guns.PISTOL.getGun().getGun());
+            inventory.setItem(5, Weapons.Guns.PISTOL.getGun().getWeapon());
 
         } else {
             e.setDeathMessage(ChatColor.RED + player.getName() + " died.");
