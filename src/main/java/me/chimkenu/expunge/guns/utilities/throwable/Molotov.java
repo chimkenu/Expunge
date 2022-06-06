@@ -16,7 +16,7 @@ public class Molotov extends Throwable {
     public void use(Player player) {
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 0.5f, 0);
         Projectile ball = player.launchProjectile(Snowball.class);
-        ball.addScoreboardTag("THROWABLE_GRENADE");
+        ball.addScoreboardTag("THROWABLE_MOLOTOV");
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "execute as @e[tag=THROWABLE_MOLOTOV] run data merge entity @s {Item:{id:\"minecraft:lantern\",Count:1b}}");
     }
 
