@@ -26,13 +26,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.HashMap;
 
 public class PickUp implements Listener {
-    @EventHandler
-    public void onDespawn(ItemDespawnEvent e) {
-        if (Expunge.isGameRunning) {
-            e.setCancelled(true);
-        }
-    }
-
     private HashMap<ItemStack, Integer> getItems() {
         HashMap<ItemStack, Integer> items = new HashMap<>();
         for (Weapons.Guns weapon : Weapons.Guns.values()) {
@@ -147,6 +140,15 @@ public class PickUp implements Listener {
             item.remove();
     }
 
+    private void cancelDrop(PlayerDropItemEvent e) {
+        Player player = e.getPlayer();
+        ItemStack mainHand = player.getInventory().getItemInMainHand();
+        if (mainHand.getAmount() > 1) {
+            e.getItemDrop().remove();
+            mainHand.setAmount(mainHand.getAmount() + 1);
+        } else e.setCancelled(true);
+    }
+
     @EventHandler
     public void onDrop(PlayerDropItemEvent e) {
         Player player = e.getPlayer();
@@ -157,15 +159,15 @@ public class PickUp implements Listener {
             return;
         }
         if (!Expunge.isGameRunning) {
-            e.setCancelled(true);
+            cancelDrop(e);
             return;
         }
         if (!Expunge.playing.getKeys().contains(player)) {
-            e.setCancelled(true);
+            cancelDrop(e);
             return;
         }
         if (!Expunge.playing.isAlive(player)) {
-            e.setCancelled(true);
+            cancelDrop(e);
             return;
         }
 
@@ -182,7 +184,7 @@ public class PickUp implements Listener {
                 }
             }
             player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§cYou can't drop this."));
-            e.setCancelled(true);
+            cancelDrop(e);
             return;
         }
 
@@ -194,19 +196,19 @@ public class PickUp implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent e) {
-        if (e.getWhoClicked().getGameMode().equals(GameMode.CREATIVE)) {
-            return;
-        }
-        e.setCancelled(true);
+        if (!e.getWhoClicked().getGameMode().equals(GameMode.CREATIVE))
+            e.setCancelled(true);
     }
 
     @EventHandler
     public void onItemMerge(ItemMergeEvent e) {
-        e.setCancelled(true);
+        if (Expunge.isGameRunning)
+            e.setCancelled(true);
     }
 
     @EventHandler
     public void onItemDespawn(ItemDespawnEvent e) {
-        e.setCancelled(true);
+        if (Expunge.isGameRunning)
+            e.setCancelled(true);
     }
 }
