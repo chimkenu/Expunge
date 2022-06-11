@@ -86,6 +86,10 @@ public class PickUp implements Listener {
             e.setCancelled(true);
             return;
         }
+        if (!Expunge.playing.isAlive(player)) {
+            e.setCancelled(true);
+            return;
+        }
         if (Healing.usingUtility.contains(player)) {
             e.setCancelled(true);
             return;
