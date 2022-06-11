@@ -23,6 +23,8 @@ public class Values implements CommandExecutor {
             sender.sendMessage(ChatColor.GRAY + "  sceneTime: " + Expunge.runningDirector.getSceneTime());
             sender.sendMessage(ChatColor.GRAY + "  sceneAttempts: " + Expunge.runningDirector.getSceneAttempts());
             sender.sendMessage(ChatColor.GRAY + "  activeMobs: " + Expunge.runningDirector.getActiveMobs().size());
+            sender.sendMessage(ChatColor.GRAY + "  totalKills: " + Expunge.runningDirector.getTotalKills());
+            sender.sendMessage(ChatColor.GRAY + "  directorRating: " + (Expunge.runningDirector.calculateRating() * 100) + "%");
         } else {
             sender.sendMessage(ChatColor.RED + "There is no active game at the moment.");
         }

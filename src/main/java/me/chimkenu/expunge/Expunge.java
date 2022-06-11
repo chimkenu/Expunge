@@ -65,6 +65,7 @@ public final class Expunge extends JavaPlugin {
         getCommand("values").setExecutor(new Values());
         getCommand("bye").setExecutor(new Bye());
         getCommand("startgame").setExecutor(new StartGame());
+        getCommand("stats").setExecutor(new Stats());
 
         getCommand("getgun").setExecutor(new GetGun());
         getCommand("getutility").setExecutor(new GetUtility());

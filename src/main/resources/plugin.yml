@@ -20,4 +20,6 @@ commands:
   startgame:
     description: starts the game
   tutorial:
-    description: for all the new people
+    description: for all the new
+  stats:
+    description: see how you are doing in the game

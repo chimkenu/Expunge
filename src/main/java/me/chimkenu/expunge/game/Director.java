@@ -6,6 +6,7 @@ import me.chimkenu.expunge.enums.Utilities;
 import me.chimkenu.expunge.enums.Weapons;
 import me.chimkenu.expunge.game.maps.Map;
 import me.chimkenu.expunge.game.maps.Scene;
+import me.chimkenu.expunge.guns.ShootEvent;
 import me.chimkenu.expunge.guns.weapons.guns.Gun;
 import me.chimkenu.expunge.guns.weapons.melees.Melee;
 import me.chimkenu.expunge.guns.utilities.Utility;
@@ -28,6 +29,8 @@ public class Director extends BukkitRunnable implements Listener {
     private long gameTime = 0;
     private long sceneTime = 0;
     private int sceneAttempts = 0;
+    private final HashMap<Player, Integer> kills = new HashMap<>();
+    private final HashMap<Player, Integer[]> shots = new HashMap<>();
     public final HashSet<LivingEntity> activeMobs = new HashSet<>();
     public boolean chillOut = false;
     public long timeSinceLastHorde = 0;
@@ -277,17 +280,96 @@ public class Director extends BukkitRunnable implements Listener {
         activeMobs.clear();
     }
 
-    public double getPlayerStats() {
-        double total = 0;
+    private int getPlayerProgress(Player player) {
+        Scene scene = Expunge.currentMap.getScenes().get(Expunge.currentSceneIndex);
+        Vector v = player.getLocation().toVector();
+        int nearest = 0;
+        double nearestDistance = v.distanceSquared(scene.pathRegions().get(nearest).getCenter());
+        for (int i = 0; i < scene.pathRegions().size(); i++) {
+            BoundingBox b = scene.pathRegions().get(i);
+            double distance = v.distanceSquared(b.getCenter());
+            if (distance < nearestDistance) {
+                nearest = i;
+                nearestDistance = distance;
+            }
+        }
+        return nearest;
+    }
+
+    public double calculateRating() {
+        double totalHealth = 0;
+        double skillAverage = 0;
+
         for (int i = 0; i < Expunge.playing.getKeys().size(); i++) {
+            // health
             Player p = Expunge.playing.getKeys().get(i);
             double estimateHealth = p.getHealth();
             if (p.getInventory().contains(Material.BRICK)) {
                 estimateHealth += (20 - estimateHealth) * 0.8;
             }
-            total += estimateHealth;
+            estimateHealth += p.getAbsorptionAmount();
+            if (!Expunge.playing.isAlive(p)) estimateHealth = 0;
+            totalHealth += estimateHealth;
+
+            // skill average
+            skillAverage += calculateRating(p);
         }
-        return total / (20 * Expunge.playing.getKeys().size());
+
+        totalHealth = totalHealth / (20 * Expunge.playing.getKeys().size());
+        skillAverage = skillAverage / Expunge.playing.getKeys().size();
+        return (totalHealth * .5) + (skillAverage * .5);
+    }
+
+    public int getTotalKills() {
+        int total = 0;
+        for (Player player : kills.keySet()) {
+            total += kills.get(player);
+        }
+        return total;
+    }
+
+    public int getKills(Player player) {
+        if (kills.get(player) == null) return 0;
+        return kills.get(player);
+    }
+
+    public double getAccuracy(Player player) {
+        Integer[] shot = shots.get(player);
+        if (shot == null) return 1;
+        return (double) shot[1] / shot[0];
+    }
+
+    public double getHeadshotAccuracy(Player player) {
+        Integer[] shot = shots.get(player);
+        if (shot == null) return 1;
+        return (double) shot[2] / shot[1];
+    }
+
+    public double getPace(Player player) {
+        if (Expunge.playing.getKeys().size() > 1) {
+            double progressAverage = 0;
+            for (Player p : Expunge.playing.getKeys()) {
+                progressAverage += getPlayerProgress(p);
+            }
+            progressAverage = progressAverage / (Expunge.playing.getKeys().size());
+            return progressAverage - getPlayerProgress(player);
+        }
+        return 0;
+    }
+
+    public double calculateRating(Player player) {
+        double rating = 0;
+
+        // accuracy & headshot accuracy
+        rating += getAccuracy(player) * 0.25;
+        rating += getHeadshotAccuracy(player) * 0.25;
+
+        // progress : are you rushing or are you dragging?
+        double diff = Math.abs(getPace(player));
+        diff = (1 - (1 / (1 + Math.exp(-diff)))) + 0.5;
+        rating += diff * 0.5;
+
+        return rating;
     }
 
     public void spawnStartingMobs() {
@@ -315,7 +397,7 @@ public class Director extends BukkitRunnable implements Listener {
         Scene scene = Expunge.currentMap.getScenes().get(Expunge.currentSceneIndex);
 
         int itemsToSpawn = scene.baseItemsToSpawn();
-        itemsToSpawn += (int) (4 * (1 - getPlayerStats()));
+        itemsToSpawn += (int) (4 * (1 - calculateRating()));
         for (int i = 0; i < itemsToSpawn; i++) {
             double r = Math.random();
 
@@ -335,7 +417,7 @@ public class Director extends BukkitRunnable implements Listener {
         }
 
         itemsToSpawn = 1;
-        itemsToSpawn += (int) (2 * (1 - getPlayerStats()));
+        itemsToSpawn += (int) (2 * (1 - calculateRating()));
         for (int i = 0; i < itemsToSpawn; i++) {
             double r = Math.random();
 
@@ -356,9 +438,7 @@ public class Director extends BukkitRunnable implements Listener {
 
         // spawn ammo
         for (Location loc : scene.ammoLocations()) {
-            if (loc.getWorld() != null) {
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "/execute in minecraft:overworld run summon falling_block " + loc.getX() + " " + loc.getY() + " " + loc.getZ() + " {BlockState:{Name:\"minecraft:gray_candle\",Properties:{candles:\"4\",lit:\"false\",waterlogged:\"false\"}},NoGravity:1b,Glowing:1b,Time:-2147483648,Tags:[\"AMMO_PILE\"],Invulnerable:1b,CustomName:'[{\"text\":\"Ammo Pile\",\"color\":\"blue\"},{\"text\":\" (Right Click)\",\"color\":\"gray\"}]',CustomNameVisible:1b}");
-            }
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "execute in minecraft:overworld run summon falling_block " + loc.getX() + " " + loc.getY() + " " + loc.getZ() + " {BlockState:{Name:\"minecraft:gray_candle\",Properties:{candles:\"4\",lit:\"false\",waterlogged:\"false\"}},NoGravity:1b,Glowing:1b,Time:-2147483648,Tags:[\"AMMO_PILE\"],Invulnerable:1b,CustomName:'[{\"text\":\"Ammo Pile\",\"color\":\"blue\"},{\"text\":\" (Right Click)\",\"color\":\"gray\"}]',CustomNameVisible:1b}");
         }
     }
 
@@ -390,6 +470,25 @@ public class Director extends BukkitRunnable implements Listener {
 
     @EventHandler
     public void onMobDeath(EntityDeathEvent e) {
-        activeMobs.remove(e.getEntity());
+        LivingEntity dead = e.getEntity();
+        if (activeMobs.contains(dead)) {
+            if (dead.getKiller() != null && Expunge.playing.getKeys().contains(dead.getKiller())) {
+                kills.putIfAbsent(dead.getKiller(), 0);
+                kills.put(dead.getKiller(), kills.get(dead.getKiller()));
+            }
+            activeMobs.remove(dead);
+        }
+    }
+
+    @EventHandler
+    public void onShoot(ShootEvent e) {
+        shots.putIfAbsent(e.getShooter(), new Integer[]{0, 0, 0});
+        Set<LivingEntity> hitEntities = e.getHitEntities().keySet();
+
+        shots.get(e.getShooter())[0] += 1; // shot
+        hitEntities.removeIf(entity -> entity instanceof Player);
+        shots.get(e.getShooter())[1] += hitEntities.size() > 0 ? 1 : 0; // hit / miss
+        hitEntities.removeIf(entity -> e.getHitEntities().get(entity));
+        shots.get(e.getShooter())[2] += hitEntities.size() > 0 ? 1 : 0; // headshot / not
     }
 }

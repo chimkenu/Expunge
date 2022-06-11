@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class ShootParticle {
@@ -50,18 +51,21 @@ public class ShootParticle {
             }
         }
 
+        HashMap<LivingEntity, Boolean> hitEntities = new HashMap<>();
         for (LivingEntity e : entities) {
             double newDMG = (decreaseDamage && e.getLocation().distance(shooter.getLocation()) > 7) ? damage * 0.5 : damage;
             Vector vec = e.getVelocity();
-            if (HeadshotCalculator.isHeadshot(shooter, e, range)) {
+            boolean isHeadshot = HeadshotCalculator.isHeadshot(shooter, e, range);
+            if (isHeadshot) {
                 e.damage(newDMG + (newDMG * 0.5), shooter);
                 shooter.sendMessage(ChatColor.GOLD + "Headshot!");
-            } else {
+            } else
                 e.damage(newDMG, shooter);
-            }
+            hitEntities.put(e, isHeadshot);
             e.getWorld().spawnParticle(Particle.BLOCK_CRACK, e.getLocation().add(0, .5, 0), 50, 0.2, 0.2, 0.2, Material.NETHER_WART_BLOCK.createBlockData());
             e.setNoDamageTicks(0);
             e.setVelocity(vec);
         }
+        Bukkit.getPluginManager().callEvent(new ShootEvent(shooter, hitEntities));
     }
 }

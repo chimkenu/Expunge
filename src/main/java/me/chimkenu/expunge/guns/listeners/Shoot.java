@@ -1,8 +1,6 @@
 package me.chimkenu.expunge.guns.listeners;
 
 import me.chimkenu.expunge.Utils;
-import me.chimkenu.expunge.enums.Weapons;
-import me.chimkenu.expunge.game.SetSet;
 import me.chimkenu.expunge.guns.ShootParticle;
 import me.chimkenu.expunge.guns.weapons.guns.GrenadeLauncher;
 import me.chimkenu.expunge.guns.weapons.guns.Gun;
@@ -40,14 +38,13 @@ public class Shoot implements Listener {
         }
         return ammo;
     }
-    public static boolean setAmmo(ItemStack item, int newAmmo) {
+    public static void setAmmo(ItemStack item, int newAmmo) {
         ItemMeta meta = item.getItemMeta();
-        if (meta == null) return false;
+        if (meta == null) return;
         List<String> lore = new ArrayList<>();
         lore.add(String.valueOf(newAmmo));
         meta.setLore(lore);
         item.setItemMeta(meta);
-        return true;
     }
 
     private void fireGun(Player player, Gun gun) {
