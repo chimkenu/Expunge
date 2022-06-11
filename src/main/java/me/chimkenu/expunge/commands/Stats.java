@@ -22,13 +22,13 @@ public class Stats implements CommandExecutor {
             sender.sendMessage(ChatColor.RED + "There is no active game at the moment.");
             return true;
         }
-        player = Bukkit.getPlayer(args[0]) != null ? Bukkit.getPlayer(args[0]) : player;
+        player = args.length > 0 ? Bukkit.getPlayer(args[0]) != null ? Bukkit.getPlayer(args[0]) : player : player;
         if (player == null || !Expunge.playing.getKeys().contains(player)) {
             sender.sendMessage(ChatColor.RED + "There are no stats to display.");
             return true;
         }
 
-        sender.sendMessage(ChatColor.GRAY + "" + ChatColor.BOLD + player.getDisplayName() + " Stats:");
+        sender.sendMessage(ChatColor.GRAY + "" + ChatColor.BOLD + player.getDisplayName() + "'s Stats:");
         sender.sendMessage(ChatColor.GRAY + "  Kills: " + director.getKills(player));
         sender.sendMessage(ChatColor.GRAY + "  Gun Accuracy: " + director.getAccuracy(player));
         sender.sendMessage(ChatColor.GRAY + "  Headshot Accuracy: " + director.getHeadshotAccuracy(player));
