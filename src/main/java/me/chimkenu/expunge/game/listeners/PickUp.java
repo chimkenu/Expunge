@@ -64,6 +64,12 @@ public class PickUp implements Listener {
         return getItems().get(getValidItemStack(item));
     }
 
+    private final HashMap<Player, Long> pickUp = new HashMap<>();
+    private boolean canPickUp(Player player) {
+        pickUp.putIfAbsent(player, System.currentTimeMillis() - 501);
+        return ((System.currentTimeMillis() - pickUp.get(player)) > 500);
+    }
+
     @EventHandler
     public void onPickUp(EntityPickupItemEvent e) {
         if (!(e.getEntity() instanceof Player player)) {
@@ -96,6 +102,12 @@ public class PickUp implements Listener {
             e.setCancelled(true);
             return;
         }
+
+        if (!canPickUp(player)) {
+            e.setCancelled(true);
+            return;
+        }
+        pickUp.put(player, System.currentTimeMillis());
 
         int hotbarSlot = getHotbarSlot(item.getItemStack());
         Gun gun = Utils.getPlayerHeldGun(item.getItemStack());
