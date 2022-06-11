@@ -309,6 +309,7 @@ public class Director extends BukkitRunnable implements Listener {
             }
             estimateHealth += p.getAbsorptionAmount();
             if (!Expunge.playing.isAlive(p)) estimateHealth = 0;
+            estimateHealth = Math.min(estimateHealth, 20);
             totalHealth += estimateHealth;
 
             // skill average
@@ -474,7 +475,7 @@ public class Director extends BukkitRunnable implements Listener {
         if (activeMobs.contains(dead)) {
             if (dead.getKiller() != null && Expunge.playing.getKeys().contains(dead.getKiller())) {
                 kills.putIfAbsent(dead.getKiller(), 0);
-                kills.put(dead.getKiller(), kills.get(dead.getKiller()));
+                kills.put(dead.getKiller(), kills.get(dead.getKiller()) + 1);
             }
             activeMobs.remove(dead);
         }
