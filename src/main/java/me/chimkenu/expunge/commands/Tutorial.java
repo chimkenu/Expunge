@@ -1,7 +1,6 @@
 package me.chimkenu.expunge.commands;
 
 import me.chimkenu.expunge.Expunge;
-import me.chimkenu.expunge.game.Dialogue;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -15,7 +14,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Tutorial implements CommandExecutor {
     public static final ArrayList<Player> inTutorial = new ArrayList<>();
@@ -57,7 +55,7 @@ public class Tutorial implements CommandExecutor {
                 "&eNote: You can shove while holding items."
         });
         lines.add(new String[]{
-                "You are given &e3 lives&r. You get &eknocked down&r the first two times you are killed, giving a chance to your teammates &7&o(if any)&r to revive you.",
+                "You are given &e3 lives&r. You get &eknocked down&r the first two times you are killed, giving a chance for your teammates &7&o(if any)&r to revive you.",
                 "While knocked down, you are given a pistol to shoot zombies. You will have to be saved by a teammate.",
                 "To save a knocked down teammate, simply &ehold sneak near them&r.",
                 "&eNote: Using a medkit will restore your 3 lives.",
@@ -116,8 +114,6 @@ public class Tutorial implements CommandExecutor {
                 part = Integer.parseInt(args[1]);
             } catch (NumberFormatException ignored) {}
         }
-        if (index > getLocations().size() - 1) index = 0;
-        if (part > getTutorialLines().get(index).length - 1) part = 0;
 
         if (index < 0 || part < 0) {
             inTutorial.remove(player);
@@ -125,6 +121,10 @@ public class Tutorial implements CommandExecutor {
             player.sendMessage(ChatColor.GREEN + "Finished tutorial! Sending you back...");
             return true;
         }
+
+        if (index > getLocations().size() - 1) index = 0;
+        if (part > getTutorialLines().get(index).length - 1) part = 0;
+
         if (part == 0) {
             // clear chat
             for (int i = 0; i < 100; i++) {
@@ -136,7 +136,7 @@ public class Tutorial implements CommandExecutor {
 
         player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&b[Tutorial] &8»&f " + getTutorialLines().get(index)[part]));
         TextComponent component = new TextComponent("");
-        if (part == 0 && index - 1 > 0) {
+        if (part == 0 && index - 1 >= 0) {
             TextComponent back = new TextComponent("[Back] ");
             back.setColor(net.md_5.bungee.api.ChatColor.GOLD);
             back.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tutorial " + (index - 1) + " 0"));
