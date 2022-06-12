@@ -10,6 +10,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+
 public class Stats implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
@@ -28,11 +31,14 @@ public class Stats implements CommandExecutor {
             return true;
         }
 
+        DecimalFormat decimalFormat = new DecimalFormat("#.###");
+        decimalFormat.setRoundingMode(RoundingMode.CEILING);
+
         sender.sendMessage(ChatColor.GRAY + "" + ChatColor.BOLD + player.getDisplayName() + "'s Stats:");
         sender.sendMessage(ChatColor.GRAY + "  Kills: " + director.getKills(player));
-        sender.sendMessage(ChatColor.GRAY + "  Gun Accuracy: " + director.getAccuracy(player));
-        sender.sendMessage(ChatColor.GRAY + "  Headshot Accuracy: " + director.getHeadshotAccuracy(player));
-        sender.sendMessage(ChatColor.GRAY + "  Pace: " + director.getPace(player));
+        sender.sendMessage(ChatColor.GRAY + "  Gun Accuracy: " + decimalFormat.format(director.getAccuracy(player)));
+        sender.sendMessage(ChatColor.GRAY + "  Headshot Accuracy: " + decimalFormat.format(director.getHeadshotAccuracy(player)));
+        sender.sendMessage(ChatColor.GRAY + "  Pace: " + decimalFormat.format(director.getPace(player)));
         return true;
     }
 }
