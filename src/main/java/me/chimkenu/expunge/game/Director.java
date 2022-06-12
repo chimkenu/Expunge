@@ -489,7 +489,7 @@ public class Director extends BukkitRunnable implements Listener {
         shots.get(e.getShooter())[0] += 1; // shot
         hitEntities.removeIf(entity -> entity instanceof Player);
         shots.get(e.getShooter())[1] += hitEntities.size() > 0 ? 1 : 0; // hit / miss
-        hitEntities.removeIf(entity -> e.getHitEntities().get(entity));
+        hitEntities.removeIf(entity -> !e.getHitEntities().get(entity));
         shots.get(e.getShooter())[2] += hitEntities.size() > 0 ? 1 : 0; // headshot / not
     }
 }

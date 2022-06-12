@@ -66,6 +66,7 @@ public class ShootParticle {
             e.setNoDamageTicks(0);
             e.setVelocity(vec);
         }
-        Bukkit.getPluginManager().callEvent(new ShootEvent(shooter, hitEntities));
+        ShootEvent shootEvent = new ShootEvent(shooter, hitEntities);
+        Bukkit.getPluginManager().callEvent(shootEvent);
     }
 }

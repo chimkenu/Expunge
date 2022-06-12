@@ -280,8 +280,8 @@ public final class Expunge extends JavaPlugin {
 
         isCountdownRunning = false;
         isGameRunning = true;
-        runningDirector = new Director();
         HandlerList.unregisterAll(runningDirector);
+        runningDirector = new Director();
         instance.getServer().getPluginManager().registerEvents(runningDirector, instance);
         runningDirector.runTaskTimer(instance, 1, 1);
 
