@@ -3,10 +3,7 @@ package me.chimkenu.expunge.guns.listeners;
 import me.chimkenu.expunge.Utils;
 import me.chimkenu.expunge.guns.weapons.melees.Melee;
 import org.bukkit.*;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -23,7 +20,7 @@ public class Swing implements Listener {
         Location loc = player.getEyeLocation();
         for (int i = 0; i < melee.getRange(); i++) {
             loc.add(loc.getDirection());
-            for (Entity e : world.getNearbyEntities(loc, 1.5, 1.5, 1.5)) {
+            for (Entity e : world.getNearbyEntities(loc, 0.5, 1, 0.5)) {
                 if (e == player) {
                     continue;
                 }
@@ -31,6 +28,9 @@ public class Swing implements Listener {
                     continue;
                 }
                 if (e instanceof ArmorStand) {
+                    continue;
+                }
+                if (e instanceof Pig) {
                     continue;
                 }
                 if (e instanceof Player p && p.getGameMode() != GameMode.ADVENTURE) {
