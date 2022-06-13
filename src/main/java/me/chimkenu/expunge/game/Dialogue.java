@@ -15,13 +15,6 @@ public class Dialogue {
     private final ArrayList<String> speakers;
     private final Action actionAtEnd;
 
-    public Dialogue(ArrayList<String> dialogue, ArrayList<String> speakers, Action actionAtEnd) {
-        if (dialogue.size() != speakers.size()) throw new IllegalArgumentException("arraylists must match in size.");
-        this.dialogue = dialogue;
-        this.speakers = speakers;
-        this.actionAtEnd = actionAtEnd;
-    }
-
     public Dialogue(Action actionAtEnd, String... strings) {
         ArrayList<String> dialogue = new ArrayList<>();
         ArrayList<String> speakers = new ArrayList<>();
@@ -47,10 +40,10 @@ public class Dialogue {
                 players.set(i, p);
             }
         }
-        String speakerA = players.get(0).getDisplayName();
-        String speakerB = players.get(Math.min(1, players.size() - 1)).getDisplayName();
+        String speakerA = players.get(0).getDisplayName() + " ";
+        String speakerB = players.get(Math.min(1, players.size() - 1)).getDisplayName() + " ";
         int totalTime = 0;
-        double wordsPerSecond = 1.6;
+        double wordsPerSecond = 2.5;
         for (int i = 0; i < dialogue.size(); i++) {
             int words = dialogue.get(i).split(" ").length;
             long delay = (long) (words / wordsPerSecond) * 20;
@@ -69,15 +62,13 @@ public class Dialogue {
             }.runTaskLater(Expunge.instance, totalTime);
             if (i < dialogue.size()) totalTime += delay;
         }
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                actionAtEnd.run(players.get(0));
-            }
-        }.runTaskLater(Expunge.instance, totalTime + 1);
-    }
-
-    public void displayDialogue() {
-        displayDialogue(new ArrayList<>(Bukkit.getOnlinePlayers()));
+        if (actionAtEnd != null) {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    actionAtEnd.run(players.get(0));
+                }
+            }.runTaskLater(Expunge.instance, totalTime + 1);
+        }
     }
 }

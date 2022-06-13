@@ -19,8 +19,6 @@ public record Scene(Location startLocation, BoundingBox endRegion,
                     ArrayList<Location> weaponLocations,
                     ArrayList<Location> ammoLocations,
                     Location buttonLocation,
-                    Dialogue dialogueSolo,
-                    Dialogue dialogueCoOp,
                     Action runAtStart,
                     Action runAtEnd,
                     Listener crescendoEvent,
@@ -83,16 +81,6 @@ public record Scene(Location startLocation, BoundingBox endRegion,
     @Override
     public Location buttonLocation() {
         return buttonLocation;
-    }
-
-    @Override
-    public Dialogue dialogueSolo() {
-        return dialogueSolo;
-    }
-
-    @Override
-    public Dialogue dialogueCoOp() {
-        return dialogueCoOp;
     }
 
     @Override

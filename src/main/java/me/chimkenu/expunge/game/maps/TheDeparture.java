@@ -2,7 +2,9 @@ package me.chimkenu.expunge.game.maps;
 
 import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.enums.Weapons;
+import me.chimkenu.expunge.game.Dialogue;
 import me.chimkenu.expunge.game.Director;
+import me.chimkenu.expunge.guns.utilities.healing.Defibrillator;
 import me.chimkenu.expunge.guns.weapons.melees.*;
 import me.chimkenu.expunge.guns.utilities.healing.Adrenaline;
 import me.chimkenu.expunge.guns.utilities.healing.Medkit;
@@ -15,6 +17,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
@@ -23,7 +26,394 @@ import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class TheDeparture extends Map {
-    private static ArrayList<Scene> allScenes() {
+    public enum DepartureDialogue {
+        OFFICE_OPENING {
+            @Override
+            public Dialogue getA() {
+                return new Dialogue(null,
+                        "A » Hey, wake up!",
+                        "B » What’s going on? What time is it?",
+                        "A » It’s lunch… And it looks like we’re the main course.",
+                        "B » We need to get to the elevator…",
+                        "A » There’s weapons outside we can use."
+                );
+            }
+
+            @Override
+            public Dialogue getB() {
+                return new Dialogue(null,
+                        "A » What’s happening?",
+                        "B » Looks like Halloween came early.",
+                        "A » I don’t think those are costumes…",
+                        "B » Either way, let’s get to the elevator and get out of here.",
+                        "A » I can see weapons outside we can use."
+                );
+            }
+
+            @Override
+            public Dialogue getSolo() {
+                return new Dialogue(null,
+                        "A » The office is infested with the living dead… Well, that’s not new.",
+                        "A » I need to get to the elevator. I think there’s weapons and gear right outside the door."
+                );
+            }
+        },
+        OFFICE_ELEVATOR {
+            @Override
+            public Dialogue getA() {
+                return new Dialogue(null,
+                        "A » We’re stopping.",
+                        "B » The elevator’s shutting down.",
+                        "A » Come on, we gotta find the stairs."
+                );
+            }
+
+            @Override
+            public Dialogue getB() {
+                return new Dialogue(null,
+                        "A » Uh-oh.",
+                        "B » There goes the power.",
+                        "A » Let’s try the fire exit."
+                );
+            }
+
+            @Override
+            public Dialogue getSolo() {
+                return new Dialogue(null,
+                        "A » The power’s down… I need to get to the fire exit."
+                );
+            }
+        },
+        OFFICE_JUMP {
+            @Override
+            public Dialogue getA() {
+                return new Dialogue(null, "A » We gotta jump!");
+            }
+
+            @Override
+            public Dialogue getB() {
+                return new Dialogue(null, "B » Quick, through the gaping hole in the wall!");
+            }
+
+            @Override
+            public Dialogue getSolo() {
+                return new Dialogue(null, "A » The only way forward is down!");
+            }
+        },
+        OFFICE_VENTS {
+            @Override
+            public Dialogue getA() {
+                return new Dialogue(null,
+                        "A » Into the vents!",
+                                "B » Careful, we don’t know what’s in there."
+                );
+            }
+
+            @Override
+            public Dialogue getB() {
+                return new Dialogue(null,
+                        "A » The exit’s blocked by this rubble!",
+                                "B » Look, the vent! Go now!"
+                );
+            }
+
+            @Override
+            public Dialogue getSolo() {
+                return new Dialogue(null, "A » The only way around this mess is the vents.");
+            }
+        },
+        OFFICE_SAFE_ROOM {
+            @Override
+            public Dialogue getA() {
+                return new Dialogue(null,
+                        "A » I think I see another room!",
+                                "B » Give me a second, I’m covered in zombie guts!"
+                );
+            }
+
+            @Override
+            public Dialogue getB() {
+                return new Dialogue(null,
+                        "A » Quick, I see another room!",
+                                "B » I never want to do this again."
+                );
+            }
+
+            @Override
+            public Dialogue getSolo() {
+                return new Dialogue(null,
+                        "A » I need to hurry up and get into that other room!"
+                );
+            }
+        },
+        OFFICE_RADIO {
+            final Dialogue dialogue = new Dialogue(null, "&7[Radio] » Attention all citizens, there will be an evacuation site situated at the Takahashi Football Stadium. Avoid contact with all infected individuals and head towards the Takahashi Football Stadium and wait for rescue.");
+            @Override
+            public Dialogue getA() {
+                return dialogue;
+            }
+
+            @Override
+            public Dialogue getB() {
+                return dialogue;
+            }
+
+            @Override
+            public Dialogue getSolo() {
+                return dialogue;
+            }
+        },
+        STREETS_OPENING {
+            @Override
+            public Dialogue getA() {
+                return new Dialogue(null,
+                        "A » Where do we go now?",
+                                "B » We can get to the football stadium if we go towards the subway.",
+                                "A » For now, let’s just head further down the road."
+                );
+            }
+
+            @Override
+            public Dialogue getB() {
+                return new Dialogue(null,
+                        "A » How do we get to the football stadium?",
+                                "B » We need to get to the subway first.",
+                                "A » Alright, let’s go further down the road."
+                );
+            }
+
+            @Override
+            public Dialogue getSolo() {
+                return new Dialogue(null, "A » I can get closer to the football stadium if I head towards the subway further down the road.");
+            }
+        },
+        STREETS_APARTMENTS {
+            @Override
+            public Dialogue getA() {
+                return new Dialogue(null,
+                        "A » There’s a radio tower in our way.",
+                                "B » We should try getting around it through the Apartment building!"
+                );
+            }
+
+            @Override
+            public Dialogue getB() {
+                return new Dialogue(null,
+                        "A » The road’s blocked!",
+                                "B » Let’s try getting to the other side through the Apartment Building."
+                );
+            }
+
+            @Override
+            public Dialogue getSolo() {
+                return new Dialogue(null, "A » My only option seems to be getting to the other side through the Apartment Building.");
+            }
+        },
+        STREETS_SHED {
+            @Override
+            public Dialogue getA() {
+                return new Dialogue(null,
+                        "A » Down the fire escape!",
+                                "B » Head into the shed!"
+                );
+            }
+
+            @Override
+            public Dialogue getB() {
+                return new Dialogue(null,
+                        "A » Climb down the ladder!",
+                                "B » Let’s go into the shed!"
+                );
+            }
+
+            @Override
+            public Dialogue getSolo() {
+                return new Dialogue(null, "A » I need to get down and into the shed.");
+            }
+        },
+        ALLEYS_OPENING {
+            @Override
+            public Dialogue getA() {
+                return new Dialogue(null,
+                        "A » Seems like the road splits here.",
+                                "B » Stick to a path, maybe we’ll see the other side of the main road."
+                );
+            }
+
+            @Override
+            public Dialogue getB() {
+                return new Dialogue(null,
+                        "A » The road forks here, which way do we go?",
+                                "B » Follow a path, and I think we’ll end back up on the main road."
+                );
+            }
+
+            @Override
+            public Dialogue getSolo() {
+                return new Dialogue(null, "A » If I get through here, maybe I’ll end up on the other side of the main road.");
+            }
+        },
+        ALLEYS_PURPLE_CAR {
+            final Dialogue dialogue = new Dialogue(null, "A » How’d this car get in here?");
+            @Override
+            public Dialogue getA() {
+                return dialogue;
+            }
+
+            @Override
+            public Dialogue getB() {
+                return dialogue;
+            }
+
+            @Override
+            public Dialogue getSolo() {
+                return dialogue;
+            }
+        },
+        ALLEYS_SAFE_HOUSE {
+            @Override
+            public Dialogue getA() {
+                return new Dialogue(null,
+                        "A » Other survivors have definitely been here before us.",
+                                "B » There’s another safe room here!"
+                );
+            }
+
+            @Override
+            public Dialogue getB() {
+                return new Dialogue(null,
+                        "A » Look, people have been here!",
+                                "B » Quickly, into the safe room!"
+                );
+            }
+
+            @Override
+            public Dialogue getSolo() {
+                return new Dialogue(null, "A » Gotta get into that safe room!");
+            }
+        },
+        SUBWAY_OPENING {
+            @Override
+            public Dialogue getA() {
+                return new Dialogue(null,
+                        "A » We made it..!",
+                                "B » We’re not home free yet. Let’s enter the subway to get to the evacuation site.\n"
+                );
+            }
+
+            @Override
+            public Dialogue getB() {
+                return new Dialogue(null,
+                        "A » There’s the subway station!",
+                                "B » If we get across, we can get closer to the evacuation site.\n"
+                );
+            }
+
+            @Override
+            public Dialogue getSolo() {
+                return new Dialogue(null, "A » The subway station is across the street. I need to get through it to find the evacuation site.");
+            }
+        },
+        SUBWAY_MAP {
+            @Override
+            public Dialogue getA() {
+                return new Dialogue(null,
+                        "A » According to the map, we should take Station B, then head forwards until the road forks.",
+                                "A » From there, we head right.",
+                                "B » … This map is impossible to read."
+                );
+            }
+
+            @Override
+            public Dialogue getB() {
+                return new Dialogue(null,
+                        "A » Let’s see… Based on the map, we should take Station B, then keep going straight until the rails split.",
+                                "A » Then, we take the right side.",
+                                "B » Looking at this “map” makes my head spin."
+                );
+            }
+
+            @Override
+            public Dialogue getSolo() {
+                return new Dialogue(null, "A » Go to Station B, follow the railroad then head right when the road forks. Simple enough.");
+            }
+        },
+        SUBWAY_SAFE_ZONE {
+            @Override
+            public Dialogue getA() {
+                return new Dialogue(null, "A » Take cover in that passenger train!");
+            }
+
+            @Override
+            public Dialogue getB() {
+                return new Dialogue(null, "A » Everyone, into the passenger car!");
+            }
+
+            @Override
+            public Dialogue getSolo() {
+                return new Dialogue(null, "A: » I need to get into this passenger train!");
+            }
+        },
+        HIGHWAY_MANHOLE {
+            @Override
+            public Dialogue getA() {
+                return new Dialogue(null,
+                        "A » Oh great, the line’s blocked!",
+                                "B » Don’t panic, There’s a ladder over there."
+                );
+            }
+
+            @Override
+            public Dialogue getB() {
+                return new Dialogue(null,
+                        "A » The rest of the subway is blocked.",
+                                "B » Hey, there’s a ladder over there!"
+                );
+            }
+
+            @Override
+            public Dialogue getSolo() {
+                return new Dialogue(null, "A » The subway line is blocked… Maybe I can head up that ladder over there instead.");
+            }
+        },
+        HIGHWAY_OPENING {
+            @Override
+            public Dialogue getA() {
+                return new Dialogue(null,
+                        ""
+                );
+            }
+
+            @Override
+            public Dialogue getB() {
+                return new Dialogue(null,
+                        ""
+                );
+            }
+
+            @Override
+            public Dialogue getSolo() {
+                return new Dialogue(null, "");
+            }
+        };
+
+        public abstract Dialogue getA();
+        public abstract Dialogue getB();
+        public abstract Dialogue getSolo();
+    }
+
+    private static void playDialogue(DepartureDialogue dialogue) {
+        if (Expunge.playing.getKeys().size() > 1) {
+            if (Math.random() < 0.5)
+                dialogue.getA().displayDialogue(Expunge.playing.getKeys());
+            else
+                dialogue.getB().displayDialogue(Expunge.playing.getKeys());
+        }
+        else
+            dialogue.getSolo().displayDialogue(Expunge.playing.getKeys());
+    }
+
+    private static ArrayList<Scene> scenes() {
         ArrayList<Scene> scenes = new ArrayList<>();
         World world = Bukkit.getWorld("world");
         if (world == null) return scenes;
@@ -65,24 +455,26 @@ public class TheDeparture extends Map {
                 weaponLocations,
                 ammoLocations,
                 new Location(world, 929, 10, 909),
-                null,
-                null,
                 player -> {
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "/execute in minecraft:overworld run setblock 952 9 877 minecraft:birch_door[half=lower,facing=south,hinge=left,open=false] destroy");
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "/execute in minecraft:overworld run setblock 952 10 877 minecraft:birch_door[half=upper,facing=south,hinge=left,open=false] destroy");
-                    for (int i = 0; i < 4; i++) {
-                        Director.spawnUtility(world, new Location(world, 957, 10, 878.3), new Medkit());
-                    }
-                    ArrayList<Melee> meleeWeapons = new ArrayList<>();
-                    meleeWeapons.add(new FireAxe());
-                    meleeWeapons.add(new Crowbar());
-                    meleeWeapons.add(new Nightstick());
-                    Director.spawnWeapon(world, new Location(world, 949.5, 10, 878.5), meleeWeapons.get(ThreadLocalRandom.current().nextInt(0, meleeWeapons.size())), true);
-                },
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "/execute in minecraft:overworld run setblock 952 9 877 minecraft:birch_door[half=lower,facing=south,hinge=left,open=false] destroy");
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "/execute in minecraft:overworld run setblock 952 10 877 minecraft:birch_door[half=upper,facing=south,hinge=left,open=false] destroy");
+                        for (int i = 0; i < 4; i++) {
+                            Director.spawnUtility(world, new Location(world, 957, 10, 878.3), new Medkit());
+                        }
+                        ArrayList<Melee> meleeWeapons = new ArrayList<>();
+                        meleeWeapons.add(new FireAxe());
+                        meleeWeapons.add(new Crowbar());
+                        meleeWeapons.add(new Nightstick());
+                        Director.spawnWeapon(world, new Location(world, 949.5, 10, 878.5), meleeWeapons.get(ThreadLocalRandom.current().nextInt(0, meleeWeapons.size())), true);
+
+                        playDialogue(DepartureDialogue.OFFICE_OPENING);
+                    },
                 null,
                 null,
                 null
         ));
+
+
 
         // scene 1 - office
         pathRegions = new ArrayList<>();
@@ -117,6 +509,43 @@ public class TheDeparture extends Map {
         weaponLocations = new ArrayList<>();
         weaponLocations.add(new Location(world, 844.5, 43, 919.7));
         ammoLocations = new ArrayList<>();
+        ArrayList<Listener> happenings = new ArrayList<>();
+        happenings.add(new Listener() {
+            @EventHandler
+            public void officeJump(PlayerMoveEvent e) {
+                if (!Expunge.playing.getKeys().contains(e.getPlayer()))
+                    return;
+                BoundingBox box = new BoundingBox(849, 51, 915, 847, 56, 921);
+                if (!box.contains(e.getPlayer().getLocation().toVector()))
+                    return;
+                playDialogue(DepartureDialogue.OFFICE_JUMP);
+                HandlerList.unregisterAll(this);
+            }
+        });
+        happenings.add(new Listener() {
+            @EventHandler
+            public void officeVent(PlayerMoveEvent e) {
+                if (!Expunge.playing.getKeys().contains(e.getPlayer()))
+                    return;
+                BoundingBox box = new BoundingBox(837, 46, 904, 840, 41, 907);
+                if (!box.contains(e.getPlayer().getLocation().toVector()))
+                    return;
+                playDialogue(DepartureDialogue.OFFICE_VENTS);
+                HandlerList.unregisterAll(this);
+            }
+        });
+        happenings.add(new Listener() {
+            @EventHandler
+            public void officeSafeRoom(PlayerMoveEvent e) {
+                if (!Expunge.playing.getKeys().contains(e.getPlayer()))
+                    return;
+                BoundingBox box = new BoundingBox(874, 45, 924, 876, 47, 922);
+                if (!box.contains(e.getPlayer().getLocation().toVector()))
+                    return;
+                playDialogue(DepartureDialogue.OFFICE_SAFE_ROOM);
+                HandlerList.unregisterAll(this);
+            }
+        });
 
         scenes.add(new Scene(
                 new Location(world, 851, 77, 913),
@@ -129,14 +558,12 @@ public class TheDeparture extends Map {
                 weaponLocations,
                 ammoLocations,
                 new Location(world, 876, 44, 907),
-                null,
-                null,
                 player -> {
                     world.getBlockAt(new Location(world, 872, 43, 910)).setType(Material.BEEHIVE);
-                    world.getBlockAt(new Location(world, 1139, 43, 914)).setType(Material.AIR);
                     Director.spawnWeapon(world, new Location(world, 864.5, 54, 909.5), new FryingPan(), false);
+                    playDialogue(DepartureDialogue.OFFICE_ELEVATOR);
                 },
-                null,
+                player -> playDialogue(DepartureDialogue.OFFICE_RADIO),
                 new Listener() {
                     @EventHandler
                     public void onEnterVent(PlayerInteractEvent e) {
@@ -175,8 +602,10 @@ public class TheDeparture extends Map {
                         HandlerList.unregisterAll(this);
                     }
                 },
-                null
+                happenings
         ));
+
+
 
         // scene 2 - streets
         pathRegions = new ArrayList<>();
@@ -218,6 +647,44 @@ public class TheDeparture extends Map {
         weaponLocations = new ArrayList<>();
         weaponLocations.add(new Location(world, 1129.5, 58, 896.5));
         ammoLocations = new ArrayList<>();
+        happenings = new ArrayList<>();
+        happenings.add(new Listener() {
+            @EventHandler
+            public void streetsOpeningTrigger(PlayerMoveEvent e) {
+                if (!Expunge.playing.getKeys().contains(e.getPlayer()))
+                    return;
+                BoundingBox box = new BoundingBox(861, 42, 899, 851, 48, 903);
+                if (!box.contains(e.getPlayer().getLocation().toVector()))
+                    return;
+                playDialogue(DepartureDialogue.STREETS_OPENING);
+                HandlerList.unregisterAll(this);
+            }
+        });
+        happenings.add(new Listener() {
+            @EventHandler
+            public void streetsApartmentsTrigger(PlayerMoveEvent e) {
+                if (!Expunge.playing.getKeys().contains(e.getPlayer()))
+                    return;
+                BoundingBox box = new BoundingBox(1084, 40, 899, 1079, 57, 851);
+                if (!box.contains(e.getPlayer().getLocation().toVector()))
+                    return;
+                playDialogue(DepartureDialogue.STREETS_APARTMENTS);
+                HandlerList.unregisterAll(this);
+            }
+        });
+        happenings.add(new Listener() {
+            @EventHandler
+            public void streetsShedTrigger(PlayerMoveEvent e) {
+                if (!Expunge.playing.getKeys().contains(e.getPlayer()))
+                    return;
+                BoundingBox box = new BoundingBox(1138, 56, 896, 1140, 60, 906);
+                if (!box.contains(e.getPlayer().getLocation().toVector()))
+                    return;
+                playDialogue(DepartureDialogue.STREETS_SHED);
+                HandlerList.unregisterAll(this);
+            }
+        });
+
         scenes.add(new Scene(
                 new Location(world, 875.5, 43, 911.5),
                 new BoundingBox(1136, 42, 918, 1141, 47, 913),
@@ -229,12 +696,10 @@ public class TheDeparture extends Map {
                 weaponLocations,
                 ammoLocations,
                 new Location(world, 1137, 44, 916),
-                null,
-                null,
                 player -> {
                     world.getBlockAt(new Location(world, 872, 43, 910)).setType(Material.AIR);
-                    world.getBlockAt(new Location(world, 1139, 43, 918)).setType(Material.BEEHIVE);
                     world.getBlockAt(new Location(world, 1139, 43, 914)).setType(Material.AIR);
+                    world.getBlockAt(new Location(world, 1139, 43, 918)).setType(Material.BEEHIVE);
                     for (int i = 0; i < 4; i++) {
                         Director.spawnUtility(world, new Location(world, 877.5, 44, 910.5), new Medkit());
                     }
@@ -247,12 +712,12 @@ public class TheDeparture extends Map {
                     Director.spawnWeapon(world, new Location(world, 1135, 44, 910), Director.getRandomGun(Weapons.Tier.TIER1), false);
                     Director.spawnWeapon(world, new Location(world, 1135, 44, 907), Director.getRandomMelee(), false);
 
-                    Expunge.runningDirector.spawnAtRandomLocations(world, new BoundingBox(863, 41, 889, 1112, 41, 863), 30, false);
+                    Expunge.runningDirector.spawnAtRandomLocations(world, new BoundingBox(873, 41, 889, 932, 41, 863), 30, false);
                 },
                 null,
                 new Listener() {
                     @EventHandler
-                    public void onStepInApartmentBuilding(PlayerInteractEvent e) {
+                    public void crescendoEventApartments(PlayerInteractEvent e) {
                         Block block = e.getClickedBlock();
                         if (!Expunge.playing.getKeys().contains(e.getPlayer())) {
                             return;
@@ -292,8 +757,10 @@ public class TheDeparture extends Map {
                         HandlerList.unregisterAll(this);
                     }
                 },
-                null
+                happenings
         ));
+
+
 
         // scene 3 - alleyway streets
         pathRegions = new ArrayList<>();
@@ -335,6 +802,43 @@ public class TheDeparture extends Map {
         weaponLocations.add(new Location(world, 1133.5, 43, 943.5));
         weaponLocations.add(new Location(world, 1137.5, 44, 993.5));
         ammoLocations = new ArrayList<>();
+        happenings = new ArrayList<>();
+        happenings.add(new Listener() {
+            @EventHandler
+            public void alleysOpening(PlayerMoveEvent e) {
+                if (!Expunge.playing.getKeys().contains(e.getPlayer()))
+                    return;
+                BoundingBox box = new BoundingBox(1157, 42, 933, 1148, 51, 929);
+                if (!box.contains(e.getPlayer().getLocation().toVector()))
+                    return;
+                playDialogue(DepartureDialogue.ALLEYS_OPENING);
+                HandlerList.unregisterAll(this);
+            }
+        });
+        happenings.add(new Listener() {
+            @EventHandler
+            public void alleysPurpleCar(PlayerMoveEvent e) {
+                if (!Expunge.playing.getKeys().contains(e.getPlayer()))
+                    return;
+                BoundingBox box = new BoundingBox(1147, 43, 935, 1142, 47, 942);
+                if (!box.contains(e.getPlayer().getLocation().toVector()))
+                    return;
+                playDialogue(DepartureDialogue.ALLEYS_PURPLE_CAR);
+                HandlerList.unregisterAll(this);
+            }
+        });
+        happenings.add(new Listener() {
+            @EventHandler
+            public void alleysSafeHouse(PlayerMoveEvent e) {
+                if (!Expunge.playing.getKeys().contains(e.getPlayer()))
+                    return;
+                BoundingBox box = new BoundingBox(1147, 42, 983, 1141, 56, 990);
+                if (!box.contains(e.getPlayer().getLocation().toVector()))
+                    return;
+                playDialogue(DepartureDialogue.ALLEYS_SAFE_HOUSE);
+                HandlerList.unregisterAll(this);
+            }
+        });
         scenes.add(new Scene(
                 new Location(world, 1139, 43, 916),
                 new BoundingBox(1128, 43, 979, 1118, 53, 1002),
@@ -346,12 +850,11 @@ public class TheDeparture extends Map {
                 weaponLocations,
                 ammoLocations,
                 new Location(world, 1124, 44, 987),
-                null,
-                null,
                 player -> {
-                    world.getBlockAt(new Location(world, 1139, 43, 918)).setType(Material.AIR);
                     world.getBlockAt(new Location(world, 1119, 43, 988)).setType(Material.BEEHIVE);
                     world.getBlockAt(new Location(world, 1139, 43, 914)).setType(Material.BEEHIVE);
+                    world.getBlockAt(new Location(world, 1139, 43, 918)).setType(Material.AIR);
+                    world.getBlockAt(new Location(world, 1127, 43, 986)).setType(Material.AIR);
 
                     Director.spawnUtility(world, new Location(world, 1140.7, 44, 917), new Pills());
                     Director.spawnUtility(world, new Location(world, 1140.7, 44, 915), new Adrenaline());
@@ -362,12 +865,144 @@ public class TheDeparture extends Map {
                 },
                 null,
                 null,
-                null
+                happenings
+        ));
+
+
+
+        // scene 4 - subway
+        pathRegions = new ArrayList<>();
+        pathRegions.add(new BoundingBox(1112, 41, 969, 1086, 41, 1019));
+        pathRegions.add(new BoundingBox(1068, 32, 1001, 1064, 32, 1008));
+        pathRegions.add(new BoundingBox(1064, 24, 1016, 1069, 42, 1020));
+        pathRegions.add(new BoundingBox(1078, 15, 1016, 1089, 15, 1030));
+        pathRegions.add(new BoundingBox(1089, 15, 1030, 1103, 15, 1016));
+        pathRegions.add(new BoundingBox(1090, 26, 1042, 1104, 26, 1049));
+        pathRegions.add(new BoundingBox(1087, 24, 1050, 1133, 24, 1056));
+        pathRegions.add(new BoundingBox(1133, 42, 1046, 1145, 24, 1070));
+        pathRegions.add(new BoundingBox(1145, 24, 1070, 1163, 24, 1046));
+        pathRegions.add(new BoundingBox(1163, 24, 1046, 1177, 24, 1072));
+        pathRegions.add(new BoundingBox(1179, 24, 1073, 1198, 24, 1054));
+        pathRegions.add(new BoundingBox(1182, 24, 1078, 1206, 24, 1101));
+        pathRegions.add(new BoundingBox(1202, 24, 1103, 1186, 24, 1127));
+        pathRegions.add(new BoundingBox(1183, 24, 1131, 1195, 24, 1143));
+        pathRegions.add(new BoundingBox(1181, 24, 1133, 1169, 24, 1151));
+        pathRegions.add(new BoundingBox(1165, 24, 1155, 1147, 24, 1161));
+        pathRegions.add(new BoundingBox(1144, 24, 1161, 1168, 24, 1179));
+        pathRegions.add(new BoundingBox(1154, 24, 1179, 1142, 24, 1196));
+        pathRegions.add(new BoundingBox(1141, 24, 1197, 1129, 24, 1208));
+        spawnLocations = new ArrayList<>();
+        spawnLocations.add(new Location(world, 1080.5, 43, 977));
+        spawnLocations.add(new Location(world, 1082.5, 43, 1017));
+        spawnLocations.add(new Location(world, 1093, 21, 1011.5));
+        spawnLocations.add(new Location(world, 1085.5, 25, 1053.5));
+        spawnLocations.add(new Location(world, 1107.5, 25, 1060.5));
+        spawnLocations.add(new Location(world, 1100.5, 21, 1077));
+        spawnLocations.add(new Location(world, 1107.5, 25, 1066.5));
+        spawnLocations.add(new Location(world, 1131.5, 25, 1060.5));
+        spawnLocations.add(new Location(world, 1133.5, 25, 1047.5));
+        spawnLocations.add(new Location(world, 1133.5, 25, 1069.5));
+        spawnLocations.add(new Location(world, 1161.5, 26, 1076.5));
+        spawnLocations.add(new Location(world, 1179.5, 26, 1087.5));
+        spawnLocations.add(new Location(world, 1137.5, 26, 1063.5));
+        spawnLocations.add(new Location(world, 1183.5, 26, 1052.5));
+        spawnLocations.add(new Location(world, 1177.5, 25, 1072.5));
+        spawnLocations.add(new Location(world, 1205.5, 25, 1101.5));
+        spawnLocations.add(new Location(world, 1193.5, 26, 1089.5));
+        spawnLocations.add(new Location(world, 1191.5, 25, 1101.5));
+        spawnLocations.add(new Location(world, 1183.5, 26, 1141.5));
+        spawnLocations.add(new Location(world, 1156.5, 25, 1162.5));
+        spawnLocations.add(new Location(world, 1145.5, 25, 1161.5));
+        spawnLocations.add(new Location(world, 1167.5, 25, 1179.5));
+        spawnLocations.add(new Location(world, 1151.5, 26, 1164.5));
+        spawnLocations.add(new Location(world, 1151.5, 26, 1176.5));
+        spawnLocations.add(new Location(world, 1127.5, 25, 1208.5));
+        spawnLocations.add(new Location(world, 1127.5, 25, 1202.5));
+        bossLocations = new ArrayList<>();
+        bossLocations.add(new Location(world, 1189.5, 25, 1063.5));
+        itemLocations = new ArrayList<>();
+        itemLocations.add(new Location(world, 1191.5, 27, 1051.2));
+        itemLocations.add(new Location(world, 1090.3, 28, 1074));
+        itemLocations.add(new Location(world, 1165.5, 25, 1195.5));
+        weaponLocations = new ArrayList<>();
+        weaponLocations.add(new Location(world, 1155.5, 25, 1172));
+        weaponLocations.add(new Location(world, 1195, 27, 1094.5));
+        weaponLocations.add(new Location(world, 1187, 27, 1053.7));
+        weaponLocations.add(new Location(world, 1104.7, 28, 1075));
+        ammoLocations = new ArrayList<>();
+        ammoLocations.add(new Location(world, 1122.5, 50, 998.5));
+        happenings = new ArrayList<>();
+        happenings.add(new Listener() {
+            @EventHandler
+            public void subwayOpening(PlayerMoveEvent e) {
+                if (!Expunge.playing.getKeys().contains(e.getPlayer()))
+                    return;
+                BoundingBox box = new BoundingBox(1118, 42, 990, 1113, 46, 986);
+                if (!box.contains(e.getPlayer().getLocation().toVector()))
+                    return;
+                playDialogue(DepartureDialogue.SUBWAY_OPENING);
+                HandlerList.unregisterAll(this);
+            }
+        });
+        happenings.add(new Listener() {
+            @EventHandler
+            public void subwayMap(PlayerMoveEvent e) {
+                if (!Expunge.playing.getKeys().contains(e.getPlayer()))
+                    return;
+                BoundingBox box = new BoundingBox(1147, 43, 935, 1142, 47, 942);
+                if (!box.contains(e.getPlayer().getLocation().toVector()))
+                    return;
+                playDialogue(DepartureDialogue.SUBWAY_MAP);
+                HandlerList.unregisterAll(this);
+            }
+        });
+        happenings.add(new Listener() {
+            @EventHandler
+            public void subwaySafeZone(PlayerMoveEvent e) {
+                if (!Expunge.playing.getKeys().contains(e.getPlayer()))
+                    return;
+                BoundingBox box = new BoundingBox(1129, 24, 1201, 1151, 31, 1197);
+                if (!box.contains(e.getPlayer().getLocation().toVector()))
+                    return;
+                playDialogue(DepartureDialogue.SUBWAY_SAFE_ZONE);
+                HandlerList.unregisterAll(this);
+            }
+        });
+        scenes.add(new Scene(
+                new Location(world, 1124.5, 43, 986.5),
+                new BoundingBox(1128, 25, 1203, 1116, 30, 1207),
+                pathRegions,
+                spawnLocations,
+                bossLocations,
+                itemLocations,
+                2,
+                weaponLocations,
+                ammoLocations,
+                new Location(world, 1122, 27, 1204),
+                player -> {
+                    world.getBlockAt(new Location(world, 1127, 43, 986)).setType(Material.BEEHIVE);
+                    world.getBlockAt(new Location(world, 1119, 43, 988)).setType(Material.AIR);
+                    world.getBlockAt(new Location(world, 1117, 26, 1205)).setType(Material.BEEHIVE);
+                    world.getBlockAt(new Location(world, 1127, 26, 1205)).setType(Material.AIR);
+                    for (int i = 0; i < 4; i++) {
+                        Director.spawnUtility(world, new Location(world, 1123.5, 44, 996.5), new Medkit());
+                    }
+                    Director.spawnWeapon(world, new Location(world, 1119.3, 44, 983), Director.getRandomGun(Weapons.Tier.TIER2), true);
+                    Director.spawnWeapon(world, new Location(world, 1122.7, 44, 981), Director.getRandomGun(Weapons.Tier.TIER2), true);
+                    Director.spawnWeapon(world, new Location(world, 1119.3, 44.5, 994.5), Director.getRandomMelee(), false);
+                    Director.spawnUtility(world, new Location(world, 1121, 50.2, 984), new Pills());
+                    Director.spawnUtility(world, new Location(world, 1126, 50.2, 983), new Adrenaline());
+
+                    Expunge.runningDirector.spawnAtRandomLocations(world, new BoundingBox(1112, 41, 994, 1086, 41, 1011), 45, false);
+                },
+                null,
+                null,
+                happenings
         ));
         return scenes;
     }
 
     public TheDeparture() {
-        super("The Departure", allScenes(), Bukkit.getWorld("world"));
+        super("The Departure", scenes(), Bukkit.getWorld("world"));
     }
 }

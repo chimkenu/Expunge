@@ -154,7 +154,7 @@ public final class Expunge extends JavaPlugin {
     public static void startScene(Scene scene) {
         isSpawningEnabled = true;
         for (Player p : spectators) {
-            if (!(p.getGameMode() == GameMode.CREATIVE)) {
+            if (p.getGameMode() != GameMode.CREATIVE && !Tutorial.inTutorial.contains(p)) {
                 p.leaveVehicle();
                 p.teleport(scene.startLocation());
                 p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 3, 4, false, false, false));
@@ -198,8 +198,6 @@ public final class Expunge extends JavaPlugin {
 
         // run dialogue && other stuff
         if (scene.runAtStart() != null) scene.runAtStart().run(null);
-        if (scene.dialogueSolo() != null && playing.getKeys().size() == 1) scene.dialogueSolo().displayDialogue(playing.getKeys());
-        else if (scene.dialogueCoOp() != null && playing.getKeys().size() > 1) scene.dialogueCoOp().displayDialogue(playing.getKeys());
     }
 
     public static void endScene(Scene scene) {
