@@ -353,7 +353,7 @@ public class Director extends BukkitRunnable implements Listener {
                 progressAverage += getPlayerProgress(p);
             }
             progressAverage = progressAverage / (Expunge.playing.getKeys().size());
-            return progressAverage - getPlayerProgress(player);
+            return getPlayerProgress(player) - progressAverage;
         }
         return 0;
     }
