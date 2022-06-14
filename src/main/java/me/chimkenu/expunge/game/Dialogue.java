@@ -2,22 +2,22 @@ package me.chimkenu.expunge.game;
 
 import me.chimkenu.expunge.Action;
 import me.chimkenu.expunge.Expunge;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Dialogue {
-    private final ArrayList<String> dialogue;
-    private final ArrayList<String> speakers;
+    private final List<String> dialogue;
+    private final List<String> speakers;
     private final Action actionAtEnd;
 
     public Dialogue(Action actionAtEnd, String... strings) {
-        ArrayList<String> dialogue = new ArrayList<>();
-        ArrayList<String> speakers = new ArrayList<>();
+        List<String> dialogue = new ArrayList<>();
+        List<String> speakers = new ArrayList<>();
         for (String s : strings) {
             String[] split = s.split("»", 2);
             if (split.length < 2) throw new IllegalArgumentException("string \"" + s + "\" does not contain the divider '»' to indicate a speaker and the dialogue.");
@@ -29,7 +29,7 @@ public class Dialogue {
         this.actionAtEnd = actionAtEnd;
     }
 
-    public void displayDialogue(ArrayList<Player> players) {
+    public void displayDialogue(List<Player> players) {
         if (players.size() < 1) return; // no players to show dialogue to
         if (players.size() > 3) {
             for (int i = players.size() - 1; i > 0; i--) {
