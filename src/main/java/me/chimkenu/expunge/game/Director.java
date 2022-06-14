@@ -169,6 +169,7 @@ public class Director extends BukkitRunnable implements Listener {
     public static Melee getRandomMelee() {
         ArrayList<Weapons.Melees> melees = new ArrayList<>(List.of(Weapons.Melees.values()));
         melees.remove(Weapons.Melees.CHAINSAW);
+        melees.remove(Weapons.Melees.MR_COOKIE);
         return melees.get(ThreadLocalRandom.current().nextInt(0, melees.size())).getMelee();
     }
 
@@ -202,26 +203,26 @@ public class Director extends BukkitRunnable implements Listener {
         gameTime++;
         sceneTime++;
 
-        if (Expunge.isSpawningEnabled && !chillOut) {
+        if (Expunge.isSpawningEnabled) {
             // spawning based on difficulty
-            if (activeMobs.size() < (Expunge.difficulty + 1) * 15) {
+            if (activeMobs.size() < (Expunge.difficulty + 1) * 25) {
                 if (Expunge.difficulty < 1 && (sceneTime % (20 * 10)) == 0)
                     spawnAdditionalMob(Expunge.currentMap, Expunge.currentSceneIndex, Zombie.class);
-                else if (Expunge.difficulty == 1 && (sceneTime % (20 * 5)) == 0)
+                else if (Expunge.difficulty == 1 && (sceneTime % (20 * 7)) == 0)
                     spawnAdditionalMob(Expunge.currentMap, Expunge.currentSceneIndex, Zombie.class);
-                else if ((sceneTime % (20 * 15)) == 0)
+                else if ((sceneTime % (20 * 5)) == 0)
                     spawnAdditionalMob(Expunge.currentMap, Expunge.currentSceneIndex, Zombie.class);
+            }
 
-                // spawn additional mobs if number of mobs are too low
-                if (activeMobs.size() < 10 && sceneTime > 30 * 10) {
-                    chillOut = true;
-                    timeSinceLastHorde = sceneTime;
-                    for (int i = 0; i < (20 + (Expunge.playing.getKeys().size() * 5)); i++) {
-                        spawnAdditionalMob(Expunge.currentMap, Expunge.currentSceneIndex, Zombie.class);
-                    }
+            // spawn additional mobs if number of mobs are too low
+            if (!chillOut && activeMobs.size() < 10 && sceneTime > 20 * 20) {
+                chillOut = true;
+                timeSinceLastHorde = sceneTime;
+                for (int i = 0; i < (20 + (Expunge.playing.getKeys().size() * 5)); i++) {
+                    spawnAdditionalMob(Expunge.currentMap, Expunge.currentSceneIndex, Zombie.class);
                 }
             }
-        } else if (chillOut && activeMobs.size() <= 5 && sceneTime - timeSinceLastHorde > 20 * 30) chillOut = false;
+        } else if (chillOut && sceneTime - timeSinceLastHorde > 20 * 30) chillOut = false;
 
         // look through every mob if its alive && look at its distance from the nearest player
         if ((sceneTime % (20 * 5)) == 0) {
