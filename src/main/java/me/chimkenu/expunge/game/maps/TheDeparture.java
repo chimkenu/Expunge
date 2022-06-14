@@ -4,7 +4,6 @@ import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.enums.Weapons;
 import me.chimkenu.expunge.game.Dialogue;
 import me.chimkenu.expunge.game.Director;
-import me.chimkenu.expunge.guns.utilities.healing.Defibrillator;
 import me.chimkenu.expunge.guns.weapons.melees.*;
 import me.chimkenu.expunge.guns.utilities.healing.Adrenaline;
 import me.chimkenu.expunge.guns.utilities.healing.Medkit;
@@ -23,6 +22,7 @@ import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class TheDeparture extends Map {
@@ -253,7 +253,7 @@ public class TheDeparture extends Map {
                 return new Dialogue(null, "A » If I get through here, maybe I’ll end up on the other side of the main road.");
             }
         },
-        ALLEYS_PURPLE_CAR {
+        PURPLE_CAR {
             final Dialogue dialogue = new Dialogue(null, "A » How’d this car get in here?");
             @Override
             public Dialogue getA() {
@@ -297,7 +297,7 @@ public class TheDeparture extends Map {
             public Dialogue getA() {
                 return new Dialogue(null,
                         "A » We made it..!",
-                                "B » We’re not home free yet. Let’s enter the subway to get to the evacuation site.\n"
+                                "B » We’re not home free yet. Let’s enter the subway to get to the evacuation site."
                 );
             }
 
@@ -305,13 +305,37 @@ public class TheDeparture extends Map {
             public Dialogue getB() {
                 return new Dialogue(null,
                         "A » There’s the subway station!",
-                                "B » If we get across, we can get closer to the evacuation site.\n"
+                                "B » If we get across, we can get closer to the evacuation site."
                 );
             }
 
             @Override
             public Dialogue getSolo() {
                 return new Dialogue(null, "A » The subway station is across the street. I need to get through it to find the evacuation site.");
+            }
+        },
+        SUBWAY_MR_COOKIE {
+            @Override
+            public Dialogue getA() {
+                return new Dialogue(null,
+                        "A » Hold on, I’ve got a quarter.",
+                                "A » I’m gonna name you “Mr. Cookie”.",
+                                "B » That’s one stale biscuit."
+                );
+            }
+
+            @Override
+            public Dialogue getB() {
+                return new Dialogue(null,
+                        "A » I’ll name you “Mr. Cookie”.",
+                                "B. » You’re not going to eat that..?",
+                                "A » It’s too tough, it’d probably shatter my teeth."
+                );
+            }
+
+            @Override
+            public Dialogue getSolo() {
+                return new Dialogue(null, "A » i will fuck this cookie");
             }
         },
         SUBWAY_MAP {
@@ -351,7 +375,7 @@ public class TheDeparture extends Map {
 
             @Override
             public Dialogue getSolo() {
-                return new Dialogue(null, "A: » I need to get into this passenger train!");
+                return new Dialogue(null, "A » I need to get into this passenger train!");
             }
         },
         HIGHWAY_MANHOLE {
@@ -762,7 +786,7 @@ public class TheDeparture extends Map {
 
 
 
-        // scene 3 - alleyway streets
+        // scene 3 - alleys
         pathRegions = new ArrayList<>();
         pathRegions.add(new BoundingBox(1143, 42, 916, 1156, 42, 923));
         pathRegions.add(new BoundingBox(1151, 42, 922, 1155, 42, 938));
@@ -823,7 +847,7 @@ public class TheDeparture extends Map {
                 BoundingBox box = new BoundingBox(1147, 43, 935, 1142, 47, 942);
                 if (!box.contains(e.getPlayer().getLocation().toVector()))
                     return;
-                playDialogue(DepartureDialogue.ALLEYS_PURPLE_CAR);
+                DepartureDialogue.PURPLE_CAR.getSolo().displayDialogue(List.of(e.getPlayer()));
                 HandlerList.unregisterAll(this);
             }
         });
@@ -861,7 +885,8 @@ public class TheDeparture extends Map {
                     Director.spawnWeapon(world, new Location(world, 1138, 44, 914.3), Director.getRandomGun(Weapons.Tier.TIER1), true);
                     Director.spawnWeapon(world, new Location(world, 1138, 44, 917.7), Director.getRandomMelee(), false);
 
-                    Expunge.runningDirector.spawnAtRandomLocations(world, new BoundingBox(1140, 42, 973, 1175, 42, 970), 20, false);
+                    Expunge.runningDirector.spawnAtRandomLocations(world, new BoundingBox(1174, 42, 945, 1124, 42, 977), 30, false);
+                    Expunge.runningDirector.spawnAtRandomLocations(world, new BoundingBox(1157, 42, 973, 1129, 42, 989), 20, false);
                 },
                 null,
                 null,
@@ -946,10 +971,49 @@ public class TheDeparture extends Map {
         });
         happenings.add(new Listener() {
             @EventHandler
+            public void subwayPurpleCar(PlayerMoveEvent e) {
+                if (!Expunge.playing.getKeys().contains(e.getPlayer()))
+                    return;
+                BoundingBox box = new BoundingBox(1074, 19, 1025, 1069, 29, 1030);
+                if (!box.contains(e.getPlayer().getLocation().toVector()))
+                    return;
+                DepartureDialogue.PURPLE_CAR.getSolo().displayDialogue(List.of(e.getPlayer()));
+                HandlerList.unregisterAll(this);
+            }
+        });
+        happenings.add(new Listener() {
+            @EventHandler
+            public void subwaySpawnZombies(PlayerMoveEvent e) {
+                if (!Expunge.playing.getKeys().contains(e.getPlayer()))
+                    return;
+                BoundingBox box = new BoundingBox(1069, 32, 1008, 1064, 38, 1001);
+                if (!box.contains(e.getPlayer().getLocation().toVector()))
+                    return;
+                Expunge.runningDirector.spawnAtRandomLocations(world, new BoundingBox(1103, 15, 1030, 1078, 15, 1016), 30, false);
+                Expunge.runningDirector.spawnAtRandomLocations(world, new BoundingBox(1104, 26, 1042, 1090, 26, 1048), 15, false);
+                HandlerList.unregisterAll(this);
+            }
+        });
+        happenings.add(new Listener() {
+            @EventHandler
+            public void subwayMrCookie(PlayerInteractEvent e) {
+                if (!Expunge.playing.getKeys().contains(e.getPlayer()))
+                    return;
+                if (e.getAction().equals(Action.RIGHT_CLICK_BLOCK) && e.getClickedBlock() != null && e.getClickedBlock().getType().toString().contains("_BUTTON")) {
+                    if (!e.getClickedBlock().getLocation().toVector().equals(new Vector(1085, 16, 1017)))
+                        return;
+                    Director.spawnWeapon(world, new Location(world, 1084.5, 16.3, 1017.5), new MrCookie(), false);
+                    playDialogue(DepartureDialogue.SUBWAY_MR_COOKIE);
+                    HandlerList.unregisterAll(this);
+                }
+            }
+        });
+        happenings.add(new Listener() {
+            @EventHandler
             public void subwayMap(PlayerMoveEvent e) {
                 if (!Expunge.playing.getKeys().contains(e.getPlayer()))
                     return;
-                BoundingBox box = new BoundingBox(1147, 43, 935, 1142, 47, 942);
+                BoundingBox box = new BoundingBox(1091, 14, 1031, 1104, 23, 1015);
                 if (!box.contains(e.getPlayer().getLocation().toVector()))
                     return;
                 playDialogue(DepartureDialogue.SUBWAY_MAP);
