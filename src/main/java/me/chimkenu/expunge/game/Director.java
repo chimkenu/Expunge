@@ -9,6 +9,7 @@ import me.chimkenu.expunge.game.maps.Map;
 import me.chimkenu.expunge.game.maps.Scene;
 import me.chimkenu.expunge.guns.ShootEvent;
 import me.chimkenu.expunge.guns.utilities.Utility;
+import me.chimkenu.expunge.guns.weapons.Weapon;
 import me.chimkenu.expunge.guns.weapons.guns.Gun;
 import me.chimkenu.expunge.guns.weapons.melees.Melee;
 import org.bukkit.Bukkit;
@@ -125,13 +126,14 @@ public class Director extends BukkitRunnable implements Listener {
         }
     }
 
-    public static void spawnWeapon(World world, Location loc, Gun gun, boolean isInvulnerable) {
-        Item item = world.dropItem(loc, gun.getWeapon());
+    public static void spawnWeapon(World world, Location loc, Weapon weapon, boolean isInvulnerable) {
+        Item item = world.dropItem(loc, weapon.getWeapon());
         if (isInvulnerable) {
             ItemMeta meta = item.getItemStack().getItemMeta();
             if (meta != null && meta.getLore() != null) {
                 meta.getLore().add("invulnerable");
             }
+            item.getItemStack().setItemMeta(meta);
         }
         item.addScoreboardTag("ITEM");
         item.setInvulnerable(isInvulnerable);
@@ -143,12 +145,6 @@ public class Director extends BukkitRunnable implements Listener {
         if (weaponLocations.size() < 1) return;
         int index = weaponLocations.size() == 1 ? 0 : ThreadLocalRandom.current().nextInt(0, weaponLocations.size());
         spawnWeapon(map.getWorld(), weaponLocations.get(index), gun, false);
-    }
-
-    public static void spawnWeapon(World world, Location loc, Melee melee, boolean isInvulnerable) {
-        Item item = world.dropItem(loc, melee.getWeapon());
-        item.addScoreboardTag("ITEM");
-        item.setInvulnerable(isInvulnerable);
     }
 
     private void spawnMeleeAtRandom(Map map, int sceneIndex, Melee melee) {
