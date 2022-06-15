@@ -28,7 +28,7 @@ public class StartGame implements CommandExecutor {
             sender.sendMessage(ChatColor.RED + "There's a game active. Consider doing " + ChatColor.GRAY + "/bye" + ChatColor.RED + " first then executing this command again.");
             return true;
         }
-        Bukkit.broadcastMessage(ChatColor.YELLOW + "Starting game...");
+        Bukkit.broadcastMessage(ChatColor.RED + player.getDisplayName() + ChatColor.YELLOW + " started a game.");
         Expunge.setPlaying(player);
         Expunge.startGame();
         return true;
