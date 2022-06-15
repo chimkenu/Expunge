@@ -1,7 +1,7 @@
 package me.chimkenu.expunge.guns.utilities.healing;
 
 import me.chimkenu.expunge.Expunge;
-import me.chimkenu.expunge.guns.utilities.healing.Healing;
+import me.chimkenu.expunge.enums.Slot;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Material;
@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 
 public class Medkit extends Healing {
     public Medkit() {
-        super(20, Material.BRICK, "&cMedkit", false);
+        super(20, Material.BRICK, "&cMedkit", Slot.QUATERNARY,false);
     }
 
     @Override

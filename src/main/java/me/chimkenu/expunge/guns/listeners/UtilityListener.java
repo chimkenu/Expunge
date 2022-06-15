@@ -1,10 +1,11 @@
 package me.chimkenu.expunge.guns.listeners;
 
 import me.chimkenu.expunge.Utils;
+import me.chimkenu.expunge.guns.utilities.Utility;
 import me.chimkenu.expunge.guns.utilities.healing.Healing;
 import me.chimkenu.expunge.guns.utilities.throwable.Throwable;
-import me.chimkenu.expunge.guns.utilities.Utility;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;

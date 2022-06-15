@@ -1,32 +1,27 @@
 package me.chimkenu.expunge.guns.weapons;
 
+import me.chimkenu.expunge.enums.Slot;
+import me.chimkenu.expunge.enums.Tier;
+import me.chimkenu.expunge.guns.GameItem;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-public abstract class Weapon {
+public abstract class Weapon extends GameItem {
     private final double damage;
     private final int range;
-    private final int cooldown;
     private final int entitiesToHit;
+    private final Tier tier;
 
-    private final String name;
-    private final Material material;
-
-    public Weapon(double damage, int range, int cooldown, int entitiesToHit, String name, Material material) {
+    public Weapon(double damage, int range, int cooldown, int entitiesToHit, String name, Material material, Tier tier, Slot slot) {
+        super(cooldown, material, name, slot);
         this.damage = damage;
         this.range = range;
-        this.cooldown = cooldown;
         this.entitiesToHit = entitiesToHit;
-        this.name = name;
-        this.material = material;
+        this.tier = tier;
     }
 
     public double getDamage() {
         return damage;
-    }
-
-    public int getCooldown() {
-        return cooldown;
     }
 
     public int getEntitiesToHit() {
@@ -37,12 +32,8 @@ public abstract class Weapon {
         return range;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public Material getMaterial() {
-        return material;
+    public Tier getTier() {
+        return tier;
     }
 
     public abstract ItemStack getWeapon();

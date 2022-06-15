@@ -1,6 +1,7 @@
 package me.chimkenu.expunge.guns.utilities.throwable;
 
 import me.chimkenu.expunge.Expunge;
+import me.chimkenu.expunge.enums.Slot;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -9,7 +10,7 @@ import org.bukkit.util.Vector;
 public class Molotov extends Throwable {
 
     public Molotov() {
-        super(20, Material.LANTERN, "&6Molotov", "THROWABLE_MOLOTOV");
+        super(20, Material.LANTERN, "&6Molotov", Slot.TERTIARY, "THROWABLE_MOLOTOV");
     }
 
     @Override

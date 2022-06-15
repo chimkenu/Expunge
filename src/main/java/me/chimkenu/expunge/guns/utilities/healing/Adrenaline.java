@@ -1,6 +1,6 @@
 package me.chimkenu.expunge.guns.utilities.healing;
 
-import me.chimkenu.expunge.guns.utilities.healing.Healing;
+import me.chimkenu.expunge.enums.Slot;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -8,7 +8,7 @@ import org.bukkit.potion.PotionEffectType;
 
 public class Adrenaline extends Healing {
     public Adrenaline() {
-        super(20, Material.TRIPWIRE_HOOK, "&eAdrenaline", false);
+        super(20, Material.TRIPWIRE_HOOK, "&eAdrenaline", Slot.QUINARY, false);
     }
 
     @Override

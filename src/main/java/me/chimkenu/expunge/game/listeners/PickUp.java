@@ -2,14 +2,18 @@ package me.chimkenu.expunge.game.listeners;
 
 import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.Utils;
-import me.chimkenu.expunge.enums.Utilities;
-import me.chimkenu.expunge.enums.Weapons;
+import me.chimkenu.expunge.guns.GameItem;
 import me.chimkenu.expunge.guns.listeners.Shoot;
-import me.chimkenu.expunge.guns.weapons.guns.Gun;
+import me.chimkenu.expunge.guns.utilities.Utility;
 import me.chimkenu.expunge.guns.utilities.healing.Healing;
+import me.chimkenu.expunge.guns.weapons.Weapon;
+import me.chimkenu.expunge.guns.weapons.guns.Gun;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.*;
+import org.bukkit.GameMode;
+import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -26,19 +30,19 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.HashMap;
 
 public class PickUp implements Listener {
-    private HashMap<ItemStack, Integer> getItems() {
-        HashMap<ItemStack, Integer> items = new HashMap<>();
-        for (Weapons.Guns weapon : Weapons.Guns.values()) {
-            items.put(weapon.getGun().getWeapon(), 0);
+    private static HashMap<ItemStack, GameItem> getItems() {
+        HashMap<ItemStack, GameItem> items = new HashMap<>();
+        for (Weapon weapon : Utils.getGuns()) {
+            items.put(weapon.getWeapon(), weapon);
         }
-        for (Weapons.Melees weapon : Weapons.Melees.values()) {
-            items.put(weapon.getMelee().getWeapon(), 1);
+        for (Weapon weapon : Utils.getMelees()) {
+            items.put(weapon.getWeapon(), weapon);
         }
-        for (Utilities.Throwables util : Utilities.Throwables.values()) {
-            items.put(util.getUtility().getUtility(), 2);
+        for (Utility utility : Utils.getThrowables()) {
+            items.put(utility.getUtility(), utility);
         }
-        for (Utilities.Healings util : Utilities.Healings.values()) {
-            items.put(util.getUtility().getUtility(), util.isMain() ? 3 : 4);
+        for (Utility utility : Utils.getHealings()) {
+            items.put(utility.getUtility(), utility);
         }
         return items;
     }
@@ -61,7 +65,7 @@ public class PickUp implements Listener {
     }
 
     private int getHotbarSlot(ItemStack item) {
-        return getItems().get(getValidItemStack(item));
+        return getItems().get(getValidItemStack(item)).getSlot().ordinal();
     }
 
     private final HashMap<Player, Long> pickUp = new HashMap<>();
@@ -136,7 +140,6 @@ public class PickUp implements Listener {
         e.setCancelled(true);
         player.getWorld().playSound(item.getLocation(), Sound.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 1f, 1f);
 
-        if (gun != null && Utils.getEnumFromGun(gun.getClass()) == Weapons.Guns.PISTOL) hotbarSlot = 1;
         ItemStack hotbarItem = player.getInventory().getItem(hotbarSlot);
 
         if (hotbarItem != null && !(hotbarItem.getType().equals(Material.AIR))) {

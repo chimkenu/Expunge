@@ -1,14 +1,17 @@
 package me.chimkenu.expunge.game.maps;
 
 import me.chimkenu.expunge.Expunge;
-import me.chimkenu.expunge.enums.Weapons;
+import me.chimkenu.expunge.enums.Tier;
 import me.chimkenu.expunge.game.Dialogue;
 import me.chimkenu.expunge.game.Director;
-import me.chimkenu.expunge.guns.weapons.melees.*;
 import me.chimkenu.expunge.guns.utilities.healing.Adrenaline;
 import me.chimkenu.expunge.guns.utilities.healing.Medkit;
 import me.chimkenu.expunge.guns.utilities.healing.Pills;
-import org.bukkit.*;
+import me.chimkenu.expunge.guns.weapons.melees.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
@@ -727,14 +730,14 @@ public class TheDeparture extends Map {
                     for (int i = 0; i < 4; i++) {
                         Director.spawnUtility(world, new Location(world, 877.5, 44, 910.5), new Medkit());
                     }
-                    Director.spawnWeapon(world, new Location(world, 873.5, 44, 907.5), Director.getRandomGun(Weapons.Tier.TIER2), true);
-                    Director.spawnWeapon(world, new Location(world, 875.5, 44, 907.5), Director.getRandomGun(Weapons.Tier.TIER2), true);
+                    Director.spawnWeapon(world, new Location(world, 873.5, 44, 907.5), Director.getRandomGun(Tier.TIER2), true);
+                    Director.spawnWeapon(world, new Location(world, 875.5, 44, 907.5), Director.getRandomGun(Tier.TIER2), true);
 
                     Director.spawnUtility(world, new Location(world, 1135, 44, 919), new Medkit());
-                    Director.spawnWeapon(world, new Location(world, 857.5, 44, 910.5), Director.getRandomGun(Weapons.Tier.TIER1), false);
-                    Director.spawnWeapon(world, new Location(world, 857.5, 44, 907.5), Director.getRandomGun(Weapons.Tier.TIER1), false);
-                    Director.spawnWeapon(world, new Location(world, 1135, 44, 910), Director.getRandomGun(Weapons.Tier.TIER1), false);
-                    Director.spawnWeapon(world, new Location(world, 1135, 44, 907), Director.getRandomMelee(), false);
+                    Director.spawnWeapon(world, new Location(world, 857.5, 44, 910.5), Director.getRandomGun(Tier.TIER1), false);
+                    Director.spawnWeapon(world, new Location(world, 857.5, 44, 907.5), Director.getRandomGun(Tier.TIER1), false);
+                    Director.spawnWeapon(world, new Location(world, 1135, 44, 910), Director.getRandomGun(Tier.TIER1), false);
+                    Director.spawnWeapon(world, new Location(world, 1135, 44, 907), Director.getRandomMelee(Tier.TIER1), false);
 
                     Expunge.runningDirector.spawnAtRandomLocations(world, new BoundingBox(873, 41, 889, 932, 41, 863), 30, false);
                 },
@@ -882,8 +885,8 @@ public class TheDeparture extends Map {
 
                     Director.spawnUtility(world, new Location(world, 1140.7, 44, 917), new Pills());
                     Director.spawnUtility(world, new Location(world, 1140.7, 44, 915), new Adrenaline());
-                    Director.spawnWeapon(world, new Location(world, 1138, 44, 914.3), Director.getRandomGun(Weapons.Tier.TIER1), true);
-                    Director.spawnWeapon(world, new Location(world, 1138, 44, 917.7), Director.getRandomMelee(), false);
+                    Director.spawnWeapon(world, new Location(world, 1138, 44, 914.3), Director.getRandomGun(Tier.TIER1), true);
+                    Director.spawnWeapon(world, new Location(world, 1138, 44, 917.7), Director.getRandomMelee(Tier.TIER1), false);
 
                     Expunge.runningDirector.spawnAtRandomLocations(world, new BoundingBox(1174, 42, 945, 1124, 42, 977), 30, false);
                     Expunge.runningDirector.spawnAtRandomLocations(world, new BoundingBox(1157, 42, 973, 1129, 42, 989), 20, false);
@@ -1051,9 +1054,9 @@ public class TheDeparture extends Map {
                     for (int i = 0; i < 4; i++) {
                         Director.spawnUtility(world, new Location(world, 1123.5, 44, 996.5), new Medkit());
                     }
-                    Director.spawnWeapon(world, new Location(world, 1119.3, 44, 983), Director.getRandomGun(Weapons.Tier.TIER2), true);
-                    Director.spawnWeapon(world, new Location(world, 1122.7, 44, 981), Director.getRandomGun(Weapons.Tier.TIER2), true);
-                    Director.spawnWeapon(world, new Location(world, 1119.3, 44.5, 994.5), Director.getRandomMelee(), false);
+                    Director.spawnWeapon(world, new Location(world, 1119.3, 44, 983), Director.getRandomGun(Tier.TIER2), true);
+                    Director.spawnWeapon(world, new Location(world, 1122.7, 44, 981), Director.getRandomGun(Tier.TIER2), true);
+                    Director.spawnWeapon(world, new Location(world, 1119.3, 44.5, 994.5), Director.getRandomMelee(Tier.TIER1), false);
                     Director.spawnUtility(world, new Location(world, 1121, 50.2, 984), new Pills());
                     Director.spawnUtility(world, new Location(world, 1126, 50.2, 983), new Adrenaline());
 

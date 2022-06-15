@@ -1,5 +1,7 @@
 package me.chimkenu.expunge.guns.weapons.guns;
 
+import me.chimkenu.expunge.enums.Slot;
+import me.chimkenu.expunge.enums.Tier;
 import me.chimkenu.expunge.guns.weapons.Weapon;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -26,8 +28,8 @@ public abstract class Gun extends Weapon {
     private final Sound sound;
     private final float pitch;
 
-    public Gun(double damage, int pellets, int range, int cooldown, int reload, int clipSize, int maxAmmo, int entitiesToHit, Particle particle, Material material, String name, Sound sound, float pitch) {
-        super(damage, range, cooldown, entitiesToHit, name, material);
+    public Gun(double damage, int pellets, int range, int cooldown, int reload, int clipSize, int maxAmmo, int entitiesToHit, Particle particle, Material material, Tier tier, Slot slot, String name, Sound sound, float pitch) {
+        super(damage, range, cooldown, entitiesToHit, name, material, tier, slot);
         this.pellets = pellets;
         this.reload = reload;
         this.clipSize = clipSize;

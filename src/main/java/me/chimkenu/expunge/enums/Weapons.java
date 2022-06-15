@@ -10,31 +10,11 @@ public class Weapons {
             public Gun getGun() {
                 return new CombatRifle();
             }
-
-            @Override
-            public Tier getTier() {
-                return Tier.TIER2;
-            }
-
-            @Override
-            public Slot getSlot() {
-                return Slot.PRIMARY;
-            }
         },
         HUNTING_RIFLE {
             @Override
             public Gun getGun() {
                 return new HuntingRifle();
-            }
-
-            @Override
-            public Tier getTier() {
-                return Tier.TIER2;
-            }
-
-            @Override
-            public Slot getSlot() {
-                return Slot.PRIMARY;
             }
         },
         M16_ASSAULT_RIFLE {
@@ -42,31 +22,11 @@ public class Weapons {
             public Gun getGun() {
                 return new M16AssaultRifle();
             }
-
-            @Override
-            public Tier getTier() {
-                return Tier.TIER2;
-            }
-
-            @Override
-            public Slot getSlot() {
-                return Slot.PRIMARY;
-            }
         },
         AK47 {
             @Override
             public Gun getGun() {
                 return new AK47();
-            }
-
-            @Override
-            public Tier getTier() {
-                return Tier.TIER2;
-            }
-
-            @Override
-            public Slot getSlot() {
-                return Slot.PRIMARY;
             }
         },
         PUMP_SHOTGUN {
@@ -74,31 +34,11 @@ public class Weapons {
             public Gun getGun() {
                 return new PumpShotgun();
             }
-
-            @Override
-            public Tier getTier() {
-                return Tier.TIER1;
-            }
-
-            @Override
-            public Slot getSlot() {
-                return Slot.PRIMARY;
-            }
         },
         CHROME_SHOTGUN {
             @Override
             public Gun getGun() {
                 return new ChromeShotgun();
-            }
-
-            @Override
-            public Tier getTier() {
-                return Tier.TIER1;
-            }
-
-            @Override
-            public Slot getSlot() {
-                return Slot.PRIMARY;
             }
         },
         AUTO_SHOTGUN {
@@ -106,31 +46,11 @@ public class Weapons {
             public Gun getGun() {
                 return new AutoShotgun();
             }
-
-            @Override
-            public Tier getTier() {
-                return Tier.TIER2;
-            }
-
-            @Override
-            public Slot getSlot() {
-                return Slot.PRIMARY;
-            }
         },
         COMBAT_SHOTGUN {
             @Override
             public Gun getGun() {
                 return new CombatShotgun();
-            }
-
-            @Override
-            public Tier getTier() {
-                return Tier.TIER2;
-            }
-
-            @Override
-            public Slot getSlot() {
-                return Slot.PRIMARY;
             }
         },
         SNIPER_RIFLE {
@@ -138,31 +58,11 @@ public class Weapons {
             public Gun getGun() {
                 return new SniperRifle();
             }
-
-            @Override
-            public Tier getTier() {
-                return Tier.TIER2;
-            }
-
-            @Override
-            public Slot getSlot() {
-                return Slot.PRIMARY;
-            }
         },
         AWP {
             @Override
             public Gun getGun() {
                 return new AWP();
-            }
-
-            @Override
-            public Tier getTier() {
-                return Tier.TIER2;
-            }
-
-            @Override
-            public Slot getSlot() {
-                return Slot.PRIMARY;
             }
         },
         SCOUT {
@@ -170,31 +70,11 @@ public class Weapons {
             public Gun getGun() {
                 return new Scout();
             }
-
-            @Override
-            public Tier getTier() {
-                return Tier.TIER2;
-            }
-
-            @Override
-            public Slot getSlot() {
-                return Slot.PRIMARY;
-            }
         },
         SMG {
             @Override
             public Gun getGun() {
                 return new SMG();
-            }
-
-            @Override
-            public Tier getTier() {
-                return Tier.TIER1;
-            }
-
-            @Override
-            public Slot getSlot() {
-                return Slot.PRIMARY;
             }
         },
         MP5 {
@@ -202,31 +82,11 @@ public class Weapons {
             public Gun getGun() {
                 return new MP5();
             }
-
-            @Override
-            public Tier getTier() {
-                return Tier.TIER1;
-            }
-
-            @Override
-            public Slot getSlot() {
-                return Slot.PRIMARY;
-            }
         },
         GRENADE_LAUNCHER {
             @Override
             public Gun getGun() {
                 return new GrenadeLauncher();
-            }
-
-            @Override
-            public Tier getTier() {
-                return Tier.SPECIAL;
-            }
-
-            @Override
-            public Slot getSlot() {
-                return Slot.PRIMARY;
             }
         },
         M60_MACHINE_GUN {
@@ -234,37 +94,15 @@ public class Weapons {
             public Gun getGun() {
                 return new M60MachineGun();
             }
-
-            @Override
-            public Tier getTier() {
-                return Tier.SPECIAL;
-            }
-
-            @Override
-            public Slot getSlot() {
-                return Slot.PRIMARY;
-            }
         },
         PISTOL {
             @Override
             public Gun getGun() {
                 return new Pistol();
             }
-
-            @Override
-            public Tier getTier() {
-                return Tier.TIER1;
-            }
-
-            @Override
-            public Slot getSlot() {
-                return Slot.SECONDARY;
-            }
         };
 
         public abstract Gun getGun();
-        public abstract Tier getTier();
-        public abstract Slot getSlot();
     }
 
     public enum Melees {
@@ -326,19 +164,14 @@ public class Weapons {
             public Melee getMelee() {
                 return new Chainsaw();
             }
+        },
+        MR_COOKIE {
+            @Override
+            public Melee getMelee() {
+                return new MrCookie();
+            }
         };
 
         public abstract Melee getMelee();
-    }
-
-    public enum Tier {
-        TIER1,
-        TIER2,
-        SPECIAL
-    }
-
-    public enum Slot {
-        PRIMARY,
-        SECONDARY
     }
 }

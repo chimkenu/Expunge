@@ -2,11 +2,11 @@ package me.chimkenu.expunge.guns.listeners;
 
 import me.chimkenu.expunge.Utils;
 import me.chimkenu.expunge.guns.ShootParticle;
+import me.chimkenu.expunge.guns.utilities.throwable.Grenade;
 import me.chimkenu.expunge.guns.weapons.guns.GrenadeLauncher;
 import me.chimkenu.expunge.guns.weapons.guns.Gun;
 import me.chimkenu.expunge.guns.weapons.guns.MP5;
 import me.chimkenu.expunge.guns.weapons.guns.SMG;
-import me.chimkenu.expunge.guns.utilities.throwable.Grenade;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Location;

@@ -1,6 +1,6 @@
 package me.chimkenu.expunge.game.maps;
 
-import org.bukkit.*;
+import org.bukkit.World;
 
 import java.util.ArrayList;
 

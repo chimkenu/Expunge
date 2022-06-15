@@ -1,16 +1,17 @@
 package me.chimkenu.expunge;
 
+import me.chimkenu.expunge.enums.Tier;
 import me.chimkenu.expunge.enums.Weapons;
-import me.chimkenu.expunge.guns.weapons.guns.*;
-import me.chimkenu.expunge.guns.weapons.melees.Melee;
-import me.chimkenu.expunge.guns.utilities.*;
-import me.chimkenu.expunge.guns.utilities.throwable.Grenade;
-import me.chimkenu.expunge.guns.utilities.throwable.Molotov;
-import me.chimkenu.expunge.guns.utilities.throwable.Throwable;
+import me.chimkenu.expunge.guns.utilities.Utility;
 import me.chimkenu.expunge.guns.utilities.healing.Adrenaline;
 import me.chimkenu.expunge.guns.utilities.healing.Healing;
 import me.chimkenu.expunge.guns.utilities.healing.Medkit;
 import me.chimkenu.expunge.guns.utilities.healing.Pills;
+import me.chimkenu.expunge.guns.utilities.throwable.Grenade;
+import me.chimkenu.expunge.guns.utilities.throwable.Molotov;
+import me.chimkenu.expunge.guns.utilities.throwable.Throwable;
+import me.chimkenu.expunge.guns.weapons.guns.Gun;
+import me.chimkenu.expunge.guns.weapons.melees.Melee;
 import org.bukkit.entity.Projectile;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
@@ -30,7 +31,7 @@ public class Utils {
     public static ArrayList<Gun> getTier1Guns() {
         ArrayList<Gun> guns = new ArrayList<>();
         for (Weapons.Guns gun : Weapons.Guns.values()) {
-            if (gun.getTier() == Weapons.Tier.TIER1) guns.add(gun.getGun());
+            if (gun.getGun().getTier() == Tier.TIER1) guns.add(gun.getGun());
         }
         return guns;
     }
@@ -38,7 +39,7 @@ public class Utils {
     public static ArrayList<Gun> getTier2Guns() {
         ArrayList<Gun> guns = new ArrayList<>();
         for (Weapons.Guns gun : Weapons.Guns.values()) {
-            if (gun.getTier() == Weapons.Tier.TIER2) guns.add(gun.getGun());
+            if (gun.getGun().getTier() == Tier.TIER2) guns.add(gun.getGun());
         }
         return guns;
     }
@@ -46,7 +47,7 @@ public class Utils {
     public static ArrayList<Gun> getSpecialGuns() {
         ArrayList<Gun> guns = new ArrayList<>();
         for (Weapons.Guns gun : Weapons.Guns.values()) {
-            if (gun.getTier() == Weapons.Tier.SPECIAL) guns.add(gun.getGun());
+            if (gun.getGun().getTier() == Tier.SPECIAL) guns.add(gun.getGun());
         }
         return guns;
     }

@@ -2,16 +2,23 @@ package me.chimkenu.expunge.game;
 
 import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.Utils;
+import me.chimkenu.expunge.enums.Tier;
 import me.chimkenu.expunge.enums.Utilities;
 import me.chimkenu.expunge.enums.Weapons;
 import me.chimkenu.expunge.game.maps.Map;
 import me.chimkenu.expunge.game.maps.Scene;
 import me.chimkenu.expunge.guns.ShootEvent;
+import me.chimkenu.expunge.guns.utilities.Utility;
 import me.chimkenu.expunge.guns.weapons.guns.Gun;
 import me.chimkenu.expunge.guns.weapons.melees.Melee;
-import me.chimkenu.expunge.guns.utilities.Utility;
-import org.bukkit.*;
-import org.bukkit.entity.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.entity.Item;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -166,14 +173,13 @@ public class Director extends BukkitRunnable implements Listener {
         spawnUtility(map.getWorld(), itemLocations.get(index), utility);
     }
 
-    public static Melee getRandomMelee() {
+    public static Melee getRandomMelee(Tier tier) {
         ArrayList<Weapons.Melees> melees = new ArrayList<>(List.of(Weapons.Melees.values()));
-        melees.remove(Weapons.Melees.CHAINSAW);
-        melees.remove(Weapons.Melees.MR_COOKIE);
+        melees.removeIf(melee -> melee.getMelee().getTier() != tier);
         return melees.get(ThreadLocalRandom.current().nextInt(0, melees.size())).getMelee();
     }
 
-    public static Gun getRandomGun(Weapons.Tier tier) {
+    public static Gun getRandomGun(Tier tier) {
         switch (tier) {
             case TIER1 -> {
                 return Utils.getTier1Guns().get(ThreadLocalRandom.current().nextInt(0, Utils.getTier1Guns().size()));
@@ -403,13 +409,13 @@ public class Director extends BukkitRunnable implements Listener {
         for (int i = 0; i < itemsToSpawn; i++) {
             double r = Math.random();
 
-            // throwable - 40% chance
-            if (r < 0.2) {
+            // throwable - 50% chance
+            if (r < 0.5) {
                 Utilities.Throwables[] throwables = Utilities.Throwables.values();
                 spawnUtilityAtRandom(Expunge.currentMap, Expunge.currentSceneIndex, throwables[ThreadLocalRandom.current().nextInt(0, throwables.length)].getUtility());
             }
 
-            // healing item - 60% chance
+            // healing item - 50% chance
             else {
                 Utilities.Healings[] healings = new Utilities.Healings[2];
                 healings[0] = Utilities.Healings.PILLS;

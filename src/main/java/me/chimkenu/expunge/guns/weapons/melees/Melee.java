@@ -1,5 +1,7 @@
 package me.chimkenu.expunge.guns.weapons.melees;
 
+import me.chimkenu.expunge.enums.Slot;
+import me.chimkenu.expunge.enums.Tier;
 import me.chimkenu.expunge.guns.weapons.Weapon;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -14,8 +16,8 @@ import java.util.UUID;
 
 public abstract class Melee extends Weapon {
 
-    public Melee(double damage, int range, int cooldown, int entitiesToHit, String name, Material material) {
-        super(damage, range, cooldown, entitiesToHit, name, material);
+    public Melee(double damage, int range, int cooldown, int entitiesToHit, String name, Material material, Tier tier, Slot slot) {
+        super(damage, range, cooldown, entitiesToHit, name, material, tier, slot);
     }
 
     @Override

@@ -1,12 +1,13 @@
 package me.chimkenu.expunge.guns.utilities.throwable;
 
+import me.chimkenu.expunge.enums.Slot;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 
 public class Grenade extends Throwable {
 
     public Grenade() {
-        super(20, Material.COAL, "&8Grenade", "THROWABLE_GRENADE");
+        super(20, Material.COAL, "&8Grenade", Slot.TERTIARY, "THROWABLE_GRENADE");
     }
 
     @Override

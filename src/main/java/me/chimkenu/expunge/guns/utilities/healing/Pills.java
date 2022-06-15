@@ -1,12 +1,12 @@
 package me.chimkenu.expunge.guns.utilities.healing;
 
-import me.chimkenu.expunge.guns.utilities.healing.Healing;
+import me.chimkenu.expunge.enums.Slot;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 public class Pills extends Healing {
     public Pills() {
-        super(20, Material.WHITE_CANDLE, "&fPills", false);
+        super(20, Material.WHITE_CANDLE, "&fPills", Slot.QUINARY,false);
     }
 
     @Override

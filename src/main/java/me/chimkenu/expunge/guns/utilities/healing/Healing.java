@@ -2,6 +2,7 @@ package me.chimkenu.expunge.guns.utilities.healing;
 
 import me.chimkenu.expunge.Action;
 import me.chimkenu.expunge.Expunge;
+import me.chimkenu.expunge.enums.Slot;
 import me.chimkenu.expunge.guns.utilities.Utility;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -18,8 +19,8 @@ public abstract class Healing extends Utility {
 
     private final boolean isInstantUse;
 
-    public Healing(int cooldown, Material material, String name, boolean isInstantUse) {
-        super(cooldown, material, name);
+    public Healing(int cooldown, Material material, String name, Slot slot, boolean isInstantUse) {
+        super(cooldown, material, name, slot);
         this.isInstantUse = isInstantUse;
     }
 

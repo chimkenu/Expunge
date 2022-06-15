@@ -1,7 +1,7 @@
 package me.chimkenu.expunge.commands;
 
 import me.chimkenu.expunge.Utils;
-import me.chimkenu.expunge.guns.utilities.*;
+import me.chimkenu.expunge.guns.utilities.Utility;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
