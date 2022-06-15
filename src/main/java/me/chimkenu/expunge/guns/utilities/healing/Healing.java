@@ -54,9 +54,7 @@ public abstract class Healing extends Utility {
                 player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(prefix + " " + progress_bar));
 
                 if (finalLoc != null) {
-                    Vector diff = finalLoc.clone().subtract(player.getLocation().toVector());
-                    double sum = diff.getX() + diff.getY() + diff.getZ();
-                    if (sum > 1) {
+                    if (finalLoc.distanceSquared(player.getLocation().toVector()) > 1) {
                         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§cStopped. §8(You moved)"));
                         usingUtility.remove(player);
                         this.cancel();

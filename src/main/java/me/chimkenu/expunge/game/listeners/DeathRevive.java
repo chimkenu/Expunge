@@ -224,9 +224,7 @@ public class DeathRevive implements Listener {
                             prefix = "§eBeing revived by " + "§b" + player.getDisplayName() + "§e...";
                             target.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(prefix + " " + progress_bar));
 
-                            Vector diff = loc.clone().subtract(player.getLocation().toVector());
-                            double sum = diff.getX() + diff.getY() + diff.getZ();
-                            if (sum > 1) {
+                            if (loc.distanceSquared(player.getLocation().toVector()) > 1) {
                                 player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§cStopped. §8(You moved too far)"));
                                 target.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§cStopped."));
                                 beingRevived.remove(target);
