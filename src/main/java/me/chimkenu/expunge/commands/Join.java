@@ -20,6 +20,9 @@ public class Join implements CommandExecutor {
             sender.sendMessage(ChatColor.RED + "Please finish the tutorial first.");
             return true;
         }
+        if (args.length > 0 && args[0].equalsIgnoreCase("expunge")) {
+            sender.sendMessage(ChatColor.GREEN + "you're already here lol");
+        }
         if (Expunge.isCountdownRunning) {
             if (Expunge.inQueue.contains(player)) {
                 sender.sendMessage(ChatColor.RED + "You're already in the queue.");
