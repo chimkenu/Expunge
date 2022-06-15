@@ -331,14 +331,14 @@ public class TheDeparture extends Map {
             public Dialogue getB() {
                 return new Dialogue(null,
                         "A » I’ll name you “Mr. Cookie”.",
-                                "B. » You’re not going to eat that..?",
+                                "B » You’re not going to eat that..?",
                                 "A » It’s too tough, it’d probably shatter my teeth."
                 );
             }
 
             @Override
             public Dialogue getSolo() {
-                return new Dialogue(null, "A » i will fuck this cookie");
+                return new Dialogue(null, "A » Yeah, I’m gonna name this biscuit “Mr. Cookie”.");
             }
         },
         SUBWAY_MAP {
