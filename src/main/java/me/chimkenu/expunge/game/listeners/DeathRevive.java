@@ -139,7 +139,7 @@ public class DeathRevive implements Listener {
         if (Expunge.playing.isAlive(player)) {
             return;
         }
-        if (Expunge.playing.getLives(player) > 1) {
+        if (Expunge.playing.getLives(player) < 1) {
             return;
         }
         e.setCancelled(true);
