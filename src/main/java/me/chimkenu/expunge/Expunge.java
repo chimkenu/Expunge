@@ -58,6 +58,7 @@ public final class Expunge extends JavaPlugin {
         instance.getServer().getPluginManager().registerEvents(new UtilityListener(), instance);
         instance.getServer().getPluginManager().registerEvents(new InventoryListener(), instance);
         instance.getServer().getPluginManager().registerEvents(new MobListener(), instance);
+        if (runningDirector != null) instance.getServer().getPluginManager().registerEvents(runningDirector, instance);
     }
 
     @Override
