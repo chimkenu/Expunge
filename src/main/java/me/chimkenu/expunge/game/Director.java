@@ -12,14 +12,18 @@ import me.chimkenu.expunge.guns.utilities.Utility;
 import me.chimkenu.expunge.guns.weapons.Weapon;
 import me.chimkenu.expunge.guns.weapons.guns.Gun;
 import me.chimkenu.expunge.guns.weapons.melees.Melee;
+import me.chimkenu.expunge.mobs.GameMob;
+import me.chimkenu.expunge.mobs.common.Horde;
+import me.chimkenu.expunge.mobs.common.Wanderer;
+import me.chimkenu.expunge.mobs.common.WandererQuestionMark;
+import me.chimkenu.expunge.mobs.special.Boomer;
+import me.chimkenu.expunge.mobs.special.Charger;
+import me.chimkenu.expunge.mobs.special.Jockey;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Zombie;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -39,18 +43,25 @@ public class Director extends BukkitRunnable implements Listener {
     private int sceneAttempts = 0;
     private final HashMap<Player, Integer> kills = new HashMap<>();
     private final HashMap<Player, Integer[]> shots = new HashMap<>();
-    public final HashSet<LivingEntity> activeMobs = new HashSet<>();
+    public final HashSet<GameMob> activeMobs = new HashSet<>();
     public boolean chillOut = false;
     public long timeSinceLastHorde = 0;
 
-    public <T extends LivingEntity> LivingEntity spawnMob(World world, Location loc, Class<T> mob) {
-        LivingEntity spawnedMob = world.spawn(loc, mob);
-        spawnedMob.addScoreboardTag("MOB");
-        activeMobs.add(spawnedMob);
-        return spawnedMob;
+    private <T extends GameMob> boolean activeMobsContains(Class<T> mobType) {
+        for (GameMob gameMob : activeMobs) {
+            if (gameMob.getClass() == mobType) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    private <T extends LivingEntity> void spawnAdditionalMob(Map map, int sceneIndex, Class<T> mob) {
+    public LivingEntity spawnMob(GameMob mob) {
+        activeMobs.add(mob);
+        return mob.getMob();
+    }
+
+    private Location getRandomSpawnLocation(Map map, int sceneIndex) {
         // get a random player
         Player player = Expunge.playing.getKeys().get(ThreadLocalRandom.current().nextInt(0, Expunge.playing.getKeys().size()));
 
@@ -75,18 +86,13 @@ public class Director extends BukkitRunnable implements Listener {
             }
         }
 
-        // spawn at random nearest
-        LivingEntity spawnedMob = spawnMob(map.getWorld(), spawnLocations.get(ThreadLocalRandom.current().nextInt(0, Math.min(3, spawnLocations.size()))), mob);
-        spawnedMob.addScoreboardTag("HORDE");
-        spawnedMob.setRemoveWhenFarAway(false);
+        // return a random near spawn location
+        return spawnLocations.get(ThreadLocalRandom.current().nextInt(0, Math.min(3, spawnLocations.size())));
     }
 
-    private <T extends LivingEntity> void spawnBossMob(Map map, int sceneIndex, Class<T> mob) {
-        ArrayList<Location> spawnLocations = map.getScenes().get(sceneIndex).bossLocations();
-        Random random = new Random();
-        Location loc = spawnLocations.get(random.nextInt(spawnLocations.size()));
-        LivingEntity spawnedMob = spawnMob(map.getWorld(), loc, mob);
-        spawnedMob.addScoreboardTag("BOSS");
+    private void spawnAdditionalMob(Map map, int sceneIndex) {
+        LivingEntity spawnedMob = spawnMob(new Horde(map.getWorld(), getRandomSpawnLocation(map, sceneIndex)));
+        spawnedMob.setRemoveWhenFarAway(false);
     }
 
     public void spawnAtRandomLocations(World world, BoundingBox b, int numToSpawn, boolean hasWandererTag) {
@@ -119,10 +125,8 @@ public class Director extends BukkitRunnable implements Listener {
                 savedLocations.add(loc);
             }
 
-            Zombie zombie = (Zombie) spawnMob(world, loc, Zombie.class);
-            if (hasWandererTag) zombie.addScoreboardTag("WANDERER");
-            else zombie.addScoreboardTag("WANDERER?");
-            activeMobs.add(zombie);
+            if (hasWandererTag) spawnMob(new Wanderer(world, loc));
+            else spawnMob(new WandererQuestionMark(world, loc));
         }
     }
 
@@ -200,6 +204,19 @@ public class Director extends BukkitRunnable implements Listener {
         return nearestDistance;
     }
 
+    public void bile(LivingEntity target, double radius) {
+        for (Entity e : target.getNearbyEntities(radius, radius, radius)) {
+            if (e instanceof Zombie zombie) {
+                zombie.setTarget(target);
+            }
+        }
+        if (Expunge.isSpawningEnabled && activeMobs.size() < 15) {
+            for (int i = 0; i < 30; i++) {
+                spawnAdditionalMob(Expunge.currentMap, Expunge.currentSceneIndex);
+            }
+        }
+    }
+
     @Override
     public void run() {
         gameTime++;
@@ -209,28 +226,39 @@ public class Director extends BukkitRunnable implements Listener {
             // spawning based on difficulty
             if (activeMobs.size() < (Expunge.difficulty + 1) * 25) {
                 if (Expunge.difficulty < 1 && (sceneTime % (20 * 10)) == 0)
-                    spawnAdditionalMob(Expunge.currentMap, Expunge.currentSceneIndex, Zombie.class);
+                    spawnAdditionalMob(Expunge.currentMap, Expunge.currentSceneIndex);
                 else if (Expunge.difficulty == 1 && (sceneTime % (20 * 7)) == 0)
-                    spawnAdditionalMob(Expunge.currentMap, Expunge.currentSceneIndex, Zombie.class);
+                    spawnAdditionalMob(Expunge.currentMap, Expunge.currentSceneIndex);
                 else if ((sceneTime % (20 * 5)) == 0)
-                    spawnAdditionalMob(Expunge.currentMap, Expunge.currentSceneIndex, Zombie.class);
+                    spawnAdditionalMob(Expunge.currentMap, Expunge.currentSceneIndex);
+
+                if (calculateRating() > (Expunge.difficulty + 1) * 0.25 && (sceneTime % (20 * 5)) == 0 && Expunge.currentSceneIndex > 1) {
+                    double r = Math.random();
+                    if (r < 0.5 && !activeMobsContains(Jockey.class)) {
+                        activeMobs.add(new Jockey(Expunge.currentMap.getWorld(), getRandomSpawnLocation(Expunge.currentMap, Expunge.currentSceneIndex)));
+                    } else if (!activeMobsContains(Boomer.class)) {
+                        activeMobs.add(new Boomer(Expunge.currentMap.getWorld(), getRandomSpawnLocation(Expunge.currentMap, Expunge.currentSceneIndex)));
+                    } else if (!activeMobsContains(Charger.class)) {
+                        activeMobs.add(new Charger(Expunge.currentMap.getWorld(), getRandomSpawnLocation(Expunge.currentMap, Expunge.currentSceneIndex)));
+                    }
+                }
             }
 
             // spawn additional mobs if number of mobs are too low
-            if (!chillOut && activeMobs.size() < 10 && sceneTime > 20 * 20) {
+            if (!chillOut && activeMobs.size() < 5 && sceneTime > 20 * 20) {
                 chillOut = true;
                 timeSinceLastHorde = sceneTime;
                 for (int i = 0; i < (20 + (Expunge.playing.getKeys().size() * 5)); i++) {
-                    spawnAdditionalMob(Expunge.currentMap, Expunge.currentSceneIndex, Zombie.class);
+                    spawnAdditionalMob(Expunge.currentMap, Expunge.currentSceneIndex);
                 }
             }
         } else if (chillOut && sceneTime - timeSinceLastHorde > 20 * 30) chillOut = false;
 
         // look through every mob if its alive && look at its distance from the nearest player
         if ((sceneTime % (20 * 5)) == 0) {
-            HashSet<LivingEntity> mobsToRemove = new HashSet<>();
-            for (LivingEntity mob : activeMobs) {
-                if (mob.isDead()) {
+            HashSet<GameMob> mobsToRemove = new HashSet<>();
+            for (GameMob mob : activeMobs) {
+                if (mob.getMob().isDead()) {
                     mobsToRemove.add(mob);
                     continue;
                 }
@@ -238,7 +266,7 @@ public class Director extends BukkitRunnable implements Listener {
                     if (zombie.getLocation().distanceSquared(target.getLocation()) < 20 * 20)
                     continue;
                 }
-                if (playerNearestDistanceFrom(mob.getLocation().toVector()) > 20 * 20) {
+                if (playerNearestDistanceFrom(mob.getMob().getLocation().toVector()) > 20 * 20) {
                     mob.remove();
                     mobsToRemove.add(mob);
                 }
@@ -277,8 +305,8 @@ public class Director extends BukkitRunnable implements Listener {
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "kill @e[tag=RESPAWN_ARMOR_STAND]");
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "kill @e[tag=ITEM]");
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "kill @e[tag=AMMO_PILE]");
-        for (LivingEntity entity : activeMobs) {
-            entity.remove();
+        for (GameMob mob : activeMobs) {
+            mob.remove();
         }
         activeMobs.clear();
     }
@@ -319,9 +347,16 @@ public class Director extends BukkitRunnable implements Listener {
             skillAverage += calculateRating(p);
         }
 
+        double mobsOnPlayer = 0;
+        for (GameMob mob : activeMobs) {
+            if (mob.getMob().getTarget() instanceof Player player && mob.getMob().getLocation().distanceSquared(player.getLocation()) < 10 * 10) mobsOnPlayer++;
+        }
+
         totalHealth = totalHealth / (20 * Expunge.playing.getKeys().size());
         skillAverage = skillAverage / Expunge.playing.getKeys().size();
-        return (totalHealth * .5) + (skillAverage * .5);
+        mobsOnPlayer = 1 - (mobsOnPlayer / activeMobs.size());
+
+        return (totalHealth * .3) + (skillAverage * .3) + (mobsOnPlayer * 0.4);
     }
 
     public int getTotalKills() {
@@ -468,20 +503,25 @@ public class Director extends BukkitRunnable implements Listener {
         return sceneAttempts;
     }
 
-    public HashSet<LivingEntity> getActiveMobs() {
+    public HashSet<GameMob> getActiveMobs() {
         return activeMobs;
     }
 
     @EventHandler
     public void onMobDeath(EntityDeathEvent e) {
         LivingEntity dead = e.getEntity();
-        if (activeMobs.contains(dead)) {
-            if (dead.getKiller() != null && Expunge.playing.getKeys().contains(dead.getKiller())) {
-                kills.putIfAbsent(dead.getKiller(), 0);
-                kills.put(dead.getKiller(), kills.get(dead.getKiller()) + 1);
+        GameMob mobToRemove = null;
+        for (GameMob mob : activeMobs) {
+            if (mob.getMob().equals(dead)) {
+                if (dead.getKiller() != null && Expunge.playing.getKeys().contains(dead.getKiller())) {
+                    kills.putIfAbsent(dead.getKiller(), 0);
+                    kills.put(dead.getKiller(), kills.get(dead.getKiller()) + 1);
+                }
+                mobToRemove = mob;
+                break;
             }
-            activeMobs.remove(dead);
         }
+        activeMobs.remove(mobToRemove);
     }
 
     @EventHandler

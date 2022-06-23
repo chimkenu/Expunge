@@ -75,7 +75,7 @@ public class DeathRevive implements Listener {
                 loc.subtract(0, 0.25, 0);
             }
 
-            loc.setY(loc.getBlock().getY());
+            loc.setY(loc.getBlock().getBoundingBox().getMaxY());
             ArmorStand armorStand = player.getWorld().spawn(loc, ArmorStand.class);
             armorStand.setGravity(false);
             armorStand.setInvulnerable(true);

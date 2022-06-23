@@ -10,6 +10,7 @@ import me.chimkenu.expunge.game.maps.TheDeparture;
 import me.chimkenu.expunge.guns.listeners.*;
 import me.chimkenu.expunge.guns.weapons.guns.Gun;
 import me.chimkenu.expunge.guns.weapons.guns.Pistol;
+import me.chimkenu.expunge.mobs.MobListener;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -44,6 +45,21 @@ public final class Expunge extends JavaPlugin {
     public static final int difficulty = 1;
     public static Director runningDirector;
 
+    public static void reRegisterGameEvents() {
+        HandlerList.unregisterAll(instance);
+        instance.getServer().getPluginManager().registerEvents(new JoinLeave(), instance);
+        instance.getServer().getPluginManager().registerEvents(new Shove(), instance);
+        instance.getServer().getPluginManager().registerEvents(new NextScene(), instance);
+        instance.getServer().getPluginManager().registerEvents(new DeathRevive(), instance);
+        instance.getServer().getPluginManager().registerEvents(new PickUp(), instance);
+        instance.getServer().getPluginManager().registerEvents(new Shoot(), instance);
+        instance.getServer().getPluginManager().registerEvents(new Reload(), instance);
+        instance.getServer().getPluginManager().registerEvents(new Swing(), instance);
+        instance.getServer().getPluginManager().registerEvents(new UtilityListener(), instance);
+        instance.getServer().getPluginManager().registerEvents(new InventoryListener(), instance);
+        instance.getServer().getPluginManager().registerEvents(new MobListener(), instance);
+    }
+
     @Override
     public void onEnable() {
         instance = this;
@@ -51,17 +67,7 @@ public final class Expunge extends JavaPlugin {
         currentMap = new TheDeparture();
         currentSceneIndex = 0;
 
-        getServer().getPluginManager().registerEvents(new JoinLeave(), instance);
-        getServer().getPluginManager().registerEvents(new Shove(), instance);
-        getServer().getPluginManager().registerEvents(new NextScene(), instance);
-        getServer().getPluginManager().registerEvents(new DeathRevive(), instance);
-        getServer().getPluginManager().registerEvents(new PickUp(), instance);
-
-        getServer().getPluginManager().registerEvents(new Shoot(), this);
-        getServer().getPluginManager().registerEvents(new Reload(), this);
-        getServer().getPluginManager().registerEvents(new Swing(), this);
-        getServer().getPluginManager().registerEvents(new UtilityListener(), this);
-        getServer().getPluginManager().registerEvents(new InventoryListener(), this);
+        reRegisterGameEvents();
 
         getCommand("join").setExecutor(new Join());
         getCommand("values").setExecutor(new Values());
@@ -74,6 +80,7 @@ public final class Expunge extends JavaPlugin {
         getCommand("getmelee").setExecutor(new GetMelee());
 
         getCommand("tutorial").setExecutor(new Tutorial());
+        getCommand("spawn").setExecutor(new Spawn());
     }
 
     public static void setSpectator(Player player) {
@@ -185,6 +192,7 @@ public final class Expunge extends JavaPlugin {
         }
 
         // reload events
+        reRegisterGameEvents();
         if (scene.crescendoEvent() != null) HandlerList.unregisterAll(scene.crescendoEvent());
         if (scene.crescendoEvent() != null) instance.getServer().getPluginManager().registerEvents(scene.crescendoEvent(), instance);
         if (scene.happenings() != null) {
@@ -303,6 +311,8 @@ public final class Expunge extends JavaPlugin {
                 p.teleport(currentMap.getScenes().get(0).startLocation());
             }
         }
+
+        Bukkit.broadcastMessage(ChatColor.BLUE + "Game ended at " + runningDirector.getGameTime() + " ticks");
 
         playing.clear();
         currentSceneIndex = 0;

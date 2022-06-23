@@ -8,12 +8,12 @@ import me.chimkenu.expunge.guns.utilities.healing.Adrenaline;
 import me.chimkenu.expunge.guns.utilities.healing.Medkit;
 import me.chimkenu.expunge.guns.utilities.healing.Pills;
 import me.chimkenu.expunge.guns.weapons.melees.*;
+import me.chimkenu.expunge.mobs.common.Horde;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -609,11 +609,11 @@ public class TheDeparture extends Map {
 
                             @Override
                             public void run() {
-                                Expunge.runningDirector.spawnMob(world, new Location(world, 845.5, 48, 928.5), Zombie.class);
-                                Expunge.runningDirector.spawnMob(world, new Location(world, 853.5, 47, 939.5), Zombie.class);
-                                Expunge.runningDirector.spawnMob(world, new Location(world, 866.5, 48, 939.5), Zombie.class);
-                                Expunge.runningDirector.spawnMob(world, new Location(world, 872.5, 48, 931.5), Zombie.class);
-                                Expunge.runningDirector.spawnMob(world, new Location(world, 876.5, 48, 925.5), Zombie.class);
+                                Expunge.runningDirector.spawnMob(new Horde(world, new Location(world, 845.5, 48, 928.5)));
+                                Expunge.runningDirector.spawnMob(new Horde(world, new Location(world, 853.5, 47, 939.5)));
+                                Expunge.runningDirector.spawnMob(new Horde(world, new Location(world, 866.5, 48, 939.5)));
+                                Expunge.runningDirector.spawnMob(new Horde(world, new Location(world, 872.5, 48, 931.5)));
+                                Expunge.runningDirector.spawnMob(new Horde(world, new Location(world, 876.5, 48, 925.5)));
                                 i++;
                                 if (i >= 5) {
                                     this.cancel();
@@ -759,19 +759,19 @@ public class TheDeparture extends Map {
                             int i = 0;
                             @Override
                             public void run() {
-                                Expunge.runningDirector.spawnMob(world, new Location(world, 1121.5, 43, 922.5), Zombie.class);
-                                Expunge.runningDirector.spawnMob(world, new Location(world, 1118.5, 43, 843), Zombie.class);
-                                Expunge.runningDirector.spawnMob(world, new Location(world, 1076.5, 43, 894.5), Zombie.class);
-                                Expunge.runningDirector.spawnMob(world, new Location(world, 1134, 43, 898.5), Zombie.class);
-                                Expunge.runningDirector.spawnMob(world, new Location(world, 1125.5, 50, 899.5), Zombie.class);
-                                Expunge.runningDirector.spawnMob(world, new Location(world, 1131.5, 50, 909.5), Zombie.class);
-                                Expunge.runningDirector.spawnMob(world, new Location(world, 1125.5, 50, 910.5), Zombie.class);
-                                Expunge.runningDirector.spawnMob(world, new Location(world, 1131.5, 50, 920.5), Zombie.class);
-                                Expunge.runningDirector.spawnMob(world, new Location(world, 1131.5, 50, 920.5), Zombie.class);
-                                Expunge.runningDirector.spawnMob(world, new Location(world, 1131.5, 56, 920.5), Zombie.class);
-                                Expunge.runningDirector.spawnMob(world, new Location(world, 1125.5, 56, 910.5), Zombie.class);
-                                Expunge.runningDirector.spawnMob(world, new Location(world, 1131.5, 56, 909.5), Zombie.class);
-                                Expunge.runningDirector.spawnMob(world, new Location(world, 1125.5, 56, 899.5), Zombie.class);
+                                Expunge.runningDirector.spawnMob(new Horde(world, new Location(world, 1121.5, 43, 922.5)));
+                                Expunge.runningDirector.spawnMob(new Horde(world, new Location(world, 1118.5, 43, 843)));
+                                Expunge.runningDirector.spawnMob(new Horde(world, new Location(world, 1076.5, 43, 894.5)));
+                                Expunge.runningDirector.spawnMob(new Horde(world, new Location(world, 1134, 43, 898.5)));
+                                Expunge.runningDirector.spawnMob(new Horde(world, new Location(world, 1125.5, 50, 899.5)));
+                                Expunge.runningDirector.spawnMob(new Horde(world, new Location(world, 1131.5, 50, 909.5)));
+                                Expunge.runningDirector.spawnMob(new Horde(world, new Location(world, 1125.5, 50, 910.5)));
+                                Expunge.runningDirector.spawnMob(new Horde(world, new Location(world, 1131.5, 50, 920.5)));
+                                Expunge.runningDirector.spawnMob(new Horde(world, new Location(world, 1131.5, 50, 920.5)));
+                                Expunge.runningDirector.spawnMob(new Horde(world, new Location(world, 1131.5, 56, 920.5)));
+                                Expunge.runningDirector.spawnMob(new Horde(world, new Location(world, 1125.5, 56, 910.5)));
+                                Expunge.runningDirector.spawnMob(new Horde(world, new Location(world, 1131.5, 56, 909.5)));
+                                Expunge.runningDirector.spawnMob(new Horde(world, new Location(world, 1125.5, 56, 899.5)));
                                 i++;
                                 if (i >= 3) {
                                     this.cancel();

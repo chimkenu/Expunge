@@ -23,3 +23,5 @@ commands:
     description: for all the new
   stats:
     description: see how you are doing in the game
+  spawn:
+    description: spawn a mob
