@@ -37,12 +37,13 @@ public class Molotov extends Throwable {
                     for (Entity entity : world.getNearbyEntities(loc, 2, 2, 2)) {
                         if (entity instanceof LivingEntity livingEntity) {
                             Vector vec = livingEntity.getVelocity();
-                            livingEntity.damage(1);
                             livingEntity.setVelocity(vec);
                             livingEntity.setNoDamageTicks(0);
                             if (livingEntity instanceof Player) {
+                                livingEntity.damage(1);
                                 livingEntity.setFireTicks(40);
                             } else {
+                                livingEntity.damage(10, shooter);
                                 livingEntity.setFireTicks(20 * 60);
                             }
                         }
