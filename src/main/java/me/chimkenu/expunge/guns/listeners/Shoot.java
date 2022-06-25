@@ -118,7 +118,10 @@ public class Shoot implements Listener {
 
             if (gun != null) {
                 e.setCancelled(true);
-                fireGun(player, gun);
+                if (!player.isSneaking())
+                    fireGun(player, gun);
+                else
+                    Reload.reload(player);
             }
         }
     }

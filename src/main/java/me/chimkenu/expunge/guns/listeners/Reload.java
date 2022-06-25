@@ -26,7 +26,6 @@ public class Reload implements Listener {
         if (gun == null) return;
         if (item.getAmount() == gun.getClipSize()) return;
 
-        Weapons.Guns weapon = Utils.getEnumFromGun(gun.getClass());
         if (Shoot.getAmmo(item) < 1) return;
         if (Shoot.getAmmo(item) == item.getAmount()) return;
         else if (Shoot.getAmmo(item) + 1 < item.getAmount()) {
@@ -38,6 +37,7 @@ public class Reload implements Listener {
             int t = 1;
             final short maxDurability = item.getType().getMaxDurability();
             final int reloadTime = gun.getReload();
+            final Damageable damageable = (Damageable) item.getItemMeta();
 
             @Override
             public void run() {
@@ -46,7 +46,6 @@ public class Reload implements Listener {
 
                 double percentComplete = (double) t / reloadTime;
                 int dmg = (int) Math.ceil(maxDurability - (percentComplete * maxDurability));
-                Damageable damageable = (Damageable) item.getItemMeta();
                 if (damageable != null) damageable.setDamage(dmg);
                 item.setItemMeta(damageable);
                 player.updateInventory();
