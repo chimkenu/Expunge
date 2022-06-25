@@ -2,6 +2,7 @@ package me.chimkenu.expunge.guns.listeners;
 
 import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.Utils;
+import me.chimkenu.expunge.enums.Tier;
 import me.chimkenu.expunge.enums.Weapons;
 import me.chimkenu.expunge.guns.weapons.guns.Gun;
 import net.md_5.bungee.api.ChatMessageType;
@@ -82,6 +83,9 @@ public class Reload implements Listener {
         ItemStack itemStack = player.getInventory().getItemInMainHand();
         Gun gun = Utils.getPlayerHeldGun(itemStack);
         if (gun == null) {
+            return;
+        } else if (gun.getTier() == Tier.SPECIAL) {
+            e.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§cThere's no ammo for this weapon..."));
             return;
         }
         player.playSound(player.getLocation(), Sound.BLOCK_CHAIN_PLACE, 1, 1);
