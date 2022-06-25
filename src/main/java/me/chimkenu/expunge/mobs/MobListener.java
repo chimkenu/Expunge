@@ -61,14 +61,6 @@ public class MobListener implements Listener {
         explode.remove();
     }
     @EventHandler
-    public void onExplode(EntityExplodeEvent e) {
-        if (e.getEntity().getScoreboardTags().contains("BOOMER")) {
-            Bukkit.broadcastMessage("TRUE");
-            e.setCancelled(true);
-        }
-        Bukkit.broadcastMessage("NO");
-    }
-    @EventHandler
     public void onDeath(EntityDeathEvent e) {
         if (e.getEntity().getScoreboardTags().contains("BOOMER")) {
             boom(e.getEntity());
