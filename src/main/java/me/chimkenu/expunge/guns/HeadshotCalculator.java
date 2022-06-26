@@ -8,15 +8,11 @@ import org.bukkit.util.BoundingBox;
 public class HeadshotCalculator {
 
     // TODO: make one for smaller entities?
-    public static boolean isHeadshot(Player shooter, LivingEntity target, int range) {
+    public static boolean isHeadshot(RayTrace ray, LivingEntity target, int range) {
         double x = target.getLocation().getX();
-        double y = target.getLocation().getY();
+        double y = target.getBoundingBox().getMaxY();
         double z = target.getLocation().getZ();
-        BoundingBox head = new BoundingBox(x + 0.25, y + 1.5, z + 0.25, x - 0.25, y + 2.0, z - 0.25);
-        if (target.getType() == EntityType.PLAYER && ((Player) target).isSneaking()) {
-            head = new BoundingBox(x + 0.25, y + 1, z + 0.25, x - 0.25, y + 1.5, z - 0.25);
-        }
-        RayTrace ray = new RayTrace(shooter.getEyeLocation().toVector(), shooter.getEyeLocation().getDirection());
+        BoundingBox head = new BoundingBox(x - 0.25, y - 0.5, z - 0.25, x + 0.25, y, z + 0.25);
         return ray.intersects(head, range, 0.05);
     }
 }

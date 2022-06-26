@@ -24,8 +24,10 @@ public class ShootParticle {
         ArrayList<LivingEntity> entities = new ArrayList<>();
         World world = shooter.getWorld();
         int wallsThrough = ThreadLocalRandom.current().nextInt(1, 4);
-        for (Vector v : positions) {
-            world.spawnParticle(particle, v.toLocation(world), 1, 0, 0, 0, 0);
+        for (int i = 0; i < positions.size(); i++) {
+            Vector v = positions.get(i);
+            // so the particle does not obscure vision
+            if (i > 4) world.spawnParticle(particle, v.toLocation(world), 1, 0, 0, 0, 0);
 
             for (Entity e : world.getNearbyEntities(v.toLocation(world), ACCURACY_TRUE, ACCURACY_TRUE, ACCURACY_TRUE)) {
                 if (e instanceof LivingEntity livingEntity) {
@@ -55,7 +57,7 @@ public class ShootParticle {
         for (LivingEntity e : entities) {
             double newDMG = (decreaseDamage && e.getLocation().distance(shooter.getLocation()) > 7) ? damage * 0.5 : damage;
             Vector vec = e.getVelocity();
-            boolean isHeadshot = HeadshotCalculator.isHeadshot(shooter, e, range);
+            boolean isHeadshot = HeadshotCalculator.isHeadshot(ray, e, range);
             if (isHeadshot) {
                 e.damage(newDMG + (newDMG * 0.5), shooter);
                 shooter.sendMessage(ChatColor.GOLD + "Headshot!");
