@@ -1,7 +1,7 @@
 package me.chimkenu.expunge.commands;
 
 import me.chimkenu.expunge.Expunge;
-import me.chimkenu.expunge.game.Director;
+import me.chimkenu.expunge.game.director.Director;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -27,8 +27,8 @@ public class Values implements CommandExecutor {
             sender.sendMessage(ChatColor.GRAY + "  gameTime: " + director.getGameTime());
             sender.sendMessage(ChatColor.GRAY + "  sceneTime: " + director.getSceneTime());
             sender.sendMessage(ChatColor.GRAY + "  sceneAttempts: " + director.getSceneAttempts());
-            sender.sendMessage(ChatColor.GRAY + "  activeMobs: " + director.getActiveMobs().size());
-            sender.sendMessage(ChatColor.GRAY + "  totalKills: " + director.getTotalKills());
+            sender.sendMessage(ChatColor.GRAY + "  activeMobs: " + director.getActiveMobs());
+            sender.sendMessage(ChatColor.GRAY + "  totalKills: " + director.statsHandler.getTotalKills());
             DecimalFormat decimalFormat = new DecimalFormat("#.###");
             decimalFormat.setRoundingMode(RoundingMode.CEILING);
             sender.sendMessage(ChatColor.GRAY + "  directorRating: " + decimalFormat.format((director.calculateRating() * 100)) + "%");

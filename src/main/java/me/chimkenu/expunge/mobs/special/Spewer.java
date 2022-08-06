@@ -4,8 +4,8 @@ import me.chimkenu.expunge.mobs.GameMob;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 
-public class Boomer extends GameMob{
-    public <T extends Mob> Boomer(World world, Location locationToSpawn) {
+public class Spewer extends GameMob{
+    public <T extends Mob> Spewer(World world, Location locationToSpawn) {
         super(world, locationToSpawn, Creeper.class, mob -> {
             if (mob.getTarget() == null) mob.setTarget(getRandomPlayer());
             else if (mob.getLocation().distanceSquared(mob.getTarget().getLocation()) < 4 * 4) {

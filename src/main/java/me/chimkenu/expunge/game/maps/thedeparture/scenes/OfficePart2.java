@@ -1,7 +1,6 @@
 package me.chimkenu.expunge.game.maps.thedeparture.scenes;
 
 import me.chimkenu.expunge.Expunge;
-import me.chimkenu.expunge.game.Director;
 import me.chimkenu.expunge.game.maps.Scene;
 import me.chimkenu.expunge.game.maps.thedeparture.DepartureDialogue;
 import me.chimkenu.expunge.guns.weapons.melees.FryingPan;
@@ -119,7 +118,7 @@ public class OfficePart2 {
                 new Location(world, 876, 44, 907),
                 player -> {
                     world.getBlockAt(new Location(world, 872, 43, 910)).setType(Material.BEEHIVE);
-                    Director.spawnWeapon(world, new Location(world, 864.5, 54, 909.5), new FryingPan(), false);
+                    Expunge.runningDirector.itemHandler.spawnWeapon(new Location(world, 864.5, 54, 909.5), new FryingPan(), false);
                     playDialogue(DepartureDialogue.OFFICE_ELEVATOR);
                 },
                 player -> playDialogue(DepartureDialogue.OFFICE_RADIO),
@@ -141,11 +140,11 @@ public class OfficePart2 {
 
                             @Override
                             public void run() {
-                                Expunge.runningDirector.spawnMob(new Horde(world, new Location(world, 845.5, 48, 928.5)));
-                                Expunge.runningDirector.spawnMob(new Horde(world, new Location(world, 853.5, 47, 939.5)));
-                                Expunge.runningDirector.spawnMob(new Horde(world, new Location(world, 866.5, 48, 939.5)));
-                                Expunge.runningDirector.spawnMob(new Horde(world, new Location(world, 872.5, 48, 931.5)));
-                                Expunge.runningDirector.spawnMob(new Horde(world, new Location(world, 876.5, 48, 925.5)));
+                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 845.5, 48, 928.5)));
+                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 853.5, 47, 939.5)));
+                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 866.5, 48, 939.5)));
+                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 872.5, 48, 931.5)));
+                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 876.5, 48, 925.5)));
                                 i++;
                                 if (i >= 5) {
                                     this.cancel();

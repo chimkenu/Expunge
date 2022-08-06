@@ -2,7 +2,8 @@ package me.chimkenu.expunge.game.maps.thedeparture.scenes;
 
 import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.enums.Tier;
-import me.chimkenu.expunge.game.Director;
+import me.chimkenu.expunge.game.director.Director;
+import me.chimkenu.expunge.game.director.ItemHandler;
 import me.chimkenu.expunge.game.maps.Scene;
 import me.chimkenu.expunge.game.maps.thedeparture.DepartureDialogue;
 import me.chimkenu.expunge.guns.utilities.healing.Medkit;
@@ -130,18 +131,18 @@ public class Streets {
                     world.getBlockAt(new Location(world, 1139, 43, 914)).setType(Material.AIR);
                     world.getBlockAt(new Location(world, 1139, 43, 918)).setType(Material.BEEHIVE);
                     for (int i = 0; i < 4; i++) {
-                        Director.spawnUtility(world, new Location(world, 877.5, 44, 910.5), new Medkit());
+                        Expunge.runningDirector.itemHandler.spawnUtility(new Location(world, 877.5, 44, 910.5), new Medkit());
                     }
-                    Director.spawnWeapon(world, new Location(world, 873.5, 44, 907.5), Director.getRandomGun(Tier.TIER2), true);
-                    Director.spawnWeapon(world, new Location(world, 875.5, 44, 907.5), Director.getRandomGun(Tier.TIER2), true);
+                    Expunge.runningDirector.itemHandler.spawnWeapon(new Location(world, 873.5, 44, 907.5), ItemHandler.getRandomGun(Tier.TIER2), true);
+                    Expunge.runningDirector.itemHandler.spawnWeapon(new Location(world, 875.5, 44, 907.5), ItemHandler.getRandomGun(Tier.TIER2), true);
 
-                    Director.spawnUtility(world, new Location(world, 1135, 44, 919), new Medkit());
-                    Director.spawnWeapon(world, new Location(world, 857.5, 44, 910.5), Director.getRandomGun(Tier.TIER1), false);
-                    Director.spawnWeapon(world, new Location(world, 857.5, 44, 907.5), Director.getRandomGun(Tier.TIER1), false);
-                    Director.spawnWeapon(world, new Location(world, 1135, 44, 910), Director.getRandomGun(Tier.TIER1), false);
-                    Director.spawnWeapon(world, new Location(world, 1135, 44, 907), Director.getRandomMelee(Tier.TIER1), false);
+                    Expunge.runningDirector.itemHandler.spawnUtility(new Location(world, 1135, 44, 919), new Medkit());
+                    Expunge.runningDirector.itemHandler.spawnWeapon(new Location(world, 857.5, 44, 910.5), ItemHandler.getRandomGun(Tier.TIER1), false);
+                    Expunge.runningDirector.itemHandler.spawnWeapon(new Location(world, 857.5, 44, 907.5), ItemHandler.getRandomGun(Tier.TIER1), false);
+                    Expunge.runningDirector.itemHandler.spawnWeapon(new Location(world, 1135, 44, 910), ItemHandler.getRandomGun(Tier.TIER1), false);
+                    Expunge.runningDirector.itemHandler.spawnWeapon(new Location(world, 1135, 44, 907), ItemHandler.getRandomMelee(Tier.TIER1), false);
 
-                    Expunge.runningDirector.spawnAtRandomLocations(world, new BoundingBox(873, 41, 889, 932, 41, 863), 30, false);
+                    Expunge.runningDirector.mobHandler.spawnAtRandomLocations(new BoundingBox(873, 41, 889, 932, 41, 863), 30);
                 },
                 null,
                 new Listener() {
@@ -161,19 +162,19 @@ public class Streets {
                             int i = 0;
                             @Override
                             public void run() {
-                                Expunge.runningDirector.spawnMob(new Horde(world, new Location(world, 1121.5, 43, 922.5)));
-                                Expunge.runningDirector.spawnMob(new Horde(world, new Location(world, 1118.5, 43, 843)));
-                                Expunge.runningDirector.spawnMob(new Horde(world, new Location(world, 1076.5, 43, 894.5)));
-                                Expunge.runningDirector.spawnMob(new Horde(world, new Location(world, 1134, 43, 898.5)));
-                                Expunge.runningDirector.spawnMob(new Horde(world, new Location(world, 1125.5, 50, 899.5)));
-                                Expunge.runningDirector.spawnMob(new Horde(world, new Location(world, 1131.5, 50, 909.5)));
-                                Expunge.runningDirector.spawnMob(new Horde(world, new Location(world, 1125.5, 50, 910.5)));
-                                Expunge.runningDirector.spawnMob(new Horde(world, new Location(world, 1131.5, 50, 920.5)));
-                                Expunge.runningDirector.spawnMob(new Horde(world, new Location(world, 1131.5, 50, 920.5)));
-                                Expunge.runningDirector.spawnMob(new Horde(world, new Location(world, 1131.5, 56, 920.5)));
-                                Expunge.runningDirector.spawnMob(new Horde(world, new Location(world, 1125.5, 56, 910.5)));
-                                Expunge.runningDirector.spawnMob(new Horde(world, new Location(world, 1131.5, 56, 909.5)));
-                                Expunge.runningDirector.spawnMob(new Horde(world, new Location(world, 1125.5, 56, 899.5)));
+                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1121.5, 43, 922.5)));
+                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1118.5, 43, 843)));
+                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1076.5, 43, 894.5)));
+                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1134, 43, 898.5)));
+                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1125.5, 50, 899.5)));
+                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1131.5, 50, 909.5)));
+                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1125.5, 50, 910.5)));
+                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1131.5, 50, 920.5)));
+                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1131.5, 50, 920.5)));
+                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1131.5, 56, 920.5)));
+                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1125.5, 56, 910.5)));
+                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1131.5, 56, 909.5)));
+                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1125.5, 56, 899.5)));
                                 i++;
                                 if (i >= 3) {
                                     this.cancel();

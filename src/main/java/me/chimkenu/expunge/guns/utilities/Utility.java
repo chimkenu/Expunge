@@ -4,6 +4,7 @@ import me.chimkenu.expunge.enums.Slot;
 import me.chimkenu.expunge.guns.GameItem;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -24,5 +25,5 @@ public abstract class Utility extends GameItem {
         return utility;
     }
 
-    public abstract void use(Player player);
+    public abstract void use(LivingEntity entity);
 }

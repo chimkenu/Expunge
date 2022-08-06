@@ -2,7 +2,7 @@ package me.chimkenu.expunge.game.maps.thedeparture.scenes;
 
 import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.enums.Tier;
-import me.chimkenu.expunge.game.Director;
+import me.chimkenu.expunge.game.director.ItemHandler;
 import me.chimkenu.expunge.game.maps.Scene;
 import me.chimkenu.expunge.game.maps.thedeparture.DepartureDialogue;
 import me.chimkenu.expunge.guns.utilities.healing.Adrenaline;
@@ -127,13 +127,13 @@ public class Alleys {
                     world.getBlockAt(new Location(world, 1139, 43, 918)).setType(Material.AIR);
                     world.getBlockAt(new Location(world, 1127, 43, 986)).setType(Material.AIR);
 
-                    Director.spawnUtility(world, new Location(world, 1140.7, 44, 917), new Pills());
-                    Director.spawnUtility(world, new Location(world, 1140.7, 44, 915), new Adrenaline());
-                    Director.spawnWeapon(world, new Location(world, 1138, 44, 914.3), Director.getRandomGun(Tier.TIER1), true);
-                    Director.spawnWeapon(world, new Location(world, 1138, 44, 917.7), Director.getRandomMelee(Tier.TIER1), false);
+                    Expunge.runningDirector.itemHandler.spawnUtility(new Location(world, 1140.7, 44, 917), new Pills());
+                    Expunge.runningDirector.itemHandler.spawnUtility(new Location(world, 1140.7, 44, 915), new Adrenaline());
+                    Expunge.runningDirector.itemHandler.spawnWeapon(new Location(world, 1138, 44, 914.3), ItemHandler.getRandomGun(Tier.TIER1), true);
+                    Expunge.runningDirector.itemHandler.spawnWeapon(new Location(world, 1138, 44, 917.7), ItemHandler.getRandomMelee(Tier.TIER1), false);
 
-                    Expunge.runningDirector.spawnAtRandomLocations(world, new BoundingBox(1174, 42, 945, 1124, 42, 977), 30, false);
-                    Expunge.runningDirector.spawnAtRandomLocations(world, new BoundingBox(1157, 42, 973, 1129, 42, 989), 20, false);
+                    Expunge.runningDirector.mobHandler.spawnAtRandomLocations(new BoundingBox(1174, 42, 945, 1124, 42, 977), 30);
+                    Expunge.runningDirector.mobHandler.spawnAtRandomLocations(new BoundingBox(1157, 42, 973, 1129, 42, 989), 20);
                 },
                 null,
                 null,

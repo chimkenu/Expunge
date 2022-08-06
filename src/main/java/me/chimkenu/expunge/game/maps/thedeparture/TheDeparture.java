@@ -18,6 +18,7 @@ public class TheDeparture extends Map {
         scenes.add(OfficePart2.getScene());
         scenes.add(Streets.getScene());
         scenes.add(Alleys.getScene());
+        scenes.add(Subway.getScene());
         scenes.add(Highway.getScene());
         return scenes;
     }

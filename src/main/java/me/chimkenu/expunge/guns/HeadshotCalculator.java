@@ -1,13 +1,10 @@
 package me.chimkenu.expunge.guns;
 
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.util.BoundingBox;
 
 public class HeadshotCalculator {
 
-    // TODO: make one for smaller entities?
     public static boolean isHeadshot(RayTrace ray, LivingEntity target, int range) {
         double x = target.getLocation().getX();
         double y = target.getBoundingBox().getMaxY();

@@ -1,5 +1,7 @@
 package me.chimkenu.expunge.guns;
 
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -60,7 +62,7 @@ public class ShootParticle {
             boolean isHeadshot = HeadshotCalculator.isHeadshot(ray, e, range);
             if (isHeadshot) {
                 e.damage(newDMG + (newDMG * 0.5), shooter);
-                shooter.sendMessage(ChatColor.GOLD + "Headshot!");
+                shooter.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§6Headshot!"));
             } else
                 e.damage(newDMG, shooter);
             hitEntities.put(e, isHeadshot);

@@ -60,7 +60,7 @@ public class NextScene implements Listener {
             }
 
             // increment scene index then start
-            Expunge.currentSceneIndex = Expunge.currentSceneIndex + 1;
+            Expunge.updateSceneIndex();
             Expunge.startScene(Expunge.currentMap.getScenes().get(Expunge.currentSceneIndex));
         }
     }

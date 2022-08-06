@@ -1,7 +1,7 @@
 package me.chimkenu.expunge.commands;
 
 import me.chimkenu.expunge.Expunge;
-import me.chimkenu.expunge.game.Director;
+import me.chimkenu.expunge.game.director.Director;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -35,10 +35,10 @@ public class Stats implements CommandExecutor {
         decimalFormat.setRoundingMode(RoundingMode.CEILING);
 
         sender.sendMessage(ChatColor.GRAY + "" + ChatColor.BOLD + player.getDisplayName() + "'s Stats:");
-        sender.sendMessage(ChatColor.GRAY + "  Kills: " + director.getKills(player));
-        sender.sendMessage(ChatColor.GRAY + "  Gun Accuracy: " + decimalFormat.format(director.getAccuracy(player)));
-        sender.sendMessage(ChatColor.GRAY + "  Headshot Accuracy: " + decimalFormat.format(director.getHeadshotAccuracy(player)));
-        sender.sendMessage(ChatColor.GRAY + "  Pace: " + decimalFormat.format(director.getPace(player)));
+        sender.sendMessage(ChatColor.GRAY + "  Kills: " + director.statsHandler.getKills(player));
+        sender.sendMessage(ChatColor.GRAY + "  Gun Accuracy: " + decimalFormat.format(director.statsHandler.getAccuracy(player)));
+        sender.sendMessage(ChatColor.GRAY + "  Headshot Accuracy: " + decimalFormat.format(director.statsHandler.getHeadshotAccuracy(player)));
+        sender.sendMessage(ChatColor.GRAY + "  Pace: " + decimalFormat.format(director.statsHandler.getPace(player)));
         return true;
     }
 }

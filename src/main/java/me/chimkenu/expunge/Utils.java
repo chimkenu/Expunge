@@ -9,6 +9,7 @@ import me.chimkenu.expunge.guns.utilities.healing.Medkit;
 import me.chimkenu.expunge.guns.utilities.healing.Pills;
 import me.chimkenu.expunge.guns.utilities.throwable.Grenade;
 import me.chimkenu.expunge.guns.utilities.throwable.Molotov;
+import me.chimkenu.expunge.guns.utilities.throwable.Spit;
 import me.chimkenu.expunge.guns.utilities.throwable.Throwable;
 import me.chimkenu.expunge.guns.weapons.guns.Gun;
 import me.chimkenu.expunge.guns.weapons.melees.Melee;
@@ -72,6 +73,7 @@ public class Utils {
         ArrayList<Throwable> throwables = new ArrayList<>();
         throwables.add(new Grenade());
         throwables.add(new Molotov());
+        throwables.add(new Spit());
         return throwables;
     }
 
@@ -119,15 +121,6 @@ public class Utils {
         for (Throwable throwable : getThrowables()) {
             if (projectile.getScoreboardTags().contains(throwable.getTag())) {
                 return throwable;
-            }
-        }
-        return null;
-    }
-
-    public static <T extends Gun> Weapons.Guns getEnumFromGun(Class<T> gunToCheck) {
-        for (Weapons.Guns gun : Weapons.Guns.values()) {
-            if (gun.getGun().getClass().equals(gunToCheck)) {
-                return gun;
             }
         }
         return null;

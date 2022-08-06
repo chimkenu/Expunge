@@ -2,10 +2,7 @@ package me.chimkenu.expunge.commands;
 
 import me.chimkenu.expunge.mobs.GameMob;
 import me.chimkenu.expunge.mobs.common.Horde;
-import me.chimkenu.expunge.mobs.special.Boomer;
-import me.chimkenu.expunge.mobs.special.Charger;
-import me.chimkenu.expunge.mobs.special.Jockey;
-import me.chimkenu.expunge.mobs.special.Tank;
+import me.chimkenu.expunge.mobs.special.*;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -41,14 +38,18 @@ public class Spawn implements CommandExecutor {
             String mobName = args[0].toLowerCase();
             GameMob mobToSpawn = switch (mobName) {
                 case "zombie" -> new Horde(player.getWorld(), player.getLocation());
-                case "creeper" -> new Boomer(player.getWorld(), player.getLocation());
-                case "spider" -> new Jockey(player.getWorld(), player.getLocation());
-                case "iron_golem" -> new Tank(player.getWorld(), player.getLocation());
+                case "creeper" -> new Spewer(player.getWorld(), player.getLocation());
+                case "spider" -> new Rider(player.getWorld(), player.getLocation());
+                case "golem" -> new Tank(player.getWorld(), player.getLocation());
                 case "zoglin" -> new Charger(player.getWorld(), player.getLocation());
+                case "stray" -> new Pouncer(player.getWorld(), player.getLocation());
+                case "husk" -> new Choker(player.getWorld(), player.getLocation());
+                case "villager" -> new Spitter(player.getWorld(), player.getLocation());
+                case "enderman" -> new Witch(player.getWorld(), player.getLocation());
                 default -> null;
             };
             if (mobToSpawn == null) {
-                sender.sendMessage(ChatColor.RED + "Unknown mob '" + ChatColor.WHITE + mobName + ChatColor.RED + "' " + ChatColor.GRAY + "Mobs: zombie, creeper, spider, iron_golem, zoglin");
+                sender.sendMessage(ChatColor.RED + "Unknown mob '" + ChatColor.WHITE + mobName + ChatColor.RED + "' " + ChatColor.GRAY + "Mobs: zombie, creeper, spider, golem, zoglin, stray, husk, villager, enderman");
                 return true;
             }
         }

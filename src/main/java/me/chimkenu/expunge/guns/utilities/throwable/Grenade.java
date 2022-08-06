@@ -5,15 +5,14 @@ import org.bukkit.*;
 import org.bukkit.entity.*;
 
 public class Grenade extends Throwable {
-
     public Grenade() {
         super(20, Material.COAL, "&8Grenade", Slot.TERTIARY, "THROWABLE_GRENADE");
     }
 
     @Override
-    public void use(Player player) {
-        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 0.5f, 0);
-        Projectile ball = player.launchProjectile(Snowball.class);
+    public void use(LivingEntity entity) {
+        entity.getWorld().playSound(entity.getLocation(), Sound.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 0.5f, 0);
+        Projectile ball = entity.launchProjectile(Snowball.class);
         ball.addScoreboardTag("THROWABLE_GRENADE");
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "execute as @e[tag=THROWABLE_GRENADE] run data merge entity @s {Item:{id:\"minecraft:coal_block\",Count:1b}}");
     }

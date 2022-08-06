@@ -14,7 +14,6 @@ import org.bukkit.util.Vector;
 import java.util.ArrayList;
 
 public abstract class Healing extends Utility {
-
     public static final ArrayList<Player> usingUtility = new ArrayList<>();
 
     private final boolean isInstantUse;

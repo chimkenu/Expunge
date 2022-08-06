@@ -2,7 +2,7 @@ package me.chimkenu.expunge.game.maps.thedeparture.scenes;
 
 import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.enums.Tier;
-import me.chimkenu.expunge.game.Director;
+import me.chimkenu.expunge.game.director.ItemHandler;
 import me.chimkenu.expunge.game.maps.Scene;
 import me.chimkenu.expunge.game.maps.thedeparture.DepartureDialogue;
 import me.chimkenu.expunge.guns.utilities.healing.Adrenaline;
@@ -131,8 +131,8 @@ public class Subway {
                 BoundingBox box = new BoundingBox(1069, 32, 1008, 1064, 38, 1001);
                 if (!box.contains(e.getPlayer().getLocation().toVector()))
                     return;
-                Expunge.runningDirector.spawnAtRandomLocations(world, new BoundingBox(1103, 15, 1030, 1078, 15, 1016), 30, false);
-                Expunge.runningDirector.spawnAtRandomLocations(world, new BoundingBox(1104, 26, 1042, 1090, 26, 1048), 15, false);
+                Expunge.runningDirector.mobHandler.spawnAtRandomLocations(new BoundingBox(1103, 15, 1030, 1078, 15, 1016), 30);
+                Expunge.runningDirector.mobHandler.spawnAtRandomLocations(new BoundingBox(1104, 26, 1042, 1090, 26, 1048), 15);
                 HandlerList.unregisterAll(this);
             }
         });
@@ -144,7 +144,7 @@ public class Subway {
                 if (e.getAction().equals(Action.RIGHT_CLICK_BLOCK) && e.getClickedBlock() != null && e.getClickedBlock().getType().toString().contains("_BUTTON")) {
                     if (!e.getClickedBlock().getLocation().toVector().equals(new Vector(1085, 16, 1017)))
                         return;
-                    Director.spawnWeapon(world, new Location(world, 1084.5, 16.3, 1017.5), new MrCookie(), false);
+                    Expunge.runningDirector.itemHandler.spawnWeapon(new Location(world, 1084.5, 16.3, 1017.5), new MrCookie(), false);
                     playDialogue(DepartureDialogue.SUBWAY_MR_COOKIE);
                     HandlerList.unregisterAll(this);
                 }
@@ -192,15 +192,15 @@ public class Subway {
                     world.getBlockAt(new Location(world, 1117, 26, 1205)).setType(Material.BEEHIVE);
                     world.getBlockAt(new Location(world, 1127, 26, 1205)).setType(Material.AIR);
                     for (int i = 0; i < 4; i++) {
-                        Director.spawnUtility(world, new Location(world, 1123.5, 44, 996.5), new Medkit());
+                        Expunge.runningDirector.itemHandler.spawnUtility(new Location(world, 1123.5, 44, 996.5), new Medkit());
                     }
-                    Director.spawnWeapon(world, new Location(world, 1119.3, 44, 983), Director.getRandomGun(Tier.TIER2), true);
-                    Director.spawnWeapon(world, new Location(world, 1122.7, 44, 981), Director.getRandomGun(Tier.TIER2), true);
-                    Director.spawnWeapon(world, new Location(world, 1119.3, 44.5, 994.5), Director.getRandomMelee(Tier.TIER1), false);
-                    Director.spawnUtility(world, new Location(world, 1121, 50.2, 984), new Pills());
-                    Director.spawnUtility(world, new Location(world, 1126, 50.2, 983), new Adrenaline());
+                    Expunge.runningDirector.itemHandler.spawnWeapon(new Location(world, 1119.3, 44, 983), ItemHandler.getRandomGun(Tier.TIER2), true);
+                    Expunge.runningDirector.itemHandler.spawnWeapon(new Location(world, 1122.7, 44, 981), ItemHandler.getRandomGun(Tier.TIER2), true);
+                    Expunge.runningDirector.itemHandler.spawnWeapon(new Location(world, 1119.3, 44.5, 994.5), ItemHandler.getRandomMelee(Tier.TIER1), false);
+                    Expunge.runningDirector.itemHandler.spawnUtility(new Location(world, 1121, 50.2, 984), new Pills());
+                    Expunge.runningDirector.itemHandler.spawnUtility(new Location(world, 1126, 50.2, 983), new Adrenaline());
 
-                    Expunge.runningDirector.spawnAtRandomLocations(world, new BoundingBox(1112, 41, 994, 1086, 41, 1011), 45, false);
+                    Expunge.runningDirector.mobHandler.spawnAtRandomLocations(new BoundingBox(1112, 41, 994, 1086, 41, 1011), 45);
                 },
                 null,
                 null,

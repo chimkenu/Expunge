@@ -9,8 +9,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.potion.PotionEffect;
@@ -31,11 +31,11 @@ public class MobListener implements Listener {
         // common infected tags
         Entity entity = e.getEntity();
         if (entity.getScoreboardTags().contains("WANDERER")) {
-            if (e.getEntity().getLocation().distanceSquared(target.getLocation()) < 6 * 6)
+            if (e.getEntity().getLocation().distanceSquared(target.getLocation()) < 7 * 7)
                 e.setCancelled(true);
             else
                 e.getEntity().removeScoreboardTag("WANDERER");
-        } else if (entity.getScoreboardTags().contains("WANDERER?")) e.getEntity().removeScoreboardTag("WANDERER?");
+        }
     }
 
     // BOOMER
@@ -67,6 +67,14 @@ public class MobListener implements Listener {
         }
     }
 
+    // TANK TAKES MORE DAMAGE WHEN ON FIRE
+    @EventHandler
+    public void onDamage(EntityDamageEvent e) {
+        if (e.getEntity().getScoreboardTags().contains("TANK") && e.getEntity().getFireTicks() > 0) {
+            e.setDamage(e.getDamage() * 20);
+        }
+    }
+
     // ANY MOB THAT DISABLES
     @EventHandler
     public void onSwitch(PlayerItemHeldEvent e) {
@@ -78,9 +86,15 @@ public class MobListener implements Listener {
     // MOB EFFECTS
     @EventHandler
     public void onPlayerDamage(EntityDamageByEntityEvent e) {
+        // can't deal damage to jockeys && hunters if they on u
+        if (e.getEntity().getPassengers().contains(e.getDamager())) {
+            e.setCancelled(true);
+            return;
+        }
         if (!(e.getEntity() instanceof Player player) || !(e.getDamager() instanceof LivingEntity damager) || e.getDamage() < 0.25) {
             return;
         }
+        // charger knocks down player
         if (damager.getScoreboardTags().contains("CHARGER")) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 5, 2, false, false, true));
             if (damager.hasPotionEffect(PotionEffectType.CONFUSION) && player.getVehicle() == null) {
@@ -97,7 +111,7 @@ public class MobListener implements Listener {
             loc.subtract(0, 0.25, 0);
         }
 
-        loc.setY(loc.getBlock().getBoundingBox().getMaxY());
+        loc.setY(loc.getBlock().getBoundingBox().getMaxY() - 0.95);
         ArmorStand armorStand = player.getWorld().spawn(loc, ArmorStand.class);
         armorStand.setGravity(false);
         armorStand.setInvulnerable(true);
@@ -116,6 +130,9 @@ public class MobListener implements Listener {
             return;
         }
         if (!armorStand.getScoreboardTags().contains("KNOCKED")) {
+            return;
+        }
+        if (player.getPassengers().size() > 0) {
             return;
         }
         if (player.getNoDamageTicks() < 1 || player.getGameMode() != GameMode.ADVENTURE) {

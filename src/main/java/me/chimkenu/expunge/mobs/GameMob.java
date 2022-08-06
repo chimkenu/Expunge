@@ -1,12 +1,12 @@
 package me.chimkenu.expunge.mobs;
 
 import me.chimkenu.expunge.Expunge;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -24,8 +24,23 @@ public abstract class GameMob {
         return players.get(ThreadLocalRandom.current().nextInt(players.size()));
     }
 
-    public static void putOnRandomClothes(Mob mob) {
+    private static ItemStack getDyedArmor(Material material) {
+        ItemStack item = new ItemStack(material);
+        LeatherArmorMeta meta = (LeatherArmorMeta) item.getItemMeta();
+        if (meta != null) {
+            meta.setColor(Color.fromRGB(ThreadLocalRandom.current().nextInt(255), ThreadLocalRandom.current().nextInt(255), ThreadLocalRandom.current().nextInt(255)));
+            item.setItemMeta(meta);
+        }
+        return item;
+    }
 
+    public static void putOnRandomClothes(Mob mob) {
+        EntityEquipment equipment = mob.getEquipment();
+        if (equipment != null) {
+            equipment.setChestplate(getDyedArmor(Material.LEATHER_CHESTPLATE));
+            equipment.setLeggings(getDyedArmor(Material.LEATHER_LEGGINGS));
+            equipment.setBoots(getDyedArmor(Material.LEATHER_BOOTS));
+        }
     }
 
     private final Mob mob;

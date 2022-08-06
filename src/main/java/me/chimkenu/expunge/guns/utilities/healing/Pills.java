@@ -2,6 +2,7 @@ package me.chimkenu.expunge.guns.utilities.healing;
 
 import me.chimkenu.expunge.enums.Slot;
 import org.bukkit.Material;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 public class Pills extends Healing {
@@ -10,7 +11,10 @@ public class Pills extends Healing {
     }
 
     @Override
-    public void use(Player player) {
+    public void use(LivingEntity entity) {
+        if (!(entity instanceof Player player)) {
+            return;
+        }
         if (Healing.usingUtility.contains(player)) {
             return;
         }

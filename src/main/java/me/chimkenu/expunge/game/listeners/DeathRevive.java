@@ -46,7 +46,7 @@ public class DeathRevive implements Listener {
         player.getInventory().clear(5); // pistol if they were down
         if (Expunge.playing.getKeys().contains(player)) {
             Expunge.playing.setIsAlive(player, false);
-            Expunge.playing.putLives(player, 0);
+            currentLives.put(player, 0);
         }
     }
 
@@ -75,7 +75,7 @@ public class DeathRevive implements Listener {
                 loc.subtract(0, 0.25, 0);
             }
 
-            loc.setY(loc.getBlock().getBoundingBox().getMaxY());
+            loc.setY(loc.getBlock().getBoundingBox().getMaxY() - 0.95);
             ArmorStand armorStand = player.getWorld().spawn(loc, ArmorStand.class);
             armorStand.setGravity(false);
             armorStand.setInvulnerable(true);
@@ -139,10 +139,12 @@ public class DeathRevive implements Listener {
         if (Expunge.playing.isAlive(player)) {
             return;
         }
-        if (Expunge.playing.getLives(player) < 1) {
+        if (currentLives.get(player) < 1) {
             return;
         }
-        e.setCancelled(true);
+        if (e.getDismounted().getScoreboardTags().contains("RESPAWN_ARMOR_STAND")) {
+            e.setCancelled(true);
+        }
     }
 
     private void revive(Player target, Player savior) {
@@ -163,7 +165,7 @@ public class DeathRevive implements Listener {
 
             inventory.setItem(5, new ItemStack(Material.AIR)); // clear pistol
 
-            if (currentLives.get(target) <= 1) {
+            if (currentLives.get(target) == 1) {
                 new BukkitRunnable() {
                     @Override
                     public void run() {

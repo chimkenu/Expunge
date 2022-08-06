@@ -12,12 +12,12 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-public class Jockey extends GameMob {
-    public <T extends Mob> Jockey(World world, Location locationToSpawn) {
+public class Rider extends GameMob {
+    public <T extends Mob> Rider(World world, Location locationToSpawn) {
         super(world, locationToSpawn, Spider.class, mob -> {
             if (mob.getVehicle() instanceof Player target) {
                 mob.setTarget(target);
-                target.getInventory().setHeldItemSlot(8);
+                target.getInventory().setHeldItemSlot(5);
                 target.setVelocity(target.getVelocity().add(mob.getEyeLocation().getDirection()));
                 target.damage(0.5, mob);
             } else {
@@ -31,8 +31,10 @@ public class Jockey extends GameMob {
                         new BukkitRunnable() {
                             @Override
                             public void run() {
-                                player.getInventory().setHeldItemSlot(8);
-                                player.addPassenger(mob);
+                                if (mob.getTarget() != null && mob.getLocation().distanceSquared(mob.getTarget().getLocation()) < 3 * 3) {
+                                    player.getInventory().setHeldItemSlot(5);
+                                    player.addPassenger(mob);
+                                }
                             }
                         }.runTaskLater(Expunge.instance, 5);
                     }

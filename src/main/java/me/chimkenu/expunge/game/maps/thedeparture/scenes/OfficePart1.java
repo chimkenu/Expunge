@@ -1,6 +1,6 @@
 package me.chimkenu.expunge.game.maps.thedeparture.scenes;
 
-import me.chimkenu.expunge.game.Director;
+import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.game.maps.Scene;
 import me.chimkenu.expunge.game.maps.thedeparture.DepartureDialogue;
 import me.chimkenu.expunge.guns.utilities.healing.Medkit;
@@ -68,13 +68,13 @@ public class OfficePart1 {
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "/execute in minecraft:overworld run setblock 952 9 877 minecraft:birch_door[half=lower,facing=south,hinge=left,open=false] destroy");
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "/execute in minecraft:overworld run setblock 952 10 877 minecraft:birch_door[half=upper,facing=south,hinge=left,open=false] destroy");
                     for (int i = 0; i < 4; i++) {
-                        Director.spawnUtility(world, new Location(world, 957, 10, 878.3), new Medkit());
+                        Expunge.runningDirector.itemHandler.spawnUtility(new Location(world, 957, 10, 878.3), new Medkit());
                     }
                     ArrayList<Melee> meleeWeapons = new ArrayList<>();
                     meleeWeapons.add(new FireAxe());
                     meleeWeapons.add(new Crowbar());
                     meleeWeapons.add(new Nightstick());
-                    Director.spawnWeapon(world, new Location(world, 949.5, 10, 878.5), meleeWeapons.get(ThreadLocalRandom.current().nextInt(0, meleeWeapons.size())), true);
+                    Expunge.runningDirector.itemHandler.spawnWeapon(new Location(world, 949.5, 10, 878.5), meleeWeapons.get(ThreadLocalRandom.current().nextInt(0, meleeWeapons.size())), true);
 
                     playDialogue(DepartureDialogue.OFFICE_OPENING);
                 },

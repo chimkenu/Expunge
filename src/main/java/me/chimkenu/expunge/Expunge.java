@@ -1,12 +1,12 @@
 package me.chimkenu.expunge;
 
 import me.chimkenu.expunge.commands.*;
-import me.chimkenu.expunge.game.Director;
+import me.chimkenu.expunge.game.director.Director;
 import me.chimkenu.expunge.game.SetSet;
 import me.chimkenu.expunge.game.listeners.*;
 import me.chimkenu.expunge.game.maps.Map;
 import me.chimkenu.expunge.game.maps.Scene;
-import me.chimkenu.expunge.game.maps.TheDeparture;
+import me.chimkenu.expunge.game.maps.thedeparture.TheDeparture;
 import me.chimkenu.expunge.guns.listeners.*;
 import me.chimkenu.expunge.guns.weapons.guns.Gun;
 import me.chimkenu.expunge.guns.weapons.guns.Pistol;
@@ -242,6 +242,11 @@ public final class Expunge extends JavaPlugin {
         startScene(scene);
     }
 
+    public static void updateSceneIndex() {
+        currentSceneIndex++;
+        runningDirector.updateSceneIndex();
+    }
+
     public static void startGame(boolean doCountdown) {
         if (isGameRunning) {
             return;
@@ -290,7 +295,7 @@ public final class Expunge extends JavaPlugin {
         isCountdownRunning = false;
         isGameRunning = true;
         HandlerList.unregisterAll(runningDirector);
-        runningDirector = new Director();
+        runningDirector = new Director(currentMap, currentSceneIndex, difficulty);
         instance.getServer().getPluginManager().registerEvents(runningDirector, instance);
         runningDirector.runTaskTimer(instance, 1, 1);
 
@@ -313,7 +318,14 @@ public final class Expunge extends JavaPlugin {
             }
         }
 
-        Bukkit.broadcastMessage(ChatColor.BLUE + "Game ended at " + runningDirector.getGameTime() + " ticks");
+        long total = (long) (runningDirector.getGameTime() * 0.05 * 1000);
+        int milliseconds = (int) (total % 1000);
+        int seconds = (int) (total / 1000) % 60;
+        int minutes = (int) (total / (1000 * 60)) % 60;
+        int hours = (int) (total / (1000 * 60 * 60)) % 60;
+        String time = String.format("%01d:%02d:%02d.%02d", hours, minutes, seconds, milliseconds);
+
+        Bukkit.broadcastMessage(ChatColor.BLUE + "Game ended at " + ChatColor.DARK_AQUA + time);
 
         playing.clear();
         currentSceneIndex = 0;

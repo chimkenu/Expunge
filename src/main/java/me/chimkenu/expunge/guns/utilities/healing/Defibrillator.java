@@ -4,6 +4,7 @@ import me.chimkenu.expunge.enums.Slot;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Material;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 public class Defibrillator extends Healing {
@@ -12,7 +13,10 @@ public class Defibrillator extends Healing {
     }
 
     @Override
-    public void use(Player player) {
+    public void use(LivingEntity entity) {
+        if (!(entity instanceof Player player)) {
+            return;
+        }
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§cThis doesn't work yet."));
     }
 }

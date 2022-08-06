@@ -4,6 +4,7 @@ import me.chimkenu.expunge.Utils;
 import me.chimkenu.expunge.guns.utilities.Utility;
 import me.chimkenu.expunge.guns.utilities.healing.Healing;
 import me.chimkenu.expunge.guns.utilities.throwable.Throwable;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
@@ -46,7 +47,7 @@ public class UtilityListener implements Listener {
     public void onProjectileLand(ProjectileHitEvent e) {
         Projectile projectile = e.getEntity();
         Throwable throwable = Utils.getThrowableFromProjectile(projectile);
-        if (throwable != null && projectile.getShooter() instanceof Player shooter) {
+        if (throwable != null && projectile.getShooter() instanceof Entity shooter) {
             throwable.onLand(projectile.getWorld(), projectile.getLocation(), shooter);
         }
     }
