@@ -85,7 +85,7 @@ public class Spit extends Throwable {
                     String[] result = coordinates.split(" ");
                     if (result.length == 6) {
                         double[] doubles = new double[result.length];
-                        int i = 0;
+                        int i;
                         for (i = 0; i < result.length; i++) {
                             try { doubles[i] = Double.parseDouble(result[i]); }
                             catch (NumberFormatException ignored) { break; }
