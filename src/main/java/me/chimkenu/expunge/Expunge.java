@@ -35,7 +35,6 @@ public final class Expunge extends JavaPlugin {
 
     public static JavaPlugin instance;
     public static final HashSet<Player> spectators = new HashSet<>();
-    public static final HashSet<Player> inQueue = new HashSet<>();
     public static final SetSet playing = new SetSet();
 
     public static boolean isCountdownRunning;
@@ -43,7 +42,7 @@ public final class Expunge extends JavaPlugin {
     public static boolean isSpawningEnabled;
     public static Map currentMap;
     public static int currentSceneIndex;
-    public static Difficulty difficulty = Difficulty.NORMAL;
+    public static Difficulty currentDifficulty = Difficulty.NORMAL;
     public static Director runningDirector;
 
     public static void reRegisterGameEvents() {
@@ -248,43 +247,42 @@ public final class Expunge extends JavaPlugin {
         runningDirector.updateSceneIndex();
     }
 
-    public static void startGame(boolean doCountdown) {
+    public static void startGame() {
         if (isGameRunning) {
             return;
         }
-        if (doCountdown) {
-            if (isCountdownRunning) {
-                // the countdown is already running!
-                return;
-            }
-            inQueue.clear();
-            isCountdownRunning = true;
-            new BukkitRunnable() {
-                int count = 31;
-                @Override
-                public void run() {
-                    count--;
-                    for (Player p : Bukkit.getOnlinePlayers()) {
-                        p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§eGame starting in §b" + count + "§e. Do §b/join §eto join!"));
-                    }
-                    if (count < 1) {
-                        isCountdownRunning = false;
-                        if (!Expunge.isGameRunning) {
-                            for (Player p : inQueue) {
-                                setPlaying(p);
-                            }
-                            startGame();
-                        }
-                        inQueue.clear();
-                        this.cancel();
-                    }
+        if (isCountdownRunning) {
+            // the countdown is already running!
+            return;
+        }
+        Queue.clear();
+        isCountdownRunning = true;
+        new BukkitRunnable() {
+            int count = 31;
+            @Override
+            public void run() {
+                count--;
+                for (Player p : Bukkit.getOnlinePlayers()) {
+                    p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§eGame starting in §b" + count + "§e. Do §b/join §eto join!"));
                 }
-            }.runTaskTimer(instance, 1, 20);
-        } else startGame();
+                if (count < 1) {
+                    isCountdownRunning = false;
+                    if (!Expunge.isGameRunning) {
+                        for (Player p : Queue.list()) {
+                            setPlaying(p);
+                        }
+                        startGame(Queue.result());
+                    }
+                    Queue.clear();
+                    this.cancel();
+                }
+            }
+        }.runTaskTimer(instance, 1, 20);
     }
 
-    public static void startGame() {
-        Bukkit.broadcastMessage(ChatColor.YELLOW + "Starting game...");
+    public static void startGame(Difficulty difficulty) {
+        difficulty = difficulty == null ? Difficulty.NORMAL : difficulty;
+        Bukkit.broadcastMessage(ChatColor.YELLOW + "Starting a new game with " + difficulty.string() + " difficulty...");
         if (playing.getKeys().size() < 1) {
             Bukkit.broadcastMessage(ChatColor.RED + "Cancelled, not enough players to start the game.");
             return;
@@ -295,8 +293,9 @@ public final class Expunge extends JavaPlugin {
 
         isCountdownRunning = false;
         isGameRunning = true;
+        currentDifficulty = difficulty;
         HandlerList.unregisterAll(runningDirector);
-        runningDirector = new Director(currentMap, currentSceneIndex, difficulty.ordinal());
+        runningDirector = new Director(currentMap, currentSceneIndex, currentDifficulty.ordinal());
         instance.getServer().getPluginManager().registerEvents(runningDirector, instance);
         runningDirector.runTaskTimer(instance, 1, 1);
 

@@ -23,7 +23,7 @@ public class Values implements CommandExecutor {
             Director director = Expunge.runningDirector;
             sender.sendMessage(ChatColor.GRAY + "  currentMap: " + Expunge.currentMap.getName());
             sender.sendMessage(ChatColor.GRAY + "  currentSceneIndex: " + Expunge.currentSceneIndex);
-            sender.sendMessage(ChatColor.GRAY + "  difficulty: " + Expunge.difficulty);
+            sender.sendMessage(ChatColor.GRAY + "  difficulty: " + Expunge.currentDifficulty);
             sender.sendMessage(ChatColor.GRAY + "  gameTime: " + director.getGameTime());
             sender.sendMessage(ChatColor.GRAY + "  sceneTime: " + director.getSceneTime());
             sender.sendMessage(ChatColor.GRAY + "  sceneAttempts: " + director.getSceneAttempts());

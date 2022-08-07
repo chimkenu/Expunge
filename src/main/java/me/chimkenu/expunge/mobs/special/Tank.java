@@ -27,7 +27,7 @@ public class Tank extends GameMob {
             getMob().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(10);
             getMob().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(2000);
             getMob().setHealth(2000);
-            getMob().setAbsorptionAmount(4000 + (Expunge.difficulty.ordinal() * 2000));
+            getMob().setAbsorptionAmount(4000 + (Expunge.currentDifficulty.ordinal() * 2000));
         } catch (NullPointerException e) {
             e.printStackTrace();
         }

@@ -1,6 +1,7 @@
 package me.chimkenu.expunge.game.listeners;
 
 import me.chimkenu.expunge.Expunge;
+import me.chimkenu.expunge.Queue;
 import me.chimkenu.expunge.commands.Tutorial;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -32,7 +33,7 @@ public class JoinLeave implements Listener {
             }
         }
         Expunge.spectators.remove(e.getPlayer());
-        Expunge.inQueue.remove(e.getPlayer());
+        Queue.remove(e.getPlayer());
         Tutorial.inTutorial.remove(e.getPlayer());
     }
 

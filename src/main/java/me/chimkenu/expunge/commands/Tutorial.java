@@ -1,6 +1,7 @@
 package me.chimkenu.expunge.commands;
 
 import me.chimkenu.expunge.Expunge;
+import me.chimkenu.expunge.Queue;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -96,7 +97,7 @@ public class Tutorial implements CommandExecutor {
             sender.sendMessage(ChatColor.RED + "Only players can execute this command.");
             return true;
         }
-        if (Expunge.playing.getKeys().contains(player) || Expunge.inQueue.contains(player)) {
+        if (Expunge.playing.getKeys().contains(player) || Queue.contains(player)) {
             sender.sendMessage(ChatColor.RED + "You should've done this before joining!");
             return true;
         }

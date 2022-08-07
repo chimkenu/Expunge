@@ -1,6 +1,7 @@
 package me.chimkenu.expunge.commands;
 
 import me.chimkenu.expunge.Expunge;
+import me.chimkenu.expunge.enums.Difficulty;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -28,9 +29,17 @@ public class StartGame implements CommandExecutor {
             sender.sendMessage(ChatColor.RED + "There's a game active. Consider doing " + ChatColor.GRAY + "/bye" + ChatColor.RED + " first then executing this command again.");
             return true;
         }
-        Bukkit.broadcastMessage(ChatColor.RED + player.getDisplayName() + ChatColor.YELLOW + " started a game.");
+        Difficulty difficulty = Difficulty.NORMAL;
+        if (args.length > 0) {
+            switch (args[0].toLowerCase()) {
+                case "easy" -> difficulty = Difficulty.EASY;
+                case "hard" -> difficulty = Difficulty.HARD;
+                case "suffering" -> difficulty = Difficulty.SUFFERING;
+            }
+        }
+        Bukkit.broadcastMessage(ChatColor.RED + player.getDisplayName() + ChatColor.YELLOW + " started a game with " + difficulty.string() + ChatColor.YELLOW + " difficulty.");
         Expunge.setPlaying(player);
-        Expunge.startGame();
+        Expunge.startGame(difficulty);
         return true;
     }
 }

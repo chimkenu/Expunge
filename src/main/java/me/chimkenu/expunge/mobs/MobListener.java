@@ -15,6 +15,7 @@ import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.spigotmc.event.entity.EntityDismountEvent;
 
 public class MobListener implements Listener {
@@ -86,14 +87,25 @@ public class MobListener implements Listener {
     // MOB EFFECTS
     @EventHandler
     public void onPlayerDamage(EntityDamageByEntityEvent e) {
-        // can't deal damage to jockeys && hunters if they on u
-        if (e.getEntity().getPassengers().contains(e.getDamager())) {
+        // can't deal damage to mobs that are on u
+        if ((e.getDamager() instanceof Player) && e.getEntity().getPassengers().contains(e.getDamager()) || e.getDamager().getPassengers().contains(e.getEntity())) {
             e.setCancelled(true);
             return;
         }
         if (!(e.getEntity() instanceof Player player) || !(e.getDamager() instanceof LivingEntity damager) || e.getDamage() < 0.25) {
             return;
         }
+
+        // invulnerability ticks + stun player for 1 tick
+        player.setNoDamageTicks(30);
+        player.setWalkSpeed(0);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                player.setWalkSpeed(0.2f);
+            }
+        }.runTaskLater(Expunge.instance, 1);
+
         // charger knocks down player
         if (damager.getScoreboardTags().contains("CHARGER")) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 5, 2, false, false, true));
