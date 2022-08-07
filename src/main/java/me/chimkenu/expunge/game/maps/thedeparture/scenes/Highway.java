@@ -3,6 +3,7 @@ package me.chimkenu.expunge.game.maps.thedeparture.scenes;
 import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.game.maps.Scene;
 import me.chimkenu.expunge.game.maps.thedeparture.DepartureDialogue;
+import me.chimkenu.expunge.game.maps.thedeparture.cutscenes.HighwayHelicopterCrash;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -11,6 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
 
 import java.util.ArrayList;
@@ -99,8 +101,16 @@ public class Highway {
                 BoundingBox box = new BoundingBox(990, 34, 1291, 1021, 56, 1297);
                 if (!box.contains(e.getPlayer().getLocation().toVector()))
                     return;
+                new HighwayHelicopterCrash(Expunge.playing.getKeys(), Expunge.runningDirector.mobHandler.getActiveMobs().stream().toList()).play();
                 playDialogue(DepartureDialogue.HIGHWAY_SAFE_HOUSE);
                 HandlerList.unregisterAll(this);
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        Expunge.runningDirector.bile(e.getPlayer(), 30);
+                        Expunge.runningDirector.mobHandler.spawnAtRandomLocations(new BoundingBox(997, 35, 1362, 1040, 35, 1343), 30 + (10 * Expunge.currentDifficulty.ordinal()));
+                    }
+                }.runTaskLater(Expunge.instance, 20 * 5);
             }
         });
         happenings.add(new Listener() {
