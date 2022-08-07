@@ -76,7 +76,7 @@ public class Spit extends Throwable {
 
         // play effect
         new BukkitRunnable() {
-            int t = 20 * 5;
+            int t = 5 * 10;
             @Override
             public void run() {
                 Set<Player> players = new HashSet<>();
@@ -104,13 +104,13 @@ public class Spit extends Throwable {
                 }
                 for (Player player : players) {
                     Vector velocity = player.getVelocity();
-                    player.damage(2, shooter);
+                    player.damage(0.4, shooter);
                     player.setVelocity(velocity);
                     player.setNoDamageTicks(1);
                 }
                 t--;
                 if (t <= 0) this.cancel();
             }
-        }.runTaskTimer(Expunge.instance, 1, 1);
+        }.runTaskTimer(Expunge.instance, 1, 4);
     }
 }
