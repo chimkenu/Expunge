@@ -107,6 +107,7 @@ public class Highway {
                 new BukkitRunnable() {
                     @Override
                     public void run() {
+                        Scene.playCrescendoEventEffect();
                         Expunge.runningDirector.bile(e.getPlayer(), 30);
                         Expunge.runningDirector.mobHandler.spawnAtRandomLocations(new BoundingBox(997, 35, 1362, 1040, 35, 1343), 30 + (10 * Expunge.currentDifficulty.ordinal()));
                     }
