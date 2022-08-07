@@ -12,12 +12,6 @@ public record RayTrace(Vector origin, Vector direction) {
         return origin.clone().add(direction.clone().multiply(blocksAway));
     }
 
-    // checks if a position is on contained within the position
-    public boolean isOnLine(Vector position) {
-        double t = (position.getX() - origin.getX()) / direction.getX();
-        return position.getBlockY() == origin.getY() + (t * direction.getY()) && position.getBlockZ() == origin.getZ() + (t * direction.getZ());
-    }
-
     // get all positions on a raytrace
     public ArrayList<Vector> traverse(double blocksAway, double accuracy) {
         ArrayList<Vector> positions = new ArrayList<>();
@@ -25,39 +19,6 @@ public record RayTrace(Vector origin, Vector direction) {
             positions.add(getPosition(d));
         }
         return positions;
-    }
-
-    // intersection detection for current raytrace with return
-    public Vector positionOfIntersection(Vector min, Vector max, double blocksAway, double accuracy) {
-        ArrayList<Vector> positions = traverse(blocksAway, accuracy);
-        for (Vector position : positions) {
-            if (intersects(position, min, max)) {
-                return position;
-            }
-        }
-        return null;
-    }
-
-    // intersection detection for current raytrace
-    public boolean intersects(Vector min, Vector max, double blocksAway, double accuracy) {
-        ArrayList<Vector> positions = traverse(blocksAway, accuracy);
-        for (Vector position : positions) {
-            if (intersects(position, min, max)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    // bounding box instead of vector
-    public Vector positionOfIntersection(BoundingBox boundingBox, double blocksAway, double accuracy) {
-        ArrayList<Vector> positions = traverse(blocksAway, accuracy);
-        for (Vector position : positions) {
-            if (intersects(position, boundingBox.getMin(), boundingBox.getMax())) {
-                return position;
-            }
-        }
-        return null;
     }
 
     // bounding box instead of vector
