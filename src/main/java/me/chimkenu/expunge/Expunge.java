@@ -1,6 +1,7 @@
 package me.chimkenu.expunge;
 
 import me.chimkenu.expunge.commands.*;
+import me.chimkenu.expunge.enums.Difficulty;
 import me.chimkenu.expunge.game.director.Director;
 import me.chimkenu.expunge.game.SetSet;
 import me.chimkenu.expunge.game.listeners.*;
@@ -42,7 +43,7 @@ public final class Expunge extends JavaPlugin {
     public static boolean isSpawningEnabled;
     public static Map currentMap;
     public static int currentSceneIndex;
-    public static final int difficulty = 1;
+    public static Difficulty difficulty = Difficulty.NORMAL;
     public static Director runningDirector;
 
     public static void reRegisterGameEvents() {
@@ -295,7 +296,7 @@ public final class Expunge extends JavaPlugin {
         isCountdownRunning = false;
         isGameRunning = true;
         HandlerList.unregisterAll(runningDirector);
-        runningDirector = new Director(currentMap, currentSceneIndex, difficulty);
+        runningDirector = new Director(currentMap, currentSceneIndex, difficulty.ordinal());
         instance.getServer().getPluginManager().registerEvents(runningDirector, instance);
         runningDirector.runTaskTimer(instance, 1, 1);
 

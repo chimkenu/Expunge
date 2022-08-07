@@ -54,8 +54,8 @@ public class Charger extends GameMob {
         });
         try {
             getMob().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(4);
-            getMob().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(400 + (Expunge.difficulty * 200));
-            getMob().setHealth(400 + (Expunge.difficulty * 200));
+            getMob().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(400 + ((Expunge.difficulty.ordinal() * 200)));
+            getMob().setHealth(400 + (Expunge.difficulty.ordinal() * 200));
         } catch (NullPointerException e) {
             e.printStackTrace();
         }

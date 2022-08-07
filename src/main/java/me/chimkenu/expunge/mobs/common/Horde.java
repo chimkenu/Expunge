@@ -19,9 +19,9 @@ public class Horde extends GameMob {
                 Location mobLoc = mob.getLocation();
                 Location targetLoc = mob.getTarget().getLocation();
                 double distance = mobLoc.distanceSquared(targetLoc);
-                int speed = Expunge.difficulty;
-                if (distance > 5 * 5) speed += Math.max(1, Expunge.difficulty);
-                if (mob.getHealth() < 20) speed += Math.max(1, Expunge.difficulty);
+                int speed = Expunge.difficulty.ordinal();
+                if (distance > 5 * 5) speed += Math.max(1, Expunge.difficulty.ordinal());
+                if (mob.getHealth() < 20) speed += Math.max(1, Expunge.difficulty.ordinal());
                 if (mob.getHealth() < 7) speed *= 2;
                 if (Math.abs(mobLoc.getYaw() - targetLoc.getYaw()) < 25) speed += 2;
                 mob.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20, speed, false, false));
