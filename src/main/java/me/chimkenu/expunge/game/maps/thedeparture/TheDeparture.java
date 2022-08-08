@@ -20,6 +20,7 @@ public class TheDeparture extends Map {
         scenes.add(Alleys.getScene());
         scenes.add(Subway.getScene());
         scenes.add(Highway.getScene());
+        scenes.add(Stadium.getScene());
         return scenes;
     }
 

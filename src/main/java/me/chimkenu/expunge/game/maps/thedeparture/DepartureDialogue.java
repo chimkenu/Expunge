@@ -465,6 +465,105 @@ public enum DepartureDialogue {
         public Dialogue getSolo() {
             return dialogue;
         }
+    },
+    STADIUM_OPENING {
+        @Override
+        public Dialogue getA() {
+            return new Dialogue(null,
+                    "A » We’re close to the stadium. We just need to take a left from this road.",
+                    "B » All of this walking better be worth it."
+            );
+        }
+
+        @Override
+        public Dialogue getB() {
+            return new Dialogue(null,
+                    "A » We just got to take a left down this road, and we’ll be at the evacuation site.",
+                    "B » I never should have skipped leg day…"
+            );
+        }
+
+        @Override
+        public Dialogue getSolo() {
+            return new Dialogue(null, "A » If I take one more left down the highway, I’ll finally be at the stadium.");
+        }
+    },
+    STADIUM_PARKING_LOT {
+        @Override
+        public Dialogue getA() {
+            return new Dialogue(null,
+                    "A » I can see the stadium!",
+                    "B » Get inside, quick!"
+            );
+        }
+
+        @Override
+        public Dialogue getB() {
+            return new Dialogue(null,
+                    "A » There’s the stadium!",
+                    "B » Quickly, get inside!"
+            );
+        }
+
+        @Override
+        public Dialogue getSolo() {
+            return new Dialogue(null, "A » There’s the stadium, I need to get in!");
+        }
+    },
+    STADIUM_ENTER {
+        @Override
+        public Dialogue getA() {
+            return new Dialogue(null,
+                    "A » This place is a mess…",
+                    "B » Where’s the helicopter?",
+                    "A » Looks like we’ve been left behind.",
+                    "B » Wait, I have an idea.",
+                    "B » If we head to the control room and turn on the stadium screens, it could signal the military to rescue us.",
+                    "A » It’s risky, but it might work."
+            );
+        }
+
+        @Override
+        public Dialogue getB() {
+            return new Dialogue(null,
+                    "A » What happened to everyone…?",
+                    "B » There’s no helicopter here.",
+                    "A » They abandoned us…!",
+                    "B » Calm down, I have an idea.",
+                    "B » If we head to the control room and turn on the stadium screens, it could signal the military to rescue us.",
+                    "A » Could be dangerous, but it’s worth a try."
+            );
+        }
+
+        @Override
+        public Dialogue getSolo() {
+            return new Dialogue(null,
+                    "A » What happened to this place…? There’s no helicopter in sight.\n",
+                    "A » Hmm... If I head to the control room and turn on the stadium screens, it could signal the military to rescue me."
+            );
+        }
+    },
+    STADIUM_ENDING {
+        @Override
+        public Dialogue getA() {
+            return new Dialogue(null,
+                    "A » Look, the helicopter’s here!",
+                    "B » Run for it, go!"
+            );
+        }
+
+        @Override
+        public Dialogue getB() {
+            return new Dialogue(null,
+                    "A » Hey, the helicopter’s arriving!",
+                    "B » Come on, let’s move!"
+            );
+        }
+
+        @Override
+        public Dialogue getSolo() {
+            return new Dialogue(null, "A » There’s the helicopter, I need to run to it!");
+        }
     };
 
     public abstract Dialogue getA();

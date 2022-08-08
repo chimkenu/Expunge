@@ -143,6 +143,7 @@ public class Highway {
                     world.getBlockAt(new Location(world, 1033, 36, 1360)).setType(Material.BEEHIVE);
                     world.getBlockAt(new Location(world, 1032, 36, 1360)).setType(Material.BEEHIVE);
                     world.getBlockAt(new Location(world, 1117, 26, 1205)).setType(Material.AIR);
+                    world.getBlockAt(new Location(world, 1031, 37, 1353)).setType(Material.AIR);
                     world.getBlockAt(new Location(world, 1031, 36, 1353)).setType(Material.AIR);
                 },
                 null,
