@@ -111,6 +111,7 @@ public class DeathRevive implements Listener {
             p.setGameMode(GameMode.SPECTATOR);
             p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 3, 4, false, false, false));
         }
+        Expunge.runningDirector.clearEntities();
         new BukkitRunnable() {
             @Override
             public void run() {
