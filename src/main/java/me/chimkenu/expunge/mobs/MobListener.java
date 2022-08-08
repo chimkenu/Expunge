@@ -2,16 +2,10 @@ package me.chimkenu.expunge.mobs;
 
 import me.chimkenu.expunge.Expunge;
 import org.bukkit.*;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityTargetEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -74,6 +68,12 @@ public class MobListener implements Listener {
         if (e.getEntity().getScoreboardTags().contains("TANK") && e.getEntity().getFireTicks() > 0) {
             e.setDamage(e.getDamage() * 20);
         }
+    }
+
+    // stop mobs from getting set on fire by the sun
+    @EventHandler
+    public void onCombust(EntityCombustEvent e) {
+        if (e.getEntity() instanceof Mob) e.setCancelled(true);
     }
 
     // ANY MOB THAT DISABLES
