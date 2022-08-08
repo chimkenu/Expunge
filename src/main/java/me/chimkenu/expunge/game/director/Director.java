@@ -39,6 +39,7 @@ public class Director extends BukkitRunnable implements Listener {
     private long sceneTime = 0;
     private int sceneAttempts = 0;
     public boolean chillOut = false;
+    public boolean forceChillOut = false;
     public long timeSinceLastHorde = 0;
 
     public Director(Map map, int index, int difficulty) {
@@ -108,7 +109,7 @@ public class Director extends BukkitRunnable implements Listener {
         gameTime++;
         sceneTime++;
 
-        if (Expunge.isSpawningEnabled) {
+        if (Expunge.isSpawningEnabled && !forceChillOut) {
             // spawning based on difficulty
             if (mobHandler.getActiveMobs().size() < (difficulty + 1) * 25 || isDoingGood()) {
                 if (difficulty < 1 && (sceneTime % (20 * 10)) == 0)
@@ -201,6 +202,8 @@ public class Director extends BukkitRunnable implements Listener {
             mob.remove();
         }
         mobHandler.getActiveMobs().clear();
+        // usually a restart - update forceChillOut
+        forceChillOut = false;
     }
 
     public void spawnStartingMobs() {

@@ -5,6 +5,7 @@ import me.chimkenu.expunge.game.maps.Map;
 import me.chimkenu.expunge.mobs.GameMob;
 import me.chimkenu.expunge.mobs.common.Horde;
 import me.chimkenu.expunge.mobs.common.Wanderer;
+import me.chimkenu.expunge.mobs.special.Tank;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -115,6 +116,14 @@ public class MobHandler {
             }
 
             spawnMob(new Wanderer(world, loc));
+        }
+    }
+
+    public void spawnTank() {
+        ArrayList<Location> bossLoc = map.getScenes().get(sceneIndex).bossLocations();
+        if (bossLoc.size() > 0) {
+            LivingEntity spawnedMob = spawnMob(new Tank(map.getWorld(), bossLoc.get(ThreadLocalRandom.current().nextInt(0, bossLoc.size()))));
+            spawnedMob.setRemoveWhenFarAway(false);
         }
     }
 }
