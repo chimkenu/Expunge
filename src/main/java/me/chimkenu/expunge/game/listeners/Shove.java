@@ -58,7 +58,7 @@ public class Shove implements Listener {
 
                 // is a shove-able creature
                 livingEntity.damage(2, attacker);
-                livingEntity.leaveVehicle();
+                if (livingEntity.getVehicle() != attacker) livingEntity.leaveVehicle();
                 livingEntity.setVelocity(livingEntity.getVelocity().add(attacker.getLocation().getDirection().setY(0).multiply(0.5)));
                 livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 20 * 3, 9, false, false, false));
                 livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 3, 9, false, false, false));
@@ -78,6 +78,10 @@ public class Shove implements Listener {
     @EventHandler
     public void onShove(PlayerInteractEntityEvent e) {
         if (e.getRightClicked() instanceof FallingBlock fallingBlock && fallingBlock.getScoreboardTags().contains("AMMO_PILE")) {
+            e.setCancelled(true);
+            return;
+        }
+        if (e.getPlayer().getPassengers().size() > 0) {
             e.setCancelled(true);
             return;
         }
