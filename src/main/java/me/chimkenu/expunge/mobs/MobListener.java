@@ -162,10 +162,7 @@ public class MobListener implements Listener {
         if (!armorStand.getScoreboardTags().contains("KNOCKED")) {
             return;
         }
-        if (player.getPassengers().size() > 0) {
-            return;
-        }
-        if (player.getNoDamageTicks() < 1 || player.getGameMode() != GameMode.ADVENTURE) {
+        if ((player.getNoDamageTicks() < 1 || player.getGameMode() != GameMode.ADVENTURE) && player.getPassengers().size() == 0) {
             armorStand.remove();
             player.teleport(player.getLocation().add(0, 1, 0));
         } else {
