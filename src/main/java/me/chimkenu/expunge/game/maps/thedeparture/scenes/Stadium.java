@@ -141,7 +141,7 @@ public class Stadium {
 
         return new Scene(
                 new Location(world, 1033.5, 36, 1353.5),
-                new BoundingBox(1210, 34, 1635, 1204, 41, 1641),
+                new BoundingBox(1184, 38, 1640, 1190, 43, 1635),
                 pathRegions,
                 spawnLocations,
                 bossLocations,
@@ -149,7 +149,7 @@ public class Stadium {
                 10,
                 weaponLocations,
                 ammoLocations,
-                new Location(world, 1033, 37, 1354),
+                new Location(world, 1185, 40, 1638),
                 player -> {
                     world.getBlockAt(new Location(world, 1031, 37, 1353)).setType(Material.BEEHIVE);
                     world.getBlockAt(new Location(world, 1031, 36, 1353)).setType(Material.BEEHIVE);
