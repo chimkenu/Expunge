@@ -1,10 +1,7 @@
 package me.chimkenu.expunge.game.listeners;
 
 import org.bukkit.*;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -80,7 +77,7 @@ public class Shove implements Listener {
 
     @EventHandler
     public void onShove(PlayerInteractEntityEvent e) {
-        if (e.getRightClicked() instanceof ArmorStand armorStand && armorStand.getScoreboardTags().contains("AMMO_PILE")) {
+        if (e.getRightClicked() instanceof FallingBlock fallingBlock && fallingBlock.getScoreboardTags().contains("AMMO_PILE")) {
             e.setCancelled(true);
             return;
         }
