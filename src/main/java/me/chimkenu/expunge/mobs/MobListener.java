@@ -98,6 +98,9 @@ public class MobListener implements Listener {
         }
 
         // invulnerability ticks + stun player for 1 tick
+        if (!(e.getDamage() > 0) || e.isCancelled()) {
+            return;
+        }
         player.setNoDamageTicks(30);
         player.setWalkSpeed(0);
         new BukkitRunnable() {
