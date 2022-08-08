@@ -8,15 +8,24 @@ import me.chimkenu.expunge.game.maps.thedeparture.DepartureDialogue;
 import me.chimkenu.expunge.guns.utilities.healing.Adrenaline;
 import me.chimkenu.expunge.guns.utilities.healing.Medkit;
 import me.chimkenu.expunge.guns.utilities.healing.Pills;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 
@@ -57,6 +66,8 @@ public class Stadium {
         spawnLocations.add(new Location(world, 1131.5, 36, 1611.5));
         spawnLocations.add(new Location(world, 1245.5, 45, 1642));
         spawnLocations.add(new Location(world, 1127.5, 45, 1635));
+        spawnLocations.add(new Location(world, 1184, 36, 1579));
+        spawnLocations.add(new Location(world, 1189, 36, 1579));
 
         ArrayList<Location> bossLocations = new ArrayList<>();
         bossLocations.add(new Location(world, 1236.5, 36, 1662.5));
@@ -123,22 +134,121 @@ public class Stadium {
                 playDialogue(DepartureDialogue.STADIUM_ENTER);
                 Expunge.runningDirector.bile(e.getPlayer(), 5);
                 Expunge.runningDirector.mobHandler.spawnAtRandomLocations(new BoundingBox(1219, 35, 1616, 1153, 35, 1660), 30 + (Expunge.currentDifficulty.ordinal() * 10));
+                Expunge.runningDirector.forceChillOut = true;
                 HandlerList.unregisterAll(this);
             }
         });
         happenings.add(new Listener() {
             @EventHandler
-            public void stadiumEnding(PlayerMoveEvent e) {
-                if (!Expunge.playing.getKeys().contains(e.getPlayer()))
+            public void finaleBegin(PlayerInteractEvent e) {
+                if (!Expunge.playing.getKeys().contains(e.getPlayer())) {
                     return;
-                BoundingBox box = new BoundingBox(1114, 24, 1209, 1108, 33, 1201);
-                if (!box.contains(e.getPlayer().getLocation().toVector()))
+                }
+                if (!e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
                     return;
-                playDialogue(DepartureDialogue.STADIUM_ENDING);
-                HandlerList.unregisterAll(this);
+                }
+                if (e.getClickedBlock() == null || !(e.getClickedBlock().getType() == Material.LEVER)) {
+                    return;
+                }
+                Vector clickedLoc = e.getClickedBlock().getLocation().toVector();
+                if (clickedLoc.equals(new Vector(1185, 46, 1684)) || clickedLoc.equals(new Vector(1187, 46, 1684))) {
+                    Scene.playCrescendoEventEffect();
+                    summonHorde();
+                    Expunge.runningDirector.forceChillOut = false;
+                    new BukkitRunnable() {
+                        int i = 20 * 20;
+                        @Override
+                        public void run() {
+                            i--;
+                            if (!Expunge.isGameRunning || !Expunge.isSpawningEnabled) this.cancel();
+                            if (i <= 0) {
+                                summonHorde();
+                                Expunge.runningDirector.forceChillOut = true;
+                                this.cancel();
+                            }
+                        }
+                    }.runTaskTimer(Expunge.instance, 0, 1);
+
+                    // spawn in tank after horde is dead
+                    Expunge.instance.getServer().getPluginManager().registerEvents(new Listener() {
+                        @EventHandler
+                        public void afterHorde(EntityDeathEvent e) {
+                            if (Expunge.runningDirector.getActiveMobs() <= 5) {
+                                Expunge.runningDirector.mobHandler.spawnTank();
+                                HandlerList.unregisterAll(this);
+                            }
+                        }
+                    }, Expunge.instance);
+                    // after tank dies
+                    Expunge.instance.getServer().getPluginManager().registerEvents(new Listener() {
+                        @EventHandler
+                        public void afterTank(EntityDeathEvent e) {
+                            if (e.getEntityType().equals(EntityType.IRON_GOLEM)) {
+                                // 30-second timer
+                                new BukkitRunnable() {
+                                    int i = 30;
+                                    @Override
+                                    public void run() {
+
+
+                                        if (i <= 0) {
+                                            // do the same thing
+                                            summonHorde();
+                                            Expunge.runningDirector.forceChillOut = false;
+                                            new BukkitRunnable() {
+                                                int i = 20 * 20;
+                                                @Override
+                                                public void run() {
+                                                    i--;
+                                                    if (!Expunge.isGameRunning || !Expunge.isSpawningEnabled) this.cancel();
+                                                    if (i <= 0) {
+                                                        summonHorde();
+                                                        Expunge.runningDirector.forceChillOut = true;
+                                                        this.cancel();
+                                                    }
+                                                }
+                                            }.runTaskTimer(Expunge.instance, 0, 1);
+                                            // spawn in tank after horde is dead
+                                            Expunge.instance.getServer().getPluginManager().registerEvents(new Listener() {
+                                                @EventHandler
+                                                public void afterHorde(EntityDeathEvent e) {
+                                                    if (Expunge.runningDirector.getActiveMobs() <= 5) {
+                                                        Expunge.runningDirector.mobHandler.spawnTank();
+                                                        HandlerList.unregisterAll(this);
+                                                    }
+                                                }
+                                            }, Expunge.instance);
+                                            // after tank dies stadium ending
+                                            Expunge.instance.getServer().getPluginManager().registerEvents(new Listener() {
+                                                @EventHandler
+                                                public void afterTank(EntityDeathEvent e) {
+                                                    if (e.getEntityType().equals(EntityType.IRON_GOLEM)) {
+                                                        playDialogue(DepartureDialogue.STADIUM_ENDING);
+                                                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "setblock 1168 17 1626 minecraft:redstone_block");
+                                                    }
+                                                }
+                                            }, Expunge.instance);
+
+                                            this.cancel();
+                                        }
+
+
+                                        // timer
+                                        if (!Expunge.isGameRunning || !Expunge.isSpawningEnabled) this.cancel();
+                                        for (Player p : Expunge.playing.getKeys()) {
+                                            p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§7" + i));
+                                        }
+                                        i--;
+                                    }
+                                }.runTaskTimer(Expunge.instance, 0, 20);
+                                HandlerList.unregisterAll(this);
+                            }
+                        }
+                    }, Expunge.instance);
+                    HandlerList.unregisterAll(this);
+                }
             }
         });
-
         return new Scene(
                 new Location(world, 1033.5, 36, 1353.5),
                 new BoundingBox(1184, 38, 1640, 1190, 43, 1635),
@@ -158,11 +268,16 @@ public class Stadium {
 
                     for (int i = 0; i < 4; i++) {
                         Expunge.runningDirector.itemHandler.spawnUtility(new Location(world, 1031.3, 37, 1358), new Medkit());
+                        Expunge.runningDirector.itemHandler.spawnUtility(new Location(world, 1196, 36, 1658), new Medkit());
                     }
+                    Expunge.runningDirector.itemHandler.spawnUtility(new Location(world, 1186.5, 46, 1684.5), new Medkit());
+                    Expunge.runningDirector.itemHandler.spawnUtility(new Location(world, 1180.7, 36, 1655.3), new Medkit());
                     Expunge.runningDirector.itemHandler.spawnWeapon(new Location(world, 1034.5, 37, 1359), ItemHandler.getRandomGun(Tier.TIER2), true);
                     Expunge.runningDirector.itemHandler.spawnWeapon(new Location(world, 1034.5, 37, 1357), ItemHandler.getRandomMelee(Tier.TIER1), false);
                     Expunge.runningDirector.itemHandler.spawnUtility(new Location(world, 1038.5, 37, 1352.5), new Pills());
                     Expunge.runningDirector.itemHandler.spawnUtility(new Location(world, 1037.5, 36, 1359.5), new Adrenaline());
+
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "setblock 1168 17 1627 minecraft:redstone_block");
 
                     Expunge.runningDirector.mobHandler.spawnAtRandomLocations(new BoundingBox(1011, 35, 1375, 997, 35, 1428), 30 + (Expunge.currentDifficulty.ordinal() * 10));
                 },
@@ -170,5 +285,18 @@ public class Stadium {
                 null,
                 happenings
         );
+    }
+
+    private static void summonHorde() {
+        new BukkitRunnable() {
+            int i = 30 + (Expunge.currentDifficulty.ordinal() * 15);
+            @Override
+            public void run() {
+                if (i <= 0) this.cancel();
+                if (!Expunge.isGameRunning || !Expunge.isSpawningEnabled) this.cancel();
+                Expunge.runningDirector.mobHandler.spawnAdditionalMob();
+                i--;
+            }
+        }.runTaskTimer(Expunge.instance, 0, 2);
     }
 }
