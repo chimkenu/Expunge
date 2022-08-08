@@ -55,7 +55,9 @@ public class HighwayHelicopterCrash extends Cutscene {
         }.runTaskTimer(Expunge.instance, 0, 1);
 
         // apply invisibility
+        Location loc = new Location(Expunge.currentMap.getWorld(), 1004.5, 36.0, 1280.5, 0, 0);
         for (Player p : viewers.keySet()) {
+            p.teleport(loc);
             p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 20 * 5, 0, false, false, false));
         }
 
