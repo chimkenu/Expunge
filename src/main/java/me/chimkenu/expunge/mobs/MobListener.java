@@ -92,7 +92,8 @@ public class MobListener implements Listener {
             e.setCancelled(true);
             return;
         }
-        if (!(e.getEntity() instanceof Player player) || !(e.getDamager() instanceof LivingEntity damager) || e.getDamage() < 0.25) {
+
+        if (!(e.getEntity() instanceof Player player) || !(e.getDamager() instanceof LivingEntity damager)) {
             return;
         }
 
@@ -100,11 +101,25 @@ public class MobListener implements Listener {
         player.setNoDamageTicks(30);
         player.setWalkSpeed(0);
         new BukkitRunnable() {
+            int i = 10;
+            @Override
+            public void run() {
+                player.setVelocity(player.getVelocity().setY(0));
+                if (i <= 0) this.cancel();
+                i--;
+            }
+        }.runTaskTimer(Expunge.instance, 0, 1);
+        new BukkitRunnable() {
             @Override
             public void run() {
                 player.setWalkSpeed(0.2f);
             }
-        }.runTaskLater(Expunge.instance, 1);
+        }.runTaskLater(Expunge.instance, 10);
+
+        // if damage is low
+        if (e.getDamage() < 0.25) {
+            return;
+        }
 
         // charger knocks down player
         if (damager.getScoreboardTags().contains("CHARGER")) {
