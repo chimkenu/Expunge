@@ -20,9 +20,9 @@ public class Wanderer extends GameMob {
                     Location targetLoc = mob.getTarget().getLocation();
                     double distance = mobLoc.distanceSquared(targetLoc);
                     int speed = Expunge.currentDifficulty.ordinal();
-                    if (distance > 5 * 5) speed += Math.max(1, Expunge.currentDifficulty.ordinal());
-                    if (mob.getHealth() < 20) speed += Math.max(1, Expunge.currentDifficulty.ordinal());
-                    if (mob.getHealth() < 7) speed *= 2;
+                    if (distance > 5 * 5) speed += 1;
+                    if (mob.getHealth() < 20) speed += 1;
+                    if (mob.getHealth() < 7) speed += 1;
                     if (Math.abs(mobLoc.getYaw() - targetLoc.getYaw()) < 25) speed += 2;
                     mob.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20, Math.max(speed - 1, 0), false, false));
                 } else
