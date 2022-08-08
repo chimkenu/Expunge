@@ -31,12 +31,12 @@ public class Rider extends GameMob {
                         new BukkitRunnable() {
                             @Override
                             public void run() {
-                                if (mob.getTarget() != null && mob.getLocation().distanceSquared(mob.getTarget().getLocation()) < 3 * 3) {
+                                if (mob.getTarget() != null && mob.getLocation().distanceSquared(mob.getTarget().getLocation()) < 4 * 4) {
                                     player.getInventory().setHeldItemSlot(5);
                                     player.addPassenger(mob);
                                 }
                             }
-                        }.runTaskLater(Expunge.instance, 5);
+                        }.runTaskLater(Expunge.instance, 3);
                     }
                 } else mob.setTarget(getRandomPlayer());
             }
