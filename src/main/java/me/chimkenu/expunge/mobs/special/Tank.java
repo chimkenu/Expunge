@@ -15,13 +15,15 @@ public class Tank extends GameMob {
     public <T extends Mob> Tank(World world, Location locationToSpawn) {
         super(world, locationToSpawn, IronGolem.class, mob -> {
             if (mob.getTarget() == null) mob.setTarget(getRandomPlayer());
-            int speed = 2;
+            int speed = 1;
+            if (mob.getFireTicks() > 0) speed += 1;
             if (mob.getTarget() != null) {
                 if (mob.getLocation().distanceSquared(mob.getTarget().getLocation()) < 10 * 10 && Math.random() < 0.1) {
                     mob.setVelocity(mob.getVelocity().add(mob.getLocation().getDirection().normalize().multiply(3)).add(new Vector(0, 0.1, 0)));
                 }
-            } else speed += 1;
+            }
             mob.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20, speed, false, false));
+            mob.removePotionEffect(PotionEffectType.SLOW);
         });
         try {
             getMob().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(10);
