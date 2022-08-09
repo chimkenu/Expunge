@@ -194,6 +194,7 @@ public class Stadium {
                                         if (i <= 0) {
                                             // do the same thing
                                             summonHorde();
+                                            Scene.playCrescendoEventEffect();
                                             Expunge.runningDirector.forceChillOut = false;
                                             new BukkitRunnable() {
                                                 int i = 20 * 20;
