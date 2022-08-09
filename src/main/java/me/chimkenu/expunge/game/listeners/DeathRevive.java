@@ -63,39 +63,40 @@ public class DeathRevive implements Listener {
             player.leaveVehicle();
             dead(player);
         }
+        else {
+            // update value
+            Expunge.playing.setIsAlive(player, false);
 
-        // update values
-        Expunge.playing.setIsAlive(player, false);
+            // lives check
+            if (currentLives.get(player) > 1) {
+                e.setDeathMessage(ChatColor.RED + player.getName() + " is down.");
+                Location loc = player.getLocation();
+                while (loc.getBlock().getType().equals(Material.AIR)) {
+                    loc.subtract(0, 0.25, 0);
+                }
 
-        // lives check
-        if (currentLives.get(player) > 1) {
-            e.setDeathMessage(ChatColor.RED + player.getName() + " is down.");
-            Location loc = player.getLocation();
-            while (loc.getBlock().getType().equals(Material.AIR)) {
-                loc.subtract(0, 0.25, 0);
+                loc.setY(loc.getBlock().getBoundingBox().getMaxY() - 0.95);
+                ArmorStand armorStand = player.getWorld().spawn(loc, ArmorStand.class);
+                armorStand.setGravity(false);
+                armorStand.setInvulnerable(true);
+                armorStand.setInvisible(true);
+                armorStand.setSmall(true);
+                armorStand.addPassenger(player);
+                armorStand.addScoreboardTag("RESPAWN_ARMOR_STAND");
+                player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 20 * 6000, 0, false, false, false));
+
+                // save hotbar in inventory and replace with pistol
+                PlayerInventory inventory = player.getInventory();
+                for (int i = 0; i < 5; i++) {
+                    inventory.setItem(i + 9, inventory.getItem(i));
+                    inventory.setItem(i, new ItemStack(Material.AIR));
+                }
+                inventory.setItem(5, Weapons.Guns.PISTOL.getGun().getWeapon());
+
+            } else {
+                e.setDeathMessage(ChatColor.RED + player.getName() + " died.");
+                dead(player);
             }
-
-            loc.setY(loc.getBlock().getBoundingBox().getMaxY() - 0.95);
-            ArmorStand armorStand = player.getWorld().spawn(loc, ArmorStand.class);
-            armorStand.setGravity(false);
-            armorStand.setInvulnerable(true);
-            armorStand.setInvisible(true);
-            armorStand.setSmall(true);
-            armorStand.addPassenger(player);
-            armorStand.addScoreboardTag("RESPAWN_ARMOR_STAND");
-            player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 20 * 6000, 0, false, false, false));
-
-            // save hotbar in inventory and replace with pistol
-            PlayerInventory inventory = player.getInventory();
-            for (int i = 0; i < 5; i++) {
-                inventory.setItem(i + 9, inventory.getItem(i));
-                inventory.setItem(i, new ItemStack(Material.AIR));
-            }
-            inventory.setItem(5, Weapons.Guns.PISTOL.getGun().getWeapon());
-
-        } else {
-            e.setDeathMessage(ChatColor.RED + player.getName() + " died.");
-            dead(player);
         }
 
         // check if all players have died
@@ -164,7 +165,7 @@ public class DeathRevive implements Listener {
                 inventory.setItem(i + 9, new ItemStack(Material.AIR));
             }
 
-            inventory.setItem(5, new ItemStack(Material.AIR)); // clear pistol
+            inventory.clear(5); // clear pistol
 
             if (currentLives.get(target) == 1) {
                 new BukkitRunnable() {

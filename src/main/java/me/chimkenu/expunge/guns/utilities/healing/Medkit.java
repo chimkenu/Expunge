@@ -2,6 +2,7 @@ package me.chimkenu.expunge.guns.utilities.healing;
 
 import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.enums.Slot;
+import me.chimkenu.expunge.game.listeners.DeathRevive;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Material;
@@ -32,9 +33,7 @@ public class Medkit extends Healing {
                     player1.setHealth(player1.getHealth() + ((20 - player1.getHealth()) * 0.8));
                     player1.getInventory().getItemInMainHand().setAmount(player1.getInventory().getItemInMainHand().getAmount() - 1);
 
-                    if (Expunge.playing.getKeys().contains(player1)) {
-                        Expunge.playing.putLives(player1, 3);
-                    }
+                    DeathRevive.currentLives.put(player1, 3);
                 });
     }
 }

@@ -72,7 +72,7 @@ public class SetSet {
         isAlive.put(player, bool);
     }
 
-    public void putLives(Player player, Integer newLives) {
+    public void putLives(Player player, int newLives) {
         if (!keys.contains(player)) {
             putDefaults(player);
         }

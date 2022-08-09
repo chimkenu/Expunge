@@ -230,6 +230,7 @@ public final class Expunge extends JavaPlugin {
             if (!playing.isAlive(p)) {
                 // player had died but others reached the safe-zone
                 newPlayerStats(p);
+                continue;
             }
             savePlayerStats(p);
         }
