@@ -66,7 +66,7 @@ public class MobListener implements Listener {
     @EventHandler
     public void onDamage(EntityDamageEvent e) {
         if (e.getEntity().getScoreboardTags().contains("TANK") && e.getEntity().getFireTicks() > 0) {
-            e.setDamage(e.getDamage() * 20);
+            e.setDamage(e.getDamage() * 10);
         }
     }
 
