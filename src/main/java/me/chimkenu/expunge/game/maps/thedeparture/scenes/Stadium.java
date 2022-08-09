@@ -156,7 +156,7 @@ public class Stadium {
                     summonHorde();
                     Expunge.runningDirector.forceChillOut = false;
                     new BukkitRunnable() {
-                        int i = 20 * 20;
+                        int i = 20 * 40;
                         @Override
                         public void run() {
                             i--;
@@ -197,7 +197,7 @@ public class Stadium {
                                             Scene.playCrescendoEventEffect();
                                             Expunge.runningDirector.forceChillOut = false;
                                             new BukkitRunnable() {
-                                                int i = 20 * 20;
+                                                int i = 20 * 40;
                                                 @Override
                                                 public void run() {
                                                     i--;
@@ -290,14 +290,16 @@ public class Stadium {
 
     private static void summonHorde() {
         new BukkitRunnable() {
-            int i = 30 + (Expunge.currentDifficulty.ordinal() * 15);
+            int i = 6 + (Expunge.currentDifficulty.ordinal() * 4);
             @Override
             public void run() {
                 if (i <= 0) this.cancel();
                 if (!Expunge.isGameRunning || !Expunge.isSpawningEnabled) this.cancel();
-                Expunge.runningDirector.mobHandler.spawnAdditionalMob();
+                for (int j = 0; j < 5; j++) {
+                    Expunge.runningDirector.mobHandler.spawnAdditionalMob();
+                }
                 i--;
             }
-        }.runTaskTimer(Expunge.instance, 0, 2);
+        }.runTaskTimer(Expunge.instance, 0, 20 * 5);
     }
 }
