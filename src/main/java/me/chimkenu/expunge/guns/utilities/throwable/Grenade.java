@@ -13,7 +13,7 @@ public class Grenade extends Throwable {
     public void use(LivingEntity entity) {
         entity.getWorld().playSound(entity.getLocation(), Sound.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 0.5f, 0);
         Projectile ball = entity.launchProjectile(Snowball.class);
-        ball.addScoreboardTag("THROWABLE_GRENADE");
+        ball.addScoreboardTag(getTag());
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "execute as @e[tag=THROWABLE_GRENADE] run data merge entity @s {Item:{id:\"minecraft:coal_block\",Count:1b}}");
     }
 

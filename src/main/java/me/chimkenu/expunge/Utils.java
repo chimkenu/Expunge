@@ -3,13 +3,8 @@ package me.chimkenu.expunge;
 import me.chimkenu.expunge.enums.Tier;
 import me.chimkenu.expunge.enums.Weapons;
 import me.chimkenu.expunge.guns.utilities.Utility;
-import me.chimkenu.expunge.guns.utilities.healing.Adrenaline;
-import me.chimkenu.expunge.guns.utilities.healing.Healing;
-import me.chimkenu.expunge.guns.utilities.healing.Medkit;
-import me.chimkenu.expunge.guns.utilities.healing.Pills;
-import me.chimkenu.expunge.guns.utilities.throwable.Grenade;
-import me.chimkenu.expunge.guns.utilities.throwable.Molotov;
-import me.chimkenu.expunge.guns.utilities.throwable.Spit;
+import me.chimkenu.expunge.guns.utilities.healing.*;
+import me.chimkenu.expunge.guns.utilities.throwable.*;
 import me.chimkenu.expunge.guns.utilities.throwable.Throwable;
 import me.chimkenu.expunge.guns.weapons.guns.Gun;
 import me.chimkenu.expunge.guns.weapons.melees.Melee;
@@ -58,6 +53,7 @@ public class Utils {
         healings.add(new Adrenaline());
         healings.add(new Pills());
         healings.add(new Medkit());
+        healings.add(new Defibrillator());
         return healings;
     }
 
@@ -74,6 +70,8 @@ public class Utils {
         throwables.add(new Grenade());
         throwables.add(new Molotov());
         throwables.add(new Spit());
+        throwables.add(new FreshAir());
+        throwables.add(new Bile());
         return throwables;
     }
 

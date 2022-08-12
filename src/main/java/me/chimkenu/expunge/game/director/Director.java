@@ -198,6 +198,7 @@ public class Director extends BukkitRunnable implements Listener {
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "kill @e[tag=KNOCKED]");
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "kill @e[tag=ITEM]");
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "kill @e[tag=AMMO_PILE]");
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "kill @e[tag=THROWN_BILE]");
         for (GameMob mob : mobHandler.getActiveMobs()) {
             mob.remove();
         }
