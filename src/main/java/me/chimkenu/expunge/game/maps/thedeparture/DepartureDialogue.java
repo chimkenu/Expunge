@@ -405,26 +405,20 @@ public enum DepartureDialogue {
                     "A » That billboard says I’m close to the stadium, I should keep going.");
         }
     },
-    HIGHWAY_HELICOPTER {
+    HIGHWAY_CAR_BOOM {
         @Override
         public Dialogue getA() {
-            return new Dialogue(null,
-                    "A » Hey, watch out!",
-                    "B » That just alerted the horde, run!"
-            );
+            return new Dialogue(null, "A » That just alerted the horde, run!");
         }
 
         @Override
         public Dialogue getB() {
-            return new Dialogue(null,
-                    "A » Look above!",
-                    "B » I think that just caught the horde’s attention!"
-            );
+            return new Dialogue(null, "A » I think that just caught the horde’s attention!");
         }
 
         @Override
         public Dialogue getSolo() {
-            return new Dialogue(null, "A » That helicopter’s gonna attract a horde, I need to run!");
+            return new Dialogue(null, "A » That explosion’s gonna attract a horde, I need to run!");
         }
     },
     HIGHWAY_SAFE_HOUSE {

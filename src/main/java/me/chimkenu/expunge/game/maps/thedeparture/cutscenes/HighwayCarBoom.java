@@ -2,6 +2,7 @@ package me.chimkenu.expunge.game.maps.thedeparture.cutscenes;
 
 import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.game.maps.Cutscene;
+import me.chimkenu.expunge.game.maps.thedeparture.DepartureDialogue;
 import me.chimkenu.expunge.mobs.GameMob;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -12,6 +13,8 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.List;
+
+import static me.chimkenu.expunge.game.maps.thedeparture.DepartureDialogue.playDialogue;
 
 public class HighwayCarBoom extends Cutscene {
     public HighwayCarBoom(List<Player> viewers, List<GameMob> mobs) {
@@ -37,10 +40,10 @@ public class HighwayCarBoom extends Cutscene {
             }
         }
 
-        // freeze mobs for the duration of the cutscene (7 seconds)
+        // freeze mobs for the duration of the cutscene (6 seconds)
         // also teleport viewers to face cutscene
         new BukkitRunnable() {
-            int i = 20 * 7;
+            int i = 20 * 6;
             @Override
             public void run() {
                 for (Mob m : mobs.keySet()) {
@@ -75,6 +78,6 @@ public class HighwayCarBoom extends Cutscene {
                     p.removeScoreboardTag("HIGHWAY_SCENE");
                 }
             }
-        }.runTaskLater(Expunge.instance, (20 * 7) + 1);
+        }.runTaskLater(Expunge.instance, (20 * 6) + 1);
     }
 }

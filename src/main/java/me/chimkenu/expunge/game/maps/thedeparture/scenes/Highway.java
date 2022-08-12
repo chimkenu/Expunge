@@ -102,16 +102,22 @@ public class Highway {
                 if (!box.contains(e.getPlayer().getLocation().toVector()))
                     return;
                 new HighwayCarBoom(Expunge.playing.getKeys(), Expunge.runningDirector.mobHandler.getActiveMobs().stream().toList()).play();
-                playDialogue(DepartureDialogue.HIGHWAY_SAFE_HOUSE);
                 HandlerList.unregisterAll(this);
                 new BukkitRunnable() {
                     @Override
                     public void run() {
+                        playDialogue(DepartureDialogue.HIGHWAY_CAR_BOOM);
+                    }
+                }.runTaskLater(Expunge.instance, 20 * 5);
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
                         Scene.playCrescendoEventEffect();
+                        playDialogue(DepartureDialogue.HIGHWAY_SAFE_HOUSE);
                         Expunge.runningDirector.bile(e.getPlayer(), 30);
                         Expunge.runningDirector.mobHandler.spawnAtRandomLocations(new BoundingBox(997, 35, 1362, 1040, 35, 1343), 30 + (10 * Expunge.currentDifficulty.ordinal()));
                     }
-                }.runTaskLater(Expunge.instance, 20 * 5);
+                }.runTaskLater(Expunge.instance, 20 * 6);
             }
         });
         happenings.add(new Listener() {
