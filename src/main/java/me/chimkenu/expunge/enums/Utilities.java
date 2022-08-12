@@ -1,6 +1,8 @@
 package me.chimkenu.expunge.enums;
 
 import me.chimkenu.expunge.guns.utilities.healing.*;
+import me.chimkenu.expunge.guns.utilities.throwable.Bile;
+import me.chimkenu.expunge.guns.utilities.throwable.FreshAir;
 import me.chimkenu.expunge.guns.utilities.throwable.Molotov;
 import me.chimkenu.expunge.guns.utilities.throwable.Throwable;
 
@@ -9,6 +11,16 @@ public class Utilities {
         MOLOTOV {
             public Throwable getUtility() {
                 return new Molotov();
+            }
+        },
+        FRESH_AIR {
+            public Throwable getUtility() {
+                return new FreshAir();
+            }
+        },
+        BILE {
+            public Throwable getUtility() {
+                return new Bile();
             }
         };
 

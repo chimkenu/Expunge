@@ -23,7 +23,6 @@ public class Bile extends Throwable {
 
     @Override
     public void onLand(World world, Location loc, Entity shooter) {
-        world.spawnParticle(Particle.SPELL_MOB, loc, 200, 2, 0.5, 2);
         world.playSound(loc, Sound.BLOCK_GLASS_BREAK, SoundCategory.PLAYERS, 1, 0);
         world.playSound(loc, Sound.ENTITY_PLAYER_SPLASH_HIGH_SPEED, SoundCategory.PLAYERS, 1, 2);
         ArmorStand target = world.spawn(loc, ArmorStand.class);

@@ -8,7 +8,7 @@ import org.bukkit.potion.PotionEffectType;
 
 public class FreshAir extends Throwable {
     public FreshAir() {
-        super(20, Material.GLASS_BOTTLE, "&3Fresh Air", Slot.TERTIARY, "THROWABLE_FRESH_AIR");
+        super(20, Material.GLASS_BOTTLE, "&3Fresh Air™", Slot.TERTIARY, "THROWABLE_FRESH_AIR");
     }
 
     @Override
@@ -21,10 +21,10 @@ public class FreshAir extends Throwable {
 
     @Override
     public void onLand(World world, Location loc, Entity shooter) {
-        world.spawnParticle(Particle.SPELL_MOB, loc, 200, 2, 0.5, 2, 0);
+        world.spawnParticle(Particle.SPELL, loc, 200, 2, 0.5, 2, 0);
         world.playSound(loc, Sound.BLOCK_GLASS_BREAK, SoundCategory.PLAYERS, 1, 0);
         world.playSound(loc, Sound.BLOCK_REDSTONE_TORCH_BURNOUT, SoundCategory.PLAYERS, 1, 0);
-        for (Entity entity : world.getNearbyEntities(loc, 4, 4, 4)) {
+        for (Entity entity : world.getNearbyEntities(loc, 5, 5, 5)) {
             if (!(entity instanceof LivingEntity livingEntity)) {
                 continue;
             }
@@ -34,7 +34,7 @@ public class FreshAir extends Throwable {
             if (livingEntity instanceof Player) {
                 continue;
             }
-            livingEntity.getWorld().spawnParticle(Particle.SPELL_MOB, livingEntity.getLocation().add(0, .5, 0), 25, 0.2, 0.2, 0.2, 0);
+            livingEntity.getWorld().spawnParticle(Particle.SPELL, livingEntity.getLocation().add(0, .5, 0), 25, 0.2, 0.2, 0.2, 0);
             livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 20 * 10, 0, false, true, false));
         }
     }
