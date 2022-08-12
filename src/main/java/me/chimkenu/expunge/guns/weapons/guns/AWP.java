@@ -8,6 +8,6 @@ import org.bukkit.Sound;
 
 public class AWP extends Gun {
     public AWP() {
-        super(25, 1, 60, 20, 66, 20, 200, 3, Particle.WAX_ON, Material.IRON_SHOVEL, Tier.TIER2, Slot.PRIMARY, "&fAWP", Sound.ENTITY_IRON_GOLEM_REPAIR, 0);
+        super(25, 1, 60, 7, 66, 20, 200, 5, Particle.WAX_ON, Material.IRON_SHOVEL, Tier.TIER2, Slot.PRIMARY, "&fAWP", Sound.ENTITY_IRON_GOLEM_REPAIR, 0);
     }
 }

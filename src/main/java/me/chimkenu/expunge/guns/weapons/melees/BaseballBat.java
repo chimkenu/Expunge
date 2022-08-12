@@ -6,6 +6,6 @@ import org.bukkit.Material;
 
 public class BaseballBat extends Melee {
     public BaseballBat() {
-        super(25, 3, 17, 3, "&6Baseball Bat", Material.WOODEN_SWORD, Tier.TIER1, Slot.SECONDARY);
+        super(50, 3, 20, 3, "&6Baseball Bat", Material.WOODEN_SWORD, Tier.TIER1, Slot.SECONDARY);
     }
 }

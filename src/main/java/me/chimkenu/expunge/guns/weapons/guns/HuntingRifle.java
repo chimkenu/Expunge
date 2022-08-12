@@ -8,6 +8,6 @@ import org.bukkit.Sound;
 
 public class HuntingRifle extends Gun {
     public HuntingRifle() {
-        super(22, 1, 50, 5, 64, 15, 165, 1, Particle.WHITE_ASH, Material.DIAMOND_HOE, Tier.TIER2, Slot.PRIMARY, "&9Hunting Rifle", Sound.ENTITY_FIREWORK_ROCKET_BLAST, 0);
+        super(22, 1, 50, 4, 64, 15, 165, 3, Particle.WHITE_ASH, Material.DIAMOND_HOE, Tier.TIER2, Slot.PRIMARY, "&9Hunting Rifle", Sound.ENTITY_FIREWORK_ROCKET_BLAST, 0);
     }
 }

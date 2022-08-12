@@ -6,6 +6,6 @@ import org.bukkit.Material;
 
 public class Crowbar extends Melee {
     public Crowbar() {
-        super(30, 2, 18, 1, "&8Crowbar", Material.NETHERITE_HOE, Tier.TIER1, Slot.SECONDARY);
+        super(60, 3, 18, 1, "&8Crowbar", Material.NETHERITE_HOE, Tier.TIER1, Slot.SECONDARY);
     }
 }
