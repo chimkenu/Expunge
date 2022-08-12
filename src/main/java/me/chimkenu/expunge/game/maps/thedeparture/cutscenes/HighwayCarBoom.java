@@ -53,23 +53,29 @@ public class HighwayCarBoom extends Cutscene {
                 i--;
             }
         }.runTaskTimer(Expunge.instance, 0, 1);
+        new BukkitRunnable() {
+            int i = 20 * 2;
+            final Location loc = new Location(Expunge.currentMap.getWorld(), 1009.50, 36.00, 1248.50);
+            @Override
+            public void run() {
+                for (Player p : viewers.keySet()) {
+                    p.teleport(loc);
+                }
+                i--;
+                if (i <= 0) {
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "setblock 1011 31 1242 minecraft:redstone_block");
+                    this.cancel();
+                }
+            }
+        }.runTaskTimer(Expunge.instance, 0, 1);
 
         // apply invisibility
-        Location loc = new Location(Expunge.currentMap.getWorld(), 1009.50, 36.00, 1248.50);
         for (Player p : viewers.keySet()) {
-            p.teleport(loc);
             p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 20 * 5, 0, false, false, false));
             p.addScoreboardTag("HIGHWAY_SCENE");
         }
 
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "setblock 1011 31 1242 minecraft:redstone_block");
-            }
-        }.runTaskLater(Expunge.instance, 20 * 2);
-
-        // wait 5 (+2) seconds after animation then bring em back
+        // wait 4 (+2) seconds after animation then bring em back
         new BukkitRunnable() {
             @Override
             public void run() {

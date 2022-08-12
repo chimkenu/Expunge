@@ -433,14 +433,14 @@ public enum DepartureDialogue {
         @Override
         public Dialogue getB() {
             return new Dialogue(null,
-                    "A » Look above!",
-                    "B » I think that just caught the horde’s attention!"
+                    "A » Not again, the path is blocked!",
+                            "B » We can take safety in the gas station!"
             );
         }
 
         @Override
         public Dialogue getSolo() {
-            return new Dialogue(null, "A » That helicopter’s gonna attract a horde, I need to run!");
+            return new Dialogue(null, "A » It’s blocked, I need to get around through the gas station.");
         }
     },
     HIGHWAY_PURPLE_CAR {
