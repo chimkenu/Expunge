@@ -13,8 +13,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.List;
 
-public class HighwayHelicopterCrash extends Cutscene {
-    public HighwayHelicopterCrash(List<Player> viewers, List<GameMob> mobs) {
+public class HighwayCarBoom extends Cutscene {
+    public HighwayCarBoom(List<Player> viewers, List<GameMob> mobs) {
         super(viewers, mobs);
     }
 
@@ -37,17 +37,14 @@ public class HighwayHelicopterCrash extends Cutscene {
             }
         }
 
-        // freeze mobs for the duration of the cutscene (5 seconds)
+        // freeze mobs for the duration of the cutscene (7 seconds)
         // also teleport viewers to face cutscene
         new BukkitRunnable() {
-            int i = 20 * 5;
+            int i = 20 * 7;
             @Override
             public void run() {
                 for (Mob m : mobs.keySet()) {
                     m.teleport(mobs.get(m));
-                }
-                for (Player p : viewers.keySet()) {
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "execute as " + p.getName() + " at @s anchored eyes rotated as @e[tag=HIGHWAY_HELICOPTER_CRASH_ROTATION] positioned ^ ^ ^5 rotated as @s positioned ^ ^ ^40 facing entity @s eyes facing ^ ^ ^-1 positioned as @s run tp @s 1004.5 36.0 1280.5 ~ ~");
                 }
                 if (i <= 0) this.cancel();
                 i--;
@@ -55,27 +52,29 @@ public class HighwayHelicopterCrash extends Cutscene {
         }.runTaskTimer(Expunge.instance, 0, 1);
 
         // apply invisibility
-        Location loc = new Location(Expunge.currentMap.getWorld(), 1004.5, 36.0, 1280.5, 0, 0);
+        Location loc = new Location(Expunge.currentMap.getWorld(), 1009.50, 36.00, 1248.50);
         for (Player p : viewers.keySet()) {
             p.teleport(loc);
             p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 20 * 5, 0, false, false, false));
+            p.addScoreboardTag("HIGHWAY_SCENE");
         }
 
         new BukkitRunnable() {
             @Override
             public void run() {
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "setblock 978 26 1286 minecraft:redstone_block");
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "setblock 1011 31 1242 minecraft:redstone_block");
             }
         }.runTaskLater(Expunge.instance, 20 * 2);
 
-        // wait 3 (+2) seconds after animation then bring em back
+        // wait 5 (+2) seconds after animation then bring em back
         new BukkitRunnable() {
             @Override
             public void run() {
                 for (Player p : viewers.keySet()) {
                     p.teleport(viewers.get(p));
+                    p.removeScoreboardTag("HIGHWAY_SCENE");
                 }
             }
-        }.runTaskLater(Expunge.instance, (20 * 5) + 1);
+        }.runTaskLater(Expunge.instance, (20 * 7) + 1);
     }
 }

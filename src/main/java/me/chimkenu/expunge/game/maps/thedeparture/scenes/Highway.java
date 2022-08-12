@@ -3,7 +3,7 @@ package me.chimkenu.expunge.game.maps.thedeparture.scenes;
 import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.game.maps.Scene;
 import me.chimkenu.expunge.game.maps.thedeparture.DepartureDialogue;
-import me.chimkenu.expunge.game.maps.thedeparture.cutscenes.HighwayHelicopterCrash;
+import me.chimkenu.expunge.game.maps.thedeparture.cutscenes.HighwayCarBoom;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -101,7 +101,7 @@ public class Highway {
                 BoundingBox box = new BoundingBox(990, 34, 1291, 1021, 56, 1297);
                 if (!box.contains(e.getPlayer().getLocation().toVector()))
                     return;
-                new HighwayHelicopterCrash(Expunge.playing.getKeys(), Expunge.runningDirector.mobHandler.getActiveMobs().stream().toList()).play();
+                new HighwayCarBoom(Expunge.playing.getKeys(), Expunge.runningDirector.mobHandler.getActiveMobs().stream().toList()).play();
                 playDialogue(DepartureDialogue.HIGHWAY_SAFE_HOUSE);
                 HandlerList.unregisterAll(this);
                 new BukkitRunnable() {
@@ -145,6 +145,7 @@ public class Highway {
                     world.getBlockAt(new Location(world, 1117, 26, 1205)).setType(Material.AIR);
                     world.getBlockAt(new Location(world, 1031, 37, 1353)).setType(Material.AIR);
                     world.getBlockAt(new Location(world, 1031, 36, 1353)).setType(Material.AIR);
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "setblock 1009 31 1247 minecraft:redstone_block");
                 },
                 null,
                 null,
