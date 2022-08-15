@@ -1,6 +1,7 @@
 package me.chimkenu.expunge;
 
 import me.chimkenu.expunge.commands.*;
+import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.enums.Difficulty;
 import me.chimkenu.expunge.game.director.Director;
 import me.chimkenu.expunge.game.SetSet;
@@ -190,6 +191,11 @@ public final class Expunge extends JavaPlugin {
 
             loadPlayerStats(p);
             playing.setIsAlive(p, true);
+
+            // achievement
+            if (scene.isStartSafeRoom()) {
+                Achievements.SAFE_FOR_NOW.grant(p);
+            }
         }
 
         // reload events
