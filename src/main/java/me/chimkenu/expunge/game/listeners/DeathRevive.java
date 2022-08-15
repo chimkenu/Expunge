@@ -1,6 +1,7 @@
 package me.chimkenu.expunge.game.listeners;
 
 import me.chimkenu.expunge.Expunge;
+import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.enums.Weapons;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -178,6 +179,9 @@ public class DeathRevive implements Listener {
 
             if (target.getVehicle() != null) target.getVehicle().remove();
             target.teleport(savior);
+
+            // achievement
+            Achievements.WERE_IN_THIS_TOGETHER.grant(savior);
         }
     }
 
