@@ -136,7 +136,7 @@ public class Alleys {
                     Expunge.runningDirector.mobHandler.spawnAtRandomLocations(new BoundingBox(1157, 42, 973, 1129, 42, 989), 20);
                 },
                 null,
-                null,
+                false,
                 happenings
         );
     }

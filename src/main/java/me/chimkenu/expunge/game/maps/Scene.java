@@ -19,7 +19,7 @@ public record Scene(Location startLocation, BoundingBox endRegion,
                     Location buttonLocation,
                     Action runAtStart,
                     Action runAtEnd,
-                    Listener crescendoEvent,
+                    boolean isStartSafeRoom,
                     ArrayList<Listener> happenings) {
 
     public static void playCrescendoEventEffect() {
@@ -92,8 +92,8 @@ public record Scene(Location startLocation, BoundingBox endRegion,
     }
 
     @Override
-    public Listener crescendoEvent() {
-        return crescendoEvent;
+    public boolean isStartSafeRoom() {
+        return isStartSafeRoom;
     }
 
     @Override

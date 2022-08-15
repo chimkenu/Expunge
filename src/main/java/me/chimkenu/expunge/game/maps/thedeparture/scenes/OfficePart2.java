@@ -82,6 +82,44 @@ public class OfficePart2 {
         });
         happenings.add(new Listener() {
             @EventHandler
+            public void onEnterVent(PlayerInteractEvent e) {
+                Block block = e.getClickedBlock();
+                if (!Expunge.playing.getKeys().contains(e.getPlayer())) {
+                    return;
+                }
+                if (block == null || !(e.getAction().equals(Action.PHYSICAL) && block.getLocation().toVector().equals(new Vector(846, 45, 925)))) {
+                    return;
+                }
+
+                Scene.playCrescendoEventEffect();
+                World world = e.getPlayer().getWorld();
+                new BukkitRunnable() {
+                    int i = 0;
+
+                    @Override
+                    public void run() {
+                        Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 845.5, 48, 928.5)));
+                        Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 853.5, 47, 939.5)));
+                        Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 866.5, 48, 939.5)));
+                        Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 872.5, 48, 931.5)));
+                        Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 876.5, 48, 925.5)));
+                        i++;
+                        if (i >= 5) {
+                            this.cancel();
+                        }
+                        if (Expunge.currentSceneIndex != 1) {
+                            this.cancel();
+                        }
+                    }
+                }.runTaskTimer(Expunge.instance, 1, 20 * 4);
+
+                // crescendo events are only meant to happen once
+                // hence it unregisters the event when it executes
+                HandlerList.unregisterAll(this);
+            }
+        });
+        happenings.add(new Listener() {
+            @EventHandler
             public void officeVent(PlayerMoveEvent e) {
                 if (!Expunge.playing.getKeys().contains(e.getPlayer()))
                     return;
@@ -122,44 +160,7 @@ public class OfficePart2 {
                     playDialogue(DepartureDialogue.OFFICE_ELEVATOR);
                 },
                 player -> playDialogue(DepartureDialogue.OFFICE_RADIO),
-                new Listener() {
-                    @EventHandler
-                    public void onEnterVent(PlayerInteractEvent e) {
-                        Block block = e.getClickedBlock();
-                        if (!Expunge.playing.getKeys().contains(e.getPlayer())) {
-                            return;
-                        }
-                        if (block == null || !(e.getAction().equals(Action.PHYSICAL) && block.getLocation().toVector().equals(new Vector(846, 45, 925)))) {
-                            return;
-                        }
-
-                        Scene.playCrescendoEventEffect();
-                        World world = e.getPlayer().getWorld();
-                        new BukkitRunnable() {
-                            int i = 0;
-
-                            @Override
-                            public void run() {
-                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 845.5, 48, 928.5)));
-                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 853.5, 47, 939.5)));
-                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 866.5, 48, 939.5)));
-                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 872.5, 48, 931.5)));
-                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 876.5, 48, 925.5)));
-                                i++;
-                                if (i >= 5) {
-                                    this.cancel();
-                                }
-                                if (Expunge.currentSceneIndex != 1) {
-                                    this.cancel();
-                                }
-                            }
-                        }.runTaskTimer(Expunge.instance, 1, 20 * 4);
-
-                        // crescendo events are only meant to happen once
-                        // hence it unregisters the event when it executes
-                        HandlerList.unregisterAll(this);
-                    }
-                },
+                false,
                 happenings
         );
     }

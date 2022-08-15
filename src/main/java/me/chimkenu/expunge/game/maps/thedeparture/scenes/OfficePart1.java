@@ -79,7 +79,7 @@ public class OfficePart1 {
                     playDialogue(DepartureDialogue.OFFICE_OPENING);
                 },
                 null,
-                null,
+                false,
                 null
         );
     }

@@ -203,7 +203,7 @@ public class Subway {
                     Expunge.runningDirector.mobHandler.spawnAtRandomLocations(new BoundingBox(1112, 41, 994, 1086, 41, 1011), 45);
                 },
                 null,
-                null,
+                true,
                 happenings
         );
     }

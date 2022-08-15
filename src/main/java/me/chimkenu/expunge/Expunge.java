@@ -194,8 +194,6 @@ public final class Expunge extends JavaPlugin {
 
         // reload events
         reRegisterGameEvents();
-        if (scene.crescendoEvent() != null) HandlerList.unregisterAll(scene.crescendoEvent());
-        if (scene.crescendoEvent() != null) instance.getServer().getPluginManager().registerEvents(scene.crescendoEvent(), instance);
         if (scene.happenings() != null) {
             for (Listener happening : scene.happenings()) {
                 HandlerList.unregisterAll(happening);
@@ -215,7 +213,6 @@ public final class Expunge extends JavaPlugin {
         isSpawningEnabled = false;
         if (scene.runAtEnd() != null) scene.runAtEnd().run(null);
 
-        if (scene.crescendoEvent() != null) HandlerList.unregisterAll(scene.crescendoEvent());
         if (scene.happenings() != null) {
             for (Listener happening : scene.happenings()) {
                 HandlerList.unregisterAll(happening);

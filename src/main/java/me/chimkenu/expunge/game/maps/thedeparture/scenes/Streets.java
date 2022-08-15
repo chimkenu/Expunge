@@ -104,6 +104,48 @@ public class Streets {
         });
         happenings.add(new Listener() {
             @EventHandler
+            public void crescendoEventApartments(PlayerInteractEvent e) {
+                Block block = e.getClickedBlock();
+                if (!Expunge.playing.getKeys().contains(e.getPlayer())) {
+                    return;
+                }
+                if (block == null || !(e.getAction().equals(Action.PHYSICAL) && (block.getLocation().toVector().equals(new Vector(1120, 43, 898)) || block.getLocation().toVector().equals(new Vector(1120, 43, 899))))) {
+                    return;
+                }
+
+                Scene.playCrescendoEventEffect();
+                World world = e.getPlayer().getWorld();
+                new BukkitRunnable() {
+                    int i = 0;
+                    @Override
+                    public void run() {
+                        Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1121.5, 43, 922.5)));
+                        Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1118.5, 43, 843)));
+                        Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1076.5, 43, 894.5)));
+                        Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1134, 43, 898.5)));
+                        Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1125.5, 50, 899.5)));
+                        Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1131.5, 50, 909.5)));
+                        Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1125.5, 50, 910.5)));
+                        Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1131.5, 50, 920.5)));
+                        Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1131.5, 50, 920.5)));
+                        Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1131.5, 56, 920.5)));
+                        Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1125.5, 56, 910.5)));
+                        Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1131.5, 56, 909.5)));
+                        Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1125.5, 56, 899.5)));
+                        i++;
+                        if (i >= 3) {
+                            this.cancel();
+                        }
+                        if (Expunge.currentSceneIndex != 2) {
+                            this.cancel();
+                        }
+                    }
+                }.runTaskTimer(Expunge.instance, 1, 20 * 4);
+                HandlerList.unregisterAll(this);
+            }
+        });
+        happenings.add(new Listener() {
+            @EventHandler
             public void streetsShedTrigger(PlayerMoveEvent e) {
                 if (!Expunge.playing.getKeys().contains(e.getPlayer()))
                     return;
@@ -145,48 +187,7 @@ public class Streets {
                     Expunge.runningDirector.mobHandler.spawnAtRandomLocations(new BoundingBox(873, 41, 889, 932, 41, 863), 30);
                 },
                 null,
-                new Listener() {
-                    @EventHandler
-                    public void crescendoEventApartments(PlayerInteractEvent e) {
-                        Block block = e.getClickedBlock();
-                        if (!Expunge.playing.getKeys().contains(e.getPlayer())) {
-                            return;
-                        }
-                        if (block == null || !(e.getAction().equals(Action.PHYSICAL) && (block.getLocation().toVector().equals(new Vector(1120, 43, 898)) || block.getLocation().toVector().equals(new Vector(1120, 43, 899))))) {
-                            return;
-                        }
-
-                        Scene.playCrescendoEventEffect();
-                        World world = e.getPlayer().getWorld();
-                        new BukkitRunnable() {
-                            int i = 0;
-                            @Override
-                            public void run() {
-                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1121.5, 43, 922.5)));
-                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1118.5, 43, 843)));
-                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1076.5, 43, 894.5)));
-                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1134, 43, 898.5)));
-                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1125.5, 50, 899.5)));
-                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1131.5, 50, 909.5)));
-                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1125.5, 50, 910.5)));
-                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1131.5, 50, 920.5)));
-                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1131.5, 50, 920.5)));
-                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1131.5, 56, 920.5)));
-                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1125.5, 56, 910.5)));
-                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1131.5, 56, 909.5)));
-                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1125.5, 56, 899.5)));
-                                i++;
-                                if (i >= 3) {
-                                    this.cancel();
-                                }
-                                if (Expunge.currentSceneIndex != 2) {
-                                    this.cancel();
-                                }
-                            }
-                        }.runTaskTimer(Expunge.instance, 1, 20 * 4);
-                        HandlerList.unregisterAll(this);
-                    }
-                },
+                true,
                 happenings
         );
     }

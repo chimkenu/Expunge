@@ -154,7 +154,7 @@ public class Highway {
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "setblock 1009 31 1247 minecraft:redstone_block");
                 },
                 null,
-                null,
+                false,
                 happenings
         );
     }

@@ -283,7 +283,7 @@ public class Stadium {
                     Expunge.runningDirector.mobHandler.spawnAtRandomLocations(new BoundingBox(1011, 35, 1375, 997, 35, 1428), 30 + (Expunge.currentDifficulty.ordinal() * 10));
                 },
                 null,
-                null,
+                true,
                 happenings
         );
     }
