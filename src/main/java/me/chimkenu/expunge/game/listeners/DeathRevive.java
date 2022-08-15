@@ -138,7 +138,7 @@ public class DeathRevive implements Listener {
         if (!Expunge.playing.getKeys().contains(player)) {
             return;
         }
-        if (Expunge.playing.isAlive(player)) {
+        if (Expunge.playing.isAlive(player) || player.getGameMode() == GameMode.SPECTATOR) {
             return;
         }
         if (currentLives.get(player) < 1) {
