@@ -10,6 +10,7 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 import org.spigotmc.event.entity.EntityDismountEvent;
 
 public class MobListener implements Listener {
@@ -102,22 +103,16 @@ public class MobListener implements Listener {
             return;
         }
         player.setNoDamageTicks(30);
-        player.setWalkSpeed(0);
         new BukkitRunnable() {
             int i = 10;
+            final Vector v = new Vector();
             @Override
             public void run() {
-                player.setVelocity(player.getVelocity().setY(0));
+                player.setVelocity(v);
                 if (i <= 0) this.cancel();
                 i--;
             }
         }.runTaskTimer(Expunge.instance, 0, 1);
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                player.setWalkSpeed(0.2f);
-            }
-        }.runTaskLater(Expunge.instance, 10);
 
         // if damage is low
         if (e.getDamage() < 0.25) {
