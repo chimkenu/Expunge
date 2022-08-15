@@ -170,9 +170,20 @@ public class DeathRevive implements Listener {
 
             if (currentLives.get(target) == 1) {
                 new BukkitRunnable() {
+                    int i = 200;
                     @Override
                     public void run() {
-
+                        if (
+                                i <= 0 ||
+                                !Expunge.isGameRunning ||
+                                !Expunge.playing.getKeys().contains(target) ||
+                                target.getGameMode() != GameMode.ADVENTURE ||
+                                Expunge.playing.getLives(target) > 1
+                        ) this.cancel();
+                        if (i % 20 == 0 || i % 20 == 6) {
+                            target.playSound(target, Sound.BLOCK_STONE_PLACE, SoundCategory.PLAYERS, 1, 0);
+                        }
+                        i--;
                     }
                 }.runTaskTimer(Expunge.instance, 1, 1);
             }
