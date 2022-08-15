@@ -3,6 +3,7 @@ package me.chimkenu.expunge.game.listeners;
 import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.Queue;
 import me.chimkenu.expunge.commands.Tutorial;
+import me.chimkenu.expunge.enums.Achievements;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -10,15 +11,24 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 public class JoinLeave implements Listener {
     @EventHandler
+    public void onLogin(AsyncPlayerPreLoginEvent e) {
+        if (e.getName().contains(".")) {
+            e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, "Please get Java Edition!");
+        }
+    }
+
+    @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         e.getPlayer().getInventory().clear();
         e.getPlayer().sendMessage(ChatColor.GREEN + "New? Do " + ChatColor.YELLOW + "/tutorial" + ChatColor.GREEN + " to learn the mechanics!");
+        Achievements.WELCOME_TO_EXPUNGE.grant(e.getPlayer());
         Expunge.setSpectator(e.getPlayer());
     }
 
