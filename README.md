@@ -1,6 +1,15 @@
 # expunge
+
 a small minecraft plugin / minigame
 
-wont work without the map, which is only
+a plugin that attempts to emulate zombie shooter games similar to l4d
 
-avaliable at the server: expunge.minehut.gg
+> this plugin wont work without the map, which is only avaliable at the server: **expunge.minehut.gg**
+
+## what is there
+
+- a tutorial
+- large variety of weapons and utilities
+- custom mobs
+- cutscenes and dialogue
+- achievements (needs the expunge-datapack)
