@@ -6,6 +6,6 @@ import org.bukkit.Material;
 
 public class MrCookie extends Melee {
     public MrCookie() {
-        super(2, 3, 2, 1, "&6Mr. Cookie", Material.COOKIE, Tier.SPECIAL, Slot.SECONDARY);
+        super(5, 3, 2, 1, "&6Mr. Cookie", Material.COOKIE, Tier.SPECIAL, Slot.SECONDARY);
     }
 }

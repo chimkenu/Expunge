@@ -6,6 +6,6 @@ import org.bukkit.Material;
 
 public class Shovel extends Melee {
     public Shovel() {
-        super(50, 4, 18, 4, "&8Shovel", Material.STONE_SHOVEL, Tier.TIER1, Slot.SECONDARY);
+        super(250, 4, 18, 4, "&8Shovel", Material.STONE_SHOVEL, Tier.TIER1, Slot.SECONDARY);
     }
 }

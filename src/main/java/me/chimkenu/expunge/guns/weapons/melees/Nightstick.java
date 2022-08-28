@@ -6,6 +6,6 @@ import org.bukkit.Material;
 
 public class Nightstick extends Melee {
     public Nightstick() {
-        super(35, 3, 13, 1, "&8Nightstick", Material.STICK, Tier.TIER1, Slot.SECONDARY);
+        super(250, 3, 13, 1, "&8Nightstick", Material.STICK, Tier.TIER1, Slot.SECONDARY);
     }
 }
