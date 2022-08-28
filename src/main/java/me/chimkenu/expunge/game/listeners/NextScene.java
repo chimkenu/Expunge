@@ -1,17 +1,16 @@
 package me.chimkenu.expunge.game.listeners;
 
 import me.chimkenu.expunge.Expunge;
+import me.chimkenu.expunge.enums.Achievements;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BoundingBox;
 
 public class NextScene implements Listener {
@@ -55,6 +54,28 @@ public class NextScene implements Listener {
             // check if it is the last scene then end the game
             if (Expunge.currentMap.getScenes().size() - 1 <= Expunge.currentSceneIndex) {
                 Bukkit.broadcastMessage(ChatColor.GREEN + "END OF GAME");
+
+                // achievements
+                boolean hasMrCookie = false;
+                for (Player p : Expunge.playing.getKeys()) {
+                    Achievements.SURVIVOR.grant(p);
+
+                    // the departure achievements
+                    if (Expunge.currentMap.getName().equals("The Departure")) {
+                        Achievements.THE_DEPARTURE.grant(p);
+                        for (int i = 0; i < 5; i++) {
+                            ItemStack item = p.getInventory().getItem(i);
+                            if (item != null && item.getType() == Material.COOKIE) hasMrCookie = true;
+                        }
+                    }
+                }
+
+                if (hasMrCookie) {
+                    for (Player p : Expunge.playing.getKeys()) {
+                        Achievements.COOKIE_MONSTER.grant(p);
+                    }
+                }
+
                 Expunge.stopGame();
                 return;
             }

@@ -124,6 +124,12 @@ public enum Achievements {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "advancement grant " + player.getName() + " only expunge:the_departure/subway_lurkers");
         }
     },
+    A_BITE_TO_EAT {
+        @Override
+        public void grant(Player player) {
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "advancement grant " + player.getName() + " only expunge:the_departure/a_bite_to_eat");
+        }
+    },
     HEY_DONT_TOUCH_THAT {
         @Override
         public void grant(Player player) {

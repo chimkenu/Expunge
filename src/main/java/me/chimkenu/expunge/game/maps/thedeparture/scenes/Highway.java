@@ -98,7 +98,7 @@ public class Highway {
             public void highwaySafeHouse(PlayerMoveEvent e) {
                 if (!Expunge.playing.getKeys().contains(e.getPlayer()))
                     return;
-                BoundingBox box = new BoundingBox(990, 34, 1291, 1021, 56, 1297);
+                BoundingBox box = new BoundingBox(1028, 34, 1258, 988, 56, 1233);
                 if (!box.contains(e.getPlayer().getLocation().toVector()))
                     return;
                 new HighwayCarBoom(Expunge.playing.getKeys(), Expunge.runningDirector.mobHandler.getActiveMobs().stream().toList()).play();

@@ -1,6 +1,7 @@
 package me.chimkenu.expunge.game.maps.thedeparture.scenes;
 
 import me.chimkenu.expunge.Expunge;
+import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.enums.Tier;
 import me.chimkenu.expunge.game.director.ItemHandler;
 import me.chimkenu.expunge.game.maps.Scene;
@@ -250,6 +251,25 @@ public class Stadium {
                 }
             }
         });
+        happenings.add(new Listener() {
+           @EventHandler
+           public void finaleBegin(PlayerInteractEvent e) {
+               if (!Expunge.playing.getKeys().contains(e.getPlayer())) {
+                   return;
+               }
+               if (!e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+                   return;
+               }
+               if (e.getClickedBlock() == null || !(e.getClickedBlock().getType() == Material.STONE_BUTTON)) {
+                   return;
+               }
+               Vector clickedLoc = e.getClickedBlock().getLocation().toVector();
+               if (clickedLoc.equals(new Vector(1185, 39, 1642)) || clickedLoc.equals(new Vector(1185, 39, 1634))) {
+                   Achievements.HEY_DONT_TOUCH_THAT.grant(e.getPlayer());
+               }
+           }
+       });
+
         return new Scene(
                 new Location(world, 1033.5, 36, 1353.5),
                 new BoundingBox(1184, 38, 1640, 1190, 43, 1635),

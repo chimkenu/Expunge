@@ -1,6 +1,7 @@
 package me.chimkenu.expunge.mobs;
 
 import me.chimkenu.expunge.Expunge;
+import me.chimkenu.expunge.enums.Achievements;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -60,6 +61,11 @@ public class MobListener implements Listener {
     public void onDeath(EntityDeathEvent e) {
         if (e.getEntity().getScoreboardTags().contains("BOOMER")) {
             boom(e.getEntity());
+        }
+
+        // achievement
+        if (e.getEntity().getKiller() != null && e.getEntity().getScoreboardTags().contains("JOCKEY") && e.getEntity().getVehicle() instanceof Player) {
+            Achievements.PEST_CONTROL.grant(e.getEntity().getKiller());
         }
     }
 

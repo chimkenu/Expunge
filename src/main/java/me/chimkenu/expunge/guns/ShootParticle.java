@@ -1,12 +1,10 @@
 package me.chimkenu.expunge.guns;
 
+import me.chimkenu.expunge.enums.Achievements;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -26,6 +24,7 @@ public class ShootParticle {
         ArrayList<LivingEntity> entities = new ArrayList<>();
         World world = shooter.getWorld();
         int wallsThrough = ThreadLocalRandom.current().nextInt(1, 4);
+        boolean hasSpoken = false; // boolean for achievement - so that it does not trigger more than once per shot
         for (int i = 0; i < positions.size(); i++) {
             Vector v = positions.get(i);
             // so the particle does not obscure vision
@@ -42,7 +41,33 @@ public class ShootParticle {
                     if (livingEntity instanceof Player player && player.getGameMode() != GameMode.ADVENTURE) {
                         continue;
                     }
-                    if (ray.intersects(e.getBoundingBox(), range, ACCURACY_TRUE) && !e.getType().equals(EntityType.ARMOR_STAND)) {
+
+                    // achievement
+                    if (livingEntity instanceof ArmorStand armorStand) {
+                        if (!hasSpoken && armorStand.getScoreboardTags().contains("ZOEY")) {
+                            Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "Zoey &8» &fWatch where you're shooting!"));
+                            hasSpoken = true;
+                            Achievements.THE_BIG_LEAGUES.grant(shooter);
+                        }
+                        else if (!hasSpoken && armorStand.getScoreboardTags().contains("FRANCIS")) {
+                            Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "Francis &8» &fWill you knock it off!"));
+                            hasSpoken = true;
+                            Achievements.THE_BIG_LEAGUES.grant(shooter);
+                        }
+                        else if (!hasSpoken && armorStand.getScoreboardTags().contains("BILL")) {
+                            Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "Bill &8» &fI'm getting too old for this horse shit."));
+                            hasSpoken = true;
+                            Achievements.THE_BIG_LEAGUES.grant(shooter);
+                        }
+                        else if (!hasSpoken && armorStand.getScoreboardTags().contains("LOUIS")) {
+                            Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "Louis &8» &fHey man, that hurt!"));
+                            hasSpoken = true;
+                            Achievements.THE_BIG_LEAGUES.grant(shooter);
+                        }
+                        continue;
+                    }
+
+                    if (ray.intersects(e.getBoundingBox(), range, ACCURACY_TRUE)) {
                         entities.add(livingEntity);
                     }
                 }

@@ -1,5 +1,6 @@
 package me.chimkenu.expunge.guns.utilities.throwable;
 
+import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.enums.Slot;
 import org.bukkit.*;
 import org.bukkit.entity.*;
@@ -21,6 +22,7 @@ public class Grenade extends Throwable {
     public void onLand(World world, Location loc, Entity shooter) {
         world.spawnParticle(Particle.EXPLOSION_HUGE, loc, 1);
         world.playSound(loc, Sound.ENTITY_GENERIC_EXPLODE, SoundCategory.PLAYERS, 1, 1);
+        int numOfMobs = 0;
         for (Entity entity : world.getNearbyEntities(loc, 4, 4, 4)) {
             if (!(entity instanceof LivingEntity livingEntity)) {
                 continue;
@@ -33,8 +35,14 @@ public class Grenade extends Throwable {
                     livingEntity.damage(1, shooter);
                 continue;
             }
+            numOfMobs++;
             livingEntity.getWorld().spawnParticle(Particle.BLOCK_CRACK, livingEntity.getLocation().add(0, .5, 0), 50, 0.2, 0.2, 0.2, Material.NETHER_WART_BLOCK.createBlockData());
             livingEntity.damage(80, shooter);
+        }
+
+        // achievement
+        if (numOfMobs >= 20 && shooter instanceof Player player) {
+            Achievements.WHEN_GUTS_FLY.grant(player);
         }
     }
 }

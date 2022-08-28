@@ -1,6 +1,7 @@
 package me.chimkenu.expunge.game.maps.thedeparture.scenes;
 
 import me.chimkenu.expunge.Expunge;
+import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.enums.Tier;
 import me.chimkenu.expunge.game.director.ItemHandler;
 import me.chimkenu.expunge.game.maps.Scene;
@@ -14,8 +15,11 @@ import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.util.BoundingBox;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -107,6 +111,23 @@ public class Alleys {
                     return;
                 playDialogue(DepartureDialogue.ALLEYS_SAFE_HOUSE);
                 HandlerList.unregisterAll(this);
+            }
+        });
+        happenings.add(new Listener() {
+            @EventHandler
+            public void finaleBegin(PlayerInteractEvent e) {
+                if (!Expunge.playing.getKeys().contains(e.getPlayer())) {
+                    return;
+                }
+                if (!e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+                    return;
+                }
+                if (e.getClickedBlock() == null || !(e.getClickedBlock().getType() == Material.STONE_BUTTON)) {
+                    return;
+                }
+                if (e.getClickedBlock().getLocation().toVector().equals(new Vector(1126, 44, 997))) {
+                    Achievements.A_BITE_TO_EAT.grant(e.getPlayer());
+                }
             }
         });
 

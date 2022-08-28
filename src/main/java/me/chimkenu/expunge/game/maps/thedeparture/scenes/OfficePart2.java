@@ -1,6 +1,7 @@
 package me.chimkenu.expunge.game.maps.thedeparture.scenes;
 
 import me.chimkenu.expunge.Expunge;
+import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.game.maps.Scene;
 import me.chimkenu.expunge.game.maps.thedeparture.DepartureDialogue;
 import me.chimkenu.expunge.guns.weapons.melees.FryingPan;
@@ -78,6 +79,13 @@ public class OfficePart2 {
                     return;
                 playDialogue(DepartureDialogue.OFFICE_JUMP);
                 HandlerList.unregisterAll(this);
+            }
+        });
+        happenings.add(new Listener() {
+            @EventHandler
+            public void onEnterDevelopersRoom(PlayerMoveEvent e) {
+                if (new BoundingBox(837, 42, 924, 842, 47, 928).contains(e.getPlayer().getLocation().toVector()))
+                    Achievements.THE_DEVELOPERS_ROOM.grant(e.getPlayer());
             }
         });
         happenings.add(new Listener() {

@@ -1,6 +1,7 @@
 package me.chimkenu.expunge.game.maps.thedeparture.scenes;
 
 import me.chimkenu.expunge.Expunge;
+import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.enums.Tier;
 import me.chimkenu.expunge.game.director.ItemHandler;
 import me.chimkenu.expunge.game.maps.Scene;
@@ -13,6 +14,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -113,6 +115,23 @@ public class Subway {
         });
         happenings.add(new Listener() {
             @EventHandler
+            public void finaleBegin(PlayerInteractEvent e) {
+                if (!Expunge.playing.getKeys().contains(e.getPlayer())) {
+                    return;
+                }
+                if (!e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+                    return;
+                }
+                if (e.getClickedBlock() == null || !(e.getClickedBlock().getType() == Material.STONE_BUTTON)) {
+                    return;
+                }
+                if (e.getClickedBlock().getLocation().toVector().equals(new Vector(1126, 44, 997))) {
+                    Achievements.A_BITE_TO_EAT.grant(e.getPlayer());
+                }
+            }
+        });
+        happenings.add(new Listener() {
+            @EventHandler
             public void subwayPurpleCar(PlayerMoveEvent e) {
                 if (!Expunge.playing.getKeys().contains(e.getPlayer()))
                     return;
@@ -201,8 +220,20 @@ public class Subway {
                     Expunge.runningDirector.itemHandler.spawnUtility(new Location(world, 1126, 50.2, 983), new Adrenaline());
 
                     Expunge.runningDirector.mobHandler.spawnAtRandomLocations(new BoundingBox(1112, 41, 994, 1086, 41, 1011), 45);
+
+                    // for achievement
+                    for (Player p : Expunge.playing.getKeys()) {
+                        p.addScoreboardTag("NO_HIT");
+                    }
                 },
-                null,
+                player -> {
+                    for (Player p : Expunge.playing.getKeys()) {
+                        if (p.getScoreboardTags().contains("NO_HIT")) {
+                            p.removeScoreboardTag("NO_HIT");
+                            Achievements.SUBWAY_LURKERS.grant(p);
+                        }
+                    }
+                },
                 true,
                 happenings
         );

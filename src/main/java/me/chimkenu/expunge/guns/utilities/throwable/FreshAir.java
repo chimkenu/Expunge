@@ -1,5 +1,6 @@
 package me.chimkenu.expunge.guns.utilities.throwable;
 
+import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.enums.Slot;
 import org.bukkit.*;
 import org.bukkit.entity.*;
@@ -24,6 +25,7 @@ public class FreshAir extends Throwable {
         world.spawnParticle(Particle.SPELL, loc, 200, 2, 0.5, 2, 0);
         world.playSound(loc, Sound.BLOCK_GLASS_BREAK, SoundCategory.PLAYERS, 1, 0);
         world.playSound(loc, Sound.BLOCK_REDSTONE_TORCH_BURNOUT, SoundCategory.PLAYERS, 1, 0);
+        int numOfMobs = 0;
         for (Entity entity : world.getNearbyEntities(loc, 5, 5, 5)) {
             if (!(entity instanceof LivingEntity livingEntity)) {
                 continue;
@@ -34,8 +36,14 @@ public class FreshAir extends Throwable {
             if (livingEntity instanceof Player) {
                 continue;
             }
+            numOfMobs++;
             livingEntity.getWorld().spawnParticle(Particle.SPELL, livingEntity.getLocation().add(0, .5, 0), 25, 0.2, 0.2, 0.2, 0);
             livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 20 * 10, 0, false, true, false));
+        }
+
+        // achievement
+        if (numOfMobs >= 20 && shooter instanceof Player player) {
+            Achievements.ZERO_GRAVITY.grant(player);
         }
     }
 }
