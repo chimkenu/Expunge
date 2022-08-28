@@ -51,7 +51,6 @@ public class OfficePart1 {
         ArrayList<Location> weaponLocations = new ArrayList<>();
 
         ArrayList<Location> ammoLocations = new ArrayList<>();
-        ammoLocations.add(new Location(world, 953.5, 10, 873.5));
 
         return new Scene(
                 new Location(world, 952.5, 9, 872.5),
