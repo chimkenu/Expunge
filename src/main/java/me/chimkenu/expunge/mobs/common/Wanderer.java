@@ -32,7 +32,7 @@ public class Wanderer extends GameMob {
         putOnRandomClothes(getMob());
         getMob().addScoreboardTag("WANDERER");
         try {
-            getMob().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(0.5);
+            getMob().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(0.25 + (Expunge.currentDifficulty.ordinal() * 0.25));
         } catch (NullPointerException e) {
             e.printStackTrace();
         }

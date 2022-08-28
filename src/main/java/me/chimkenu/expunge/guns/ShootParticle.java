@@ -67,8 +67,14 @@ public class ShootParticle {
                         continue;
                     }
 
-                    if (ray.intersects(e.getBoundingBox(), range, ACCURACY_TRUE)) {
-                        entities.add(livingEntity);
+                    Vector intersection = ray.intersectsAt(e.getBoundingBox(), range, ACCURACY_TRUE);
+                    if (intersection != null) {
+                        if (livingEntity.getScoreboardTags().contains("ROBOT")) {
+                            livingEntity.getWorld().playSound(livingEntity.getLocation(), Sound.BLOCK_ANVIL_PLACE, SoundCategory.HOSTILE, 1f, 2f);
+                            livingEntity.getWorld().spawnParticle(Particle.SMOKE_NORMAL, intersection.toLocation(livingEntity.getWorld()), 10, 0, 0, 0, 0.05);
+                        }
+                        else
+                            entities.add(livingEntity);
                     }
                 }
             }

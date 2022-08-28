@@ -2,6 +2,7 @@ package me.chimkenu.expunge.mobs;
 
 import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.enums.Achievements;
+import me.chimkenu.expunge.guns.utilities.throwable.FreshAir;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -62,9 +63,12 @@ public class MobListener implements Listener {
         if (e.getEntity().getScoreboardTags().contains("BOOMER")) {
             boom(e.getEntity());
         }
+        else if (e.getEntity().getScoreboardTags().contains("ROBOT")) {
+            e.getEntity().getWorld().dropItemNaturally(e.getEntity().getLocation(), new FreshAir().getUtility());
+        }
 
         // achievement
-        if (e.getEntity().getKiller() != null && e.getEntity().getScoreboardTags().contains("JOCKEY") && e.getEntity().getVehicle() instanceof Player) {
+        else if (e.getEntity().getKiller() != null && e.getEntity().getScoreboardTags().contains("JOCKEY") && e.getEntity().getVehicle() instanceof Player) {
             Achievements.PEST_CONTROL.grant(e.getEntity().getKiller());
         }
     }

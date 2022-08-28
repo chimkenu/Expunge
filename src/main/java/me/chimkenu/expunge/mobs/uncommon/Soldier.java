@@ -1,19 +1,22 @@
-package me.chimkenu.expunge.mobs.common;
+package me.chimkenu.expunge.mobs.uncommon;
 
 import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.mobs.GameMob;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Zombie;
+import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class Horde extends GameMob {
-    public <T extends Mob> Horde(World world, Location locationToSpawn) {
+public class Soldier extends GameMob {
+    public <T extends Mob> Soldier(World world, Location locationToSpawn) {
         super(world, locationToSpawn, Zombie.class, mob -> {
             if (mob.getTarget() != null) {
                 Location mobLoc = mob.getLocation();
@@ -28,13 +31,31 @@ public class Horde extends GameMob {
             } else
                 mob.setTarget(getRandomPlayer());
         });
-        putOnRandomClothes(getMob());
-        getMob().addScoreboardTag("HORDE");
+        putOnClothes(getMob());
+        getMob().addScoreboardTag("SOLDIER");
         try {
             getMob().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(0.25 + (Expunge.currentDifficulty.ordinal() * 0.25));
+            getMob().getEquipment().setItemInMainHand(new ItemStack(Material.STONE_SWORD));
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
-        if (getMob().getEquipment() != null) getMob().getEquipment().setItemInMainHand(new ItemStack(Material.AIR));
+    }
+
+    private void putOnClothes(Mob mob) {
+        EntityEquipment equipment = mob.getEquipment();
+        if (equipment != null) {
+
+            // chestplate is dyed leather
+            ItemStack chestplate = new ItemStack(Material.LEATHER_CHESTPLATE);
+            LeatherArmorMeta meta = (LeatherArmorMeta) chestplate.getItemMeta();
+            if (meta != null) {
+                meta.setColor(Color.fromRGB(78, 101, 24));
+                chestplate.setItemMeta(meta);
+            }
+            equipment.setChestplate(chestplate);
+
+            equipment.setLeggings(new ItemStack(Material.NETHERITE_LEGGINGS));
+            equipment.setBoots(new ItemStack(Material.NETHERITE_BOOTS));
+        }
     }
 }

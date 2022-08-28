@@ -1,19 +1,22 @@
-package me.chimkenu.expunge.mobs.common;
+package me.chimkenu.expunge.mobs.uncommon;
 
 import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.mobs.GameMob;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Zombie;
+import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class Horde extends GameMob {
-    public <T extends Mob> Horde(World world, Location locationToSpawn) {
+public class Robot extends GameMob {
+    public <T extends Mob> Robot(World world, Location locationToSpawn) {
         super(world, locationToSpawn, Zombie.class, mob -> {
             if (mob.getTarget() != null) {
                 Location mobLoc = mob.getLocation();
@@ -28,13 +31,31 @@ public class Horde extends GameMob {
             } else
                 mob.setTarget(getRandomPlayer());
         });
-        putOnRandomClothes(getMob());
-        getMob().addScoreboardTag("HORDE");
+        putOnClothes(getMob());
+        getMob().addScoreboardTag("ROBOT");
         try {
             getMob().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(0.25 + (Expunge.currentDifficulty.ordinal() * 0.25));
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
-        if (getMob().getEquipment() != null) getMob().getEquipment().setItemInMainHand(new ItemStack(Material.AIR));
+    }
+
+    private ItemStack getDyedArmor(Material material, int red, int green, int blue) {
+        ItemStack item = new ItemStack(material);
+        LeatherArmorMeta meta = (LeatherArmorMeta) item.getItemMeta();
+        if (meta != null) {
+            meta.setColor(Color.fromRGB(red, green, blue));
+            item.setItemMeta(meta);
+        }
+        return item;
+    }
+
+    private void putOnClothes(Mob mob) {
+        EntityEquipment equipment = mob.getEquipment();
+        if (equipment != null) {
+            equipment.setChestplate(getDyedArmor(Material.LEATHER_CHESTPLATE, 75, 87, 75));
+            equipment.setLeggings(getDyedArmor(Material.LEATHER_LEGGINGS, 32, 152, 139));
+            equipment.setBoots(getDyedArmor(Material.LEATHER_BOOTS, 39, 44, 33));
+        }
     }
 }

@@ -6,6 +6,8 @@ import me.chimkenu.expunge.mobs.GameMob;
 import me.chimkenu.expunge.mobs.common.Horde;
 import me.chimkenu.expunge.mobs.common.Wanderer;
 import me.chimkenu.expunge.mobs.special.Tank;
+import me.chimkenu.expunge.mobs.uncommon.Robot;
+import me.chimkenu.expunge.mobs.uncommon.Soldier;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -81,7 +83,15 @@ public class MobHandler {
     }
 
     public void spawnAdditionalMob() {
-        LivingEntity spawnedMob = spawnMob(new Horde(map.getWorld(), getRandomSpawnLocation()));
+        // chance to spawn uncommon zombie (5%)
+        int random = ThreadLocalRandom.current().nextInt(0, 20);
+        LivingEntity spawnedMob;
+        if (random == 0)
+            spawnedMob = spawnMob(new Robot(map.getWorld(), getRandomSpawnLocation()));
+        else if (random == 1)
+            spawnedMob = spawnMob(new Soldier(map.getWorld(), getRandomSpawnLocation()));
+        else
+            spawnedMob = spawnMob(new Horde(map.getWorld(), getRandomSpawnLocation()));
         spawnedMob.setRemoveWhenFarAway(false);
     }
 

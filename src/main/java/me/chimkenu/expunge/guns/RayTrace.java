@@ -32,6 +32,17 @@ public record RayTrace(Vector origin, Vector direction) {
         return false;
     }
 
+    // return intersection vector
+    public Vector intersectsAt(BoundingBox boundingBox, double blocksAway, double accuracy) {
+        ArrayList<Vector> positions = traverse(blocksAway, accuracy);
+        for (Vector position : positions) {
+            if (intersects(position, boundingBox.getMin(), boundingBox.getMax())) {
+                return position;
+            }
+        }
+        return null;
+    }
+
     // general intersection detection
     public static boolean intersects(Vector position, Vector min, Vector max) {
         if (position.getX() < min.getX() || position.getX() > max.getX()) {
