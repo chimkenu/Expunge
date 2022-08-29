@@ -64,7 +64,8 @@ public class MobListener implements Listener {
             boom(e.getEntity());
         }
         else if (e.getEntity().getScoreboardTags().contains("ROBOT")) {
-            e.getEntity().getWorld().dropItemNaturally(e.getEntity().getLocation(), new FreshAir().getUtility());
+            Item item = e.getEntity().getWorld().dropItemNaturally(e.getEntity().getLocation(), new FreshAir().getUtility());
+            item.addScoreboardTag("ITEM");
         }
 
         // achievement
