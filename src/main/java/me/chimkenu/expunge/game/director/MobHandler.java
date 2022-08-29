@@ -6,6 +6,7 @@ import me.chimkenu.expunge.mobs.GameMob;
 import me.chimkenu.expunge.mobs.common.Horde;
 import me.chimkenu.expunge.mobs.common.Wanderer;
 import me.chimkenu.expunge.mobs.special.Tank;
+import me.chimkenu.expunge.mobs.special.Witch;
 import me.chimkenu.expunge.mobs.uncommon.Robot;
 import me.chimkenu.expunge.mobs.uncommon.Soldier;
 import org.bukkit.Location;
@@ -127,12 +128,29 @@ public class MobHandler {
 
             spawnMob(new Wanderer(world, loc));
         }
+
+        // random chance to spawn boss
+        int random = ThreadLocalRandom.current().nextInt(0, 10);
+        if (random > 7 - Expunge.currentDifficulty.ordinal()) {
+            if (random == 8)
+                spawnTank();
+            else
+                spawnWitch();
+        }
     }
 
     public void spawnTank() {
         ArrayList<Location> bossLoc = map.getScenes().get(sceneIndex).bossLocations();
         if (bossLoc.size() > 0) {
             LivingEntity spawnedMob = spawnMob(new Tank(map.getWorld(), bossLoc.get(ThreadLocalRandom.current().nextInt(0, bossLoc.size()))));
+            spawnedMob.setRemoveWhenFarAway(false);
+        }
+    }
+
+    public void spawnWitch() {
+        ArrayList<Location> bossLoc = map.getScenes().get(sceneIndex).bossLocations();
+        if (bossLoc.size() > 0) {
+            LivingEntity spawnedMob = spawnMob(new Witch(map.getWorld(), bossLoc.get(ThreadLocalRandom.current().nextInt(0, bossLoc.size()))));
             spawnedMob.setRemoveWhenFarAway(false);
         }
     }
