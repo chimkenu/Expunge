@@ -8,10 +8,7 @@ import me.chimkenu.expunge.game.maps.Scene;
 import me.chimkenu.expunge.guns.ShootEvent;
 import me.chimkenu.expunge.mobs.GameMob;
 import me.chimkenu.expunge.mobs.special.*;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -342,6 +339,10 @@ public class Director extends BukkitRunnable implements Listener {
                 if (dead.getKiller() != null && Expunge.playing.getKeys().contains(dead.getKiller())) {
                     statsHandler.kills.putIfAbsent(dead.getKiller(), 0);
                     statsHandler.kills.put(dead.getKiller(), statsHandler.kills.get(dead.getKiller()) + 1);
+
+                    // broadcast if player killed special infected
+                    if (!(dead instanceof Zombie))
+                        Bukkit.broadcastMessage(ChatColor.RED + dead.getKiller().getDisplayName() + " killed " + mob.getMob().getName());
                 }
                 mobToRemove = mob;
                 break;
