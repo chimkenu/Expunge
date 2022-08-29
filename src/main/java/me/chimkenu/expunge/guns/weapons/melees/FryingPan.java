@@ -6,6 +6,6 @@ import org.bukkit.Material;
 
 public class FryingPan extends Melee {
     public FryingPan() {
-        super(250, 2, 22, 1, "&8Frying Pan", Material.NETHERITE_SHOVEL, Tier.TIER1, Slot.SECONDARY);
+        super(0, 2, 22, 1, "&8Frying Pan", Material.NETHERITE_SHOVEL, Tier.TIER1, Slot.SECONDARY);
     }
 }

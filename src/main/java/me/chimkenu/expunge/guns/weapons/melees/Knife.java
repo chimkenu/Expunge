@@ -6,6 +6,6 @@ import org.bukkit.Material;
 
 public class Knife extends Melee {
     public Knife() {
-        super(250, 2, 10, 1, "&7Knife", Material.LEVER, Tier.TIER1, Slot.SECONDARY);
+        super(0, 2, 10, 1, "&7Knife", Material.LEVER, Tier.TIER1, Slot.SECONDARY);
     }
 }

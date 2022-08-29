@@ -6,6 +6,6 @@ import org.bukkit.Material;
 
 public class Machete extends Melee {
     public Machete() {
-        super(250, 3, 14, 2, "&fMachete", Material.IRON_SWORD, Tier.TIER1, Slot.SECONDARY);
+        super(0, 3, 14, 2, "&fMachete", Material.IRON_SWORD, Tier.TIER1, Slot.SECONDARY);
     }
 }

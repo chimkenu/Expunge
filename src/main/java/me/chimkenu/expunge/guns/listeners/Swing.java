@@ -1,5 +1,6 @@
 package me.chimkenu.expunge.guns.listeners;
 
+import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.Utils;
 import me.chimkenu.expunge.guns.weapons.melees.Melee;
 import org.bukkit.*;
@@ -56,7 +57,22 @@ public class Swing implements Listener {
         player.getWorld().playSound(loc, Sound.BLOCK_HONEY_BLOCK_STEP, SoundCategory.PLAYERS, 1, 1);
         for (LivingEntity livingEntity : entities) {
             livingEntity.getWorld().spawnParticle(Particle.BLOCK_CRACK, livingEntity.getLocation().add(0, .5, 0), 50, 0.2, 0.2, 0.2, Material.NETHER_WART_BLOCK.createBlockData());
-            livingEntity.damage(melee.getDamage(), player);
+            
+            /* most melee weapons do % damage rather than fixed
+             * 5% tank
+             * 25% witch
+             * 50% charger
+             * 100% everything else
+             */
+            if (melee.getDamage() == 0)
+                switch (livingEntity.getType()) {
+                    case ZOGLIN -> livingEntity.damage((400 + (Expunge.currentDifficulty.ordinal() * 200)) * 0.5, player);
+                    case IRON_GOLEM -> livingEntity.damage(2500 + (Expunge.currentDifficulty.ordinal() * 1000) * 0.05, player);
+                    case ENDERMAN -> livingEntity.damage(1000 * 0.25, player);
+                    default -> livingEntity.damage(livingEntity.getHealth() + livingEntity.getAbsorptionAmount() + 1, player);
+                }
+            else // fixed damage
+                livingEntity.damage(melee.getDamage(), player);
         }
     }
 
