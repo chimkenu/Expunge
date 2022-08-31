@@ -2,6 +2,7 @@ package me.chimkenu.expunge.guns.listeners;
 
 import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.Utils;
+import me.chimkenu.expunge.guns.weapons.melees.Chainsaw;
 import me.chimkenu.expunge.guns.weapons.melees.Melee;
 import org.bukkit.*;
 import org.bukkit.entity.*;
@@ -11,6 +12,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 
@@ -57,7 +59,7 @@ public class Swing implements Listener {
         player.getWorld().playSound(loc, Sound.BLOCK_HONEY_BLOCK_STEP, SoundCategory.PLAYERS, 1, 1);
         for (LivingEntity livingEntity : entities) {
             livingEntity.getWorld().spawnParticle(Particle.BLOCK_CRACK, livingEntity.getLocation().add(0, .5, 0), 50, 0.2, 0.2, 0.2, Material.NETHER_WART_BLOCK.createBlockData());
-            
+
             /* most melee weapons do % damage rather than fixed
              * 5% tank
              * 25% witch
@@ -104,10 +106,10 @@ public class Swing implements Listener {
             int i = 0;
             @Override
             public void run() {
-                if (player.itemInMainHand != weapon.getWeapon())
+                if (player.getInventory().getItemInMainHand().getType() != weapon.getMaterial())
                     this.cancel();
                 if (i % 5 == 0) {
-                    Location loc = player.getEyeLocation().add(attacker.getLocation().getDirection().multiply(1.5));
+                    Location loc = player.getEyeLocation().add(player.getLocation().getDirection().multiply(1.5));
                     player.getWorld().spawnParticle(Particle.SWEEP_ATTACK, loc, 1);
                     swing(player, weapon, false);
                 }
