@@ -7,6 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.Ageable;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Zombie;
 import org.bukkit.inventory.EntityEquipment;
@@ -33,6 +34,7 @@ public class Soldier extends GameMob {
         });
         putOnClothes(getMob());
         getMob().addScoreboardTag("SOLDIER");
+        ((Ageable) getMob()).setAdult();
         try {
             getMob().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(0.25 + (Expunge.currentDifficulty.ordinal() * 0.25));
             getMob().getEquipment().setItemInMainHand(new ItemStack(Material.STONE_SWORD));
