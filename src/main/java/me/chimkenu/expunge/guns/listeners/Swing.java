@@ -15,7 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 
 public class Swing implements Listener {
-    private void swing(Player player, Melee melee) {
+    private void swing(Player player, Melee melee, boolean playSound) {
         ArrayList<LivingEntity> entities = new ArrayList<>();
         World world = player.getWorld();
         Location loc = player.getEyeLocation();
@@ -46,8 +46,8 @@ public class Swing implements Listener {
             if (entities.size() >= melee.getEntitiesToHit()) break;
         }
 
-        // play sound depending on whether an entity was hit
-        if (entities.size() < 1) {
+        // play sound depending on whether an entity was hit (only if playSound is true)
+        if (entities.size() < 1 && playSound) {
             if (melee.getRange() <= 2) player.getWorld().playSound(loc, Sound.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 1, 1);
             else player.getWorld().playSound(loc, Sound.ENTITY_PLAYER_ATTACK_KNOCKBACK, SoundCategory.PLAYERS, 1, 1);
             return;
@@ -97,7 +97,7 @@ public class Swing implements Listener {
         }
         player.setCooldown(mainHand.getType(), weapon.getCooldown());
         if (!(weapon instanceof Chainsaw)) {
-            swing(player, weapon);
+            swing(player, weapon, true);
             return;
         }
         new BukkitRunnable() {
@@ -107,7 +107,9 @@ public class Swing implements Listener {
                 if (player.itemInMainHand != weapon.getWeapon())
                     this.cancel();
                 if (i % 5 == 0) {
-                    swing(player, weapon);
+                    Location loc = player.getEyeLocation().add(attacker.getLocation().getDirection().multiply(1.5));
+                    player.getWorld().spawnParticle(Particle.SWEEP_ATTACK, loc, 1);
+                    swing(player, weapon, false);
                 }
                 i = (i + 1) % 20;
             }
