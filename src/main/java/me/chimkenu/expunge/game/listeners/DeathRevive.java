@@ -60,7 +60,7 @@ public class DeathRevive implements Listener {
         }
         if (!Expunge.playing.isAlive(player)) {
             // player died while down
-            e.setDeathMessage(ChatColor.RED + player.getName() + " died.");
+            Bukkit.broadcastMessage(ChatColor.RED + player.getName() + " died.");
             player.leaveVehicle();
             dead(player);
         }
@@ -70,7 +70,7 @@ public class DeathRevive implements Listener {
 
             // lives check
             if (currentLives.get(player) > 1) {
-                e.setDeathMessage(ChatColor.RED + player.getName() + " is down.");
+                Bukkit.broadcastMessage(ChatColor.RED + player.getName() + " is down.");
                 Location loc = player.getLocation();
                 while (loc.getBlock().getType().equals(Material.AIR)) {
                     loc.subtract(0, 0.25, 0);
@@ -95,7 +95,7 @@ public class DeathRevive implements Listener {
                 inventory.setItem(5, Weapons.Guns.PISTOL.getGun().getWeapon());
 
             } else {
-                e.setDeathMessage(ChatColor.RED + player.getName() + " died.");
+                Bukkit.broadcastMessage(ChatColor.RED + player.getName() + " died.");
                 dead(player);
             }
         }
