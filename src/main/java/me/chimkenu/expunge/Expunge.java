@@ -3,6 +3,7 @@ package me.chimkenu.expunge;
 import me.chimkenu.expunge.commands.*;
 import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.enums.Difficulty;
+import me.chimkenu.expunge.game.BreakGlass;
 import me.chimkenu.expunge.game.director.Director;
 import me.chimkenu.expunge.game.PlayerSet;
 import me.chimkenu.expunge.game.listeners.*;
@@ -76,6 +77,7 @@ public final class Expunge extends JavaPlugin {
         getCommand("bye").setExecutor(new Bye());
         getCommand("startgame").setExecutor(new StartGame());
         getCommand("stats").setExecutor(new Stats());
+        getCommand("returnglass").setExecutor(new ReturnGlass());
 
         getCommand("getgun").setExecutor(new GetGun());
         getCommand("getutility").setExecutor(new GetUtility());
@@ -83,6 +85,11 @@ public final class Expunge extends JavaPlugin {
 
         getCommand("tutorial").setExecutor(new Tutorial());
         getCommand("spawn").setExecutor(new Spawn());
+    }
+
+    @Override
+    public void onDisable() {
+        BreakGlass.returnGlass();
     }
 
     public static void setSpectator(Player player) {
@@ -171,6 +178,9 @@ public final class Expunge extends JavaPlugin {
                 p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 3, 4, false, false, false));
             }
         }
+
+        // fix glass
+        BreakGlass.returnGlass();
 
         // load player stats
         for (Player p : playing.getKeys()) {
@@ -331,6 +341,7 @@ public final class Expunge extends JavaPlugin {
 
         Bukkit.broadcastMessage(ChatColor.BLUE + "Game ended at " + ChatColor.DARK_AQUA + time);
 
+        BreakGlass.returnGlass();
         playing.clear();
         currentSceneIndex = 0;
         isSpawningEnabled = false;
