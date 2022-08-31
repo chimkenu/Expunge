@@ -7,14 +7,14 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class SetSet {
+public class PlayerSet {
     final ArrayList<Player> keys;
     final HashMap<Player, Double[]> health;
     final HashMap<Player, ItemStack[]> hotbar;
     final HashMap<Player, Boolean> isAlive;
     final HashMap<Player, Integer> lives;
 
-    public SetSet() {
+    public PlayerSet() {
         keys = new ArrayList<>();
         health = new HashMap<>();
         hotbar = new HashMap<>();

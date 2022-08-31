@@ -4,7 +4,7 @@ import me.chimkenu.expunge.commands.*;
 import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.enums.Difficulty;
 import me.chimkenu.expunge.game.director.Director;
-import me.chimkenu.expunge.game.SetSet;
+import me.chimkenu.expunge.game.PlayerSet;
 import me.chimkenu.expunge.game.listeners.*;
 import me.chimkenu.expunge.game.maps.Map;
 import me.chimkenu.expunge.game.maps.Scene;
@@ -36,7 +36,7 @@ public final class Expunge extends JavaPlugin {
 
     public static JavaPlugin instance;
     public static final HashSet<Player> spectators = new HashSet<>();
-    public static final SetSet playing = new SetSet();
+    public static final PlayerSet playing = new PlayerSet();
 
     public static boolean isCountdownRunning;
     public static boolean isGameRunning;
@@ -125,7 +125,7 @@ public final class Expunge extends JavaPlugin {
     }
 
     public static void newPlayerStats(Player player) {
-        ItemStack[] itemStacks = SetSet.getDefaultHotbar();
+        ItemStack[] itemStacks = PlayerSet.getDefaultHotbar();
         if (playing.getKeys().contains(player)) {
             // this is reached when the player is already in the game but will respawn
             // give player lower tier items (if they had an item to begin with)
