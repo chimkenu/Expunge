@@ -85,8 +85,9 @@ public class Swing implements Listener {
             return;
         }
 
-        ItemStack mainHand = e.getPlayer().getInventory().getItemInMainHand();
-        if (e.getPlayer().getCooldown(mainHand.getType()) > 1) {
+        Player player = e.getPlayer();
+        ItemStack mainHand = player.getInventory().getItemInMainHand();
+        if (player.getCooldown(mainHand.getType()) > 1) {
             return;
         }
 
@@ -94,7 +95,22 @@ public class Swing implements Listener {
         if (weapon == null) {
             return;
         }
-        e.getPlayer().setCooldown(mainHand.getType(), weapon.getCooldown());
-        swing(e.getPlayer(), weapon);
+        player.setCooldown(mainHand.getType(), weapon.getCooldown());
+        if (!(weapon instanceof Chainsaw)) {
+            swing(player, weapon);
+            return;
+        }
+        new BukkitRunnable() {
+            int i = 0;
+            @Override
+            public void run() {
+                if (player.itemInMainHand != weapon.getWeapon())
+                    this.cancel();
+                if (i % 5 == 0) {
+                    swing(player, weapon);
+                }
+                i = (i + 1) % 20;
+            }
+        }.runTaskTimer(Expunge.instance, 1, 1);
     }
 }
