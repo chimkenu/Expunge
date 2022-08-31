@@ -1,5 +1,6 @@
 package me.chimkenu.expunge.game.listeners;
 
+import me.chimkenu.expunge.game.BreakGlass;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -47,6 +48,10 @@ public class Shove implements Listener {
 
         Location loc = attacker.getEyeLocation().add(attacker.getLocation().getDirection().multiply(1.5));
         attacker.getWorld().spawnParticle(Particle.SWEEP_ATTACK, loc, 1);
+
+        // check for glass to break
+        BreakGlass.breakGlass(loc.getBlock());
+
         for (Entity entity : attacker.getWorld().getNearbyEntities(loc, 1.5, 1.5, 1.5)) {
             if (entity instanceof LivingEntity livingEntity) {
                 if (livingEntity instanceof Player) {

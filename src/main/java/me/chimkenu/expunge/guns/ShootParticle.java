@@ -1,9 +1,11 @@
 package me.chimkenu.expunge.guns;
 
 import me.chimkenu.expunge.enums.Achievements;
+import me.chimkenu.expunge.game.BreakGlass;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.util.Vector;
 
@@ -29,6 +31,9 @@ public class ShootParticle {
             Vector v = positions.get(i);
             // so the particle does not obscure vision
             if (i > 4) world.spawnParticle(particle, v.toLocation(world), 1, 0, 0, 0, 0);
+
+            // check for glass to break
+            BreakGlass.breakGlass(v.toLocation(world).getBlock());
 
             for (Entity e : world.getNearbyEntities(v.toLocation(world), ACCURACY_TRUE, ACCURACY_TRUE, ACCURACY_TRUE)) {
                 if (e instanceof LivingEntity livingEntity) {
