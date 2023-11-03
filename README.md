@@ -1,15 +1,12 @@
-# expunge
+# Expunge
 
-a small minecraft plugin / minigame
+A small minecraft plugin that emulates zombie shooter games similar to Left4Dead. 
 
-a plugin that attempts to emulate zombie shooter games similar to l4d
+> This is playable over at **expunge.minehut.gg**
 
-> this plugin wont work without the map, which is only avaliable at the server: **expunge.minehut.gg**
+## What is there?
 
-## what is there
-
-- a tutorial
-- large variety of weapons and utilities
-- custom mobs
-- cutscenes and dialogue
-- achievements (needs the expunge-datapack)
+- A custom map
+- Large variety of weapons and utilities
+- Custom mobs
+- Cutscenes and dialogue
