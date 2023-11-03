@@ -47,7 +47,7 @@ public final class Expunge extends JavaPlugin {
     public static Difficulty currentDifficulty = Difficulty.NORMAL;
     public static Director runningDirector;
 
-    public static void reRegisterGameEvents() {
+    public static void registerGameEvents() {
         HandlerList.unregisterAll(instance);
         instance.getServer().getPluginManager().registerEvents(new JoinLeave(), instance);
         instance.getServer().getPluginManager().registerEvents(new Shove(), instance);
@@ -70,7 +70,7 @@ public final class Expunge extends JavaPlugin {
         currentMap = new TheDeparture();
         currentSceneIndex = 0;
 
-        reRegisterGameEvents();
+       registerGameEvents();
 
         getCommand("join").setExecutor(new Join());
         getCommand("values").setExecutor(new Values());
@@ -209,7 +209,7 @@ public final class Expunge extends JavaPlugin {
         }
 
         // reload events
-        reRegisterGameEvents();
+        registerGameEvents();
         if (scene.happenings() != null) {
             for (Listener happening : scene.happenings()) {
                 HandlerList.unregisterAll(happening);
