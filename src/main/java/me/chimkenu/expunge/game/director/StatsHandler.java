@@ -28,9 +28,9 @@ public class StatsHandler {
         Scene scene = map.getScenes().get(sceneIndex);
         Vector v = player.getLocation().toVector();
         int nearest = 0;
-        double nearestDistance = v.distanceSquared(scene.pathRegions().get(nearest).getCenter());
-        for (int i = 0; i < scene.pathRegions().size(); i++) {
-            BoundingBox b = scene.pathRegions().get(i);
+        double nearestDistance = v.distanceSquared(scene.pathRegions()[nearest].getCenter());
+        for (int i = 0; i < scene.pathRegions().length; i++) {
+            BoundingBox b = scene.pathRegions()[i];
             double distance = v.distanceSquared(b.getCenter());
             if (distance < nearestDistance) {
                 nearest = i;

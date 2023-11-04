@@ -6,21 +6,19 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.util.BoundingBox;
 
-import java.util.ArrayList;
-
 public record Scene(Location startLocation, BoundingBox endRegion,
-                    ArrayList<BoundingBox> pathRegions,
-                    ArrayList<Location> spawnLocations,
-                    ArrayList<Location> bossLocations,
-                    ArrayList<Location> itemLocations,
+                    BoundingBox[] pathRegions,
+                    Location[] spawnLocations,
+                    Location[] bossLocations,
+                    Location[] itemLocations,
                     int baseItemsToSpawn,
-                    ArrayList<Location> weaponLocations,
-                    ArrayList<Location> ammoLocations,
+                    Location[] weaponLocations,
+                    Location[] ammoLocations,
                     Location buttonLocation,
                     Action runAtStart,
                     Action runAtEnd,
                     boolean isStartSafeRoom,
-                    ArrayList<Listener> happenings) {
+                    Listener[] happenings) {
 
     public static void playCrescendoEventEffect() {
         for (Player p : Bukkit.getOnlinePlayers()) {
@@ -42,22 +40,22 @@ public record Scene(Location startLocation, BoundingBox endRegion,
     }
 
     @Override
-    public ArrayList<BoundingBox> pathRegions() {
+    public BoundingBox[] pathRegions() {
         return pathRegions;
     }
 
     @Override
-    public ArrayList<Location> spawnLocations() {
+    public Location[] spawnLocations() {
         return spawnLocations;
     }
 
     @Override
-    public ArrayList<Location> bossLocations() {
+    public Location[] bossLocations() {
         return bossLocations;
     }
 
     @Override
-    public ArrayList<Location> itemLocations() {
+    public Location[] itemLocations() {
         return itemLocations;
     }
 
@@ -67,12 +65,12 @@ public record Scene(Location startLocation, BoundingBox endRegion,
     }
 
     @Override
-    public ArrayList<Location> weaponLocations() {
+    public Location[] weaponLocations() {
         return weaponLocations;
     }
 
     @Override
-    public ArrayList<Location> ammoLocations() {
+    public Location[] ammoLocations() {
         return ammoLocations;
     }
 
@@ -97,7 +95,7 @@ public record Scene(Location startLocation, BoundingBox endRegion,
     }
 
     @Override
-    public ArrayList<Listener> happenings() {
+    public Listener[] happenings() {
         return happenings;
     }
 }

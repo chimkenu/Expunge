@@ -59,7 +59,7 @@ public class MobHandler {
         Player player = Expunge.playing.getKeys().get(ThreadLocalRandom.current().nextInt(0, Expunge.playing.getKeys().size()));
 
         // sort locations based on distance to player
-        ArrayList<Location> spawnLocations = map.getScenes().get(sceneIndex).spawnLocations();
+        Location[] spawnLocations = map.getScenes().get(sceneIndex).spawnLocations();
         ArrayList<Double> distancesSquared = new ArrayList<>();
         for (Location loc : spawnLocations) {
             distancesSquared.add(loc.distanceSquared(player.getLocation()));
@@ -71,16 +71,16 @@ public class MobHandler {
                 distancesSquared.set(j, distancesSquared.get(j - 1));
                 distancesSquared.set(j - 1, key);
 
-                Location loc = spawnLocations.get(j);
-                spawnLocations.set(j, spawnLocations.get(j - 1));
-                spawnLocations.set(j - 1, loc);
+                Location loc = spawnLocations[j];
+                spawnLocations[j] =  spawnLocations[j - 1];
+                spawnLocations[j - 1] = loc;
 
                 j--;
             }
         }
 
         // return a random near spawn location
-        return spawnLocations.get(ThreadLocalRandom.current().nextInt(0, Math.min(3, spawnLocations.size())));
+        return spawnLocations[ThreadLocalRandom.current().nextInt(0, Math.min(3, spawnLocations.length))];
     }
 
     public void spawnAdditionalMob() {
@@ -140,17 +140,17 @@ public class MobHandler {
     }
 
     public void spawnTank() {
-        ArrayList<Location> bossLoc = map.getScenes().get(sceneIndex).bossLocations();
-        if (bossLoc.size() > 0) {
-            LivingEntity spawnedMob = spawnMob(new Tank(map.getWorld(), bossLoc.get(ThreadLocalRandom.current().nextInt(0, bossLoc.size()))));
+        Location[] bossLoc = map.getScenes().get(sceneIndex).bossLocations();
+        if (bossLoc.length > 0) {
+            LivingEntity spawnedMob = spawnMob(new Tank(map.getWorld(), bossLoc[ThreadLocalRandom.current().nextInt(0, bossLoc.length)]));
             spawnedMob.setRemoveWhenFarAway(false);
         }
     }
 
     public void spawnWitch() {
-        ArrayList<Location> bossLoc = map.getScenes().get(sceneIndex).bossLocations();
-        if (bossLoc.size() > 0) {
-            LivingEntity spawnedMob = spawnMob(new Witch(map.getWorld(), bossLoc.get(ThreadLocalRandom.current().nextInt(0, bossLoc.size()))));
+        Location[] bossLoc = map.getScenes().get(sceneIndex).bossLocations();
+        if (bossLoc.length > 0) {
+            LivingEntity spawnedMob = spawnMob(new Witch(map.getWorld(), bossLoc[ThreadLocalRandom.current().nextInt(0, bossLoc.length)]));
             spawnedMob.setRemoveWhenFarAway(false);
         }
     }

@@ -215,11 +215,11 @@ public class Director extends BukkitRunnable implements Listener {
         }
 
         // distribute throughout first 3 paths
-        ArrayList<BoundingBox> path = Expunge.currentMap.getScenes().get(Expunge.currentSceneIndex).pathRegions();
+        BoundingBox[] path = Expunge.currentMap.getScenes().get(Expunge.currentSceneIndex).pathRegions();
         totalMobs = totalMobs / 3;
 
-        for (int i = 0; i < Math.min(path.size(), 3); i++) {
-            mobHandler.spawnAtRandomLocations(path.get(i), totalMobs);
+        for (int i = 0; i < Math.min(path.length, 3); i++) {
+            mobHandler.spawnAtRandomLocations(path[i], totalMobs);
         }
     }
 

@@ -48,18 +48,18 @@ public class ItemHandler {
 
     public void spawnGunAtRandom(Gun gun) {
         Scene scene = map.getScenes().get(sceneIndex);
-        ArrayList<Location> weaponLocations = scene.weaponLocations();
-        if (weaponLocations.size() < 1) return;
-        int index = weaponLocations.size() == 1 ? 0 : ThreadLocalRandom.current().nextInt(0, weaponLocations.size());
-        spawnWeapon(weaponLocations.get(index), gun, false);
+        Location[] weaponLocations = scene.weaponLocations();
+        if (weaponLocations.length < 1) return;
+        int index = weaponLocations.length == 1 ? 0 : ThreadLocalRandom.current().nextInt(0, weaponLocations.length);
+        spawnWeapon(weaponLocations[index], gun, false);
     }
 
     public void spawnMeleeAtRandom(Melee melee) {
         Scene scene = map.getScenes().get(sceneIndex);
-        ArrayList<Location> weaponLocations = scene.weaponLocations();
-        if (weaponLocations.size() < 1) return;
-        int index = weaponLocations.size() == 1 ? 0 : ThreadLocalRandom.current().nextInt(0, weaponLocations.size());
-        spawnWeapon(weaponLocations.get(index), melee, false);
+        Location[] weaponLocations = scene.weaponLocations();
+        if (weaponLocations.length < 1) return;
+        int index = weaponLocations.length == 1 ? 0 : ThreadLocalRandom.current().nextInt(0, weaponLocations.length);
+        spawnWeapon(weaponLocations[index], melee, false);
     }
 
     public void spawnUtility(Location loc, Utility utility) {
@@ -70,10 +70,10 @@ public class ItemHandler {
 
     public void spawnUtilityAtRandom(Utility utility) {
         Scene scene = map.getScenes().get(sceneIndex);
-        ArrayList<Location> itemLocations = scene.itemLocations();
-        if (itemLocations.size() < 1) return;
-        int index = itemLocations.size() == 1 ? 0 : ThreadLocalRandom.current().nextInt(0, itemLocations.size());
-        spawnUtility(itemLocations.get(index), utility);
+        Location[] itemLocations = scene.itemLocations();
+        if (itemLocations.length < 1) return;
+        int index = itemLocations.length == 1 ? 0 : ThreadLocalRandom.current().nextInt(0, itemLocations.length);
+        spawnUtility(itemLocations[index], utility);
     }
 
     public static Melee getRandomMelee(Tier tier) {
