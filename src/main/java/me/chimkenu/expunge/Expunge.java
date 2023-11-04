@@ -71,6 +71,7 @@ public final class Expunge extends JavaPlugin {
         currentMap = new TheDeparture();
         currentSceneIndex = 0;
 
+        ResourceCopy.copyResource
         registerGameEvents();
 
         getCommand("join").setExecutor(new Join());
