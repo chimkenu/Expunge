@@ -1,4 +1,4 @@
-package me.chimkenu.expunge;
+package me.chimkenu.expunge.utils;
 
 import me.chimkenu.expunge.enums.Tier;
 import me.chimkenu.expunge.enums.Weapons;
