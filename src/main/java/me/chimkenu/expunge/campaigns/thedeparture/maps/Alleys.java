@@ -1,11 +1,11 @@
-package me.chimkenu.expunge.game.maps.thedeparture.scenes;
+package me.chimkenu.expunge.campaigns.thedeparture.maps;
 
 import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.enums.Tier;
 import me.chimkenu.expunge.game.director.ItemHandler;
-import me.chimkenu.expunge.game.maps.Scene;
-import me.chimkenu.expunge.game.maps.thedeparture.DepartureDialogue;
+import me.chimkenu.expunge.campaigns.GameMap;
+import me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue;
 import me.chimkenu.expunge.guns.utilities.healing.Adrenaline;
 import me.chimkenu.expunge.guns.utilities.healing.Pills;
 import org.bukkit.Bukkit;
@@ -24,10 +24,10 @@ import org.bukkit.util.Vector;
 import java.util.ArrayList;
 import java.util.List;
 
-import static me.chimkenu.expunge.game.maps.thedeparture.DepartureDialogue.playDialogue;
+import static me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue.playDialogue;
 
 public class Alleys {
-    public static Scene getScene() {
+    public static GameMap getScene() {
         World world = Bukkit.getWorld("world");
         if (world == null) return null;
 
@@ -131,7 +131,7 @@ public class Alleys {
             }
         });
 
-        return new Scene(
+        return new GameMap(
                 new Location(world, 1139, 43, 916),
                 new BoundingBox(1128, 43, 979, 1118, 53, 1002),
                 pathRegions,

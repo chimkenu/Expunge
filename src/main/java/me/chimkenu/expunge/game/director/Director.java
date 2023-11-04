@@ -3,8 +3,8 @@ package me.chimkenu.expunge.game.director;
 import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.enums.Utilities;
 import me.chimkenu.expunge.enums.Weapons;
-import me.chimkenu.expunge.game.maps.Map;
-import me.chimkenu.expunge.game.maps.Scene;
+import me.chimkenu.expunge.campaigns.GameMap;
+import me.chimkenu.expunge.campaigns.Campaign;
 import me.chimkenu.expunge.guns.ShootEvent;
 import me.chimkenu.expunge.mobs.GameMob;
 import me.chimkenu.expunge.mobs.special.*;
@@ -23,7 +23,7 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Director extends BukkitRunnable implements Listener {
-    private final Map map;
+    private final Campaign map;
     private int sceneIndex;
     private final int difficulty;
     private final World world;
@@ -39,7 +39,7 @@ public class Director extends BukkitRunnable implements Listener {
     public boolean forceChillOut = false;
     public long timeSinceLastHorde = 0;
 
-    public Director(Map map, int index, int difficulty) {
+    public Director(Campaign map, int index, int difficulty) {
         this.map = map;
         sceneIndex = index;
         this.difficulty = difficulty;
@@ -223,7 +223,7 @@ public class Director extends BukkitRunnable implements Listener {
     }
 
     public void generateItems() {
-        Scene scene = map.getScenes().get(sceneIndex);
+        GameMap scene = map.getScenes().get(sceneIndex);
 
         int itemsToSpawn = scene.baseItemsToSpawn();
         itemsToSpawn += (int) (4 * (1 - calculateRating()));

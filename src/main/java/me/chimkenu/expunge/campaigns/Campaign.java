@@ -1,15 +1,15 @@
-package me.chimkenu.expunge.game.maps;
+package me.chimkenu.expunge.campaigns;
 
 import org.bukkit.World;
 
 import java.util.ArrayList;
 
-public abstract class Map {
+public abstract class Campaign {
     private final String name;
-    private final ArrayList<Scene> scenes;
+    private final ArrayList<GameMap> scenes;
     private final World world;
 
-    public Map(String name, ArrayList<Scene> scenes, World world) {
+    public Campaign(String name, ArrayList<GameMap> scenes, World world) {
         this.name = name;
         this.scenes = scenes;
         this.world = world;
@@ -19,7 +19,7 @@ public abstract class Map {
         return name;
     }
 
-    public ArrayList<Scene> getScenes() {
+    public ArrayList<GameMap> getScenes() {
         return scenes;
     }
 

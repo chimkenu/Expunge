@@ -1,6 +1,6 @@
 package me.chimkenu.expunge.guns.listeners;
 
-import me.chimkenu.expunge.Utils;
+import me.chimkenu.expunge.utils.Utils;
 import me.chimkenu.expunge.guns.weapons.guns.Gun;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;

@@ -1,4 +1,4 @@
-package me.chimkenu.expunge.game.maps;
+package me.chimkenu.expunge.campaigns;
 
 import me.chimkenu.expunge.Action;
 import org.bukkit.*;
@@ -6,19 +6,19 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.util.BoundingBox;
 
-public record Scene(Location startLocation, BoundingBox endRegion,
-                    BoundingBox[] pathRegions,
-                    Location[] spawnLocations,
-                    Location[] bossLocations,
-                    Location[] itemLocations,
-                    int baseItemsToSpawn,
-                    Location[] weaponLocations,
-                    Location[] ammoLocations,
-                    Location buttonLocation,
-                    Action runAtStart,
-                    Action runAtEnd,
-                    boolean isStartSafeRoom,
-                    Listener[] happenings) {
+public record GameMap(Location startLocation, BoundingBox endRegion,
+                      BoundingBox[] pathRegions,
+                      Location[] spawnLocations,
+                      Location[] bossLocations,
+                      Location[] itemLocations,
+                      int baseItemsToSpawn,
+                      Location[] weaponLocations,
+                      Location[] ammoLocations,
+                      Location buttonLocation,
+                      Action runAtStart,
+                      Action runAtEnd,
+                      boolean isStartSafeRoom,
+                      Listener[] happenings) {
 
     public static void playCrescendoEventEffect() {
         for (Player p : Bukkit.getOnlinePlayers()) {

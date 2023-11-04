@@ -1,6 +1,6 @@
 package me.chimkenu.expunge.guns.listeners;
 
-import me.chimkenu.expunge.Utils;
+import me.chimkenu.expunge.utils.Utils;
 import me.chimkenu.expunge.guns.utilities.Utility;
 import me.chimkenu.expunge.guns.utilities.healing.Healing;
 import me.chimkenu.expunge.guns.utilities.throwable.Throwable;

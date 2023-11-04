@@ -1,9 +1,9 @@
-package me.chimkenu.expunge.game.maps.thedeparture.scenes;
+package me.chimkenu.expunge.campaigns.thedeparture.maps;
 
 import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.enums.Achievements;
-import me.chimkenu.expunge.game.maps.Scene;
-import me.chimkenu.expunge.game.maps.thedeparture.DepartureDialogue;
+import me.chimkenu.expunge.campaigns.GameMap;
+import me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue;
 import me.chimkenu.expunge.guns.weapons.melees.FryingPan;
 import me.chimkenu.expunge.mobs.common.Horde;
 import org.bukkit.Bukkit;
@@ -23,10 +23,10 @@ import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 
-import static me.chimkenu.expunge.game.maps.thedeparture.DepartureDialogue.playDialogue;
+import static me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue.playDialogue;
 
 public class OfficePart2 {
-    public static Scene getScene() {
+    public static GameMap getScene() {
         World world = Bukkit.getWorld("world");
         if (world == null) return null;
 
@@ -99,7 +99,7 @@ public class OfficePart2 {
                     return;
                 }
 
-                Scene.playCrescendoEventEffect();
+                GameMap.playCrescendoEventEffect();
                 World world = e.getPlayer().getWorld();
                 new BukkitRunnable() {
                     int i = 0;
@@ -151,7 +151,7 @@ public class OfficePart2 {
             }
         });
 
-        return new Scene(
+        return new GameMap(
                 new Location(world, 851, 77, 913),
                 new BoundingBox(872, 42, 906, 878, 47, 913),
                 pathRegions,

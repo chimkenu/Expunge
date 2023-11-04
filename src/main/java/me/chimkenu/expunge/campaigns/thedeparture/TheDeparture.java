@@ -1,16 +1,16 @@
-package me.chimkenu.expunge.game.maps.thedeparture;
+package me.chimkenu.expunge.campaigns.thedeparture;
 
-import me.chimkenu.expunge.game.maps.Map;
-import me.chimkenu.expunge.game.maps.Scene;
-import me.chimkenu.expunge.game.maps.thedeparture.scenes.*;
+import me.chimkenu.expunge.campaigns.GameMap;
+import me.chimkenu.expunge.campaigns.thedeparture.maps.*;
+import me.chimkenu.expunge.campaigns.Campaign;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
 import java.util.ArrayList;
 
-public class TheDeparture extends Map {
-    private static ArrayList<Scene> scenes() {
-        ArrayList<Scene> scenes = new ArrayList<>();
+public class TheDeparture extends Campaign {
+    private static ArrayList<GameMap> scenes() {
+        ArrayList<GameMap> scenes = new ArrayList<>();
         World world = Bukkit.getWorld("world");
         if (world == null) return scenes;
 

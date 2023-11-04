@@ -1,12 +1,11 @@
 package me.chimkenu.expunge.guns.listeners;
 
 import me.chimkenu.expunge.Expunge;
-import me.chimkenu.expunge.Utils;
+import me.chimkenu.expunge.utils.Utils;
 import me.chimkenu.expunge.game.BreakGlass;
 import me.chimkenu.expunge.guns.weapons.melees.Chainsaw;
 import me.chimkenu.expunge.guns.weapons.melees.Melee;
 import org.bukkit.*;
-import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

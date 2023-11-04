@@ -1,8 +1,7 @@
-package me.chimkenu.expunge.game.maps.thedeparture.cutscenes;
+package me.chimkenu.expunge.campaigns.thedeparture.cutscenes;
 
 import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.game.maps.Cutscene;
-import me.chimkenu.expunge.game.maps.thedeparture.DepartureDialogue;
 import me.chimkenu.expunge.mobs.GameMob;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -13,8 +12,6 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.List;
-
-import static me.chimkenu.expunge.game.maps.thedeparture.DepartureDialogue.playDialogue;
 
 public class HighwayCarBoom extends Cutscene {
     public HighwayCarBoom(List<Player> viewers, List<GameMob> mobs) {

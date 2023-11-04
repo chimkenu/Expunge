@@ -1,4 +1,4 @@
-package me.chimkenu.expunge.game.maps.thedeparture;
+package me.chimkenu.expunge.campaigns.thedeparture;
 
 import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.game.Dialogue;

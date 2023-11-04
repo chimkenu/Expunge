@@ -1,11 +1,11 @@
-package me.chimkenu.expunge.game.maps.thedeparture.scenes;
+package me.chimkenu.expunge.campaigns.thedeparture.maps;
 
 import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.enums.Tier;
 import me.chimkenu.expunge.game.director.ItemHandler;
-import me.chimkenu.expunge.game.maps.Scene;
-import me.chimkenu.expunge.game.maps.thedeparture.DepartureDialogue;
+import me.chimkenu.expunge.campaigns.GameMap;
+import me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue;
 import me.chimkenu.expunge.guns.utilities.healing.Adrenaline;
 import me.chimkenu.expunge.guns.utilities.healing.Medkit;
 import me.chimkenu.expunge.guns.utilities.healing.Pills;
@@ -30,10 +30,10 @@ import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 
-import static me.chimkenu.expunge.game.maps.thedeparture.DepartureDialogue.playDialogue;
+import static me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue.playDialogue;
 
 public class Stadium {
-    public static Scene getScene() {
+    public static GameMap getScene() {
         World world = Bukkit.getWorld("world");
         if (world == null) return null;
 
@@ -153,7 +153,7 @@ public class Stadium {
                 }
                 Vector clickedLoc = e.getClickedBlock().getLocation().toVector();
                 if (clickedLoc.equals(new Vector(1185, 46, 1684)) || clickedLoc.equals(new Vector(1187, 46, 1684))) {
-                    Scene.playCrescendoEventEffect();
+                    GameMap.playCrescendoEventEffect();
                     summonHorde();
                     Expunge.runningDirector.forceChillOut = false;
                     new BukkitRunnable() {
@@ -195,7 +195,7 @@ public class Stadium {
                                         if (i <= 0) {
                                             // do the same thing
                                             summonHorde();
-                                            Scene.playCrescendoEventEffect();
+                                            GameMap.playCrescendoEventEffect();
                                             Expunge.runningDirector.forceChillOut = false;
                                             new BukkitRunnable() {
                                                 int i = 20 * 40;
@@ -270,7 +270,7 @@ public class Stadium {
            }
        });
 
-        return new Scene(
+        return new GameMap(
                 new Location(world, 1033.5, 36, 1353.5),
                 new BoundingBox(1184, 38, 1640, 1190, 43, 1635),
                 pathRegions,

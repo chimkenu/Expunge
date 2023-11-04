@@ -1,10 +1,10 @@
 package me.chimkenu.expunge.game.director;
 
-import me.chimkenu.expunge.Utils;
+import me.chimkenu.expunge.campaigns.Campaign;
+import me.chimkenu.expunge.utils.Utils;
 import me.chimkenu.expunge.enums.Tier;
 import me.chimkenu.expunge.enums.Weapons;
-import me.chimkenu.expunge.game.maps.Map;
-import me.chimkenu.expunge.game.maps.Scene;
+import me.chimkenu.expunge.campaigns.GameMap;
 import me.chimkenu.expunge.guns.utilities.Utility;
 import me.chimkenu.expunge.guns.weapons.Weapon;
 import me.chimkenu.expunge.guns.weapons.guns.Gun;
@@ -19,11 +19,11 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class ItemHandler {
-    private final Map map;
+    private final Campaign map;
     private int sceneIndex;
     private final World world;
 
-    public ItemHandler(Map map) {
+    public ItemHandler(Campaign map) {
         this.map = map;
         sceneIndex = 0;
         world = map.getWorld();
@@ -47,7 +47,7 @@ public class ItemHandler {
     }
 
     public void spawnGunAtRandom(Gun gun) {
-        Scene scene = map.getScenes().get(sceneIndex);
+        GameMap scene = map.getScenes().get(sceneIndex);
         Location[] weaponLocations = scene.weaponLocations();
         if (weaponLocations.length < 1) return;
         int index = weaponLocations.length == 1 ? 0 : ThreadLocalRandom.current().nextInt(0, weaponLocations.length);
@@ -55,7 +55,7 @@ public class ItemHandler {
     }
 
     public void spawnMeleeAtRandom(Melee melee) {
-        Scene scene = map.getScenes().get(sceneIndex);
+        GameMap scene = map.getScenes().get(sceneIndex);
         Location[] weaponLocations = scene.weaponLocations();
         if (weaponLocations.length < 1) return;
         int index = weaponLocations.length == 1 ? 0 : ThreadLocalRandom.current().nextInt(0, weaponLocations.length);
@@ -69,7 +69,7 @@ public class ItemHandler {
     }
 
     public void spawnUtilityAtRandom(Utility utility) {
-        Scene scene = map.getScenes().get(sceneIndex);
+        GameMap scene = map.getScenes().get(sceneIndex);
         Location[] itemLocations = scene.itemLocations();
         if (itemLocations.length < 1) return;
         int index = itemLocations.length == 1 ? 0 : ThreadLocalRandom.current().nextInt(0, itemLocations.length);

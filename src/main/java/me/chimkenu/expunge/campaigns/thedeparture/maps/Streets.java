@@ -1,11 +1,10 @@
-package me.chimkenu.expunge.game.maps.thedeparture.scenes;
+package me.chimkenu.expunge.campaigns.thedeparture.maps;
 
 import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.enums.Tier;
-import me.chimkenu.expunge.game.director.Director;
 import me.chimkenu.expunge.game.director.ItemHandler;
-import me.chimkenu.expunge.game.maps.Scene;
-import me.chimkenu.expunge.game.maps.thedeparture.DepartureDialogue;
+import me.chimkenu.expunge.campaigns.GameMap;
+import me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue;
 import me.chimkenu.expunge.guns.utilities.healing.Medkit;
 import me.chimkenu.expunge.mobs.common.Horde;
 import org.bukkit.Bukkit;
@@ -25,10 +24,10 @@ import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 
-import static me.chimkenu.expunge.game.maps.thedeparture.DepartureDialogue.playDialogue;
+import static me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue.playDialogue;
 
 public class Streets {
-    public static Scene getScene() {
+    public static GameMap getScene() {
         World world = Bukkit.getWorld("world");
         if (world == null) return null;
 
@@ -113,7 +112,7 @@ public class Streets {
                     return;
                 }
 
-                Scene.playCrescendoEventEffect();
+                GameMap.playCrescendoEventEffect();
                 World world = e.getPlayer().getWorld();
                 new BukkitRunnable() {
                     int i = 0;
@@ -157,7 +156,7 @@ public class Streets {
             }
         });
 
-        return new Scene(
+        return new GameMap(
                 new Location(world, 875.5, 43, 911.5),
                 new BoundingBox(1136, 42, 918, 1141, 47, 913),
                 pathRegions,

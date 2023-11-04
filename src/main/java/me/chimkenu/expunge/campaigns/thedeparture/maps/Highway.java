@@ -1,9 +1,9 @@
-package me.chimkenu.expunge.game.maps.thedeparture.scenes;
+package me.chimkenu.expunge.campaigns.thedeparture.maps;
 
 import me.chimkenu.expunge.Expunge;
-import me.chimkenu.expunge.game.maps.Scene;
-import me.chimkenu.expunge.game.maps.thedeparture.DepartureDialogue;
-import me.chimkenu.expunge.game.maps.thedeparture.cutscenes.HighwayCarBoom;
+import me.chimkenu.expunge.campaigns.GameMap;
+import me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue;
+import me.chimkenu.expunge.campaigns.thedeparture.cutscenes.HighwayCarBoom;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -17,10 +17,10 @@ import org.bukkit.util.BoundingBox;
 
 import java.util.ArrayList;
 
-import static me.chimkenu.expunge.game.maps.thedeparture.DepartureDialogue.playDialogue;
+import static me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue.playDialogue;
 
 public class Highway {
-    public static Scene getScene() {
+    public static GameMap getScene() {
         World world = Bukkit.getWorld("world");
         if (world == null) return null;
 
@@ -112,7 +112,7 @@ public class Highway {
                 new BukkitRunnable() {
                     @Override
                     public void run() {
-                        Scene.playCrescendoEventEffect();
+                        GameMap.playCrescendoEventEffect();
                         playDialogue(DepartureDialogue.HIGHWAY_SAFE_HOUSE);
                         Expunge.runningDirector.bile(e.getPlayer(), 30);
                         Expunge.runningDirector.mobHandler.spawnAtRandomLocations(new BoundingBox(997, 35, 1362, 1040, 35, 1343), 30 + (10 * Expunge.currentDifficulty.ordinal()));
@@ -133,7 +133,7 @@ public class Highway {
             }
         });
 
-        return new Scene(
+        return new GameMap(
                 new Location(world, 1122.5, 26, 1205.5),
                 new BoundingBox(1031, 34, 1352, 1039, 40, 1360),
                 pathRegions,

@@ -7,13 +7,14 @@ import me.chimkenu.expunge.game.BreakGlass;
 import me.chimkenu.expunge.game.director.Director;
 import me.chimkenu.expunge.game.PlayerSet;
 import me.chimkenu.expunge.game.listeners.*;
-import me.chimkenu.expunge.game.maps.Map;
-import me.chimkenu.expunge.game.maps.Scene;
-import me.chimkenu.expunge.game.maps.thedeparture.TheDeparture;
+import me.chimkenu.expunge.campaigns.GameMap;
+import me.chimkenu.expunge.campaigns.thedeparture.TheDeparture;
+import me.chimkenu.expunge.campaigns.Campaign;
 import me.chimkenu.expunge.guns.listeners.*;
 import me.chimkenu.expunge.guns.weapons.guns.Gun;
 import me.chimkenu.expunge.guns.weapons.guns.Pistol;
 import me.chimkenu.expunge.mobs.MobListener;
+import me.chimkenu.expunge.utils.Utils;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -42,7 +43,7 @@ public final class Expunge extends JavaPlugin {
     public static boolean isCountdownRunning;
     public static boolean isGameRunning;
     public static boolean isSpawningEnabled;
-    public static Map currentMap;
+    public static Campaign currentMap;
     public static int currentSceneIndex;
     public static Difficulty currentDifficulty = Difficulty.NORMAL;
     public static Director runningDirector;
@@ -169,7 +170,7 @@ public final class Expunge extends JavaPlugin {
         DeathRevive.currentLives.put(player, playing.getLives(player));
     }
 
-    public static void startScene(Scene scene) {
+    public static void startScene(GameMap scene) {
         isSpawningEnabled = true;
         for (Player p : spectators) {
             if (p.getGameMode() != GameMode.CREATIVE && !Tutorial.inTutorial.contains(p)) {
@@ -225,7 +226,7 @@ public final class Expunge extends JavaPlugin {
         if (scene.runAtStart() != null) scene.runAtStart().run(null);
     }
 
-    public static void endScene(Scene scene) {
+    public static void endScene(GameMap scene) {
         isSpawningEnabled = false;
         if (scene.runAtEnd() != null) scene.runAtEnd().run(null);
 
@@ -249,7 +250,7 @@ public final class Expunge extends JavaPlugin {
         }
     }
 
-    public static void restartScene(Scene scene) {
+    public static void restartScene(GameMap scene) {
         isSpawningEnabled = false;
         runningDirector.clearEntities();
         runningDirector.incrementSceneAttempts();

@@ -1,8 +1,8 @@
 package me.chimkenu.expunge.game.director;
 
 import me.chimkenu.expunge.Expunge;
-import me.chimkenu.expunge.game.maps.Map;
-import me.chimkenu.expunge.game.maps.Scene;
+import me.chimkenu.expunge.campaigns.GameMap;
+import me.chimkenu.expunge.campaigns.Campaign;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
@@ -10,12 +10,12 @@ import org.bukkit.util.Vector;
 import java.util.HashMap;
 
 public class StatsHandler {
-    private final Map map;
+    private final Campaign map;
     private int sceneIndex;
     public final HashMap<Player, Integer> kills = new HashMap<>();
     public final HashMap<Player, Integer[]> shots = new HashMap<>();
 
-    public StatsHandler(Map map) {
+    public StatsHandler(Campaign map) {
         this.map = map;
         sceneIndex = 0;
     }
@@ -25,7 +25,7 @@ public class StatsHandler {
     }
 
     private int getPlayerProgress(Player player) {
-        Scene scene = map.getScenes().get(sceneIndex);
+        GameMap scene = map.getScenes().get(sceneIndex);
         Vector v = player.getLocation().toVector();
         int nearest = 0;
         double nearestDistance = v.distanceSquared(scene.pathRegions()[nearest].getCenter());

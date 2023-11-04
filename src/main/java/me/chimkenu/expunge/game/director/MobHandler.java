@@ -1,7 +1,7 @@
 package me.chimkenu.expunge.game.director;
 
 import me.chimkenu.expunge.Expunge;
-import me.chimkenu.expunge.game.maps.Map;
+import me.chimkenu.expunge.campaigns.Campaign;
 import me.chimkenu.expunge.mobs.GameMob;
 import me.chimkenu.expunge.mobs.common.Horde;
 import me.chimkenu.expunge.mobs.common.Wanderer;
@@ -21,12 +21,12 @@ import java.util.HashSet;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class MobHandler {
-    private final Map map;
+    private final Campaign map;
     private int sceneIndex;
     private final World world;
     public final HashSet<GameMob> activeMobs = new HashSet<>();
 
-    public MobHandler(Map map) {
+    public MobHandler(Campaign map) {
         this.map = map;
         sceneIndex = 0;
         world = map.getWorld();
