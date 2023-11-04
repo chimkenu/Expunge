@@ -14,6 +14,7 @@ import me.chimkenu.expunge.guns.listeners.*;
 import me.chimkenu.expunge.guns.weapons.guns.Gun;
 import me.chimkenu.expunge.guns.weapons.guns.Pistol;
 import me.chimkenu.expunge.mobs.MobListener;
+import me.chimkenu.expunge.utils.ResourceCopy;
 import me.chimkenu.expunge.utils.Utils;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -30,6 +31,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.concurrent.ThreadLocalRandom;
@@ -71,7 +74,11 @@ public final class Expunge extends JavaPlugin {
         currentMap = new TheDeparture();
         currentSceneIndex = 0;
 
-        ResourceCopy.copyResource
+        try {
+            ResourceCopy.copyFromJar(this.getClass(), "Maps", getDataFolder().toPath());
+        } catch (URISyntaxException | IOException e) {
+            throw new RuntimeException(e);
+        }
         registerGameEvents();
 
         getCommand("join").setExecutor(new Join());
