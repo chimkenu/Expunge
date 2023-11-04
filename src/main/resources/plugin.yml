@@ -1,5 +1,5 @@
 name: Expunge
-version: '${project.version}'
+version: '${version}'
 main: me.chimkenu.expunge.Expunge
 api-version: 1.20
 authors: [ Chimkenu ]
