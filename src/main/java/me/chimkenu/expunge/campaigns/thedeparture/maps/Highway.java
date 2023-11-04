@@ -1,7 +1,7 @@
 package me.chimkenu.expunge.campaigns.thedeparture.maps;
 
 import me.chimkenu.expunge.Expunge;
-import me.chimkenu.expunge.campaigns.GameMap;
+import me.chimkenu.expunge.campaigns.CampaignMap;
 import me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue;
 import me.chimkenu.expunge.campaigns.thedeparture.cutscenes.HighwayCarBoom;
 import org.bukkit.Bukkit;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import static me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue.playDialogue;
 
 public class Highway {
-    public static GameMap getScene() {
+    public static CampaignMap getScene() {
         World world = Bukkit.getWorld("world");
         if (world == null) return null;
 
@@ -112,7 +112,7 @@ public class Highway {
                 new BukkitRunnable() {
                     @Override
                     public void run() {
-                        GameMap.playCrescendoEventEffect();
+                        CampaignMap.playCrescendoEventEffect();
                         playDialogue(DepartureDialogue.HIGHWAY_SAFE_HOUSE);
                         Expunge.runningDirector.bile(e.getPlayer(), 30);
                         Expunge.runningDirector.mobHandler.spawnAtRandomLocations(new BoundingBox(997, 35, 1362, 1040, 35, 1343), 30 + (10 * Expunge.currentDifficulty.ordinal()));
@@ -133,7 +133,7 @@ public class Highway {
             }
         });
 
-        return new GameMap(
+        return new CampaignMap(
                 new Location(world, 1122.5, 26, 1205.5),
                 new BoundingBox(1031, 34, 1352, 1039, 40, 1360),
                 pathRegions,

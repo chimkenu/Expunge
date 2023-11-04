@@ -1,7 +1,7 @@
 package me.chimkenu.expunge.game.director;
 
 import me.chimkenu.expunge.Expunge;
-import me.chimkenu.expunge.campaigns.GameMap;
+import me.chimkenu.expunge.campaigns.CampaignMap;
 import me.chimkenu.expunge.campaigns.Campaign;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BoundingBox;
@@ -25,7 +25,7 @@ public class StatsHandler {
     }
 
     private int getPlayerProgress(Player player) {
-        GameMap scene = map.getScenes().get(sceneIndex);
+        CampaignMap scene = map.getScenes().get(sceneIndex);
         Vector v = player.getLocation().toVector();
         int nearest = 0;
         double nearestDistance = v.distanceSquared(scene.pathRegions()[nearest].getCenter());

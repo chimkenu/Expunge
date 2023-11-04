@@ -7,7 +7,7 @@ import me.chimkenu.expunge.game.BreakGlass;
 import me.chimkenu.expunge.game.director.Director;
 import me.chimkenu.expunge.game.PlayerSet;
 import me.chimkenu.expunge.game.listeners.*;
-import me.chimkenu.expunge.campaigns.GameMap;
+import me.chimkenu.expunge.campaigns.CampaignMap;
 import me.chimkenu.expunge.campaigns.thedeparture.TheDeparture;
 import me.chimkenu.expunge.campaigns.Campaign;
 import me.chimkenu.expunge.guns.listeners.*;
@@ -178,7 +178,7 @@ public final class Expunge extends JavaPlugin {
         DeathRevive.currentLives.put(player, playing.getLives(player));
     }
 
-    public static void startScene(GameMap scene) {
+    public static void startScene(CampaignMap scene) {
         isSpawningEnabled = true;
         for (Player p : spectators) {
             if (p.getGameMode() != GameMode.CREATIVE && !Tutorial.inTutorial.contains(p)) {
@@ -234,7 +234,7 @@ public final class Expunge extends JavaPlugin {
         if (scene.runAtStart() != null) scene.runAtStart().run(null);
     }
 
-    public static void endScene(GameMap scene) {
+    public static void endScene(CampaignMap scene) {
         isSpawningEnabled = false;
         if (scene.runAtEnd() != null) scene.runAtEnd().run(null);
 
@@ -258,7 +258,7 @@ public final class Expunge extends JavaPlugin {
         }
     }
 
-    public static void restartScene(GameMap scene) {
+    public static void restartScene(CampaignMap scene) {
         isSpawningEnabled = false;
         runningDirector.clearEntities();
         runningDirector.incrementSceneAttempts();

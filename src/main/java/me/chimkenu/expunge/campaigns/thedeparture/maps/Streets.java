@@ -3,7 +3,7 @@ package me.chimkenu.expunge.campaigns.thedeparture.maps;
 import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.enums.Tier;
 import me.chimkenu.expunge.game.director.ItemHandler;
-import me.chimkenu.expunge.campaigns.GameMap;
+import me.chimkenu.expunge.campaigns.CampaignMap;
 import me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue;
 import me.chimkenu.expunge.guns.utilities.healing.Medkit;
 import me.chimkenu.expunge.mobs.common.Horde;
@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import static me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue.playDialogue;
 
 public class Streets {
-    public static GameMap getScene() {
+    public static CampaignMap getScene() {
         World world = Bukkit.getWorld("world");
         if (world == null) return null;
 
@@ -112,7 +112,7 @@ public class Streets {
                     return;
                 }
 
-                GameMap.playCrescendoEventEffect();
+                CampaignMap.playCrescendoEventEffect();
                 World world = e.getPlayer().getWorld();
                 new BukkitRunnable() {
                     int i = 0;
@@ -156,7 +156,7 @@ public class Streets {
             }
         });
 
-        return new GameMap(
+        return new CampaignMap(
                 new Location(world, 875.5, 43, 911.5),
                 new BoundingBox(1136, 42, 918, 1141, 47, 913),
                 pathRegions,

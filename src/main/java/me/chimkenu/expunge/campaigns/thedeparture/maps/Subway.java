@@ -4,7 +4,7 @@ import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.enums.Tier;
 import me.chimkenu.expunge.game.director.ItemHandler;
-import me.chimkenu.expunge.campaigns.GameMap;
+import me.chimkenu.expunge.campaigns.CampaignMap;
 import me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue;
 import me.chimkenu.expunge.guns.utilities.healing.Adrenaline;
 import me.chimkenu.expunge.guns.utilities.healing.Medkit;
@@ -30,7 +30,7 @@ import java.util.List;
 import static me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue.playDialogue;
 
 public class Subway {
-    public static GameMap getScene() {
+    public static CampaignMap getScene() {
         World world = Bukkit.getWorld("world");
         if (world == null) return null;
 
@@ -194,7 +194,7 @@ public class Subway {
             }
         });
 
-        return new GameMap(
+        return new CampaignMap(
                 new Location(world, 1124.5, 43, 986.5),
                 new BoundingBox(1128, 25, 1203, 1116, 30, 1207),
                 pathRegions,

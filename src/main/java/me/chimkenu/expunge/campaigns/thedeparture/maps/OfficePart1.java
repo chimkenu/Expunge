@@ -1,7 +1,7 @@
 package me.chimkenu.expunge.campaigns.thedeparture.maps;
 
 import me.chimkenu.expunge.Expunge;
-import me.chimkenu.expunge.campaigns.GameMap;
+import me.chimkenu.expunge.campaigns.CampaignMap;
 import me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue;
 import me.chimkenu.expunge.guns.utilities.healing.Medkit;
 import me.chimkenu.expunge.guns.weapons.melees.Crowbar;
@@ -19,7 +19,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import static me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue.playDialogue;
 
 public class OfficePart1 {
-    public static GameMap getScene() {
+    public static CampaignMap getScene() {
         World world = Bukkit.getWorld("world");
         if (world == null) return null;
 
@@ -52,7 +52,7 @@ public class OfficePart1 {
 
         ArrayList<Location> ammoLocations = new ArrayList<>();
 
-        return new GameMap(
+        return new CampaignMap(
                 new Location(world, 952.5, 9, 872.5),
                 new BoundingBox(930, 8, 905, 925, 13, 910),
                 pathRegions,

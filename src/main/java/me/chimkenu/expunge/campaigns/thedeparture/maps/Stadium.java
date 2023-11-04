@@ -4,7 +4,7 @@ import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.enums.Tier;
 import me.chimkenu.expunge.game.director.ItemHandler;
-import me.chimkenu.expunge.campaigns.GameMap;
+import me.chimkenu.expunge.campaigns.CampaignMap;
 import me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue;
 import me.chimkenu.expunge.guns.utilities.healing.Adrenaline;
 import me.chimkenu.expunge.guns.utilities.healing.Medkit;
@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import static me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue.playDialogue;
 
 public class Stadium {
-    public static GameMap getScene() {
+    public static CampaignMap getScene() {
         World world = Bukkit.getWorld("world");
         if (world == null) return null;
 
@@ -153,7 +153,7 @@ public class Stadium {
                 }
                 Vector clickedLoc = e.getClickedBlock().getLocation().toVector();
                 if (clickedLoc.equals(new Vector(1185, 46, 1684)) || clickedLoc.equals(new Vector(1187, 46, 1684))) {
-                    GameMap.playCrescendoEventEffect();
+                    CampaignMap.playCrescendoEventEffect();
                     summonHorde();
                     Expunge.runningDirector.forceChillOut = false;
                     new BukkitRunnable() {
@@ -195,7 +195,7 @@ public class Stadium {
                                         if (i <= 0) {
                                             // do the same thing
                                             summonHorde();
-                                            GameMap.playCrescendoEventEffect();
+                                            CampaignMap.playCrescendoEventEffect();
                                             Expunge.runningDirector.forceChillOut = false;
                                             new BukkitRunnable() {
                                                 int i = 20 * 40;
@@ -270,7 +270,7 @@ public class Stadium {
            }
        });
 
-        return new GameMap(
+        return new CampaignMap(
                 new Location(world, 1033.5, 36, 1353.5),
                 new BoundingBox(1184, 38, 1640, 1190, 43, 1635),
                 pathRegions,

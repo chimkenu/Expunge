@@ -1,6 +1,6 @@
 package me.chimkenu.expunge.campaigns.thedeparture;
 
-import me.chimkenu.expunge.campaigns.GameMap;
+import me.chimkenu.expunge.campaigns.CampaignMap;
 import me.chimkenu.expunge.campaigns.thedeparture.maps.*;
 import me.chimkenu.expunge.campaigns.Campaign;
 import org.bukkit.Bukkit;
@@ -9,8 +9,8 @@ import org.bukkit.World;
 import java.util.ArrayList;
 
 public class TheDeparture extends Campaign {
-    private static ArrayList<GameMap> scenes() {
-        ArrayList<GameMap> scenes = new ArrayList<>();
+    private static ArrayList<CampaignMap> scenes() {
+        ArrayList<CampaignMap> scenes = new ArrayList<>();
         World world = Bukkit.getWorld("world");
         if (world == null) return scenes;
 

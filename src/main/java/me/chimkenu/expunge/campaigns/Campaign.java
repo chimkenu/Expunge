@@ -6,10 +6,10 @@ import java.util.ArrayList;
 
 public abstract class Campaign {
     private final String name;
-    private final ArrayList<GameMap> scenes;
+    private final ArrayList<CampaignMap> scenes;
     private final World world;
 
-    public Campaign(String name, ArrayList<GameMap> scenes, World world) {
+    public Campaign(String name, ArrayList<CampaignMap> scenes, World world) {
         this.name = name;
         this.scenes = scenes;
         this.world = world;
@@ -19,7 +19,7 @@ public abstract class Campaign {
         return name;
     }
 
-    public ArrayList<GameMap> getScenes() {
+    public ArrayList<CampaignMap> getScenes() {
         return scenes;
     }
 

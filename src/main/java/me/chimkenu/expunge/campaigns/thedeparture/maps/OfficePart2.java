@@ -2,7 +2,7 @@ package me.chimkenu.expunge.campaigns.thedeparture.maps;
 
 import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.enums.Achievements;
-import me.chimkenu.expunge.campaigns.GameMap;
+import me.chimkenu.expunge.campaigns.CampaignMap;
 import me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue;
 import me.chimkenu.expunge.guns.weapons.melees.FryingPan;
 import me.chimkenu.expunge.mobs.common.Horde;
@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import static me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue.playDialogue;
 
 public class OfficePart2 {
-    public static GameMap getScene() {
+    public static CampaignMap getScene() {
         World world = Bukkit.getWorld("world");
         if (world == null) return null;
 
@@ -99,7 +99,7 @@ public class OfficePart2 {
                     return;
                 }
 
-                GameMap.playCrescendoEventEffect();
+                CampaignMap.playCrescendoEventEffect();
                 World world = e.getPlayer().getWorld();
                 new BukkitRunnable() {
                     int i = 0;
@@ -151,7 +151,7 @@ public class OfficePart2 {
             }
         });
 
-        return new GameMap(
+        return new CampaignMap(
                 new Location(world, 851, 77, 913),
                 new BoundingBox(872, 42, 906, 878, 47, 913),
                 pathRegions,
