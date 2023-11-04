@@ -1,7 +1,7 @@
 package me.chimkenu.expunge.campaigns.thedeparture.cutscenes;
 
 import me.chimkenu.expunge.Expunge;
-import me.chimkenu.expunge.game.maps.Cutscene;
+import me.chimkenu.expunge.campaigns.Cutscene;
 import me.chimkenu.expunge.mobs.GameMob;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

@@ -1,4 +1,4 @@
-package me.chimkenu.expunge.game.maps;
+package me.chimkenu.expunge.campaigns;
 
 import me.chimkenu.expunge.mobs.GameMob;
 import org.bukkit.Location;
