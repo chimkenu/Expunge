@@ -152,8 +152,7 @@ public class Director extends BukkitRunnable implements Listener {
                     continue;
                 }
                 if (mob instanceof Zombie zombie && zombie.getTarget() != null && zombie.getTarget() instanceof Player target && Expunge.playing.getKeys().contains(target)) {
-                    if (zombie.getLocation().distanceSquared(target.getLocation()) < 20 * 20)
-                    continue;
+                    if (zombie.getLocation().distanceSquared(target.getLocation()) < 20 * 20) continue;
                 }
                 if (playerNearestDistanceFrom(mob.getMob().getLocation().toVector()) > 20 * 20) {
                     mob.remove();
