@@ -1,5 +1,6 @@
 package me.chimkenu.expunge.campaigns;
 
+import me.chimkenu.expunge.campaigns.thedeparture.TheDeparture;
 import org.bukkit.World;
 
 import java.util.ArrayList;
@@ -25,5 +26,15 @@ public abstract class Campaign {
 
     public World getWorld() {
         return world;
+    }
+
+    public enum List {
+        THE_DEPARTURE {
+            @Override
+            public Campaign get() {
+                return new TheDeparture();
+            }
+        };
+        public abstract Campaign get();
     }
 }
