@@ -10,14 +10,12 @@ import org.bukkit.util.Vector;
 import java.util.HashMap;
 
 public class StatsHandler {
-    private final Campaign map;
-    private int sceneIndex;
+    private final Director director;
     public final HashMap<Player, Integer> kills = new HashMap<>();
     public final HashMap<Player, Integer[]> shots = new HashMap<>();
 
-    public StatsHandler(Campaign map) {
-        this.map = map;
-        sceneIndex = 0;
+    public StatsHandler(Director director) {
+        this.director = director;
     }
 
     public void updateSceneIndex() {
@@ -25,7 +23,7 @@ public class StatsHandler {
     }
 
     private int getPlayerProgress(Player player) {
-        CampaignMap scene = map.getScenes().get(sceneIndex);
+        CampaignMap scene = map.getMaps().get(sceneIndex);
         Vector v = player.getLocation().toVector();
         int nearest = 0;
         double nearestDistance = v.distanceSquared(scene.pathRegions()[nearest].getCenter());

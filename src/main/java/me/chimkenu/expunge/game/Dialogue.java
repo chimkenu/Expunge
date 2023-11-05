@@ -1,6 +1,6 @@
 package me.chimkenu.expunge.game;
 
-import me.chimkenu.expunge.Action;
+import me.chimkenu.expunge.GameAction;
 import me.chimkenu.expunge.Expunge;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -13,9 +13,9 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Dialogue {
     private final List<String> dialogue;
     private final List<String> speakers;
-    private final Action actionAtEnd;
+    private final GameAction gameActionAtEnd;
 
-    public Dialogue(Action actionAtEnd, String... strings) {
+    public Dialogue(GameAction gameActionAtEnd, String... strings) {
         List<String> dialogue = new ArrayList<>();
         List<String> speakers = new ArrayList<>();
         for (String s : strings) {
@@ -26,7 +26,7 @@ public class Dialogue {
         }
         this.dialogue = dialogue;
         this.speakers = speakers;
-        this.actionAtEnd = actionAtEnd;
+        this.gameActionAtEnd = gameActionAtEnd;
     }
 
     public void displayDialogue(List<Player> players) {
@@ -62,11 +62,11 @@ public class Dialogue {
             }.runTaskLater(Expunge.instance, totalTime);
             if (i < dialogue.size()) totalTime += delay;
         }
-        if (actionAtEnd != null) {
+        if (gameActionAtEnd != null) {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    actionAtEnd.run(players.get(0));
+                    gameActionAtEnd.run(players.get(0));
                 }
             }.runTaskLater(Expunge.instance, totalTime + 1);
         }

@@ -20,7 +20,7 @@ public class NextScene implements Listener {
             if (!Expunge.isGameRunning) {
                 return;
             }
-            Location buttonLoc = Expunge.currentMap.getScenes().get(Expunge.currentSceneIndex).buttonLocation();
+            Location buttonLoc = Expunge.currentMap.getMaps().get(Expunge.currentSceneIndex).buttonLocation();
             Location clickedLoc = e.getClickedBlock().getLocation();
             if (!buttonLoc.toVector().equals(clickedLoc.toVector())) {
                 return;
@@ -33,7 +33,7 @@ public class NextScene implements Listener {
             }
 
             Location loc = e.getPlayer().getLocation();
-            BoundingBox endRegion = Expunge.currentMap.getScenes().get(Expunge.currentSceneIndex).endRegion();
+            BoundingBox endRegion = Expunge.currentMap.getMaps().get(Expunge.currentSceneIndex).endRegion();
             if (endRegion.contains(loc.getX(), loc.getY(), loc.getZ())) {
                 for (Player p : Expunge.playing.getKeys()) {
                     if (p.getGameMode().equals(GameMode.ADVENTURE)) {
@@ -49,10 +49,10 @@ public class NextScene implements Listener {
 
             // this is reached when all alive players reach the end region
             Bukkit.broadcastMessage(ChatColor.GREEN + "Safe-zone reached!");
-            Expunge.endScene(Expunge.currentMap.getScenes().get(Expunge.currentSceneIndex));
+            Expunge.endScene(Expunge.currentMap.getMaps().get(Expunge.currentSceneIndex));
 
             // check if it is the last scene then end the game
-            if (Expunge.currentMap.getScenes().size() - 1 <= Expunge.currentSceneIndex) {
+            if (Expunge.currentMap.getMaps().size() - 1 <= Expunge.currentSceneIndex) {
                 Bukkit.broadcastMessage(ChatColor.GREEN + "END OF GAME");
 
                 // achievements
@@ -82,7 +82,7 @@ public class NextScene implements Listener {
 
             // increment scene index then start
             Expunge.updateSceneIndex();
-            Expunge.startScene(Expunge.currentMap.getScenes().get(Expunge.currentSceneIndex));
+            Expunge.startScene(Expunge.currentMap.getMaps().get(Expunge.currentSceneIndex));
         }
     }
 }
