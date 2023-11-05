@@ -1,13 +1,15 @@
 package me.chimkenu.expunge.game.director;
 
-import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.campaigns.CampaignMap;
-import me.chimkenu.expunge.campaigns.Campaign;
+import me.chimkenu.expunge.guns.ShootEvent;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
 import java.util.HashMap;
+import java.util.Set;
 
 public class StatsHandler {
     private final Director director;
@@ -18,17 +20,13 @@ public class StatsHandler {
         this.director = director;
     }
 
-    public void updateSceneIndex() {
-        sceneIndex++;
-    }
-
     private int getPlayerProgress(Player player) {
-        CampaignMap scene = map.getMaps().get(sceneIndex);
+        CampaignMap map = director.getMap();
         Vector v = player.getLocation().toVector();
         int nearest = 0;
-        double nearestDistance = v.distanceSquared(scene.pathRegions()[nearest].getCenter());
-        for (int i = 0; i < scene.pathRegions().length; i++) {
-            BoundingBox b = scene.pathRegions()[i];
+        double nearestDistance = v.distanceSquared(map.pathRegions()[nearest].getCenter());
+        for (int i = 0; i < map.pathRegions().length; i++) {
+            BoundingBox b = map.pathRegions()[i];
             double distance = v.distanceSquared(b.getCenter());
             if (distance < nearestDistance) {
                 nearest = i;
@@ -64,12 +62,12 @@ public class StatsHandler {
     }
 
     public double getPace(Player player) {
-        if (Expunge.playing.getKeys().size() > 1) {
+        if (director.getPlayers().size() > 1) {
             double progressAverage = 0;
-            for (Player p : Expunge.playing.getKeys()) {
+            for (Player p : director.getPlayers()) {
                 progressAverage += getPlayerProgress(p);
             }
-            progressAverage = progressAverage / (Expunge.playing.getKeys().size());
+            progressAverage = progressAverage / (director.getPlayers().size());
             return getPlayerProgress(player) - progressAverage;
         }
         return 0;
@@ -88,5 +86,17 @@ public class StatsHandler {
         rating += diff * 0.5;
 
         return rating;
+    }
+
+    @EventHandler
+    public void onShoot(ShootEvent e) {
+        shots.putIfAbsent(e.getShooter(), new Integer[]{0, 0, 0});
+        Set<LivingEntity> hitEntities = e.getHitEntities().keySet();
+
+        shots.get(e.getShooter())[0] += 1; // shot
+        hitEntities.removeIf(entity -> entity instanceof Player);
+        shots.get(e.getShooter())[1] += hitEntities.size() > 0 ? 1 : 0; // hit / miss
+        hitEntities.removeIf(entity -> !e.getHitEntities().get(entity));
+        shots.get(e.getShooter())[2] += hitEntities.size() > 0 ? 1 : 0; // headshot / not
     }
 }
