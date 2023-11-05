@@ -1,7 +1,10 @@
 package me.chimkenu.expunge.campaigns;
 
 import me.chimkenu.expunge.campaigns.thedeparture.TheDeparture;
+import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -37,5 +40,14 @@ public abstract class Campaign {
             }
         };
         public abstract Campaign get();
+    }
+
+    public static void playCrescendoEventEffect(Player[] players) {
+        for (Player p : players) {
+            p.sendRichMessage("<Yellow>Here they come...");
+            p.playSound(p, Sound.AMBIENT_CAVE, SoundCategory.PLAYERS, 1f, 1f);
+            p.playSound(p, Sound.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, SoundCategory.PLAYERS, 1f, 1f);
+            p.playSound(p, Sound.ENTITY_ZOMBIE_AMBIENT, SoundCategory.PLAYERS, 1f, 1f);
+        }
     }
 }
