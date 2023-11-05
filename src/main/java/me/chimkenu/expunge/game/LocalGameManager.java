@@ -177,6 +177,10 @@ public class LocalGameManager implements GameManager {
         return difficulty;
     }
 
+    public Set<Player> getPlayers() {
+        return players.keySet();
+    }
+
     private boolean loadMap(int index) {
         LocalGameWorld localGameWorld = new LocalGameWorld(new File(plugin.getDataFolder(), campaign.getMainDirectory() + campaign.getMaps()[index]));
         gameWorlds.add(localGameWorld);
