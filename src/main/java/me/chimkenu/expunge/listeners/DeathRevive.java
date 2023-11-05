@@ -1,4 +1,4 @@
-package me.chimkenu.expunge.game.listeners;
+package me.chimkenu.expunge.listeners;
 
 import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.enums.Achievements;
