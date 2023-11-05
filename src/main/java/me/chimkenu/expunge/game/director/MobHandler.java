@@ -9,12 +9,10 @@ import me.chimkenu.expunge.mobs.uncommon.Robot;
 import me.chimkenu.expunge.mobs.uncommon.Soldier;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
@@ -26,8 +24,8 @@ import java.util.concurrent.ThreadLocalRandom;
 public class MobHandler {
     JavaPlugin plugin;
     Director director;
-    public final HashSet<GameMob> activeMobs = new HashSet<>();
 
+    private final HashSet<GameMob> activeMobs = new HashSet<>();
     private boolean isSpawningEnabled;
     private boolean chillOut;
     private int timeSinceLastHorde;
@@ -245,36 +243,6 @@ public class MobHandler {
             LivingEntity spawnedMob = spawnMob(new Witch(plugin, director.getWorld(), bossLoc[ThreadLocalRandom.current().nextInt(0, bossLoc.length)]));
             spawnedMob.setRemoveWhenFarAway(false);
         }
-    }
-
-    public void bile(JavaPlugin plugin, LivingEntity target, double radius) {
-        if (isSpawningEnabled && activeMobs.size() < 15) {
-            new BukkitRunnable() {
-                int i = 6;
-                @Override
-                public void run() {
-                    for (int j = 0; j < 5; j++) {
-                        spawnAdditionalMob();
-                    }
-                    i--;
-                    if (i <= 0) this.cancel();
-                    else if (!isSpawningEnabled) this.cancel();
-                }
-            }.runTaskTimer(plugin, 0, 20 * 5);
-        }
-        new BukkitRunnable() {
-            int i = 15;
-            @Override
-            public void run() {
-                for (Entity e : target.getNearbyEntities(radius, radius, radius)) {
-                    if (e instanceof Zombie zombie) {
-                        zombie.setTarget(target);
-                    }
-                }
-                if (i <= 0) this.cancel();
-                i--;
-            }
-        }.runTaskTimer(plugin, 0, 20);
     }
 
     private double playerNearestDistanceFrom(Vector vector) {

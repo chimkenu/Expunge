@@ -5,6 +5,7 @@ import me.chimkenu.expunge.enums.Difficulty;
 import me.chimkenu.expunge.game.LocalGameManager;
 import me.chimkenu.expunge.mobs.GameMob;
 import org.bukkit.*;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
@@ -15,6 +16,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Set;
 
@@ -58,6 +60,36 @@ public class Director implements Listener {
             }
             else if (p.getFoodLevel() < 20) p.setFoodLevel(20);
         }
+    }
+
+    public void bile(JavaPlugin plugin, LivingEntity target, double radius) {
+        if (mobHandler.isSpawningEnabled() && mobHandler.getActiveMobs().size() < 15) {
+            new BukkitRunnable() {
+                int i = 6;
+                @Override
+                public void run() {
+                    for (int j = 0; j < 5; j++) {
+                        mobHandler.spawnAdditionalMob();
+                    }
+                    i--;
+                    if (i <= 0) this.cancel();
+                    else if (!mobHandler.isSpawningEnabled()) this.cancel();
+                }
+            }.runTaskTimer(plugin, 0, 20 * 5);
+        }
+        new BukkitRunnable() {
+            int i = 15;
+            @Override
+            public void run() {
+                for (Entity e : target.getNearbyEntities(radius, radius, radius)) {
+                    if (e instanceof Zombie zombie) {
+                        zombie.setTarget(target);
+                    }
+                }
+                if (i <= 0) this.cancel();
+                i--;
+            }
+        }.runTaskTimer(plugin, 0, 20);
     }
 
     public void clearEntities() {
