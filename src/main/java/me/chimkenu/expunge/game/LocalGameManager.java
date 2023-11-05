@@ -222,6 +222,10 @@ public class LocalGameManager implements GameManager {
         }
     }
 
+    public Campaign getCampaign() {
+        return campaign;
+    }
+
     public CampaignMap getMap() {
         return campaign.getMaps()[campaignMapIndex];
     }
