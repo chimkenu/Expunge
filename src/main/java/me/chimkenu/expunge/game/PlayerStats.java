@@ -14,6 +14,7 @@ public class PlayerStats {
     private ItemStack[] hotbar;
     private boolean isAlive;
     private int lives;
+    private int livesFromLastSave;
 
     public PlayerStats(ItemStack[] hotbar) {
         health = 20d;
@@ -66,5 +67,13 @@ public class PlayerStats {
 
     public void setLives(int lives) {
         this.lives = lives;
+    }
+
+    public int getLivesFromLastSave() {
+        return livesFromLastSave;
+    }
+
+    public void setLivesFromLastSave(int livesFromLastSave) {
+        this.livesFromLastSave = livesFromLastSave;
     }
 }
