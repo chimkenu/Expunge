@@ -181,6 +181,10 @@ public class LocalGameManager implements GameManager {
         return players.keySet();
     }
 
+    public PlayerStats getPlayerStat(Player player) {
+        return players.get(player);
+    }
+
     private boolean loadMap(int index) {
         LocalGameWorld localGameWorld = new LocalGameWorld(new File(plugin.getDataFolder(), campaign.getMainDirectory() + campaign.getMaps()[index]));
         gameWorlds.add(localGameWorld);
