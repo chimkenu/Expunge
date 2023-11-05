@@ -26,7 +26,7 @@ import org.spigotmc.event.entity.EntityDismountEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class DeathRevive implements Listener {
+public class DeathReviveListener implements Listener {
     public static final HashMap<Player, Integer> currentLives = new HashMap<>();
     public static final ArrayList<Player> beingRevived = new ArrayList<>();
 

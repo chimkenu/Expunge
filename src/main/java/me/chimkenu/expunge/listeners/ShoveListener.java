@@ -13,7 +13,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.HashMap;
 
-public class Shove implements Listener {
+public class ShoveListener implements Listener {
     private final HashMap<Player, Long> shove = new HashMap<>();
     private final HashMap<Player, Integer> shoveCount = new HashMap<>();
     private boolean canShove(Player player) {

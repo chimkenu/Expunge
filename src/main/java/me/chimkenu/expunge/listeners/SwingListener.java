@@ -17,7 +17,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 
-public class Swing implements Listener {
+public class SwingListener implements Listener {
     private void swing(Player player, Melee melee, boolean playSound) {
         ArrayList<LivingEntity> entities = new ArrayList<>();
         World world = player.getWorld();

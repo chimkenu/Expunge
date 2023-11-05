@@ -28,7 +28,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.HashMap;
 
-public class PickUp implements Listener {
+public class PickUpListener implements Listener {
     private static HashMap<ItemStack, GameItem> getItems() {
         HashMap<ItemStack, GameItem> items = new HashMap<>();
         for (Weapon weapon : Utils.getGuns()) {
@@ -125,7 +125,7 @@ public class PickUp implements Listener {
             // add to ammo if gun
             if (gun != null) {
                 ItemStack gunInHotbar = player.getInventory().getItem(hotbarSlot);
-                if (gunInHotbar != null) Shoot.setAmmo(gunInHotbar, Math.min(Shoot.getAmmo(gunInHotbar) + Shoot.getAmmo(item.getItemStack()), gun.getMaxAmmo()));
+                if (gunInHotbar != null) ShootListener.setAmmo(gunInHotbar, Math.min(ShootListener.getAmmo(gunInHotbar) + ShootListener.getAmmo(item.getItemStack()), gun.getMaxAmmo()));
                 player.playSound(player.getLocation(), Sound.ITEM_ARMOR_EQUIP_LEATHER, SoundCategory.PLAYERS, 1, 1);
                 player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§9+Ammo"));
                 item.setPickupDelay(20);

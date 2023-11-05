@@ -16,7 +16,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-public class JoinLeave implements Listener {
+public class JoinLeaveListener implements Listener {
     @EventHandler
     public void onLogin(AsyncPlayerPreLoginEvent e) {
         if (e.getName().contains(".")) {

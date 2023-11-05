@@ -17,7 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class Reload implements Listener {
+public class ReloadListener implements Listener {
     public static void reload(Player player) {
         ItemStack item = player.getInventory().getItemInMainHand();
         Gun gun = Utils.getPlayerHeldGun(item);
@@ -25,10 +25,10 @@ public class Reload implements Listener {
         if (gun == null) return;
         if (item.getAmount() == gun.getClipSize()) return;
 
-        if (Shoot.getAmmo(item) < 1) return;
-        if (Shoot.getAmmo(item) == item.getAmount()) return;
-        else if (Shoot.getAmmo(item) + 1 < item.getAmount()) {
-            item.setAmount(Shoot.getAmmo(item) + 1);
+        if (ShootListener.getAmmo(item) < 1) return;
+        if (ShootListener.getAmmo(item) == item.getAmount()) return;
+        else if (ShootListener.getAmmo(item) + 1 < item.getAmount()) {
+            item.setAmount(ShootListener.getAmmo(item) + 1);
             return;
         }
 
@@ -56,7 +56,7 @@ public class Reload implements Listener {
         new BukkitRunnable() {
             @Override
             public void run() {
-                item.setAmount(Math.min(gun.getClipSize(), Shoot.getAmmo(item)));
+                item.setAmount(Math.min(gun.getClipSize(), ShootListener.getAmmo(item)));
                 Damageable damageable = (Damageable) item.getItemMeta();
                 if (damageable != null) damageable.setDamage(0);
                 item.setItemMeta(damageable);
@@ -88,8 +88,8 @@ public class Reload implements Listener {
         }
         player.playSound(player.getLocation(), Sound.BLOCK_CHAIN_PLACE, 1, 1);
         e.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§9+Ammo"));
-        Shoot.setAmmo(itemStack, gun.getMaxAmmo());
+        ShootListener.setAmmo(itemStack, gun.getMaxAmmo());
         itemStack.setAmount(gun.getClipSize());
-        e.getPlayer().setLevel(Shoot.getAmmo(itemStack));
+        e.getPlayer().setLevel(ShootListener.getAmmo(itemStack));
     }
 }

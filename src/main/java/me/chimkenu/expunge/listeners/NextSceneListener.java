@@ -13,7 +13,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BoundingBox;
 
-public class NextScene implements Listener {
+public class NextSceneListener implements Listener {
     @EventHandler
     public void onPress(PlayerInteractEvent e) {
         if (e.getAction().equals(Action.RIGHT_CLICK_BLOCK) && e.getClickedBlock() != null && e.getClickedBlock().getType().toString().contains("_BUTTON")) {

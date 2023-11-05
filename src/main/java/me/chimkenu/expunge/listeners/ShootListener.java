@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Shoot implements Listener {
+public class ShootListener implements Listener {
     public static int getAmmo(ItemStack item) {
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return 0;
@@ -103,7 +103,7 @@ public class Shoot implements Listener {
         player.setCooldown(gun.getMaterial(), gun.getCooldown());
 
         if (item.getAmount() == 1) {
-            Reload.reload(player);
+            ReloadListener.reload(player);
         } else {
             item.setAmount(item.getAmount() - 1);
         }
@@ -121,7 +121,7 @@ public class Shoot implements Listener {
                 if (!player.isSneaking())
                     fireGun(player, gun);
                 else
-                    Reload.reload(player);
+                    ReloadListener.reload(player);
             }
         }
     }
