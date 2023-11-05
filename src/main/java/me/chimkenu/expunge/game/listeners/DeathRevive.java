@@ -117,7 +117,7 @@ public class DeathRevive implements Listener {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (Expunge.isGameRunning) Expunge.restartScene(Expunge.currentMap.getScenes().get(Expunge.currentSceneIndex));
+                if (Expunge.isGameRunning) Expunge.restartScene(Expunge.currentMap.getMaps().get(Expunge.currentSceneIndex));
             }
         }.runTaskLater(Expunge.instance, 20 * 3);
     }

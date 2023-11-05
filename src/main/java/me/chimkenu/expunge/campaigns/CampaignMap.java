@@ -1,101 +1,37 @@
 package me.chimkenu.expunge.campaigns;
 
-import me.chimkenu.expunge.Action;
-import org.bukkit.*;
-import org.bukkit.entity.Player;
+import me.chimkenu.expunge.GameAction;
+import me.chimkenu.expunge.game.LocalGameManager;
 import org.bukkit.event.Listener;
 import org.bukkit.util.BoundingBox;
+import org.bukkit.util.Vector;
 
-public record CampaignMap(Location startLocation, BoundingBox endRegion,
-                          BoundingBox[] pathRegions,
-                          Location[] spawnLocations,
-                          Location[] bossLocations,
-                          Location[] itemLocations,
-                          int baseItemsToSpawn,
-                          Location[] weaponLocations,
-                          Location[] ammoLocations,
-                          Location buttonLocation,
-                          Action runAtStart,
-                          Action runAtEnd,
-                          boolean isStartSafeRoom,
-                          Listener[] happenings) {
+public abstract class CampaignMap {
+    public abstract Vector startLocation();
 
-    public static void playCrescendoEventEffect() {
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            p.sendMessage(ChatColor.YELLOW + "Here they come...");
-            p.playSound(p, Sound.AMBIENT_CAVE, SoundCategory.PLAYERS, 1f, 1f);
-            p.playSound(p, Sound.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, SoundCategory.PLAYERS, 1f, 1f);
-            p.playSound(p, Sound.ENTITY_ZOMBIE_AMBIENT, SoundCategory.PLAYERS, 1f, 1f);
-        }
-    }
+    public abstract BoundingBox endRegion();
 
-    @Override
-    public Location startLocation() {
-        return startLocation;
-    }
+    public abstract BoundingBox[] pathRegions();
 
-    @Override
-    public BoundingBox endRegion() {
-        return endRegion;
-    }
+    public abstract Vector[] spawnLocations();
 
-    @Override
-    public BoundingBox[] pathRegions() {
-        return pathRegions;
-    }
+    public abstract Vector[] bossLocations();
 
-    @Override
-    public Location[] spawnLocations() {
-        return spawnLocations;
-    }
+    public abstract Vector[] itemLocations();
 
-    @Override
-    public Location[] bossLocations() {
-        return bossLocations;
-    }
+    public abstract int baseItemsToSpawn();
 
-    @Override
-    public Location[] itemLocations() {
-        return itemLocations;
-    }
+    public abstract  Vector[] weaponLocations();
 
-    @Override
-    public int baseItemsToSpawn() {
-        return baseItemsToSpawn;
-    }
+    public abstract Vector[] ammoLocations();
 
-    @Override
-    public Location[] weaponLocations() {
-        return weaponLocations;
-    }
+    public abstract Vector buttonLocation();
 
-    @Override
-    public Location[] ammoLocations() {
-        return ammoLocations;
-    }
+    public abstract GameAction runAtStart();
 
-    @Override
-    public Location buttonLocation() {
-        return buttonLocation;
-    }
+    public abstract GameAction runAtEnd();
 
-    @Override
-    public Action runAtStart() {
-        return runAtStart;
-    }
+    public abstract boolean isStartSafeRoom();
 
-    @Override
-    public Action runAtEnd() {
-        return runAtEnd;
-    }
-
-    @Override
-    public boolean isStartSafeRoom() {
-        return isStartSafeRoom;
-    }
-
-    @Override
-    public Listener[] happenings() {
-        return happenings;
-    }
+    public abstract Listener[] happenings(LocalGameManager localGameManager);
 }

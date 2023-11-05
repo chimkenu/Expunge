@@ -1,6 +1,6 @@
 package me.chimkenu.expunge.guns.utilities.healing;
 
-import me.chimkenu.expunge.Action;
+import me.chimkenu.expunge.GameAction;
 import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.enums.Slot;
 import me.chimkenu.expunge.guns.utilities.Utility;
@@ -27,7 +27,7 @@ public abstract class Healing extends Utility {
         return isInstantUse;
     }
 
-    public static void attemptUse(Player player, Material material, int useTime, boolean hasToStayStill, String prefix, Action actionWhenSuccessful) {
+    public static void attemptUse(Player player, Material material, int useTime, boolean hasToStayStill, String prefix, GameAction gameActionWhenSuccessful) {
         Vector loc = null;
         if (hasToStayStill) {
             loc = player.getLocation().toVector();
@@ -66,7 +66,7 @@ public abstract class Healing extends Utility {
                 }
                 if (i <= 0) {
                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§aSuccessful."));
-                    actionWhenSuccessful.run(player);
+                    gameActionWhenSuccessful.run(player);
                     usingUtility.remove(player);
                     this.cancel();
                 }

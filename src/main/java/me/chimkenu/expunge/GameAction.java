@@ -2,6 +2,6 @@ package me.chimkenu.expunge;
 
 import org.bukkit.entity.Player;
 
-public interface Action {
+public interface GameAction {
     void run(Player player);
 }

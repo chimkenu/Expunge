@@ -21,15 +21,11 @@ import java.util.HashSet;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class MobHandler {
-    private final Campaign map;
-    private int sceneIndex;
-    private final World world;
+    Director director;
     public final HashSet<GameMob> activeMobs = new HashSet<>();
 
-    public MobHandler(Campaign map) {
-        this.map = map;
-        sceneIndex = 0;
-        world = map.getWorld();
+    public MobHandler(Director director) {
+        this.director = director;
     }
 
     public void updateSceneIndex() {
@@ -59,7 +55,7 @@ public class MobHandler {
         Player player = Expunge.playing.getKeys().get(ThreadLocalRandom.current().nextInt(0, Expunge.playing.getKeys().size()));
 
         // sort locations based on distance to player
-        Location[] spawnLocations = map.getScenes().get(sceneIndex).spawnLocations();
+        Location[] spawnLocations = map.getMaps().get(sceneIndex).spawnLocations();
         ArrayList<Double> distancesSquared = new ArrayList<>();
         for (Location loc : spawnLocations) {
             distancesSquared.add(loc.distanceSquared(player.getLocation()));
@@ -140,7 +136,7 @@ public class MobHandler {
     }
 
     public void spawnTank() {
-        Location[] bossLoc = map.getScenes().get(sceneIndex).bossLocations();
+        Location[] bossLoc = map.getMaps().get(sceneIndex).bossLocations();
         if (bossLoc.length > 0) {
             LivingEntity spawnedMob = spawnMob(new Tank(map.getWorld(), bossLoc[ThreadLocalRandom.current().nextInt(0, bossLoc.length)]));
             spawnedMob.setRemoveWhenFarAway(false);
@@ -148,7 +144,7 @@ public class MobHandler {
     }
 
     public void spawnWitch() {
-        Location[] bossLoc = map.getScenes().get(sceneIndex).bossLocations();
+        Location[] bossLoc = map.getMaps().get(sceneIndex).bossLocations();
         if (bossLoc.length > 0) {
             LivingEntity spawnedMob = spawnMob(new Witch(map.getWorld(), bossLoc[ThreadLocalRandom.current().nextInt(0, bossLoc.length)]));
             spawnedMob.setRemoveWhenFarAway(false);

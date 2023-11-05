@@ -118,7 +118,7 @@ public class Tutorial implements CommandExecutor {
 
         if (index < 0 || part < 0) {
             inTutorial.remove(player);
-            player.teleport(Expunge.currentMap.getScenes().get(Expunge.currentSceneIndex).startLocation());
+            player.teleport(Expunge.currentMap.getMaps().get(Expunge.currentSceneIndex).startLocation());
             player.sendMessage(ChatColor.GREEN + "Finished tutorial! Sending you back...");
             return true;
         }

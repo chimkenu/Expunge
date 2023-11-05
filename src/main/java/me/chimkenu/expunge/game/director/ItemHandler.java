@@ -19,14 +19,10 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class ItemHandler {
-    private final Campaign map;
-    private int sceneIndex;
-    private final World world;
+    private final Director director;
 
-    public ItemHandler(Campaign map) {
-        this.map = map;
-        sceneIndex = 0;
-        world = map.getWorld();
+    public ItemHandler(Director director) {
+        this.director = director;
     }
 
     public void updateSceneIndex() {
@@ -47,7 +43,7 @@ public class ItemHandler {
     }
 
     public void spawnGunAtRandom(Gun gun) {
-        CampaignMap scene = map.getScenes().get(sceneIndex);
+        CampaignMap scene = map.getMaps().get(sceneIndex);
         Location[] weaponLocations = scene.weaponLocations();
         if (weaponLocations.length < 1) return;
         int index = weaponLocations.length == 1 ? 0 : ThreadLocalRandom.current().nextInt(0, weaponLocations.length);
@@ -55,7 +51,7 @@ public class ItemHandler {
     }
 
     public void spawnMeleeAtRandom(Melee melee) {
-        CampaignMap scene = map.getScenes().get(sceneIndex);
+        CampaignMap scene = map.getMaps().get(sceneIndex);
         Location[] weaponLocations = scene.weaponLocations();
         if (weaponLocations.length < 1) return;
         int index = weaponLocations.length == 1 ? 0 : ThreadLocalRandom.current().nextInt(0, weaponLocations.length);
@@ -69,7 +65,7 @@ public class ItemHandler {
     }
 
     public void spawnUtilityAtRandom(Utility utility) {
-        CampaignMap scene = map.getScenes().get(sceneIndex);
+        CampaignMap scene = map.getMaps().get(sceneIndex);
         Location[] itemLocations = scene.itemLocations();
         if (itemLocations.length < 1) return;
         int index = itemLocations.length == 1 ? 0 : ThreadLocalRandom.current().nextInt(0, itemLocations.length);

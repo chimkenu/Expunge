@@ -4,7 +4,7 @@ import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.enums.Utilities;
 import me.chimkenu.expunge.enums.Weapons;
 import me.chimkenu.expunge.campaigns.CampaignMap;
-import me.chimkenu.expunge.campaigns.Campaign;
+import me.chimkenu.expunge.game.LocalGameManager;
 import me.chimkenu.expunge.guns.ShootEvent;
 import me.chimkenu.expunge.mobs.GameMob;
 import me.chimkenu.expunge.mobs.special.*;
@@ -23,37 +23,22 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Director extends BukkitRunnable implements Listener {
-    private final Campaign map;
-    private int sceneIndex;
-    private final int difficulty;
-    private final World world;
+    private final LocalGameManager localGameManager;
+    private final ItemHandler itemHandler;
+    private final MobHandler mobHandler;
+    private final StatsHandler statsHandler;
 
-    public final ItemHandler itemHandler;
-    public final MobHandler mobHandler;
-    public final StatsHandler statsHandler;
-
-    private long gameTime = 0;
     private long sceneTime = 0;
     private int sceneAttempts = 0;
     public boolean chillOut = false;
     public boolean forceChillOut = false;
     public long timeSinceLastHorde = 0;
 
-    public Director(Campaign map, int index, int difficulty) {
-        this.map = map;
-        sceneIndex = index;
-        this.difficulty = difficulty;
-        world = map.getWorld();
-        itemHandler = new ItemHandler(map);
-        mobHandler = new MobHandler(map);
-        statsHandler = new StatsHandler(map);
-    }
-
-    public void updateSceneIndex() {
-        sceneIndex++;
-        itemHandler.updateSceneIndex();
-        mobHandler.updateSceneIndex();
-        statsHandler.updateSceneIndex();
+    public Director(LocalGameManager localGameManager) {
+        this.localGameManager = localGameManager;
+        itemHandler = new ItemHandler(this);
+        mobHandler = new MobHandler(this);
+        statsHandler = new StatsHandler(this);
     }
 
     private double playerNearestDistanceFrom(Vector loc) {
@@ -214,7 +199,7 @@ public class Director extends BukkitRunnable implements Listener {
         }
 
         // distribute throughout first 3 paths
-        BoundingBox[] path = Expunge.currentMap.getScenes().get(Expunge.currentSceneIndex).pathRegions();
+        BoundingBox[] path = Expunge.currentMap.getMaps().get(Expunge.currentSceneIndex).pathRegions();
         totalMobs = totalMobs / 3;
 
         for (int i = 0; i < Math.min(path.length, 3); i++) {
@@ -223,7 +208,7 @@ public class Director extends BukkitRunnable implements Listener {
     }
 
     public void generateItems() {
-        CampaignMap scene = map.getScenes().get(sceneIndex);
+        CampaignMap scene = map.getMaps().get(sceneIndex);
 
         int itemsToSpawn = scene.baseItemsToSpawn();
         itemsToSpawn += (int) (4 * (1 - calculateRating()));

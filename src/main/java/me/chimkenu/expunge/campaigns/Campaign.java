@@ -1,31 +1,35 @@
 package me.chimkenu.expunge.campaigns;
 
 import me.chimkenu.expunge.campaigns.thedeparture.TheDeparture;
+import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 
 public abstract class Campaign {
     private final String name;
-    private final ArrayList<CampaignMap> scenes;
-    private final World world;
+    private final CampaignMap[] maps;
+    private final String mainDirectory;
 
-    public Campaign(String name, ArrayList<CampaignMap> scenes, World world) {
+    public Campaign(String name, CampaignMap[] maps, String mainDirectory) {
         this.name = name;
-        this.scenes = scenes;
-        this.world = world;
+        this.maps = maps;
+        this.mainDirectory = mainDirectory;
     }
 
     public String getName() {
         return name;
     }
 
-    public ArrayList<CampaignMap> getScenes() {
-        return scenes;
+    public CampaignMap[] getMaps() {
+        return maps;
     }
 
-    public World getWorld() {
-        return world;
+    public String getMainDirectory() {
+        return mainDirectory;
     }
 
     public enum List {
@@ -36,5 +40,14 @@ public abstract class Campaign {
             }
         };
         public abstract Campaign get();
+    }
+
+    public static void playCrescendoEventEffect(Player[] players) {
+        for (Player p : players) {
+            p.sendRichMessage("<Yellow>Here they come...");
+            p.playSound(p, Sound.AMBIENT_CAVE, SoundCategory.PLAYERS, 1f, 1f);
+            p.playSound(p, Sound.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, SoundCategory.PLAYERS, 1f, 1f);
+            p.playSound(p, Sound.ENTITY_ZOMBIE_AMBIENT, SoundCategory.PLAYERS, 1f, 1f);
+        }
     }
 }

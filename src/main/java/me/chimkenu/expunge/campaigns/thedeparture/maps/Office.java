@@ -4,6 +4,7 @@ import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.GameAction;
 import me.chimkenu.expunge.campaigns.CampaignMap;
 import me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue;
+import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.game.LocalGameManager;
 import me.chimkenu.expunge.mobs.common.Horde;
 import org.bukkit.Location;
@@ -21,8 +22,7 @@ import org.bukkit.util.Vector;
 
 import static me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue.playDialogue;
 
-public class Streets extends CampaignMap {
-
+public class Office extends CampaignMap {
     @Override
     public Vector startLocation() {
         return null;
@@ -93,36 +93,31 @@ public class Streets extends CampaignMap {
         return new Listener[]{
                 new Listener() {
                     @EventHandler
-                    public void streetsOpeningTrigger(PlayerMoveEvent e) {
+                    public void officeJump(PlayerMoveEvent e) {
                         if (!Expunge.playing.getKeys().contains(e.getPlayer()))
                             return;
-                        BoundingBox box = new BoundingBox(861, 42, 899, 851, 48, 903);
+                        BoundingBox box = new BoundingBox(849, 51, 915, 847, 56, 921);
                         if (!box.contains(e.getPlayer().getLocation().toVector()))
                             return;
-                        playDialogue(DepartureDialogue.STREETS_OPENING);
+                        playDialogue(DepartureDialogue.OFFICE_JUMP);
                         HandlerList.unregisterAll(this);
                     }
                 },
                 new Listener() {
                     @EventHandler
-                    public void streetsApartmentsTrigger(PlayerMoveEvent e) {
-                        if (!Expunge.playing.getKeys().contains(e.getPlayer()))
-                            return;
-                        BoundingBox box = new BoundingBox(1084, 40, 899, 1079, 57, 851);
-                        if (!box.contains(e.getPlayer().getLocation().toVector()))
-                            return;
-                        playDialogue(DepartureDialogue.STREETS_APARTMENTS);
-                        HandlerList.unregisterAll(this);
+                    public void onEnterDevelopersRoom(PlayerMoveEvent e) {
+                        if (new BoundingBox(837, 42, 924, 842, 47, 928).contains(e.getPlayer().getLocation().toVector()))
+                            Achievements.THE_DEVELOPERS_ROOM.grant(e.getPlayer());
                     }
                 },
                 new Listener() {
                     @EventHandler
-                    public void crescendoEventApartments(PlayerInteractEvent e) {
+                    public void onEnterVent(PlayerInteractEvent e) {
                         Block block = e.getClickedBlock();
                         if (!Expunge.playing.getKeys().contains(e.getPlayer())) {
                             return;
                         }
-                        if (block == null || !(e.getAction().equals(Action.PHYSICAL) && (block.getLocation().toVector().equals(new Vector(1120, 43, 898)) || block.getLocation().toVector().equals(new Vector(1120, 43, 899))))) {
+                        if (block == null || !(e.getAction().equals(Action.PHYSICAL) && block.getLocation().toVector().equals(new Vector(846, 45, 925)))) {
                             return;
                         }
 
@@ -133,40 +128,47 @@ public class Streets extends CampaignMap {
 
                             @Override
                             public void run() {
-                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1121.5, 43, 922.5)));
-                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1118.5, 43, 843)));
-                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1076.5, 43, 894.5)));
-                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1134, 43, 898.5)));
-                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1125.5, 50, 899.5)));
-                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1131.5, 50, 909.5)));
-                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1125.5, 50, 910.5)));
-                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1131.5, 50, 920.5)));
-                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1131.5, 50, 920.5)));
-                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1131.5, 56, 920.5)));
-                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1125.5, 56, 910.5)));
-                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1131.5, 56, 909.5)));
-                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 1125.5, 56, 899.5)));
+                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 845.5, 48, 928.5)));
+                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 853.5, 47, 939.5)));
+                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 866.5, 48, 939.5)));
+                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 872.5, 48, 931.5)));
+                                Expunge.runningDirector.mobHandler.spawnMob(new Horde(world, new Location(world, 876.5, 48, 925.5)));
                                 i++;
-                                if (i >= 3) {
+                                if (i >= 5) {
                                     this.cancel();
                                 }
-                                if (Expunge.currentSceneIndex != 2) {
+                                if (Expunge.currentSceneIndex != 1) {
                                     this.cancel();
                                 }
                             }
                         }.runTaskTimer(Expunge.instance, 1, 20 * 4);
+
+                        // crescendo events are only meant to happen once
+                        // hence it unregisters the event when it executes
                         HandlerList.unregisterAll(this);
                     }
                 },
                 new Listener() {
                     @EventHandler
-                    public void streetsShedTrigger(PlayerMoveEvent e) {
+                    public void officeVent(PlayerMoveEvent e) {
                         if (!Expunge.playing.getKeys().contains(e.getPlayer()))
                             return;
-                        BoundingBox box = new BoundingBox(1138, 56, 896, 1140, 60, 906);
+                        BoundingBox box = new BoundingBox(837, 46, 904, 840, 41, 907);
                         if (!box.contains(e.getPlayer().getLocation().toVector()))
                             return;
-                        playDialogue(DepartureDialogue.STREETS_SHED);
+                        playDialogue(DepartureDialogue.OFFICE_VENTS);
+                        HandlerList.unregisterAll(this);
+                    }
+                },
+                new Listener() {
+                    @EventHandler
+                    public void officeSafeRoom(PlayerMoveEvent e) {
+                        if (!Expunge.playing.getKeys().contains(e.getPlayer()))
+                            return;
+                        BoundingBox box = new BoundingBox(874, 45, 924, 876, 47, 922);
+                        if (!box.contains(e.getPlayer().getLocation().toVector()))
+                            return;
+                        playDialogue(DepartureDialogue.OFFICE_SAFE_ROOM);
                         HandlerList.unregisterAll(this);
                     }
                 }
