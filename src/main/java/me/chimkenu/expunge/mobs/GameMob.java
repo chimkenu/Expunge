@@ -40,6 +40,25 @@ public abstract class GameMob {
          if (runnable != null && !runnable.isCancelled()) runnable.cancel();
     }
 
+    public static Player getRandomPlayer(World world) {
+        List<Player> players = world.getPlayers();
+        players.removeIf(player -> player.getGameMode() != GameMode.ADVENTURE);
+        int item = ThreadLocalRandom.current().nextInt(players.size());
+        int i = 0;
+        for (Player p : players) {
+            if (i == item) return p;
+            i++;
+        }
+        return null;
+    }
+
+    public void putOnRandomClothes(Mob mob) {
+        EntityEquipment equipment = mob.getEquipment();
+        equipment.setChestplate(getDyedArmor(Material.LEATHER_CHESTPLATE));
+        equipment.setLeggings(getDyedArmor(Material.LEATHER_LEGGINGS));
+        equipment.setBoots(getDyedArmor(Material.LEATHER_BOOTS));
+    }
+
     private ItemStack getDyedArmor(Material material) {
         ItemStack item = new ItemStack(material);
         LeatherArmorMeta meta = (LeatherArmorMeta) item.getItemMeta();
@@ -48,12 +67,5 @@ public abstract class GameMob {
             item.setItemMeta(meta);
         }
         return item;
-    }
-
-    public void putOnRandomClothes(Mob mob) {
-        EntityEquipment equipment = mob.getEquipment();
-        equipment.setChestplate(getDyedArmor(Material.LEATHER_CHESTPLATE));
-        equipment.setLeggings(getDyedArmor(Material.LEATHER_LEGGINGS));
-        equipment.setBoots(getDyedArmor(Material.LEATHER_BOOTS));
     }
 }

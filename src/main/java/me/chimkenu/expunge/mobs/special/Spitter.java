@@ -6,14 +6,16 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.ZombieVillager;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.Vector;
 
 public class Spitter extends GameMob {
-    public <T extends Mob> Spitter(World world, Location locationToSpawn) {
-        super(world, locationToSpawn, ZombieVillager.class, mob -> {
+    public <T extends Mob> Spitter(JavaPlugin plugin, World world, Vector locationToSpawn) {
+        super(plugin, world, locationToSpawn, ZombieVillager.class, mob -> {
             double distance = 0;
-            if (mob.getTarget() == null) mob.setTarget(getRandomPlayer());
+            if (mob.getTarget() == null) mob.setTarget(getRandomPlayer(world));
             else distance = mob.getLocation().distanceSquared(mob.getTarget().getLocation());
             if (!mob.hasPotionEffect(PotionEffectType.CONFUSION) && distance < 10 * 10) {
                 // spit at player direction

@@ -10,14 +10,15 @@ import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Stray;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 public class Pouncer extends GameMob {
-    public <T extends Mob> Pouncer(World world, Location locationToSpawn) {
-        super(world, locationToSpawn, Stray.class, mob -> {
+    public <T extends Mob> Pouncer(JavaPlugin plugin, World world, Vector locationToSpawn) {
+        super(plugin, world, locationToSpawn, Stray.class, mob -> {
             if (mob.getVehicle() instanceof Player target) {
                 mob.setTarget(target);
                 target.getInventory().setHeldItemSlot(5);
@@ -40,9 +41,9 @@ public class Pouncer extends GameMob {
                                     MobListener.disable(player);
                                 }
                             }
-                        }.runTaskLater(Expunge.instance, 5);
+                        }.runTaskLater(plugin, 5);
                     }
-                } else mob.setTarget(getRandomPlayer());
+                } else mob.setTarget(getRandomPlayer(world));
             }
         });
         if (getMob().getEquipment() != null) getMob().getEquipment().setItemInMainHand(new ItemStack(Material.AIR));

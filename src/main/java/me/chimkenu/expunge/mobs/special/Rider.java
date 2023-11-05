@@ -7,14 +7,15 @@ import org.bukkit.World;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Spider;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 public class Rider extends GameMob {
-    public <T extends Mob> Rider(World world, Location locationToSpawn) {
-        super(world, locationToSpawn, Spider.class, mob -> {
+    public <T extends Mob> Rider(JavaPlugin plugin, World world, Vector locationToSpawn) {
+        super(plugin, world, locationToSpawn, Spider.class, mob -> {
             if (mob.getVehicle() instanceof Player target) {
                 mob.setTarget(target);
                 target.getInventory().setHeldItemSlot(5);
@@ -36,9 +37,9 @@ public class Rider extends GameMob {
                                     player.addPassenger(mob);
                                 }
                             }
-                        }.runTaskLater(Expunge.instance, 3);
+                        }.runTaskLater(plugin, 3);
                     }
-                } else mob.setTarget(getRandomPlayer());
+                } else mob.setTarget(getRandomPlayer(world));
             }
         });
         getMob().addScoreboardTag("SPECIAL");
