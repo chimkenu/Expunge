@@ -168,6 +168,10 @@ public class Director implements Listener {
         return mobHandler.getActiveMobs().size();
     }
 
+    public boolean isSpawningEnabled() {
+        return mobHandler.isSpawningEnabled();
+    }
+
     public void setSpawningEnabled(boolean spawningEnabled) {
         mobHandler.setSpawningEnabled(spawningEnabled);
     }
