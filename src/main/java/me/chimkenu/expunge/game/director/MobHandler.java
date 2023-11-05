@@ -284,4 +284,12 @@ public class MobHandler {
         }
         return smallest;
     }
+
+    public boolean isSpawningEnabled() {
+        return isSpawningEnabled;
+    }
+
+    public void setSpawningEnabled(boolean spawningEnabled) {
+        isSpawningEnabled = spawningEnabled;
+    }
 }

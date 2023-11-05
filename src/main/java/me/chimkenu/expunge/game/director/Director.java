@@ -138,16 +138,8 @@ public class Director extends BukkitRunnable implements Listener {
         return mobHandler.getActiveMobs().size();
     }
 
-    public ItemHandler getItemHandler() {
-        return itemHandler;
-    }
-
-    public MobHandler getMobHandler() {
-        return mobHandler;
-    }
-
-    public StatsHandler getStatsHandler() {
-        return statsHandler;
+    public void setSpawningEnabled(boolean spawningEnabled) {
+        mobHandler.setSpawningEnabled(spawningEnabled);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
