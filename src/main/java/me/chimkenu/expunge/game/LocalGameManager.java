@@ -53,7 +53,7 @@ public class LocalGameManager implements GameManager {
             this.players.put(player, new PlayerStats());
         }
 
-        director = new Director(this);
+        director = new Director(plugin, this);
 
         // Register listeners
         listeners = List.of(campaign.getMaps()[this.campaignMapIndex].happenings(this));

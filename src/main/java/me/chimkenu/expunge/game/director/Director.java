@@ -1,12 +1,10 @@
 package me.chimkenu.expunge.game.director;
 
 import me.chimkenu.expunge.campaigns.CampaignMap;
+import me.chimkenu.expunge.enums.Difficulty;
 import me.chimkenu.expunge.game.LocalGameManager;
 import me.chimkenu.expunge.mobs.GameMob;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
@@ -14,6 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -29,10 +28,10 @@ public class Director extends BukkitRunnable implements Listener {
     private int sceneTime = 0;
     private int sceneAttempts = 0;
 
-    public Director(LocalGameManager localGameManager) {
+    public Director(JavaPlugin plugin, LocalGameManager localGameManager) {
         this.localGameManager = localGameManager;
         itemHandler = new ItemHandler(this);
-        mobHandler = new MobHandler(this);
+        mobHandler = new MobHandler(plugin, this);
         statsHandler = new StatsHandler(this);
     }
 
@@ -121,6 +120,10 @@ public class Director extends BukkitRunnable implements Listener {
 
     protected Set<Player> getPlayers() {
         return localGameManager.getPlayers();
+    }
+
+    protected Difficulty getDifficulty() {
+        return localGameManager.getDifficulty();
     }
 
     public long getSceneTime() {
