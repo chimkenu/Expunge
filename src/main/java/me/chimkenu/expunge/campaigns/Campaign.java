@@ -3,29 +3,30 @@ package me.chimkenu.expunge.campaigns;
 import me.chimkenu.expunge.campaigns.thedeparture.TheDeparture;
 import org.bukkit.World;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 
 public abstract class Campaign {
     private final String name;
-    private final ArrayList<CampaignMap> scenes;
-    private final World world;
+    private final CampaignMap[] maps;
+    private final String mainDirectory;
 
-    public Campaign(String name, ArrayList<CampaignMap> scenes, World world) {
+    public Campaign(String name, CampaignMap[] maps, String mainDirectory) {
         this.name = name;
-        this.scenes = scenes;
-        this.world = world;
+        this.maps = maps;
+        this.mainDirectory = mainDirectory;
     }
 
     public String getName() {
         return name;
     }
 
-    public ArrayList<CampaignMap> getScenes() {
-        return scenes;
+    public CampaignMap[] getMaps() {
+        return maps;
     }
 
-    public World getWorld() {
-        return world;
+    public String getMainDirectory() {
+        return mainDirectory;
     }
 
     public enum List {
