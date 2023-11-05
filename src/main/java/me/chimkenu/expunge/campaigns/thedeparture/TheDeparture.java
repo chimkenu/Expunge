@@ -14,17 +14,26 @@ public class TheDeparture extends Campaign {
         World world = Bukkit.getWorld("world");
         if (world == null) return scenes;
 
-        scenes.add(OfficePart1.getScene());
-        scenes.add(OfficePart2.getScene());
-        scenes.add(Streets.getScene());
-        scenes.add(Alleys.getScene());
-        scenes.add(Subway.getScene());
-        scenes.add(Highway.getScene());
-        scenes.add(Stadium.getScene());
+        scenes.add(new Office());
+        scenes.add(new Streets());
+        scenes.add(new Alleys());
+        scenes.add(new Subway());
+        scenes.add(new Highway());
+        scenes.add(new Stadium());
         return scenes;
     }
 
     public TheDeparture() {
-        super("The Departure", scenes(), Bukkit.getWorld("world"));
+        super("The Departure",
+                new CampaignMap[]{
+                        new Office(),
+                        new Streets(),
+                        new Alleys(),
+                        new Subway(),
+                        new Highway(),
+                        new Stadium()
+                },
+                "Maps/TheDeparture"
+        );
     }
 }
