@@ -4,6 +4,7 @@ import me.chimkenu.expunge.GameAction;
 import me.chimkenu.expunge.Expunge;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ public class Dialogue {
         this.gameActionAtEnd = gameActionAtEnd;
     }
 
-    public void displayDialogue(List<Player> players) {
+    public void displayDialogue(JavaPlugin plugin, List<Player> players) {
         if (players.size() < 1) return; // no players to show dialogue to
         if (players.size() > 3) {
             for (int i = players.size() - 1; i > 0; i--) {
@@ -59,7 +60,7 @@ public class Dialogue {
                         p.sendMessage(message);
                     }
                 }
-            }.runTaskLater(Expunge.instance, totalTime);
+            }.runTaskLater(plugin, totalTime);
             if (i < dialogue.size()) totalTime += delay;
         }
         if (gameActionAtEnd != null) {
@@ -68,7 +69,7 @@ public class Dialogue {
                 public void run() {
                     gameActionAtEnd.run(players.get(0));
                 }
-            }.runTaskLater(Expunge.instance, totalTime + 1);
+            }.runTaskLater(plugin, totalTime + 1);
         }
     }
 }
