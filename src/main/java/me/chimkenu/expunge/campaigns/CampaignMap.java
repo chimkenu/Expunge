@@ -1,75 +1,37 @@
 package me.chimkenu.expunge.campaigns;
 
-import me.chimkenu.expunge.Action;
-import org.bukkit.*;
-import org.bukkit.entity.Player;
+import me.chimkenu.expunge.GameAction;
+import me.chimkenu.expunge.game.LocalGameManager;
 import org.bukkit.event.Listener;
 import org.bukkit.util.BoundingBox;
+import org.bukkit.util.Vector;
 
-public abstract class CampaignMap() {
+public abstract class CampaignMap {
+    public abstract Vector startLocation();
 
-    public static void playCrescendoEventEffect(Player... players) {
-        for (Player p : players) {
-            p.sendRichMessage("<Yellow>Here they come...");
-            p.playSound(p, Sound.AMBIENT_CAVE, SoundCategory.PLAYERS, 1f, 1f);
-            p.playSound(p, Sound.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, SoundCategory.PLAYERS, 1f, 1f);
-            p.playSound(p, Sound.ENTITY_ZOMBIE_AMBIENT, SoundCategory.PLAYERS, 1f, 1f);
-        }
-    }
+    public abstract BoundingBox endRegion();
 
-    public Location startLocation() {
-        return startLocation;
-    }
+    public abstract BoundingBox[] pathRegions();
 
-    public BoundingBox endRegion() {
-        return endRegion;
-    }
+    public abstract Vector[] spawnLocations();
 
-    public BoundingBox[] pathRegions() {
-        return pathRegions;
-    }
+    public abstract Vector[] bossLocations();
 
-    public Location[] spawnLocations() {
-        return spawnLocations;
-    }
+    public abstract Vector[] itemLocations();
 
-    public Location[] bossLocations() {
-        return bossLocations;
-    }
+    public abstract int baseItemsToSpawn();
 
-    public Location[] itemLocations() {
-        return itemLocations;
-    }
+    public abstract  Vector[] weaponLocations();
 
-    public int baseItemsToSpawn() {
-        return baseItemsToSpawn;
-    }
+    public abstract Vector[] ammoLocations();
 
-    public Location[] weaponLocations() {
-        return weaponLocations;
-    }
+    public abstract Vector buttonLocation();
 
-    public Location[] ammoLocations() {
-        return ammoLocations;
-    }
+    public abstract GameAction runAtStart();
 
-    public Location buttonLocation() {
-        return buttonLocation;
-    }
+    public abstract GameAction runAtEnd();
 
-    public Action runAtStart() {
-        return runAtStart;
-    }
+    public abstract boolean isStartSafeRoom();
 
-    public Action runAtEnd() {
-        return runAtEnd;
-    }
-
-    public boolean isStartSafeRoom() {
-        return isStartSafeRoom;
-    }
-
-    public Listener[] happenings() {
-        return happenings;
-    }
+    public abstract Listener[] happenings(LocalGameManager localGameManager);
 }
