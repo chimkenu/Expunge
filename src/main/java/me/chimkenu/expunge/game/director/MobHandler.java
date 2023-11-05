@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class MobHandler {
+    JavaPlugin plugin;
     Director director;
     public final HashSet<GameMob> activeMobs = new HashSet<>();
 
@@ -31,7 +32,8 @@ public class MobHandler {
     private boolean chillOut;
     private int timeSinceLastHorde;
 
-    public MobHandler(Director director) {
+    public MobHandler(JavaPlugin plugin, Director director) {
+        this.plugin = plugin;
         this.director = director;
         isSpawningEnabled = false;
         chillOut = false;
@@ -53,17 +55,17 @@ public class MobHandler {
             if ((sceneTime % (20 * 15)) == 0) {
                 double r = Math.random();
                 if (r < 0.16)
-                    getActiveMobs().add(new Rider(director.getWorld(), getRandomSpawnLocation()));
+                    getActiveMobs().add(new Rider(plugin, director.getWorld(), getRandomSpawnLocation()));
                 else if (r < 0.32)
-                    getActiveMobs().add(new Spewer(director.getWorld(),getRandomSpawnLocation()));
+                    getActiveMobs().add(new Spewer(plugin, director.getWorld(),getRandomSpawnLocation()));
                 else if (r < 0.48)
-                    getActiveMobs().add(new Charger(director.getWorld(), getRandomSpawnLocation()));
+                    getActiveMobs().add(new Charger(plugin, director.getWorld(), getRandomSpawnLocation(), difficulty));
                 else if (r < 0.64)
-                    getActiveMobs().add(new Pouncer(director.getWorld(), getRandomSpawnLocation()));
+                    getActiveMobs().add(new Pouncer(plugin, director.getWorld(), getRandomSpawnLocation()));
                 else if (r < 0.86)
-                    getActiveMobs().add(new Choker(director.getWorld(), getRandomSpawnLocation()));
+                    getActiveMobs().add(new Choker(plugin, director.getWorld(), getRandomSpawnLocation()));
                 else
-                    getActiveMobs().add(new Spitter(director.getWorld(), getRandomSpawnLocation()));
+                    getActiveMobs().add(new Spitter(plugin, director.getWorld(), getRandomSpawnLocation()));
             }
 
             // spawn additional mobs if number of mobs are too low
@@ -135,7 +137,7 @@ public class MobHandler {
         return mob.getMob();
     }
 
-    public Location getRandomSpawnLocation() {
+    public Vector getRandomSpawnLocation() {
         // Get a random player
         Player player = null;
         int item = ThreadLocalRandom.current().nextInt(director.getPlayers().size()); // In real life, the Random object should be rather more shared than this
@@ -170,7 +172,7 @@ public class MobHandler {
         }
 
         // Return a random near spawn location
-        return spawnLocations[ThreadLocalRandom.current().nextInt(0, Math.min(3, spawnLocations.length))].toLocation(director.getWorld());
+        return spawnLocations[ThreadLocalRandom.current().nextInt(0, Math.min(3, spawnLocations.length))];
     }
 
     public void spawnAdditionalMob() {
@@ -178,11 +180,11 @@ public class MobHandler {
         int random = ThreadLocalRandom.current().nextInt(0, 20);
         LivingEntity spawnedMob;
         if (random == 0)
-            spawnedMob = spawnMob(new Robot(director.getWorld(), getRandomSpawnLocation()));
+            spawnedMob = spawnMob(new Robot(plugin, director.getWorld(), getRandomSpawnLocation(), director.getDifficulty()));
         else if (random == 1)
-            spawnedMob = spawnMob(new Soldier(director.getWorld(), getRandomSpawnLocation()));
+            spawnedMob = spawnMob(new Soldier(plugin, director.getWorld(), getRandomSpawnLocation(), director.getDifficulty()));
         else
-            spawnedMob = spawnMob(new Horde(director.getWorld(), getRandomSpawnLocation()));
+            spawnedMob = spawnMob(new Horde(plugin, director.getWorld(), getRandomSpawnLocation(), director.getDifficulty()));
         spawnedMob.setRemoveWhenFarAway(false);
     }
 
@@ -216,7 +218,7 @@ public class MobHandler {
                 savedLocations.add(loc);
             }
 
-            spawnMob(new Wanderer(director.getWorld(), loc));
+            spawnMob(new Wanderer(plugin, director.getWorld(), loc.toVector(), director.getDifficulty()));
         }
 
         // random chance to spawn boss
@@ -232,7 +234,7 @@ public class MobHandler {
     public void spawnTank() {
         Vector[] bossLoc = director.getMap().bossLocations();
         if (bossLoc.length > 0) {
-            LivingEntity spawnedMob = spawnMob(new Tank(director.getWorld(), bossLoc[ThreadLocalRandom.current().nextInt(0, bossLoc.length)].toLocation(director.getWorld())));
+            LivingEntity spawnedMob = spawnMob(new Tank(plugin, director.getWorld(), bossLoc[ThreadLocalRandom.current().nextInt(0, bossLoc.length)], director.getDifficulty()));
             spawnedMob.setRemoveWhenFarAway(false);
         }
     }
@@ -240,7 +242,7 @@ public class MobHandler {
     public void spawnWitch() {
         Vector[] bossLoc = director.getMap().bossLocations();
         if (bossLoc.length > 0) {
-            LivingEntity spawnedMob = spawnMob(new Witch(director.getWorld(), bossLoc[ThreadLocalRandom.current().nextInt(0, bossLoc.length)].toLocation(director.getWorld())));
+            LivingEntity spawnedMob = spawnMob(new Witch(plugin, director.getWorld(), bossLoc[ThreadLocalRandom.current().nextInt(0, bossLoc.length)]));
             spawnedMob.setRemoveWhenFarAway(false);
         }
     }
