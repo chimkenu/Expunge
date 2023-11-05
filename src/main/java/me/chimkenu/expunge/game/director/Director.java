@@ -15,11 +15,10 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Set;
 
-public class Director extends BukkitRunnable implements Listener {
+public class Director implements Listener {
     private final LocalGameManager localGameManager;
     private final ItemHandler itemHandler;
     private final MobHandler mobHandler;
@@ -35,7 +34,6 @@ public class Director extends BukkitRunnable implements Listener {
         statsHandler = new StatsHandler(this);
     }
 
-    @Override
     public void run() {
         sceneTime++;
         mobHandler.run(sceneTime, sceneAttempts, localGameManager.getDifficulty());

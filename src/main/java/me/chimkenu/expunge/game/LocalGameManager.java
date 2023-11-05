@@ -15,6 +15,9 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -91,7 +94,7 @@ public class LocalGameManager implements GameManager {
         main = new BukkitRunnable() {
             @Override
             public void run() {
-
+                director.run();
             }
         }.runTaskTimer(plugin, 0, 1);
     }
@@ -164,6 +167,61 @@ public class LocalGameManager implements GameManager {
         return false;
     }
 
+    public void restartMap() {
+        director.setSpawningEnabled(false);
+        director.clearEntities();
+        director.incrementSceneAttempts();
+        startMap();
+    }
+
+    public void startMap() {
+        director.setSpawningEnabled(true);
+
+        for (Player p : getPlayers()) {
+            p.leaveVehicle();
+            p.teleport(getMap().startLocation().toLocation(getWorld()));
+            /*
+            TODO: Apparently, the old code had a bug where players that were riding a vehicle didn't get teleported back to the start location. Please test this!
+             * new BukkitRunnable() {
+             *     @Override
+             *     public void run() {
+             *         p.teleport(scene.startLocation());
+             *     }
+             * }.runTaskLater(instance, 1);
+             */
+
+            p.removePotionEffect(PotionEffectType.GLOWING);
+            p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 3, 4, false, false, false));
+            p.setGameMode(GameMode.ADVENTURE);
+
+            loadPlayerStats(p);
+            getPlayerStat(p).setAlive(true);
+        }
+
+        // REGISTER EVENTS AND HAPPENINGS
+
+        // DIRECTOR.GENERATE_ITEMS
+        // DIRECTOR.SPAWN_STARTING_MOBS
+
+        // RUN GAME_ACTION_AT_START
+    }
+
+    public void endMap() {
+        director.setSpawningEnabled(false);
+
+        // RUN GAME_ACTION_AT_END
+
+        // UNREGISTER LISTENERS AND HAPPENINGS
+
+        director.resetSceneAttempts();
+        director.clearEntities();
+
+        for (Player p : getPlayers()) {
+            if (!getPlayerStat(p).isAlive()) players.remove(p);
+            savePlayerStats(p);
+        }
+    }
+
     public CampaignMap getMap() {
         return campaign.getMaps()[campaignMapIndex];
     }
@@ -195,14 +253,28 @@ public class LocalGameManager implements GameManager {
         return localGameWorld.load();
     }
 
-    private void loadPlayerStats() {
-        for (Player p : players.keySet()) {
-            PlayerStats s = players.get(p);
-            p.setHealth(s.getHealth());
-            p.setAbsorptionAmount(s.getAbsorption());
-            for (int i = 0; i < s.getHotbar().length; i++) {
-                p.getInventory().setItem(i, s.getHotbar()[i]);
-            }
+    private void savePlayerStats(Player p) {
+        players.putIfAbsent(p, new PlayerStats());
+        PlayerStats s = players.get(p);
+        s.setHealth(p.getHealth());
+        s.setAbsorption(p.getAbsorptionAmount());
+
+        ItemStack[] itemStacks = s.getHotbar();
+        for (int i = 0; i < 5; i++) {
+            itemStacks[i] = p.getInventory().getItem(i);
+        }
+        s.setHotbar(itemStacks);
+
+        // s.setLives();
+    }
+
+    private void loadPlayerStats(Player p) {
+        PlayerStats s = players.get(p);
+        p.setHealth(s.getHealth());
+        p.setAbsorptionAmount(s.getAbsorption());
+        p.getInventory().clear();
+        for (int i = 0; i < s.getHotbar().length; i++) {
+            p.getInventory().setItem(i, s.getHotbar()[i]);
         }
     }
 }
