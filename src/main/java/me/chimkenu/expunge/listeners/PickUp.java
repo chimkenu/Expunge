@@ -3,7 +3,6 @@ package me.chimkenu.expunge.listeners;
 import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.utils.Utils;
 import me.chimkenu.expunge.guns.GameItem;
-import me.chimkenu.expunge.guns.listeners.Shoot;
 import me.chimkenu.expunge.guns.utilities.Utility;
 import me.chimkenu.expunge.guns.utilities.healing.Healing;
 import me.chimkenu.expunge.guns.weapons.Weapon;

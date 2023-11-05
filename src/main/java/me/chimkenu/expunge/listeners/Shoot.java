@@ -1,4 +1,4 @@
-package me.chimkenu.expunge.guns.listeners;
+package me.chimkenu.expunge.listeners;
 
 import me.chimkenu.expunge.utils.Utils;
 import me.chimkenu.expunge.guns.ShootParticle;

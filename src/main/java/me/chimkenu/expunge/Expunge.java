@@ -3,7 +3,6 @@ package me.chimkenu.expunge;
 import me.chimkenu.expunge.commands.*;
 import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.listeners.*;
-import me.chimkenu.expunge.guns.listeners.*;
 import me.chimkenu.expunge.mobs.MobListener;
 import me.chimkenu.expunge.utils.ResourceCopy;
 import org.bukkit.*;
