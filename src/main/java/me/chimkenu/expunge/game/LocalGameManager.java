@@ -56,7 +56,7 @@ public class LocalGameManager implements GameManager {
         director = new Director(this);
 
         // Register listeners
-        listeners = List.of(campaign.getMaps()[this.campaignMapIndex].happenings());
+        listeners = List.of(campaign.getMaps()[this.campaignMapIndex].happenings(this));
         for (Listener listener : listeners) {
             Bukkit.getPluginManager().registerEvents(listener, plugin);
         }
