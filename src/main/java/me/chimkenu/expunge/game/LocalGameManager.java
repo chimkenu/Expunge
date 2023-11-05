@@ -1,37 +1,43 @@
 package me.chimkenu.expunge.game;
 
+import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.campaigns.Campaign;
 import me.chimkenu.expunge.campaigns.CampaignIntro;
+import me.chimkenu.expunge.campaigns.CampaignMap;
+import me.chimkenu.expunge.enums.Difficulty;
+import me.chimkenu.expunge.game.director.Director;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.util.Vector;
 
 import java.io.File;
 import java.util.*;
 
 public class LocalGameManager implements GameManager {
-    private final JavaPlugin plugin;
+    private final Expunge plugin;
     private final Campaign campaign;
+    private final Difficulty difficulty;
     private final Queue<GameWorld> gameWorlds;
     private final HashMap<Player, PlayerStats> players;
+    private final Director director;
     private final List<Listener> listeners;
 
     private BukkitTask main;
     private long gameTimeStart;
     private int campaignMapIndex;
 
-    public LocalGameManager(JavaPlugin plugin, Campaign campaign, int campaignMapIndex, Set<Player> players) throws RuntimeException {
+    public LocalGameManager(Expunge plugin, Campaign campaign, Difficulty difficulty, int campaignMapIndex, Set<Player> players) throws RuntimeException {
         this.plugin = plugin;
         this.campaign = campaign;
+        this.difficulty = difficulty;
 
         // Load the first map in the campaign
         gameWorlds = new LinkedList<>();
@@ -46,6 +52,8 @@ public class LocalGameManager implements GameManager {
             player.getInventory().clear();
             this.players.put(player, new PlayerStats());
         }
+
+        director = new Director(this);
 
         // Register listeners
         listeners = List.of(campaign.getMaps()[this.campaignMapIndex].happenings());
@@ -109,8 +117,8 @@ public class LocalGameManager implements GameManager {
 
         for (Player player : gameWorld.getWorld().getPlayers()) {
             player.sendMessage(ChatColor.BLUE + "Game ended at " + ChatColor.DARK_AQUA + gameTime);
-            plugin.lobby.setSpectator(player);
-            if (isAbrupt) plugin.lobby.teleportToLobby(player);
+            plugin.getLobby().setSpectator(player);
+            if (isAbrupt) plugin.getLobby().teleportToLobby(player);
         }
 
         if (isAbrupt) {
@@ -134,7 +142,7 @@ public class LocalGameManager implements GameManager {
 
                 if (i <= 0) {
                     for (Player player : gameWorld.getWorld().getPlayers()) {
-                        plugin.lobby.teleportToLobby(player);
+                        plugin.getLobby().teleportToLobby(player);
                     }
                     this.cancel();
                 }
@@ -154,6 +162,19 @@ public class LocalGameManager implements GameManager {
     @Override
     public boolean isRunning() {
         return false;
+    }
+
+    public CampaignMap getMap() {
+        return campaign.getMaps()[campaignMapIndex];
+    }
+
+    public World getWorld() {
+        if (gameWorlds.isEmpty()) return null;
+        return gameWorlds.peek().getWorld();
+    }
+
+    public Difficulty getDifficulty() {
+        return difficulty;
     }
 
     private boolean loadMap(int index) {
