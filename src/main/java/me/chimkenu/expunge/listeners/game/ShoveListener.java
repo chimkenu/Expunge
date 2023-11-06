@@ -1,8 +1,9 @@
-package me.chimkenu.expunge.listeners;
+package me.chimkenu.expunge.listeners.game;
 
 import me.chimkenu.expunge.game.BreakGlass;
 import me.chimkenu.expunge.game.LocalGameManager;
 import me.chimkenu.expunge.game.PlayerStats;
+import me.chimkenu.expunge.listeners.GameListener;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;

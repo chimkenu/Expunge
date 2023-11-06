@@ -1,9 +1,10 @@
-package me.chimkenu.expunge.listeners;
+package me.chimkenu.expunge.listeners.game;
 
 import me.chimkenu.expunge.game.BreakGlass;
 import me.chimkenu.expunge.game.LocalGameManager;
 import me.chimkenu.expunge.guns.weapons.melees.Chainsaw;
 import me.chimkenu.expunge.guns.weapons.melees.Melee;
+import me.chimkenu.expunge.listeners.GameListener;
 import me.chimkenu.expunge.utils.Utils;
 import org.bukkit.*;
 import org.bukkit.entity.*;
@@ -18,7 +19,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 
 public class SwingListener extends GameListener {
-    protected SwingListener(JavaPlugin plugin, LocalGameManager localGameManager) {
+    public SwingListener(JavaPlugin plugin, LocalGameManager localGameManager) {
         super(plugin, localGameManager);
     }
 
