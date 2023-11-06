@@ -131,56 +131,57 @@ public class Alleys extends CampaignMap {
 
     @Override
     public Listener[] happenings(LocalGameManager localGameManager) {
-        return new Listener[]{
-                new Listener() {
-                    @EventHandler
-                    public void alleysOpening(PlayerMoveEvent e) {
-                        if (!localGameManager.getPlayers().contains(e.getPlayer())) return;
-
-                        BoundingBox box = new BoundingBox(1157, 42, 933, 1148, 51, 929);
-                        if (!box.contains(e.getPlayer().getLocation().toVector())) return;
-
-                        playDialogue(DepartureDialogue.ALLEYS_OPENING);
-                        HandlerList.unregisterAll(this);
-                    }
-                },
-                new Listener() {
-                    @EventHandler
-                    public void alleysPurpleCar(PlayerMoveEvent e) {
-                        if (!localGameManager.getPlayers().contains(e.getPlayer())) return;
-
-                        BoundingBox box = new BoundingBox(1147, 43, 935, 1142, 47, 942);
-                        if (!box.contains(e.getPlayer().getLocation().toVector())) return;
-
-                        DepartureDialogue.PURPLE_CAR.getSolo().displayDialogue(List.of(e.getPlayer()));
-                        HandlerList.unregisterAll(this);
-                    }
-                },
-                new Listener() {
-                    @EventHandler
-                    public void alleysSafeHouse(PlayerMoveEvent e) {
-                        if (!localGameManager.getPlayers().contains(e.getPlayer())) return;
-
-                        BoundingBox box = new BoundingBox(1147, 42, 983, 1141, 56, 990);
-                        if (!box.contains(e.getPlayer().getLocation().toVector())) return;
-
-                        playDialogue(DepartureDialogue.ALLEYS_SAFE_HOUSE);
-                        HandlerList.unregisterAll(this);
-                    }
-                },
-                new Listener() {
-                    @EventHandler
-                    public void finaleBegin(PlayerInteractEvent e) {
-                        if (!localGameManager.getPlayers().contains(e.getPlayer())) return;
-                        if (!e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) return;
-                        if (e.getClickedBlock() == null || !(e.getClickedBlock().getType() == Material.STONE_BUTTON)) return;
-
-                        if (e.getClickedBlock().getLocation().toVector().equals(new Vector(1126, 44, 997))) {
-                            Achievements.A_BITE_TO_EAT.grant(e.getPlayer());
-                        }
-                    }
-                }
-        };
+        return new Listener[0];
+//        return new Listener[]{
+//                new Listener() {
+//                    @EventHandler
+//                    public void alleysOpening(PlayerMoveEvent e) {
+//                        if (!localGameManager.getPlayers().contains(e.getPlayer())) return;
+//
+//                        BoundingBox box = new BoundingBox(1157, 42, 933, 1148, 51, 929);
+//                        if (!box.contains(e.getPlayer().getLocation().toVector())) return;
+//
+//                        // playDialogue(DepartureDialogue.ALLEYS_OPENING);
+//                        HandlerList.unregisterAll(this);
+//                    }
+//                },
+//                new Listener() {
+//                    @EventHandler
+//                    public void alleysPurpleCar(PlayerMoveEvent e) {
+//                        if (!localGameManager.getPlayers().contains(e.getPlayer())) return;
+//
+//                        BoundingBox box = new BoundingBox(1147, 43, 935, 1142, 47, 942);
+//                        if (!box.contains(e.getPlayer().getLocation().toVector())) return;
+//
+//                        // DepartureDialogue.PURPLE_CAR.getSolo().displayDialogue(plugin, List.of(e.getPlayer()));
+//                        HandlerList.unregisterAll(this);
+//                    }
+//                },
+//                new Listener() {
+//                    @EventHandler
+//                    public void alleysSafeHouse(PlayerMoveEvent e) {
+//                        if (!localGameManager.getPlayers().contains(e.getPlayer())) return;
+//
+//                        BoundingBox box = new BoundingBox(1147, 42, 983, 1141, 56, 990);
+//                        if (!box.contains(e.getPlayer().getLocation().toVector())) return;
+//
+//                        // playDialogue(DepartureDialogue.ALLEYS_SAFE_HOUSE);
+//                        HandlerList.unregisterAll(this);
+//                    }
+//                },
+//                new Listener() {
+//                    @EventHandler
+//                    public void finaleBegin(PlayerInteractEvent e) {
+//                        if (!localGameManager.getPlayers().contains(e.getPlayer())) return;
+//                        if (!e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) return;
+//                        if (e.getClickedBlock() == null || !(e.getClickedBlock().getType() == Material.STONE_BUTTON)) return;
+//
+//                        if (e.getClickedBlock().getLocation().toVector().equals(new Vector(1126, 44, 997))) {
+//                            Achievements.A_BITE_TO_EAT.grant(e.getPlayer());
+//                        }
+//                    }
+//                }
+//        };
     }
 
     @Override
