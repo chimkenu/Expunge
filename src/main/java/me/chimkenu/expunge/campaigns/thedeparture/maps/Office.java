@@ -216,7 +216,7 @@ public class Office extends CampaignMap {
                         }
 
                         Campaign.playCrescendoEventEffect(localGameManager.getPlayers());
-                        World world = e.getPlayer().getWorld();
+                        World world = localGameManager.getWorld();
                         new BukkitRunnable() {
                             int i = 0;
 
