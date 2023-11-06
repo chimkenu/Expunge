@@ -3,6 +3,7 @@ package me.chimkenu.expunge.game.director;
 import me.chimkenu.expunge.campaigns.CampaignMap;
 import me.chimkenu.expunge.enums.Difficulty;
 import me.chimkenu.expunge.game.LocalGameManager;
+import me.chimkenu.expunge.guns.weapons.Weapon;
 import me.chimkenu.expunge.mobs.GameMob;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
@@ -18,6 +19,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.BoundingBox;
 
 import java.util.Set;
 
@@ -145,12 +147,20 @@ public class Director implements Listener {
         itemHandler.generateItems(getMap(), calculateRating());
     }
 
+    public void spawnWeapon(Location loc, Weapon weapon, boolean isInvulnerable) {
+        itemHandler.spawnWeapon(loc, weapon, isInvulnerable);
+    }
+
     public void spawnStartingMobs() {
         mobHandler.spawnStartingMobs(getLocalGameManager().getCampaignMapIndex(), sceneAttempts, getDifficulty(), getPlayers().size());
     }
 
     public void spawnMob(GameMob mob) {
         mobHandler.spawnMob(mob);
+    }
+
+    public void spawnAtRandomLocations(BoundingBox boundingBox, int numToSpawn) {
+        mobHandler.spawnAtRandomLocations(boundingBox, numToSpawn);
     }
 
     public LocalGameManager getLocalGameManager() {

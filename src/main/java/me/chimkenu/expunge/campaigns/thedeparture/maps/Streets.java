@@ -4,10 +4,12 @@ import me.chimkenu.expunge.GameAction;
 import me.chimkenu.expunge.campaigns.Campaign;
 import me.chimkenu.expunge.campaigns.CampaignMap;
 import me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue;
+import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.game.LocalGameManager;
 import me.chimkenu.expunge.listeners.GameListener;
 import me.chimkenu.expunge.listeners.game.*;
 import me.chimkenu.expunge.mobs.common.Horde;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
@@ -138,11 +140,6 @@ public class Streets extends CampaignMap {
     }
 
     @Override
-    public boolean isStartSafeRoom() {
-        return false;
-    }
-
-    @Override
     public Listener[] happenings(JavaPlugin plugin, LocalGameManager localGameManager) {
         return new Listener[]{
                 new Listener() {
@@ -222,6 +219,56 @@ public class Streets extends CampaignMap {
                             return;
                         playDialogue(DepartureDialogue.STREETS_SHED);
                         HandlerList.unregisterAll(this);
+                    }
+                },
+
+                // Alleys
+                new Listener() {
+                    @EventHandler
+                    public void alleysOpening(PlayerMoveEvent e) {
+                        if (!localGameManager.getPlayers().contains(e.getPlayer())) return;
+
+                        BoundingBox box = new BoundingBox(1157, 42, 933, 1148, 51, 929);
+                        if (!box.contains(e.getPlayer().getLocation().toVector())) return;
+
+                        // playDialogue(DepartureDialogue.ALLEYS_OPENING);
+                        HandlerList.unregisterAll(this);
+                    }
+                },
+                new Listener() {
+                    @EventHandler
+                    public void alleysPurpleCar(PlayerMoveEvent e) {
+                        if (!localGameManager.getPlayers().contains(e.getPlayer())) return;
+
+                        BoundingBox box = new BoundingBox(1147, 43, 935, 1142, 47, 942);
+                        if (!box.contains(e.getPlayer().getLocation().toVector())) return;
+
+                        // DepartureDialogue.PURPLE_CAR.getSolo().displayDialogue(plugin, List.of(e.getPlayer()));
+                        HandlerList.unregisterAll(this);
+                    }
+                },
+                new Listener() {
+                    @EventHandler
+                    public void alleysSafeHouse(PlayerMoveEvent e) {
+                        if (!localGameManager.getPlayers().contains(e.getPlayer())) return;
+
+                        BoundingBox box = new BoundingBox(1147, 42, 983, 1141, 56, 990);
+                        if (!box.contains(e.getPlayer().getLocation().toVector())) return;
+
+                        // playDialogue(DepartureDialogue.ALLEYS_SAFE_HOUSE);
+                        HandlerList.unregisterAll(this);
+                    }
+                },
+                new Listener() {
+                    @EventHandler
+                    public void achievement(PlayerInteractEvent e) {
+                        if (!localGameManager.getPlayers().contains(e.getPlayer())) return;
+                        if (!e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) return;
+                        if (e.getClickedBlock() == null || !(e.getClickedBlock().getType() == Material.STONE_BUTTON)) return;
+
+                        if (e.getClickedBlock().getLocation().toVector().equals(new Vector(1126, 44, 997))) {
+                            Achievements.A_BITE_TO_EAT.grant(e.getPlayer());
+                        }
                     }
                 }
         };

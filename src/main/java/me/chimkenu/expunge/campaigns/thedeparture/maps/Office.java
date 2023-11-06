@@ -146,11 +146,6 @@ public class Office extends CampaignMap {
     }
 
     @Override
-    public boolean isStartSafeRoom() {
-        return false;
-    }
-
-    @Override
     public Listener[] happenings(JavaPlugin plugin, LocalGameManager localGameManager) {
         return new Listener[]{
                 new Listener() {

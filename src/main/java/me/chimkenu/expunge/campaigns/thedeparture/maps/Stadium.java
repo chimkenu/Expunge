@@ -77,11 +77,6 @@ public class Stadium extends CampaignMap {
     }
 
     @Override
-    public boolean isStartSafeRoom() {
-        return false;
-    }
-
-    @Override
     public Listener[] happenings(JavaPlugin plugin, LocalGameManager localGameManager) {
         return new Listener[0];
 //        return new Listener[]{
