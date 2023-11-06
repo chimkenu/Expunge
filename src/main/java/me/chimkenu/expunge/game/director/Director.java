@@ -136,6 +136,14 @@ public class Director implements Listener {
         return (totalHealth * 0.2) + (skillAverage * 0.45) + (mobsOnPlayer * 0.35);
     }
 
+    public void generateStartingItems() {
+        itemHandler.generateItems(getMap(), calculateRating());
+    }
+
+    public void spawnStartingMobs() {
+        mobHandler.spawnStartingMobs(getLocalGameManager().getCampaignMapIndex(), sceneAttempts, getDifficulty(), getPlayers().size());
+    }
+
     public LocalGameManager getLocalGameManager() {
         return localGameManager;
     }

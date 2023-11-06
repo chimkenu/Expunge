@@ -31,8 +31,8 @@ public class LocalGameManager implements GameManager {
     private final Queue<GameWorld> gameWorlds;
     private final HashMap<Player, PlayerStats> players;
     private final Director director;
-    private final List<Listener> listeners;
 
+    private List<Listener> listeners;
     private BukkitTask main;
     private long gameTimeStart;
     private int campaignMapIndex;
@@ -44,8 +44,8 @@ public class LocalGameManager implements GameManager {
 
         // Load the first map in the campaign
         gameWorlds = new LinkedList<>();
-        this.campaignMapIndex = Math.min(campaignMapIndex, campaign.getMaps().length);
-        if (!loadMap(this.campaignMapIndex)) {
+        this.campaignMapIndex = Math.min(Math.max(0, campaignMapIndex), campaign.getMaps().length);
+        if (!loadMap(getMap())) {
             throw new RuntimeException("Campaign map index " + this.campaignMapIndex + " could not be loaded.");
         }
 
@@ -58,11 +58,7 @@ public class LocalGameManager implements GameManager {
 
         director = new Director(plugin, this);
 
-        // Register listeners
-        listeners = List.of(campaign.getMaps()[this.campaignMapIndex].happenings(this));
-        for (Listener listener : listeners) {
-            Bukkit.getPluginManager().registerEvents(listener, plugin);
-        }
+        listeners = new ArrayList<>();
 
         gameTimeStart = -1;
 
@@ -97,6 +93,7 @@ public class LocalGameManager implements GameManager {
                 director.run();
             }
         }.runTaskTimer(plugin, 0, 1);
+        startMap();
     }
 
     @Override
@@ -181,7 +178,8 @@ public class LocalGameManager implements GameManager {
             p.leaveVehicle();
             p.teleport(getMap().startLocation().toLocation(getWorld()));
             /*
-            TODO: Apparently, the old code had a bug where players that were riding a vehicle didn't get teleported back to the start location. Please test this!
+            TODO: Apparently, the old code had a bug where players that were riding a
+             vehicle didn't get teleported back to the start location. Please test this!
              * new BukkitRunnable() {
              *     @Override
              *     public void run() {
@@ -199,19 +197,36 @@ public class LocalGameManager implements GameManager {
         }
 
         // REGISTER EVENTS AND HAPPENINGS
+        if (listeners.size() != 0) {
+            for (Listener listener : listeners) {
+                HandlerList.unregisterAll(listener);
+            }
+            listeners.clear();
+        }
 
-        // DIRECTOR.GENERATE_ITEMS
-        // DIRECTOR.SPAWN_STARTING_MOBS
+        listeners.addAll(List.of(getMap().gameListeners(plugin, this)));
+        listeners.addAll(List.of(getMap().happenings(this)));
+        listeners.add(director);
 
-        // RUN GAME_ACTION_AT_START
+        for (Listener listener : listeners) {
+            plugin.getServer().getPluginManager().registerEvents(listener, plugin);
+        }
+
+        director.generateStartingItems();
+        director.spawnStartingMobs();
+
+        getMap().runAtStart().run(null);
     }
 
     public void endMap() {
         director.setSpawningEnabled(false);
 
-        // RUN GAME_ACTION_AT_END
+        getMap().runAtEnd().run(null);
 
-        // UNREGISTER LISTENERS AND HAPPENINGS
+        for (Listener listener : listeners) {
+            HandlerList.unregisterAll(listener);
+        }
+        listeners.clear();
 
         director.resetSceneAttempts();
         director.clearEntities();
@@ -222,8 +237,18 @@ public class LocalGameManager implements GameManager {
         }
     }
 
+    public void loadNextMap() throws RuntimeException {
+        campaignMapIndex++;
+        CampaignMap map = getMap();
+        if (!loadMap(map)) throw new RuntimeException("Failed to load next map " + map);
+    }
+
     public Campaign getCampaign() {
         return campaign;
+    }
+
+    public int getCampaignMapIndex() {
+        return campaignMapIndex;
     }
 
     public CampaignMap getMap() {
@@ -251,8 +276,8 @@ public class LocalGameManager implements GameManager {
         return director;
     }
 
-    private boolean loadMap(int index) {
-        LocalGameWorld localGameWorld = new LocalGameWorld(new File(plugin.getDataFolder(), campaign.getMainDirectory() + campaign.getMaps()[index]));
+    private boolean loadMap(CampaignMap map) {
+        LocalGameWorld localGameWorld = new LocalGameWorld(new File(plugin.getDataFolder(), campaign.getMainDirectory() + "/" + map));
         gameWorlds.add(localGameWorld);
         return localGameWorld.load();
     }

@@ -9,11 +9,23 @@ import me.chimkenu.expunge.guns.weapons.Weapon;
 import me.chimkenu.expunge.guns.weapons.guns.Gun;
 import me.chimkenu.expunge.guns.weapons.melees.Melee;
 import me.chimkenu.expunge.utils.Utils;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.SoundGroup;
+import org.bukkit.block.*;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.structure.Mirror;
+import org.bukkit.block.structure.StructureRotation;
+import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Item;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
+import org.bukkit.util.VoxelShape;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,11 +38,9 @@ public class ItemHandler {
         this.director = director;
     }
 
-    public void generateItems() {
-        CampaignMap map = director.getMap();
-
+    public void generateItems(CampaignMap map, double directorRating) {
         int itemsToSpawn = map.baseItemsToSpawn();
-        itemsToSpawn += (int) (4 * (1 - director.calculateRating()));
+        itemsToSpawn += (int) (4 * (1 - directorRating));
         for (int i = 0; i < itemsToSpawn; i++) {
             double r = Math.random();
 
@@ -50,7 +60,7 @@ public class ItemHandler {
         }
 
         itemsToSpawn = 1;
-        itemsToSpawn += (int) (2 * (1 - director.calculateRating()));
+        itemsToSpawn += (int) (2 * (1 - directorRating));
         for (int i = 0; i < itemsToSpawn; i++) {
             double r = Math.random();
 
@@ -71,7 +81,7 @@ public class ItemHandler {
 
         // Spawn ammo
         for (Vector v : map.ammoLocations()) {
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "execute in minecraft:overworld run summon falling_block " + v.getX() + " " + v.getY() + " " + v.getZ() + " {BlockState:{Name:\"minecraft:gray_candle\",Properties:{candles:\"4\",lit:\"false\",waterlogged:\"false\"}},NoGravity:1b,Glowing:1b,Time:-2147483648,Tags:[\"AMMO_PILE\"],Invulnerable:1b,CustomName:'[{\"text\":\"Ammo Pile\",\"color\":\"blue\"},{\"text\":\" (Right Click)\",\"color\":\"gray\"}]',CustomNameVisible:1b}");
+            spawnAmmo(v.toLocation(director.getWorld()));
         }
     }
 
@@ -113,9 +123,20 @@ public class ItemHandler {
     }
 
     public void spawnUtility(Location loc, Utility utility) {
-        Item item = director.getWorld().spawn(loc, Item.class);
+        Item item = loc.getWorld().spawn(loc, Item.class);
         item.setItemStack(utility.getUtility());
         item.addScoreboardTag("ITEM");
+    }
+
+    private void spawnAmmo(Location loc) {
+        FallingBlock ammoPile = loc.getWorld().spawn(loc, FallingBlock.class);
+        ammoPile.setGravity(false);
+        ammoPile.setGlowing(true);
+        ammoPile.setInvulnerable(true);
+        ammoPile.customName(Component.text("Ammo Pile (Right Click)"));
+        ammoPile.setCustomNameVisible(true);
+        ammoPile.setBlockData(Material.GRAY_CANDLE.createBlockData("candles:\"4\",lit:\"false\",waterlogged:\"false\"}"));
+        ammoPile.addScoreboardTag("AMMO_PILE");
     }
 
     public static Melee getRandomMelee(Tier tier) {
