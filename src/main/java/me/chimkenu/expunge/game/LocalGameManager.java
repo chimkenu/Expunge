@@ -311,8 +311,7 @@ public class LocalGameManager implements GameManager {
             itemStacks[i] = p.getInventory().getItem(i);
         }
         s.setHotbar(itemStacks);
-
-        // s.setLives();
+        s.setLivesFromLastSave(s.getLives());
     }
 
     private void loadPlayerStats(Player p) {
@@ -323,5 +322,6 @@ public class LocalGameManager implements GameManager {
         for (int i = 0; i < s.getHotbar().length; i++) {
             p.getInventory().setItem(i, s.getHotbar()[i]);
         }
+        s.setLives(s.getLivesFromLastSave());
     }
 }
