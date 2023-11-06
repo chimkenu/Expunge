@@ -54,17 +54,7 @@ public final class Expunge extends JavaPlugin {
 
     public void registerGameEvents() {
         HandlerList.unregisterAll(this);
-        getServer().getPluginManager().registerEvents(new JoinLeaveListener(), this);
-        getServer().getPluginManager().registerEvents(new ShoveListener(), this);
-        getServer().getPluginManager().registerEvents(new NextMapListener(), this);
-        getServer().getPluginManager().registerEvents(new DeathReviveListener(), this);
-        getServer().getPluginManager().registerEvents(new PickUpListener(), this);
-        getServer().getPluginManager().registerEvents(new ShootListener(), this);
-        getServer().getPluginManager().registerEvents(new AmmoPileListener(), this);
-        getServer().getPluginManager().registerEvents(new SwingListener(), this);
         getServer().getPluginManager().registerEvents(new UtilityListener(), this);
-        getServer().getPluginManager().registerEvents(new InventoryListener(), this);
-        getServer().getPluginManager().registerEvents(new MobListener(), this);
     }
 
     private void registerCommand(String commandName, CommandExecutor executioner) {

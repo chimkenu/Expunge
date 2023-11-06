@@ -5,6 +5,8 @@ import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.game.LocalGameManager;
 import me.chimkenu.expunge.campaigns.CampaignMap;
 import me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue;
+import me.chimkenu.expunge.listeners.GameListener;
+import me.chimkenu.expunge.listeners.game.*;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -12,6 +14,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
@@ -177,6 +180,19 @@ public class Alleys extends CampaignMap {
                         }
                     }
                 }
+        };
+    }
+
+    @Override
+    public GameListener[] gameListeners(JavaPlugin plugin, LocalGameManager localGameManager) {
+        return new GameListener[]{
+                new AmmoPileListener(plugin, localGameManager),
+                new DeathReviveListener(plugin, localGameManager),
+                new InventoryListener(plugin, localGameManager),
+                new MobListener(plugin, localGameManager),
+                new NextMapListener(plugin, localGameManager),
+                new PickUpListener(plugin, localGameManager),
+                new ShootListener(plugin, localGameManager)
         };
     }
 }

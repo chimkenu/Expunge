@@ -16,7 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class AmmoPileListener extends GameListener {
-    protected AmmoPileListener(JavaPlugin plugin, LocalGameManager localGameManager) {
+    public AmmoPileListener(JavaPlugin plugin, LocalGameManager localGameManager) {
         super(plugin, localGameManager);
     }
 

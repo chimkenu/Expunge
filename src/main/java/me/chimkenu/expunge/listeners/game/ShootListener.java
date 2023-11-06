@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class ShootListener extends GameListener {
-    protected ShootListener(JavaPlugin plugin, LocalGameManager localGameManager) {
+    public ShootListener(JavaPlugin plugin, LocalGameManager localGameManager) {
         super(plugin, localGameManager);
     }
 

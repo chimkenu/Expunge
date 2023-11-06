@@ -20,7 +20,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
 
 public class NextMapListener extends GameListener {
-    protected NextMapListener(JavaPlugin plugin, LocalGameManager localGameManager) {
+    public NextMapListener(JavaPlugin plugin, LocalGameManager localGameManager) {
         super(plugin, localGameManager);
     }
 

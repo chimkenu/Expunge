@@ -30,7 +30,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.HashMap;
 
 public class PickUpListener extends GameListener {
-    protected PickUpListener(JavaPlugin plugin, LocalGameManager localGameManager) {
+    public PickUpListener(JavaPlugin plugin, LocalGameManager localGameManager) {
         super(plugin, localGameManager);
     }
 

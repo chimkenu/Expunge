@@ -20,7 +20,7 @@ import org.bukkit.util.Vector;
 import org.spigotmc.event.entity.EntityDismountEvent;
 
 public class MobListener extends GameListener {
-    protected MobListener(JavaPlugin plugin, LocalGameManager localGameManager) {
+    public MobListener(JavaPlugin plugin, LocalGameManager localGameManager) {
         super(plugin, localGameManager);
     }
 

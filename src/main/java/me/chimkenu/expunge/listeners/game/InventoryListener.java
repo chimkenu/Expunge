@@ -16,7 +16,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffectType;
 
 public class InventoryListener extends GameListener {
-    protected InventoryListener(JavaPlugin plugin, LocalGameManager localGameManager) {
+    public InventoryListener(JavaPlugin plugin, LocalGameManager localGameManager) {
         super(plugin, localGameManager);
     }
 

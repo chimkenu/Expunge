@@ -8,7 +8,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class JoinLeaveListener extends GameListener {
-    protected JoinLeaveListener(JavaPlugin plugin, LocalGameManager localGameManager) {
+    public JoinLeaveListener(JavaPlugin plugin, LocalGameManager localGameManager) {
         super(plugin, localGameManager);
     }
 

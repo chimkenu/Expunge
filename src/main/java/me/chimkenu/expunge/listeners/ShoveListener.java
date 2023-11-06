@@ -18,7 +18,7 @@ import java.util.HashMap;
 
 public class ShoveListener extends GameListener {
 
-    protected ShoveListener(JavaPlugin plugin, LocalGameManager localGameManager) {
+    public ShoveListener(JavaPlugin plugin, LocalGameManager localGameManager) {
         super(plugin, localGameManager);
     }
 
