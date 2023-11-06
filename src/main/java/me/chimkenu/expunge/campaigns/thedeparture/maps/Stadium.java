@@ -27,6 +27,11 @@ import static me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue.playD
 
 public class Stadium extends CampaignMap {
     @Override
+    public String directory() {
+        return "Stadium";
+    }
+
+    @Override
     public Vector startLocation() {
         return null;
     }

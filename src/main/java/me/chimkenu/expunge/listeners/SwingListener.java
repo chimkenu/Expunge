@@ -1,23 +1,27 @@
 package me.chimkenu.expunge.listeners;
 
-import me.chimkenu.expunge.Expunge;
-import me.chimkenu.expunge.utils.Utils;
 import me.chimkenu.expunge.game.BreakGlass;
+import me.chimkenu.expunge.game.LocalGameManager;
 import me.chimkenu.expunge.guns.weapons.melees.Chainsaw;
 import me.chimkenu.expunge.guns.weapons.melees.Melee;
+import me.chimkenu.expunge.utils.Utils;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 
-public class SwingListener implements Listener {
+public class SwingListener extends GameListener {
+    protected SwingListener(JavaPlugin plugin, LocalGameManager localGameManager) {
+        super(plugin, localGameManager);
+    }
+
     private void swing(Player player, Melee melee, boolean playSound) {
         ArrayList<LivingEntity> entities = new ArrayList<>();
         World world = player.getWorld();
@@ -73,8 +77,8 @@ public class SwingListener implements Listener {
              */
             if (melee.getDamage() == 0)
                 switch (livingEntity.getType()) {
-                    case ZOGLIN -> livingEntity.damage((400 + (Expunge.currentDifficulty.ordinal() * 200)) * 0.5, player);
-                    case IRON_GOLEM -> livingEntity.damage(2500 + (Expunge.currentDifficulty.ordinal() * 1000) * 0.05, player);
+                    case ZOGLIN -> livingEntity.damage((400 + (localGameManager.getDifficulty().ordinal() * 200)) * 0.5, player);
+                    case IRON_GOLEM -> livingEntity.damage(2500 + (localGameManager.getDifficulty().ordinal() * 1000) * 0.05, player);
                     case ENDERMAN -> livingEntity.damage(1000 * 0.25, player);
                     default -> livingEntity.damage(livingEntity.getHealth() + livingEntity.getAbsorptionAmount() + 1, player);
                 }
@@ -120,6 +124,6 @@ public class SwingListener implements Listener {
                 }
                 i = (i + 1) % 20;
             }
-        }.runTaskTimer(Expunge.instance, 1, 1);
+        }.runTaskTimer(plugin, 1, 1);
     }
 }

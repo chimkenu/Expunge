@@ -1,6 +1,8 @@
 package me.chimkenu.expunge.listeners;
 
 import me.chimkenu.expunge.game.BreakGlass;
+import me.chimkenu.expunge.game.LocalGameManager;
+import me.chimkenu.expunge.game.PlayerStats;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -8,21 +10,21 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.HashMap;
 
-public class ShoveListener implements Listener {
-    private final HashMap<Player, Long> shove = new HashMap<>();
-    private final HashMap<Player, Integer> shoveCount = new HashMap<>();
+public class ShoveListener extends GameListener {
+
+    protected ShoveListener(JavaPlugin plugin, LocalGameManager localGameManager) {
+        super(plugin, localGameManager);
+    }
+
     private boolean canShove(Player player) {
-        shove.putIfAbsent(player, System.currentTimeMillis() - 3001);
-        shoveCount.putIfAbsent(player, 0);
-
-        int cooldown = shoveCount.get(player) > 7 ? 3 : 1;
-
-        return ((System.currentTimeMillis() - shove.get(player)) > (cooldown * 1000));
+        int cooldown = localGameManager.getPlayerStat(player).getNumberOfRecentShoves() > 7 ? 3 : 1;
+        return ((System.currentTimeMillis() - localGameManager.getPlayerStat(player).getTimeSinceLastShove()) > (cooldown * 1000));
     }
 
     private boolean onShove(Player attacker) {
@@ -33,14 +35,16 @@ public class ShoveListener implements Listener {
             return false;
         }
 
-        shoveCount.put(attacker, shoveCount.get(attacker) + 1);
-        if (System.currentTimeMillis() - shove.get(attacker) > 6000) {
-            shoveCount.put(attacker, 0);
+        PlayerStats playerStats = localGameManager.getPlayerStat(attacker);
+
+        playerStats.setNumberOfRecentShoves(playerStats.getNumberOfRecentShoves() + 1);
+        if (System.currentTimeMillis() - playerStats.getTimeSinceLastShove() > 6000) {
+            playerStats.setNumberOfRecentShoves(0);
         }
-        shove.put(attacker, System.currentTimeMillis());
+        playerStats.setTimeSinceLastShove(System.currentTimeMillis());
 
         attacker.setCooldown(attacker.getInventory().getItemInMainHand().getType(), 1);
-        int cooldown = shoveCount.get(attacker) > 7 ? 3 : 1;
+        int cooldown = playerStats.getNumberOfRecentShoves() > 7 ? 3 : 1;
         attacker.playSound(attacker.getLocation(), Sound.ITEM_ARMOR_EQUIP_IRON, SoundCategory.PLAYERS, 1f, 1f);
         attacker.playSound(attacker.getLocation(), Sound.ENTITY_PLAYER_ATTACK_KNOCKBACK, SoundCategory.PLAYERS, 1f, 1f);
         attacker.playSound(attacker.getLocation(), Sound.ENTITY_TURTLE_EGG_CRACK, SoundCategory.PLAYERS, 0.2f, 1f);
@@ -74,19 +78,30 @@ public class ShoveListener implements Listener {
 
     @EventHandler
     public void onShove(PlayerInteractEvent e) {
-        if (e.getAction() == Action.RIGHT_CLICK_AIR) {
-            boolean isSuccessful = onShove(e.getPlayer());
-            if (isSuccessful) e.setCancelled(true);
+        if (!localGameManager.getPlayers().contains(e.getPlayer())) {
+            return;
         }
+        if (e.getAction() != Action.RIGHT_CLICK_AIR) {
+            return;
+        }
+        boolean isSuccessful = onShove(e.getPlayer());
+        if (isSuccessful) e.setCancelled(true);
     }
 
     @EventHandler
     public void onShove(PlayerInteractEntityEvent e) {
+        if (!localGameManager.getPlayers().contains(e.getPlayer())) {
+            return;
+        }
         if (e.getRightClicked() instanceof FallingBlock fallingBlock && fallingBlock.getScoreboardTags().contains("AMMO_PILE")) {
             e.setCancelled(true);
             return;
         }
         if (e.getPlayer().getPassengers().size() > 0) {
+            e.setCancelled(true);
+            return;
+        }
+        if (e.getPlayer().getVehicle() != null) {
             e.setCancelled(true);
             return;
         }

@@ -22,6 +22,10 @@ import org.bukkit.util.Vector;
 import static me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue.playDialogue;
 
 public class Streets extends CampaignMap {
+    @Override
+    public String directory() {
+        return "Streets";
+    }
 
     @Override
     public Vector startLocation() {

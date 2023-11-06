@@ -18,6 +18,11 @@ import static me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue.playD
 
 public class Highway extends CampaignMap {
     @Override
+    public String directory() {
+        return "Highway";
+    }
+
+    @Override
     public Vector startLocation() {
         return null;
     }

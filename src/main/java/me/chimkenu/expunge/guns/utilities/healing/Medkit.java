@@ -1,7 +1,7 @@
 package me.chimkenu.expunge.guns.utilities.healing;
 
 import me.chimkenu.expunge.enums.Slot;
-import me.chimkenu.expunge.listeners.DeathReviveListener;
+import me.chimkenu.expunge.listeners.game.DeathReviveListener;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Material;

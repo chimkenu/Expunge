@@ -19,6 +19,11 @@ import java.util.List;
 
 public class Alleys extends CampaignMap {
     @Override
+    public String directory() {
+        return "Alleys";
+    }
+
+    @Override
     public Vector startLocation() {
         return null;
     }

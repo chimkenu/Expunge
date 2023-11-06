@@ -2,6 +2,7 @@ package me.chimkenu.expunge.game.director;
 
 import me.chimkenu.expunge.campaigns.CampaignMap;
 import me.chimkenu.expunge.guns.ShootEvent;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,6 +19,10 @@ public class StatsHandler {
 
     public StatsHandler(Director director) {
         this.director = director;
+    }
+
+    public Component displayStats() {
+        return Component.text("lol u suck");
     }
 
     private int getPlayerProgress(Player player) {

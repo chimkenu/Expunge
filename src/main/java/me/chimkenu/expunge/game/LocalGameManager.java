@@ -240,7 +240,24 @@ public class LocalGameManager implements GameManager {
     public void loadNextMap() throws RuntimeException {
         campaignMapIndex++;
         CampaignMap map = getMap();
-        if (!loadMap(map)) throw new RuntimeException("Failed to load next map " + map);
+        if (!loadMap(map)) {
+            stop(true);
+            throw new RuntimeException("Failed to load next map " + map);
+        }
+    }
+
+    public void moveToNextMap() throws RuntimeException {
+        if (gameWorlds.size() < 2) {
+            throw new RuntimeException("There's no next map to go to!");
+        }
+        GameWorld currentWorld = gameWorlds.remove();
+        GameWorld nextWorld = gameWorlds.remove();
+        if (!nextWorld.isLoaded()) {
+            throw new RuntimeException("Next world is not loaded!");
+        }
+        for (Player p : currentWorld.getWorld().getPlayers()) {
+            p.teleport(getMap().startLocation().toLocation(nextWorld.getWorld()));
+        }
     }
 
     public Campaign getCampaign() {

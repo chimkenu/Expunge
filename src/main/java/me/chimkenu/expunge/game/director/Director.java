@@ -4,6 +4,7 @@ import me.chimkenu.expunge.campaigns.CampaignMap;
 import me.chimkenu.expunge.enums.Difficulty;
 import me.chimkenu.expunge.game.LocalGameManager;
 import me.chimkenu.expunge.mobs.GameMob;
+import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -99,6 +100,10 @@ public class Director implements Listener {
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "kill @e[tag=AMMO_PILE]");
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "kill @e[tag=THROWN_BILE]");
         mobHandler.clearMobs();
+    }
+
+    public Component displayStats() {
+        return statsHandler.displayStats();
     }
 
     public void incrementSceneAttempts() {

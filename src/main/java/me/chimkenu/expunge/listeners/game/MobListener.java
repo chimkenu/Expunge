@@ -1,22 +1,30 @@
-package me.chimkenu.expunge.listeners;
+package me.chimkenu.expunge.listeners.game;
 
 import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.enums.Achievements;
+import me.chimkenu.expunge.game.LocalGameManager;
 import me.chimkenu.expunge.guns.utilities.throwable.FreshAir;
+import me.chimkenu.expunge.listeners.GameListener;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.spigotmc.event.entity.EntityDismountEvent;
 
-public class MobListener implements Listener {
-    @EventHandler
+public class MobListener extends GameListener {
+    protected MobListener(JavaPlugin plugin, LocalGameManager localGameManager) {
+        super(plugin, localGameManager);
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
     public void onMobTarget(EntityTargetEvent e) {
         if (!(e.getTarget() instanceof Player target)) {
             e.setCancelled(true);
@@ -53,11 +61,12 @@ public class MobListener implements Listener {
                 player.damage(2, explode);
                 player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 20 * 15, 0, false, true, false));
                 world.spawnParticle(Particle.BLOCK_CRACK, livingEntity.getLocation().add(0, .5, 0), 50, 0.2, 0.2, 0.2, Material.NETHER_WART_BLOCK.createBlockData());
-                if (Expunge.runningDirector != null) Expunge.runningDirector.bile(player, 25);
+                localGameManager.getDirector().bile(plugin, player, 25);
             }
         }
         explode.remove();
     }
+
     @EventHandler
     public void onDeath(EntityDeathEvent e) {
         if (e.getEntity().getScoreboardTags().contains("BOOMER")) {
@@ -74,32 +83,30 @@ public class MobListener implements Listener {
         }
     }
 
-    // TANK TAKES MORE DAMAGE WHEN ON FIRE
+    // Tank takes more damage on fire
     @EventHandler
     public void onDamage(EntityDamageEvent e) {
         if (e.getEntity().getScoreboardTags().contains("TANK") && e.getEntity().getFireTicks() > 0) {
-            e.setDamage(e.getDamage() * 10);
+            e.setDamage(e.getDamage() * 5);
         }
     }
 
-    // stop mobs from getting set on fire by the sun
-    @EventHandler
+    // Stop mobs from getting set on fire by the sun
+    @EventHandler(priority = EventPriority.LOW)
     public void onCombust(EntityCombustEvent e) {
         if (e.getEntity() instanceof Mob) e.setCancelled(true);
     }
 
-    // ANY MOB THAT DISABLES
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     public void onSwitch(PlayerItemHeldEvent e) {
         if (e.getPlayer().getPassengers().size() > 0) {
-            e.setCancelled(true);
+            e.setCancelled(true); // This stops you from switching between items while you're being disabled by a mob
         }
     }
 
-    // MOB EFFECTS
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerDamage(EntityDamageByEntityEvent e) {
-        // can't deal damage to mobs that are on u
+        // Can't deal damage to mobs that are disabling you
         if ((e.getDamager() instanceof Player) && e.getEntity().getPassengers().contains(e.getDamager()) || e.getDamager().getPassengers().contains(e.getEntity())) {
             e.setCancelled(true);
             return;
@@ -108,11 +115,11 @@ public class MobListener implements Listener {
         if (!(e.getEntity() instanceof Player player) || !(e.getDamager() instanceof LivingEntity damager)) {
             return;
         }
-
-        // invulnerability ticks + stun player for 1 tick
-        if (!(e.getDamage() > 0) || e.isCancelled()) {
+        if (e.getDamage() <= 0 || e.isCancelled()) {
             return;
         }
+
+        // Hit delay:
         player.setNoDamageTicks(30);
         new BukkitRunnable() {
             int i = 10;
@@ -123,12 +130,7 @@ public class MobListener implements Listener {
                 if (i <= 0) this.cancel();
                 i--;
             }
-        }.runTaskTimer(Expunge.instance, 0, 1);
-
-        // if damage is low
-        if (e.getDamage() < 0.25) {
-            return;
-        }
+        }.runTaskTimer(plugin, 0, 1);
 
         // charger knocks down player
         if (damager.getScoreboardTags().contains("CHARGER")) {
@@ -140,7 +142,6 @@ public class MobListener implements Listener {
         }
     }
 
-    // GETTING DISABLED
     public static void disable(Player player) {
         Location loc = player.getLocation();
         while (loc.getBlock().getType().equals(Material.AIR)) {

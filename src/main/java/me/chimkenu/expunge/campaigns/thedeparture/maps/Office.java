@@ -24,6 +24,11 @@ import static me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue.playD
 
 public class Office extends CampaignMap {
     @Override
+    public String directory() {
+        return "Office";
+    }
+
+    @Override
     public Vector startLocation() {
         return null;
     }

@@ -1,6 +1,7 @@
-package me.chimkenu.expunge.listeners;
+package me.chimkenu.expunge.listeners.game;
 
-import me.chimkenu.expunge.Expunge;
+import me.chimkenu.expunge.game.LocalGameManager;
+import me.chimkenu.expunge.listeners.GameListener;
 import me.chimkenu.expunge.utils.Utils;
 import me.chimkenu.expunge.guns.GameItem;
 import me.chimkenu.expunge.guns.utilities.Utility;
@@ -16,7 +17,6 @@ import org.bukkit.SoundCategory;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.event.entity.ItemMergeEvent;
@@ -25,10 +25,15 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
 
-public class PickUpListener implements Listener {
+public class PickUpListener extends GameListener {
+    protected PickUpListener(JavaPlugin plugin, LocalGameManager localGameManager) {
+        super(plugin, localGameManager);
+    }
+
     private static HashMap<ItemStack, GameItem> getItems() {
         HashMap<ItemStack, GameItem> items = new HashMap<>();
         for (Weapon weapon : Utils.getGuns()) {
@@ -81,15 +86,15 @@ public class PickUpListener implements Listener {
         if (player.getGameMode().equals(GameMode.CREATIVE)) {
             return;
         }
-        if (!Expunge.isGameRunning) {
+        if (!localGameManager.isRunning()) {
             e.setCancelled(true);
             return;
         }
-        if (!Expunge.playing.getKeys().contains(player)) {
+        if (!localGameManager.getPlayers().contains(player)) {
             e.setCancelled(true);
             return;
         }
-        if (!Expunge.playing.isAlive(player)) {
+        if (!localGameManager.getPlayerStat(player).isAlive()) {
             e.setCancelled(true);
             return;
         }
@@ -176,15 +181,15 @@ public class PickUpListener implements Listener {
         if (player.getGameMode().equals(GameMode.CREATIVE)) {
             return;
         }
-        if (!Expunge.isGameRunning) {
+        if (!localGameManager.isRunning()) {
             cancelDrop(e);
             return;
         }
-        if (!Expunge.playing.getKeys().contains(player)) {
+        if (!localGameManager.getPlayers().contains(player)) {
             cancelDrop(e);
             return;
         }
-        if (!Expunge.playing.isAlive(player)) {
+        if (!localGameManager.getPlayerStat(player).isAlive()) {
             cancelDrop(e);
             return;
         }
@@ -220,13 +225,13 @@ public class PickUpListener implements Listener {
 
     @EventHandler
     public void onItemMerge(ItemMergeEvent e) {
-        if (Expunge.isGameRunning)
+        if (localGameManager.isRunning())
             e.setCancelled(true);
     }
 
     @EventHandler
     public void onItemDespawn(ItemDespawnEvent e) {
-        if (Expunge.isGameRunning)
+        if (localGameManager.isRunning())
             e.setCancelled(true);
     }
 }

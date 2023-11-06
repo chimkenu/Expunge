@@ -1,7 +1,7 @@
 package me.chimkenu.expunge.mobs.special;
 
 import me.chimkenu.expunge.mobs.GameMob;
-import me.chimkenu.expunge.listeners.MobListener;
+import me.chimkenu.expunge.listeners.game.MobListener;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Mob;

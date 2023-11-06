@@ -23,6 +23,10 @@ import java.util.List;
 import static me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue.playDialogue;
 
 public class Subway extends CampaignMap {
+    @Override
+    public String directory() {
+        return "Subway";
+    }
 
     @Override
     public Vector startLocation() {
