@@ -9,20 +9,6 @@ import org.bukkit.World;
 import java.util.ArrayList;
 
 public class TheDeparture extends Campaign {
-    private static ArrayList<CampaignMap> scenes() {
-        ArrayList<CampaignMap> scenes = new ArrayList<>();
-        World world = Bukkit.getWorld("world");
-        if (world == null) return scenes;
-
-        scenes.add(new Office());
-        scenes.add(new Streets());
-        scenes.add(new Alleys());
-        scenes.add(new Subway());
-        scenes.add(new Highway());
-        scenes.add(new Stadium());
-        return scenes;
-    }
-
     public TheDeparture() {
         super("The Departure",
                 new CampaignMap[]{
@@ -33,7 +19,7 @@ public class TheDeparture extends Campaign {
                         new Highway(),
                         new Stadium()
                 },
-                "Maps/TheDeparture"
+                "TheDeparture"
         );
     }
 }

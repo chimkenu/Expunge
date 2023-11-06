@@ -149,6 +149,10 @@ public class Director implements Listener {
         mobHandler.spawnStartingMobs(getLocalGameManager().getCampaignMapIndex(), sceneAttempts, getDifficulty(), getPlayers().size());
     }
 
+    public void spawnMob(GameMob mob) {
+        mobHandler.spawnMob(mob);
+    }
+
     public LocalGameManager getLocalGameManager() {
         return localGameManager;
     }

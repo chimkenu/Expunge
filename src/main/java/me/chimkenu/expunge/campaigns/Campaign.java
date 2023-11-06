@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Set;
 
 public abstract class Campaign {
     private final String name;
@@ -42,7 +43,7 @@ public abstract class Campaign {
         public abstract Campaign get();
     }
 
-    public static void playCrescendoEventEffect(Player[] players) {
+    public static void playCrescendoEventEffect(Set<Player> players) {
         for (Player p : players) {
             p.sendRichMessage("<Yellow>Here they come...");
             p.playSound(p, Sound.AMBIENT_CAVE, SoundCategory.PLAYERS, 1f, 1f);

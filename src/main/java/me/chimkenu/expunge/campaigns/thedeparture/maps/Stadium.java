@@ -1,32 +1,14 @@
 package me.chimkenu.expunge.campaigns.thedeparture.maps;
 
-import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.GameAction;
 import me.chimkenu.expunge.campaigns.CampaignMap;
-import me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue;
-import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.game.LocalGameManager;
 import me.chimkenu.expunge.listeners.GameListener;
 import me.chimkenu.expunge.listeners.game.*;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
-
-import static me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue.playDialogue;
 
 public class Stadium extends CampaignMap {
     @Override
@@ -100,7 +82,7 @@ public class Stadium extends CampaignMap {
     }
 
     @Override
-    public Listener[] happenings(LocalGameManager localGameManager) {
+    public Listener[] happenings(JavaPlugin plugin, LocalGameManager localGameManager) {
         return new Listener[0];
 //        return new Listener[]{
 //                new Listener() {
@@ -286,7 +268,9 @@ public class Stadium extends CampaignMap {
                 new MobListener(plugin, localGameManager),
                 new NextMapListener(plugin, localGameManager),
                 new PickUpListener(plugin, localGameManager),
-                new ShootListener(plugin, localGameManager)
+                new ShootListener(plugin, localGameManager),
+                new ShoveListener(plugin, localGameManager),
+                new SwingListener(plugin, localGameManager)
         };
     }
 

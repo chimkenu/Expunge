@@ -32,7 +32,7 @@ public class Medkit extends Healing {
                     player1.setHealth(player1.getHealth() + ((20 - player1.getHealth()) * 0.8));
                     player1.getInventory().getItemInMainHand().setAmount(player1.getInventory().getItemInMainHand().getAmount() - 1);
 
-                    DeathReviveListener.currentLives.put(player1, 3);
+                    // TODO: DeathReviveListener.currentLives.put(player1, 3);
                 });
     }
 }

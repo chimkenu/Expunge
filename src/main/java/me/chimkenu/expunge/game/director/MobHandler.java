@@ -39,14 +39,14 @@ public class MobHandler {
     }
 
     public void run(int sceneTime, int sceneAttempts, Difficulty difficulty) {
-        if (isSpawningEnabled) {
+        if (sceneTime % (20 * 3) == 0 && isSpawningEnabled) {
             // spawning based on difficulty
             if (activeMobs.size() < (difficulty.ordinal() + 1) * 25 || director.calculateRating() < 1) {
                 switch (difficulty) {
                     case EASY -> { if (sceneTime % (20 * 10) == 0) spawnAdditionalMob(); }
                     case NORMAL -> { if (sceneTime % (20 * 7) == 0) spawnAdditionalMob(); }
                     case HARD -> { if (sceneTime % (20 * 5) == 0) spawnAdditionalMob(); }
-                    case SUFFERING -> { if (sceneTime % (20 * 3) == 0) spawnAdditionalMob(); }
+                    case SUFFERING -> spawnAdditionalMob();
                 }
             }
 
@@ -73,13 +73,13 @@ public class MobHandler {
                 for (int i = 0; i < (20 + (director.getLocalGameManager().getPlayers().size() * 5)); i++) {
                     spawnAdditionalMob();
                 }
-            } else if (sceneTime - timeSinceLastHorde > 30) {
+            } else if (sceneTime - timeSinceLastHorde > 30 * 20) {
                 chillOut = false;
             }
         }
 
         // look through every mob if its alive && look at its distance from the nearest player
-        if ((sceneTime % (20 * 5)) == 0) {
+        if ((sceneTime % (20 * 15)) == 0) {
             HashSet<GameMob> mobsToRemove = new HashSet<>();
             for (GameMob mob : activeMobs) {
                 if (mob.getMob().isDead()) {
@@ -138,7 +138,7 @@ public class MobHandler {
     public Vector getRandomSpawnLocation() {
         // Get a random player
         Player player = null;
-        int item = ThreadLocalRandom.current().nextInt(director.getPlayers().size()); // In real life, the Random object should be rather more shared than this
+        int item = ThreadLocalRandom.current().nextInt(director.getPlayers().size());
         int k = 0;
         for (Player p : director.getPlayers()) {
             if (player == null || k == item)

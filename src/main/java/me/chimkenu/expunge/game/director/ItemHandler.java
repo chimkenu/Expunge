@@ -132,10 +132,12 @@ public class ItemHandler {
         FallingBlock ammoPile = loc.getWorld().spawn(loc, FallingBlock.class);
         ammoPile.setGravity(false);
         ammoPile.setGlowing(true);
+        ammoPile.setDropItem(false);
+        ammoPile.setCancelDrop(true);
         ammoPile.setInvulnerable(true);
         ammoPile.customName(Component.text("Ammo Pile (Right Click)"));
         ammoPile.setCustomNameVisible(true);
-        ammoPile.setBlockData(Material.GRAY_CANDLE.createBlockData("candles:\"4\",lit:\"false\",waterlogged:\"false\"}"));
+        ammoPile.setBlockData(Material.GRAY_CANDLE.createBlockData("[candles=4,lit=false,waterlogged=false]"));
         ammoPile.addScoreboardTag("AMMO_PILE");
     }
 

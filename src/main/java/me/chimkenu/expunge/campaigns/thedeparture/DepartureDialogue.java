@@ -296,7 +296,7 @@ public enum DepartureDialogue {
         public Dialogue getA() {
             return new Dialogue(null,
                     "A » Hold on, I’ve got a quarter.",
-                    "A » I’m gonna name you “Mr. Cookie”.",
+                    "A » I’m gonna name you \"Mr. Cookie\".",
                     "B » That’s one stale biscuit."
             );
         }
@@ -304,7 +304,7 @@ public enum DepartureDialogue {
         @Override
         public Dialogue getB() {
             return new Dialogue(null,
-                    "A » I’ll name you “Mr. Cookie”.",
+                    "A » I’ll name you \"Mr. Cookie\".",
                     "B » You’re not going to eat that..?",
                     "A » It’s too tough, it’d probably shatter my teeth."
             );
@@ -312,7 +312,7 @@ public enum DepartureDialogue {
 
         @Override
         public Dialogue getSolo() {
-            return new Dialogue(null, "A » Yeah, I’m gonna name this biscuit “Mr. Cookie”.");
+            return new Dialogue(null, "A » Yeah, I’m gonna name this biscuit \"Mr. Cookie\".");
         }
     },
     SUBWAY_MAP {
@@ -330,7 +330,7 @@ public enum DepartureDialogue {
             return new Dialogue(null,
                     "A » Let’s see… Based on the map, we should take Station B, then keep going straight until the rails split.",
                     "A » Then, we take the right side.",
-                    "B » Looking at this “map” makes my head spin."
+                    "B » Looking at this \"map\" makes my head spin."
             );
         }
 
@@ -565,13 +565,13 @@ public enum DepartureDialogue {
     public abstract Dialogue getSolo();
 
     public static void playDialogue(DepartureDialogue dialogue) {
-        if (Expunge.playing.getKeys().size() > 1) {
-            if (Math.random() < 0.5)
-                dialogue.getA().displayDialogue(Expunge.playing.getKeys());
-            else
-                dialogue.getB().displayDialogue(Expunge.playing.getKeys());
-        }
-        else
-            dialogue.getSolo().displayDialogue(Expunge.playing.getKeys());
+//        if (Expunge.playing.getKeys().size() > 1) {
+//            if (Math.random() < 0.5)
+//                dialogue.getA().displayDialogue(Expunge.playing.getKeys());
+//            else
+//                dialogue.getB().displayDialogue(Expunge.playing.getKeys());
+//        }
+//        else
+//            dialog    ue.getSolo().displayDialogue(Expunge.playing.getKeys());
     }
 }

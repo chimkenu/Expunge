@@ -16,10 +16,12 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 
 public final class Expunge extends JavaPlugin {
+    public static Expunge instance;
     private Lobby lobby;
 
     @Override
     public void onEnable() {
+        instance = this;
         try {
             ResourceCopy.copyFromJar(this.getClass(), "Maps", getDataFolder().toPath());
         } catch (URISyntaxException | IOException e) {
@@ -30,13 +32,14 @@ public final class Expunge extends JavaPlugin {
         registerCommand("join", new Join());
         registerCommand("values", new Values());
         registerCommand("bye", new Bye());
-        registerCommand("startgame", new StartGame());
+        registerCommand("startgame", new StartGame(this));
         registerCommand("stats", new Stats());
         registerCommand("getgun", new GetGun());
         registerCommand("getutiltiy", new GetUtility());
         registerCommand("getmelee", new GetMelee());
         registerCommand("tutorial", new Tutorial());
         registerCommand("spawn", new Spawn());
+        registerCommand("test", new TestCommand());
 
         lobby = new Lobby(this, Bukkit.getWorld("world"), new Location(Bukkit.getWorld("world"), 0, 0, 0));
         getServer().getPluginManager().registerEvents(lobby, this);

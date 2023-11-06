@@ -8,7 +8,6 @@ import me.chimkenu.expunge.enums.Difficulty;
 import me.chimkenu.expunge.game.director.Director;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.World;
@@ -31,8 +30,8 @@ public class LocalGameManager implements GameManager {
     private final Queue<GameWorld> gameWorlds;
     private final HashMap<Player, PlayerStats> players;
     private final Director director;
+    private final List<Listener> listeners;
 
-    private List<Listener> listeners;
     private BukkitTask main;
     private long gameTimeStart;
     private int campaignMapIndex;
@@ -161,7 +160,7 @@ public class LocalGameManager implements GameManager {
 
     @Override
     public boolean isRunning() {
-        return false;
+        return main != null && !main.isCancelled();
     }
 
     public void restartMap() {
@@ -189,6 +188,7 @@ public class LocalGameManager implements GameManager {
              */
 
             p.removePotionEffect(PotionEffectType.GLOWING);
+            p.removePotionEffect(PotionEffectType.NIGHT_VISION);
             p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 3, 4, false, false, false));
             p.setGameMode(GameMode.ADVENTURE);
 
@@ -205,7 +205,7 @@ public class LocalGameManager implements GameManager {
         }
 
         listeners.addAll(List.of(getMap().gameListeners(plugin, this)));
-        listeners.addAll(List.of(getMap().happenings(this)));
+        listeners.addAll(List.of(getMap().happenings(plugin, this)));
         listeners.add(director);
 
         for (Listener listener : listeners) {
@@ -215,13 +215,13 @@ public class LocalGameManager implements GameManager {
         director.generateStartingItems();
         director.spawnStartingMobs();
 
-        getMap().runAtStart().run(null);
+        if (getMap().runAtStart() != null) getMap().runAtStart().run(null);
     }
 
     public void endMap() {
         director.setSpawningEnabled(false);
 
-        getMap().runAtEnd().run(null);
+        if (getMap().runAtEnd() != null) getMap().runAtEnd().run(null);
 
         for (Listener listener : listeners) {
             HandlerList.unregisterAll(listener);
@@ -251,13 +251,14 @@ public class LocalGameManager implements GameManager {
             throw new RuntimeException("There's no next map to go to!");
         }
         GameWorld currentWorld = gameWorlds.remove();
-        GameWorld nextWorld = gameWorlds.remove();
-        if (!nextWorld.isLoaded()) {
+        GameWorld nextWorld = gameWorlds.peek();
+        if (nextWorld == null || !nextWorld.isLoaded()) {
             throw new RuntimeException("Next world is not loaded!");
         }
         for (Player p : currentWorld.getWorld().getPlayers()) {
-            p.teleport(getMap().startLocation().toLocation(nextWorld.getWorld()));
+            p.teleport(getMap().startLocation().toLocation(nextWorld.getWorld())); // This is here to teleport any non-playing players
         }
+        startMap();
     }
 
     public Campaign getCampaign() {
@@ -294,7 +295,7 @@ public class LocalGameManager implements GameManager {
     }
 
     private boolean loadMap(CampaignMap map) {
-        LocalGameWorld localGameWorld = new LocalGameWorld(new File(plugin.getDataFolder(), campaign.getMainDirectory() + "/" + map));
+        LocalGameWorld localGameWorld = new LocalGameWorld(new File(plugin.getDataFolder(), campaign.getMainDirectory() + "/" + map.directory()));
         gameWorlds.add(localGameWorld);
         return localGameWorld.load();
     }

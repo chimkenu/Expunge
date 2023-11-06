@@ -34,6 +34,7 @@ public class Lobby implements Listener {
     }
 
     public void setSpectator(Player player) {
+        if (!player.isOnline()) return;
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (p.getGameMode() != GameMode.SURVIVAL)
                 p.hidePlayer(plugin, player);

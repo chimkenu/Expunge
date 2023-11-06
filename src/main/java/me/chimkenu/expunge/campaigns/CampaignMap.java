@@ -37,7 +37,7 @@ public abstract class CampaignMap {
 
     public abstract boolean isStartSafeRoom();
 
-    public abstract Listener[] happenings(LocalGameManager localGameManager);
+    public abstract Listener[] happenings(JavaPlugin plugin, LocalGameManager localGameManager);
 
     public abstract GameListener[] gameListeners(JavaPlugin plugin, LocalGameManager localGameManager);
 }

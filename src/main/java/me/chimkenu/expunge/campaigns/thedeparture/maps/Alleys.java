@@ -1,24 +1,14 @@
 package me.chimkenu.expunge.campaigns.thedeparture.maps;
 
 import me.chimkenu.expunge.GameAction;
-import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.game.LocalGameManager;
 import me.chimkenu.expunge.campaigns.CampaignMap;
-import me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue;
 import me.chimkenu.expunge.listeners.GameListener;
 import me.chimkenu.expunge.listeners.game.*;
-import org.bukkit.Material;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
-
-import java.util.List;
 
 public class Alleys extends CampaignMap {
     @Override
@@ -28,12 +18,12 @@ public class Alleys extends CampaignMap {
 
     @Override
     public Vector startLocation() {
-        return null;
+        return new Vector(3.5, 43, -28.5);
     }
 
     @Override
     public BoundingBox endRegion() {
-        return null;
+        return new BoundingBox(-7, 39, 34, -20, 57, 61);
     }
 
     @Override
@@ -52,19 +42,31 @@ public class Alleys extends CampaignMap {
     @Override
     public Vector[] spawnLocations() {
         return new Vector[]{
-                new Vector(1155.5, 43, 914.5),
-                new Vector(1150.5, 43, 929),
-                new Vector(1167.5, 43, 937),
-                new Vector(1176.5, 43, 971),
-                new Vector(1129.5, 43, 950.5),
-                new Vector(1155.5, 44, 965.5),
-                new Vector(1166.5, 43, 961.5),
-                new Vector(1150.5, 43, 958.5),
-                new Vector(1147.5, 43, 951.5),
-                new Vector(1139.5, 44, 974.5),
-                new Vector(1149.5, 43, 990.5),
-                new Vector(1130.5, 43, 972.5),
-                new Vector(1126.5, 43, 978.5)
+                new Vector(19.5, 43.0, -29.5),
+                new Vector(34.5, 43.0, -20.5),
+                new Vector(21, 43.0, -14),
+                new Vector(31, 43.0, -7),
+                new Vector(18.5, 43.0, 6.5),
+                new Vector(40, 43.0, 10),
+                new Vector(40, 43.0, 27),
+                new Vector(33.5, 42.0, 46.5),
+                new Vector(33.5, 52.5, 29.5),
+                new Vector(18.5, 43.375, 21.5),
+                new Vector(28.5, 44.0, 13.5),
+                new Vector(23.5, 43.0, 9.5),
+                new Vector(15.5, 43.0, 9.5),
+                new Vector(-3.5, 43.0, -1.5),
+                new Vector(-6.5, 43.0, 6.5),
+                new Vector(8.5, 44.0, 13.5),
+                new Vector(1.5, 43.0, 23.5),
+                new Vector(3.5, 43.5, 30.5),
+                new Vector(13.5, 43.0, 46.5),
+                new Vector(5.5, 43.0, 51.5),
+                new Vector(-5.5, 43.0, 49.5),
+                new Vector(-5.5, 43.0, 28.5),
+                new Vector(-9.5, 43.0, 34.5),
+                new Vector(12.5, 43.0, -10.5)
+
         };
     }
 
@@ -78,14 +80,15 @@ public class Alleys extends CampaignMap {
     @Override
     public Vector[] itemLocations() {
         return new Vector[]{
-                new Vector(1148, 44, 980.5),
-                new Vector(1166, 44, 965.5),
-                new Vector(1180.5, 44, 965.5),
-                new Vector(1175.5, 44, 949),
-                new Vector(1167, 44, 934.5),
-                new Vector(1158, 44, 948.5),
-                new Vector(1154.5, 44, 944.5),
-                new Vector(1139.5, 44, 955),
+                new Vector(8.5, 44.0, -18.5),
+                new Vector(30.5, 44.0, -22.5),
+                new Vector(29.5, 44.0, -9.5),
+                new Vector(-2.5, 43.0, -0.5),
+                new Vector(16.5, 44.0, 24.5),
+                new Vector(38.5, 44.0, 38.5),
+                new Vector(32.5, 44.0, 37.5),
+                new Vector(-10.5, 42.5, 31.5),
+                new Vector(-0.5, 44.0, 49.5)
         };
     }
 
@@ -97,10 +100,11 @@ public class Alleys extends CampaignMap {
     @Override
     public Vector[] weaponLocations() {
         return new Vector[]{
-                new Vector(1163.5, 45, 922.5),
-                new Vector(1140, 44, 950.7),
-                new Vector(1133.5, 43, 943.5),
-                new Vector(1137.5, 44, 993.5)
+                new Vector(11.5, 44.0, 36.5),
+                new Vector(39.5, 52.375, 38.5),
+                new Vector(21.5, 44.0, 4.5),
+                new Vector(3.5, 44.0, 10.5),
+                new Vector(39.5, 52.375, 36.5)
         };
     }
 
@@ -111,7 +115,7 @@ public class Alleys extends CampaignMap {
 
     @Override
     public Vector buttonLocation() {
-        return null;
+        return new Vector(-12, 44, 43);
     }
 
     @Override
@@ -126,11 +130,11 @@ public class Alleys extends CampaignMap {
 
     @Override
     public boolean isStartSafeRoom() {
-        return false;
+        return true;
     }
 
     @Override
-    public Listener[] happenings(LocalGameManager localGameManager) {
+    public Listener[] happenings(JavaPlugin plugin, LocalGameManager localGameManager) {
         return new Listener[0];
 //        return new Listener[]{
 //                new Listener() {
@@ -193,7 +197,9 @@ public class Alleys extends CampaignMap {
                 new MobListener(plugin, localGameManager),
                 new NextMapListener(plugin, localGameManager),
                 new PickUpListener(plugin, localGameManager),
-                new ShootListener(plugin, localGameManager)
+                new ShootListener(plugin, localGameManager),
+                new ShoveListener(plugin, localGameManager),
+                new SwingListener(plugin, localGameManager)
         };
     }
 }

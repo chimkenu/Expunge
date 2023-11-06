@@ -27,3 +27,5 @@ commands:
     description: spawn a mob
   returnglass:
     description: returns all the glass
+  test:
+    description: test command

@@ -54,11 +54,11 @@ public class LocalGameWorld implements GameWorld {
 
     @Override
     public boolean isLoaded() {
-        return false;
+        return world != null;
     }
 
     @Override
     public World getWorld() {
-        return null;
+        return world;
     }
 }

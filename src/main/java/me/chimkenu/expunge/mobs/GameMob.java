@@ -36,13 +36,14 @@ public abstract class GameMob {
     }
 
     public void remove() {
-         mob.remove();
-         if (runnable != null && !runnable.isCancelled()) runnable.cancel();
+        if (runnable != null && !runnable.isCancelled()) runnable.cancel();
+        mob.remove();
     }
 
     public static Player getRandomPlayer(World world) {
         List<Player> players = world.getPlayers();
         players.removeIf(player -> player.getGameMode() != GameMode.ADVENTURE);
+        if (players.size() == 0) return null;
         int item = ThreadLocalRandom.current().nextInt(players.size());
         int i = 0;
         for (Player p : players) {

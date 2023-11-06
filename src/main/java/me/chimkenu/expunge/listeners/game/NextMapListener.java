@@ -42,17 +42,14 @@ public class NextMapListener extends GameListener {
                 return;
             }
 
-            Location loc = e.getPlayer().getLocation();
             BoundingBox endRegion = localGameManager.getMap().endRegion();
-            if (endRegion.contains(loc.getX(), loc.getY(), loc.getZ())) {
-                for (Player p : localGameManager.getPlayers()) {
-                    if (p.getGameMode().equals(GameMode.ADVENTURE)) {
-                        Location pLoc = p.getLocation();
-                        if (!endRegion.contains(pLoc.getX(), pLoc.getY(), pLoc.getZ())) {
-                            // a player is still not in the end zone
-                            e.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§cNot all alive players are in the safe-zone!"));
-                            return;
-                        }
+            for (Player p : localGameManager.getPlayers()) {
+                if (p.getGameMode().equals(GameMode.ADVENTURE)) {
+                    Location pLoc = p.getLocation();
+                    if (!endRegion.contains(pLoc.getX(), pLoc.getY(), pLoc.getZ())) {
+                        // a player is still not in the end zone
+                        e.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§cNot all alive players are in the safe-zone!"));
+                        return;
                     }
                 }
             }
@@ -98,7 +95,7 @@ public class NextMapListener extends GameListener {
             // increment scene index then start
             localGameManager.loadNextMap();
             new BukkitRunnable() {
-                int i = 10 * 20;
+                int i = 5 * 20;
                 @Override
                 public void run() {
                     if (!localGameManager.isRunning() || localGameManager.getPlayers().size() == 0) {
