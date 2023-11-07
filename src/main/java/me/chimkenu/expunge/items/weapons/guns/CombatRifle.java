@@ -6,8 +6,79 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 
-public class CombatRifle extends Gun {
-    public CombatRifle() {
-        super(17, 1, 40, 3, 66, 60, 420, 3, Particle.WHITE_ASH, Material.IRON_HOE, Tier.TIER2, Slot.PRIMARY, "&fCombat Rifle", Sound.ENTITY_FIREWORK_ROCKET_BLAST, 0);
+public class CombatRifle implements Gun {
+    @Override
+    public double getDamage() {
+        return 17;
+    }
+
+    @Override
+    public int getPellets() {
+        return 1;
+    }
+
+    @Override
+    public int getRange() {
+        return 40;
+    }
+
+    @Override
+    public int getCooldown() {
+        return 3;
+    }
+
+    @Override
+    public int getReload() {
+        return 66;
+    }
+
+    @Override
+    public int getClipSize() {
+        return 60;
+    }
+
+    @Override
+    public int getMaxAmmo() {
+        return 420;
+    }
+
+    @Override
+    public int getEntitiesToHit() {
+        return 3;
+    }
+
+    @Override
+    public Particle getParticle() {
+        return Particle.WHITE_ASH;
+    }
+
+    @Override
+    public Material getMaterial() {
+        return Material.IRON_HOE;
+    }
+
+    @Override
+    public Tier getTier() {
+        return Tier.TIER2;
+    }
+
+    @Override
+    public Slot getSlot() {
+        return Slot.PRIMARY;
+    }
+
+    @Override
+    public String getName() {
+        return "&fCombat Rifle";
+    }
+
+    @Override
+    public Sound getSound() {
+        return Sound.ENTITY_FIREWORK_ROCKET_BLAST;
+    }
+
+    @Override
+    public float getPitch() {
+        return 0;
     }
 }

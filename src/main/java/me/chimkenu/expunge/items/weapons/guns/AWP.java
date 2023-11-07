@@ -6,8 +6,79 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 
-public class AWP extends Gun {
-    public AWP() {
-        super(25, 1, 60, 7, 66, 20, 200, 5, Particle.WAX_ON, Material.IRON_SHOVEL, Tier.TIER2, Slot.PRIMARY, "&fAWP", Sound.ENTITY_IRON_GOLEM_REPAIR, 0);
+public class AWP implements Gun {
+    @Override
+    public double getDamage() {
+        return 25;
+    }
+
+    @Override
+    public int getPellets() {
+        return 1;
+    }
+
+    @Override
+    public int getRange() {
+        return 60;
+    }
+
+    @Override
+    public int getCooldown() {
+        return 7;
+    }
+
+    @Override
+    public int getReload() {
+        return 66;
+    }
+
+    @Override
+    public int getClipSize() {
+        return 20;
+    }
+
+    @Override
+    public int getMaxAmmo() {
+        return 200;
+    }
+
+    @Override
+    public int getEntitiesToHit() {
+        return 5;
+    }
+
+    @Override
+    public Particle getParticle() {
+        return Particle.WAX_ON;
+    }
+
+    @Override
+    public Material getMaterial() {
+        return Material.IRON_SHOVEL;
+    }
+
+    @Override
+    public Tier getTier() {
+        return Tier.TIER2;
+    }
+
+    @Override
+    public Slot getSlot() {
+        return Slot.PRIMARY;
+    }
+
+    @Override
+    public String getName() {
+        return "&fAWP";
+    }
+
+    @Override
+    public Sound getSound() {
+        return Sound.ENTITY_IRON_GOLEM_REPAIR;
+    }
+
+    @Override
+    public float getPitch() {
+        return 0;
     }
 }

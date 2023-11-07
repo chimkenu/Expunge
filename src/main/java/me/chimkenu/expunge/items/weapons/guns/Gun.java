@@ -1,10 +1,7 @@
 package me.chimkenu.expunge.items.weapons.guns;
 
-import me.chimkenu.expunge.enums.Slot;
-import me.chimkenu.expunge.enums.Tier;
 import me.chimkenu.expunge.items.weapons.Weapon;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
@@ -18,58 +15,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public abstract class Gun extends Weapon {
+public interface Gun extends Weapon {
+    int getPellets();
 
-    private final int pellets;
-    private final int reload;
-    private final int clipSize;
-    private final int maxAmmo;
-    private final Particle particle;
-    private final Sound sound;
-    private final float pitch;
+    int getReload();
 
-    public Gun(double damage, int pellets, int range, int cooldown, int reload, int clipSize, int maxAmmo, int entitiesToHit, Particle particle, Material material, Tier tier, Slot slot, String name, Sound sound, float pitch) {
-        super(damage, range, cooldown, entitiesToHit, name, material, tier, slot);
-        this.pellets = pellets;
-        this.reload = reload;
-        this.clipSize = clipSize;
-        this.maxAmmo = maxAmmo;
-        this.particle = particle;
-        this.sound = sound;
-        this.pitch = pitch;
-    }
+    int getClipSize();
 
-    public int getPellets() {
-        return pellets;
-    }
+    int getMaxAmmo();
 
-    public int getReload() {
-        return reload;
-    }
+    Particle getParticle();
 
-    public int getClipSize() {
-        return clipSize;
-    }
+    Sound getSound();
 
-    public int getMaxAmmo() {
-        return maxAmmo;
-    }
-
-    public Particle getParticle() {
-        return particle;
-    }
-
-    public Sound getSound() {
-        return sound;
-    }
-
-    public float getPitch() {
-        return pitch;
-    }
+    float getPitch();
 
     @Override
-    public ItemStack getWeapon() {
-        ItemStack gun = new ItemStack(getMaterial(), clipSize);
+    default ItemStack getWeapon() {
+        ItemStack gun = new ItemStack(getMaterial(), getClipSize());
         ItemMeta meta = gun.getItemMeta();
         if (meta != null) {
             AttributeModifier modifier = new AttributeModifier(UUID.fromString("0a4af6ae-896d-458e-8712-ed8845740753"), "generic.attack_damage", 0.5, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HAND);
@@ -80,7 +43,7 @@ public abstract class Gun extends Weapon {
 
             meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', getName()));
             List<String> lore = new ArrayList<>();
-            lore.add(String.valueOf(maxAmmo));
+            lore.add(String.valueOf(getMaxAmmo()));
             meta.setLore(lore);
         }
         gun.setItemMeta(meta);

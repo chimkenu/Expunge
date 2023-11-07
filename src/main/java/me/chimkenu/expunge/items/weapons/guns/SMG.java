@@ -6,8 +6,79 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 
-public class SMG extends Gun {
-    public SMG() {
-        super(8, 1, 30, 1, 44, 50, 700, 3, Particle.ASH, Material.WOODEN_PICKAXE, Tier.TIER1, Slot.PRIMARY, "&7SMG", Sound.ENTITY_FIREWORK_ROCKET_BLAST, 2);
+public class SMG implements Gun {
+    @Override
+    public double getDamage() {
+        return 8;
+    }
+
+    @Override
+    public int getPellets() {
+        return 1;
+    }
+
+    @Override
+    public int getRange() {
+        return 30;
+    }
+
+    @Override
+    public int getCooldown() {
+        return 1;
+    }
+
+    @Override
+    public int getReload() {
+        return 44;
+    }
+
+    @Override
+    public int getClipSize() {
+        return 50;
+    }
+
+    @Override
+    public int getMaxAmmo() {
+        return 700;
+    }
+
+    @Override
+    public int getEntitiesToHit() {
+        return 3;
+    }
+
+    @Override
+    public Particle getParticle() {
+        return Particle.ASH;
+    }
+
+    @Override
+    public Material getMaterial() {
+        return Material.WOODEN_PICKAXE;
+    }
+
+    @Override
+    public Tier getTier() {
+        return Tier.TIER1;
+    }
+
+    @Override
+    public Slot getSlot() {
+        return Slot.PRIMARY;
+    }
+
+    @Override
+    public String getName() {
+        return "&7SMG";
+    }
+
+    @Override
+    public Sound getSound() {
+        return Sound.ENTITY_FIREWORK_ROCKET_BLAST;
+    }
+
+    @Override
+    public float getPitch() {
+        return 2;
     }
 }
