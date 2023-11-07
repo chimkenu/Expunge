@@ -1,10 +1,8 @@
 package me.chimkenu.expunge.items.weapons.melees;
 
 import me.chimkenu.expunge.enums.Slot;
-import me.chimkenu.expunge.enums.Tier;
 import me.chimkenu.expunge.items.weapons.Weapon;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.inventory.EquipmentSlot;
@@ -14,14 +12,19 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.UUID;
 
-public abstract class Melee extends Weapon {
-
-    public Melee(double damage, int range, int cooldown, int entitiesToHit, String name, Material material, Tier tier, Slot slot) {
-        super(damage, range, cooldown, entitiesToHit, name, material, tier, slot);
+public interface Melee extends Weapon {
+    @Override
+    default double getDamage() {
+        return 0; // Melee weapons usually instantly kill, don't worry about it.
     }
 
     @Override
-    public ItemStack getWeapon() {
+    default Slot getSlot() {
+        return Slot.SECONDARY;
+    }
+
+    @Override
+    default ItemStack getWeapon() {
         ItemStack melee = new ItemStack(getMaterial());
         ItemMeta meta = melee.getItemMeta();
         if (meta != null) {

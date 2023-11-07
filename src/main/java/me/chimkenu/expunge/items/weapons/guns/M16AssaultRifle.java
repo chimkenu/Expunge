@@ -63,11 +63,6 @@ public class M16AssaultRifle implements Gun {
     }
 
     @Override
-    public Slot getSlot() {
-        return Slot.PRIMARY;
-    }
-
-    @Override
     public String getName() {
         return "&7M-16 Assault Rifle";
     }

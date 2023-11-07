@@ -63,11 +63,6 @@ public class AutoShotgun implements Gun {
     }
 
     @Override
-    public Slot getSlot() {
-        return Slot.PRIMARY;
-    }
-
-    @Override
     public String getName() {
         return "&9Auto Shotgun";
     }

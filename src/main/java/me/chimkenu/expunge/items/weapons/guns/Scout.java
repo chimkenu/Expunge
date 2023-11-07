@@ -63,11 +63,6 @@ public class Scout implements Gun {
     }
 
     @Override
-    public Slot getSlot() {
-        return Slot.PRIMARY;
-    }
-
-    @Override
     public String getName() {
         return "&eScout";
     }

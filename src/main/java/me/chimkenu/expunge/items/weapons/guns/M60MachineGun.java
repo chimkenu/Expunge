@@ -63,11 +63,6 @@ public class M60MachineGun implements Gun {
     }
 
     @Override
-    public Slot getSlot() {
-        return Slot.PRIMARY;
-    }
-
-    @Override
     public String getName() {
         return "&8M60 Machine Gun";
     }

@@ -1,5 +1,6 @@
 package me.chimkenu.expunge.items.weapons.guns;
 
+import me.chimkenu.expunge.enums.Slot;
 import me.chimkenu.expunge.items.weapons.Weapon;
 import org.bukkit.ChatColor;
 import org.bukkit.Particle;
@@ -29,6 +30,11 @@ public interface Gun extends Weapon {
     Sound getSound();
 
     float getPitch();
+
+    @Override
+    default Slot getSlot() {
+        return Slot.PRIMARY;
+    }
 
     @Override
     default ItemStack getWeapon() {

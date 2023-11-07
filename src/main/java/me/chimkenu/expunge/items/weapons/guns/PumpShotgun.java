@@ -63,11 +63,6 @@ public class PumpShotgun implements Gun {
     }
 
     @Override
-    public Slot getSlot() {
-        return Slot.PRIMARY;
-    }
-
-    @Override
     public String getName() {
         return "&7Pump Shotgun";
     }

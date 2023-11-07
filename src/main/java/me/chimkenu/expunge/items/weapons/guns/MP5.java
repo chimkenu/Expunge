@@ -63,11 +63,6 @@ public class MP5 implements Gun {
     }
 
     @Override
-    public Slot getSlot() {
-        return Slot.PRIMARY;
-    }
-
-    @Override
     public String getName() {
         return "&7MP5";
     }
