@@ -1,6 +1,5 @@
 package me.chimkenu.expunge.items.weapons.guns;
 
-import me.chimkenu.expunge.enums.Slot;
 import me.chimkenu.expunge.enums.Tier;
 import org.bukkit.Material;
 import org.bukkit.Particle;

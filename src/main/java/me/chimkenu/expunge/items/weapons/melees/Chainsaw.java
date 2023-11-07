@@ -5,11 +5,6 @@ import org.bukkit.Material;
 
 public class Chainsaw implements Melee {
     @Override
-    public double getDamage() {
-        return 0;
-    }
-
-    @Override
     public int getRange() {
         return 4;
     }
