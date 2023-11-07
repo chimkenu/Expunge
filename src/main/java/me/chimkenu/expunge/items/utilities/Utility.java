@@ -8,7 +8,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public abstract class Utility extends GameItem {
+public abstract class Utility implements GameItem {
 
     public Utility(int cooldown, Material material, String name, Slot slot) {
         super(cooldown, material, name, slot);

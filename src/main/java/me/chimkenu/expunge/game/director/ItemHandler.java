@@ -115,6 +115,8 @@ public class ItemHandler {
     public void spawnUtility(Location loc, Utility utility) {
         Item item = loc.getWorld().spawn(loc, Item.class);
         item.setItemStack(utility.getUtility());
+        item.setInvulnerable(true);
+        item.setGlowing(true);
         item.addScoreboardTag("ITEM");
     }
 
