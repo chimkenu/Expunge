@@ -14,6 +14,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.logging.Level;
 
 public final class Expunge extends JavaPlugin {
     public static Expunge instance;
@@ -25,6 +26,7 @@ public final class Expunge extends JavaPlugin {
         try {
             ResourceCopy.copyFromJar(this.getClass(), "Maps", getDataFolder().toPath());
         } catch (URISyntaxException | IOException e) {
+            Bukkit.getLogger().log(Level.SEVERE, "Couldn't copy the maps to the plugin directory!");
             throw new RuntimeException(e);
         }
         registerGameEvents();
