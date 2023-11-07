@@ -1,10 +1,10 @@
 package me.chimkenu.expunge.enums;
 
-import me.chimkenu.expunge.guns.utilities.healing.*;
-import me.chimkenu.expunge.guns.utilities.throwable.Bile;
-import me.chimkenu.expunge.guns.utilities.throwable.FreshAir;
-import me.chimkenu.expunge.guns.utilities.throwable.Molotov;
-import me.chimkenu.expunge.guns.utilities.throwable.Throwable;
+import me.chimkenu.expunge.items.utilities.healing.*;
+import me.chimkenu.expunge.items.utilities.throwable.Bile;
+import me.chimkenu.expunge.items.utilities.throwable.FreshAir;
+import me.chimkenu.expunge.items.utilities.throwable.Molotov;
+import me.chimkenu.expunge.items.utilities.throwable.Throwable;
 
 public class Utilities {
     public enum Throwables {

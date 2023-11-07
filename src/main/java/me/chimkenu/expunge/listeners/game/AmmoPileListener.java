@@ -4,7 +4,7 @@ import me.chimkenu.expunge.game.LocalGameManager;
 import me.chimkenu.expunge.listeners.GameListener;
 import me.chimkenu.expunge.utils.Utils;
 import me.chimkenu.expunge.enums.Tier;
-import me.chimkenu.expunge.guns.weapons.guns.Gun;
+import me.chimkenu.expunge.items.weapons.guns.Gun;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Sound;

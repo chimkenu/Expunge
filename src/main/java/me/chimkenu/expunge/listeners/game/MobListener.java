@@ -1,15 +1,13 @@
 package me.chimkenu.expunge.listeners.game;
 
-import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.game.LocalGameManager;
-import me.chimkenu.expunge.guns.utilities.throwable.FreshAir;
+import me.chimkenu.expunge.items.utilities.throwable.FreshAir;
 import me.chimkenu.expunge.listeners.GameListener;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.plugin.java.JavaPlugin;

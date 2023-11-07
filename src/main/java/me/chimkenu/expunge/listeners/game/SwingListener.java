@@ -2,8 +2,8 @@ package me.chimkenu.expunge.listeners.game;
 
 import me.chimkenu.expunge.game.BreakGlass;
 import me.chimkenu.expunge.game.LocalGameManager;
-import me.chimkenu.expunge.guns.weapons.melees.Chainsaw;
-import me.chimkenu.expunge.guns.weapons.melees.Melee;
+import me.chimkenu.expunge.items.weapons.melees.Chainsaw;
+import me.chimkenu.expunge.items.weapons.melees.Melee;
 import me.chimkenu.expunge.listeners.GameListener;
 import me.chimkenu.expunge.utils.Utils;
 import org.bukkit.*;

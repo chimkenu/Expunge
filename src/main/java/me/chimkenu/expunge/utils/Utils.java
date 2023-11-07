@@ -2,12 +2,12 @@ package me.chimkenu.expunge.utils;
 
 import me.chimkenu.expunge.enums.Tier;
 import me.chimkenu.expunge.enums.Weapons;
-import me.chimkenu.expunge.guns.utilities.Utility;
-import me.chimkenu.expunge.guns.utilities.healing.*;
-import me.chimkenu.expunge.guns.utilities.throwable.*;
-import me.chimkenu.expunge.guns.utilities.throwable.Throwable;
-import me.chimkenu.expunge.guns.weapons.guns.Gun;
-import me.chimkenu.expunge.guns.weapons.melees.Melee;
+import me.chimkenu.expunge.items.utilities.Utility;
+import me.chimkenu.expunge.items.utilities.healing.*;
+import me.chimkenu.expunge.items.utilities.throwable.*;
+import me.chimkenu.expunge.items.utilities.throwable.Throwable;
+import me.chimkenu.expunge.items.weapons.guns.Gun;
+import me.chimkenu.expunge.items.weapons.melees.Melee;
 import org.bukkit.entity.Projectile;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;

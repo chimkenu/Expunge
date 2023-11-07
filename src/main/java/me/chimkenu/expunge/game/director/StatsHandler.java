@@ -1,7 +1,7 @@
 package me.chimkenu.expunge.game.director;
 
 import me.chimkenu.expunge.campaigns.CampaignMap;
-import me.chimkenu.expunge.guns.ShootEvent;
+import me.chimkenu.expunge.items.ShootEvent;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;

@@ -3,7 +3,7 @@ package me.chimkenu.expunge.game.director;
 import me.chimkenu.expunge.campaigns.CampaignMap;
 import me.chimkenu.expunge.enums.Difficulty;
 import me.chimkenu.expunge.game.LocalGameManager;
-import me.chimkenu.expunge.guns.weapons.Weapon;
+import me.chimkenu.expunge.items.weapons.Weapon;
 import me.chimkenu.expunge.mobs.GameMob;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;

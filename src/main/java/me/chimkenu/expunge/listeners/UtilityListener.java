@@ -1,9 +1,9 @@
 package me.chimkenu.expunge.listeners;
 
 import me.chimkenu.expunge.utils.Utils;
-import me.chimkenu.expunge.guns.utilities.Utility;
-import me.chimkenu.expunge.guns.utilities.healing.Healing;
-import me.chimkenu.expunge.guns.utilities.throwable.Throwable;
+import me.chimkenu.expunge.items.utilities.Utility;
+import me.chimkenu.expunge.items.utilities.healing.Healing;
+import me.chimkenu.expunge.items.utilities.throwable.Throwable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;

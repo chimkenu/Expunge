@@ -1,7 +1,7 @@
 package me.chimkenu.expunge.enums;
 
-import me.chimkenu.expunge.guns.weapons.guns.*;
-import me.chimkenu.expunge.guns.weapons.melees.*;
+import me.chimkenu.expunge.items.weapons.guns.*;
+import me.chimkenu.expunge.items.weapons.melees.*;
 
 public class Weapons {
     public enum Guns {
