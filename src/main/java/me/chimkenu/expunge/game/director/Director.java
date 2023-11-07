@@ -163,6 +163,14 @@ public class Director implements Listener {
         mobHandler.spawnAtRandomLocations(boundingBox, numToSpawn);
     }
 
+    public void spawnAdditionalMob() {
+        mobHandler.spawnAdditionalMob();
+    }
+
+    public void spawnTank() {
+        mobHandler.spawnTank();
+    }
+
     public LocalGameManager getLocalGameManager() {
         return localGameManager;
     }
