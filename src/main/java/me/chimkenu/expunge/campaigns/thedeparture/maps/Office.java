@@ -281,7 +281,8 @@ public class Office extends CampaignMap {
                 new ShootListener(plugin, localGameManager),
                 new ShoveListener(plugin, localGameManager),
                 new SwingListener(plugin, localGameManager),
-                new JoinLeaveListener(plugin, localGameManager)
+                new JoinLeaveListener(plugin, localGameManager),
+                new UtilityListener(plugin, localGameManager)
         };
     }
 }
