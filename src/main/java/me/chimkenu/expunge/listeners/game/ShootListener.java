@@ -18,6 +18,7 @@ import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
@@ -179,6 +180,28 @@ public class ShootListener extends GameListener {
                 else
                     reload(player);
             }
+        }
+    }
+
+    @EventHandler
+    public void onClickEntity(EntityDamageByEntityEvent e) {
+        if (!(e.getDamager() instanceof Player player)) {
+            return;
+        }
+        if (!localGameManager.getPlayers().contains(player)) {
+            return;
+        }
+        if (e.getDamage() > 2) {
+            return;
+        }
+
+        Gun gun = Utils.getPlayerHeldGun(player.getInventory().getItemInMainHand());
+        if (gun != null) {
+            e.setCancelled(true);
+            if (!player.isSneaking())
+                fireGun(player, gun);
+            else
+                reload(player);
         }
     }
 }

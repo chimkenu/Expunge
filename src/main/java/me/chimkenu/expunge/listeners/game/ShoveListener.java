@@ -82,7 +82,7 @@ public class ShoveListener extends GameListener {
         if (!localGameManager.getPlayers().contains(e.getPlayer())) {
             return;
         }
-        if (e.getAction() != Action.RIGHT_CLICK_AIR) {
+        if (!(e.getAction() == Action.RIGHT_CLICK_AIR || (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock() != null && e.getClickedBlock().getType().toString().contains("GLASS")))) {
             return;
         }
         boolean isSuccessful = onShove(e.getPlayer());
@@ -98,7 +98,7 @@ public class ShoveListener extends GameListener {
             e.setCancelled(true);
             return;
         }
-        if (e.getPlayer().getPassengers().size() > 0) {
+        if (!e.getPlayer().getPassengers().isEmpty()) {
             e.setCancelled(true);
             return;
         }

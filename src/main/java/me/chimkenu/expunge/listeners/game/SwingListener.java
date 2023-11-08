@@ -2,6 +2,7 @@ package me.chimkenu.expunge.listeners.game;
 
 import me.chimkenu.expunge.game.BreakGlass;
 import me.chimkenu.expunge.game.LocalGameManager;
+import me.chimkenu.expunge.items.weapons.guns.Gun;
 import me.chimkenu.expunge.items.weapons.melees.Chainsaw;
 import me.chimkenu.expunge.items.weapons.melees.Melee;
 import me.chimkenu.expunge.listeners.GameListener;
@@ -10,6 +11,7 @@ import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -100,6 +102,51 @@ public class SwingListener extends GameListener {
         }
 
         if (!(e.getAction().equals(Action.LEFT_CLICK_AIR) || e.getAction().equals(Action.LEFT_CLICK_BLOCK))) {
+            return;
+        }
+
+        ItemStack mainHand = player.getInventory().getItemInMainHand();
+
+        Melee weapon = Utils.getPlayerHeldMelee(mainHand);
+        if (weapon == null) {
+            return;
+        }
+
+        e.setCancelled(true);
+        if (player.getCooldown(mainHand.getType()) > 1) {
+            return;
+        }
+
+        player.setCooldown(mainHand.getType(), weapon.getCooldown());
+        if (!(weapon instanceof Chainsaw)) {
+            swing(player, weapon);
+            return;
+        }
+        new BukkitRunnable() {
+            int i = 0;
+            @Override
+            public void run() {
+                if (player.getInventory().getItemInMainHand().getType() != weapon.getMaterial())
+                    this.cancel();
+                if (i % 5 == 0) {
+                    Location loc = player.getEyeLocation().add(player.getLocation().getDirection().multiply(1.5));
+                    player.getWorld().spawnParticle(Particle.SWEEP_ATTACK, loc, 1);
+                    swing(player, weapon);
+                }
+                i++;
+            }
+        }.runTaskTimer(plugin, 1, 1);
+    }
+
+    @EventHandler
+    public void onClickEntity(EntityDamageByEntityEvent e) {
+        if (!(e.getDamager() instanceof Player player)) {
+            return;
+        }
+        if (!localGameManager.getPlayers().contains(player)) {
+            return;
+        }
+        if (e.getDamage() > 2) {
             return;
         }
 
