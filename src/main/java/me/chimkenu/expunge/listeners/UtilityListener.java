@@ -22,7 +22,7 @@ public class UtilityListener implements Listener {
         if (item.isSimilar(utility.getUtility()) && player.getCooldown(utility.getMaterial()) < 1) {
             utility.use(player);
             player.setCooldown(utility.getMaterial(), utility.getCooldown());
-            if (utility instanceof Healing healing && !healing.isInstantUse()) {
+            if (utility instanceof Healing) {
                 return;
             }
             player.getInventory().getItemInMainHand().setAmount(player.getInventory().getItemInMainHand().getAmount() - 1);

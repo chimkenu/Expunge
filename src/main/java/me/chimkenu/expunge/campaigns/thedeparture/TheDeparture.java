@@ -14,9 +14,7 @@ public class TheDeparture extends Campaign {
                 new CampaignMap[]{
                         new Office(),
                         new Streets(),
-                        new Alleys(),
                         new Subway(),
-                        new Highway(),
                         new Stadium()
                 },
                 "TheDeparture"

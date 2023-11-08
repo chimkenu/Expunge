@@ -6,12 +6,10 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 
-public class Medkit extends Healing {
-    public Medkit() {
-        super(20, Material.BRICK, "&cMedkit", Slot.QUATERNARY,false);
-    }
-
+public class Medkit implements Healing {
     @Override
     public void use(LivingEntity entity) {
         if (!(entity instanceof Player player)) {
@@ -21,17 +19,34 @@ public class Medkit extends Healing {
             player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§cYou still have some health left..."));
             return;
         }
-        if (Healing.usingUtility.contains(player)) {
+
+        ItemStack item = player.getInventory().getItemInMainHand();
+        if (!getUtility().getType().equals(item.getType()) || player.getCooldown(getUtility().getType()) > 0) {
             return;
         }
 
-        Healing.usingUtility.add(player);
-        attemptUse(player, getUtility().getType(), 20 * 5, true, "§eUsing medkit...",
+
+        attemptUse(player, item, getCooldown(), true, "§eUsing medkit...",
                 player1 -> {
                     player1.setHealth(player1.getHealth() + ((20 - player1.getHealth()) * 0.8));
                     player1.getInventory().getItemInMainHand().setAmount(player1.getInventory().getItemInMainHand().getAmount() - 1);
 
                     // TODO: DeathReviveListener.currentLives.put(player1, 3);
                 });
+    }
+
+    @Override
+    public int getCooldown() {
+        return 100;
+    }
+
+    @Override
+    public Material getMaterial() {
+        return Material.BRICK;
+    }
+
+    @Override
+    public String getName() {
+        return "&cMedkit";
     }
 }

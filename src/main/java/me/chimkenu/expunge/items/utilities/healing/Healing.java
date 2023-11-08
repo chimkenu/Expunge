@@ -8,26 +8,15 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-public abstract class Healing extends Utility {
-    public static final ArrayList<Player> usingUtility = new ArrayList<>();
-
-    private final boolean isInstantUse;
-
-    public Healing(int cooldown, Material material, String name, Slot slot, boolean isInstantUse) {
-        super(cooldown, material, name, slot);
-        this.isInstantUse = isInstantUse;
-    }
-
-    public boolean isInstantUse() {
-        return isInstantUse;
-    }
-
-    public static void attemptUse(Player player, Material material, int useTime, boolean hasToStayStill, String prefix, GameAction gameActionWhenSuccessful) {
+public interface Healing extends Utility {
+    default void attemptUse(Player player, ItemStack itemStack, int useTime, boolean hasToStayStill, String prefix, GameAction gameActionWhenSuccessful) {
         Vector loc = null;
         if (hasToStayStill) {
             loc = player.getLocation().toVector();
@@ -42,6 +31,29 @@ public abstract class Healing extends Utility {
                 i--;
                 // display status as action bar
                 // percentage completion
+                String progress_bar = getProgressBar();
+                player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(prefix + " " + progress_bar));
+
+                if (finalLoc != null && finalLoc.distanceSquared(player.getLocation().toVector()) > 1) {
+                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§cStopped. §8(You moved)"));
+                    player.setCooldown(itemStack.getType(), 0);
+                    this.cancel();
+                }
+                if (!player.getInventory().getItemInMainHand().equals(itemStack)) {
+                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§cStopped."));
+                    player.setCooldown(itemStack.getType(), 0);
+                    this.cancel();
+                }
+                if (i <= 0) {
+                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§aSuccessful."));
+                    gameActionWhenSuccessful.run(player);
+                    player.setCooldown(itemStack.getType(), 0);
+                    this.cancel();
+                }
+            }
+
+            @NotNull
+            private String getProgressBar() {
                 double percentage = (double) (useTime - i) / useTime;
                 int progress = (int) (percentage * 10);
                 percentage = (int) (percentage * 100);
@@ -50,27 +62,13 @@ public abstract class Healing extends Utility {
                 String progress_bar_complete = "|".repeat(Math.max(0, progress));
                 String progress_bar_incomplete = "|".repeat(Math.max(0, 10 - progress));
                 String progress_bar = "§e" + "Progress: " + "§7" + "[" + "§a" + progress_bar_complete + "§7" + progress_bar_incomplete + "§7" + "]" + "§8" + " [" + percentage + "%]";
-                player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(prefix + " " + progress_bar));
-
-                if (finalLoc != null) {
-                    if (finalLoc.distanceSquared(player.getLocation().toVector()) > 1) {
-                        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§cStopped. §8(You moved)"));
-                        usingUtility.remove(player);
-                        this.cancel();
-                    }
-                }
-                if (!player.getInventory().getItemInMainHand().getType().equals(material)) {
-                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§cStopped."));
-                    usingUtility.remove(player);
-                    this.cancel();
-                }
-                if (i <= 0) {
-                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§aSuccessful."));
-                    gameActionWhenSuccessful.run(player);
-                    usingUtility.remove(player);
-                    this.cancel();
-                }
+                return progress_bar;
             }
         }.runTaskTimer(Expunge.instance, 1, 1);
+    }
+
+    @Override
+    default Slot getSlot() {
+        return Slot.QUATERNARY;
     }
 }

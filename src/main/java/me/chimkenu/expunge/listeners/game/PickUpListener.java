@@ -98,7 +98,7 @@ public class PickUpListener extends GameListener {
             e.setCancelled(true);
             return;
         }
-        if (Healing.usingUtility.contains(player)) {
+        if (player.getCooldown(player.getInventory().getItemInMainHand().getType()) > 0) {
             e.setCancelled(true);
             return;
         }

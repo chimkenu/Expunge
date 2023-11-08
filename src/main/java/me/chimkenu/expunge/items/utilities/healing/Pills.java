@@ -5,23 +5,22 @@ import me.chimkenu.expunge.enums.Slot;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
-public class Pills extends Healing {
-    public Pills() {
-        super(20, Material.WHITE_CANDLE, "&fPills", Slot.QUINARY,false);
-    }
-
+public class Pills implements Healing {
     @Override
     public void use(LivingEntity entity) {
         if (!(entity instanceof Player player)) {
             return;
         }
-        if (Healing.usingUtility.contains(player)) {
+        ItemStack item = player.getInventory().getItemInMainHand();
+        if (!getUtility().equals(item) || player.getCooldown(getUtility().getType()) > 0) {
             return;
         }
 
-        Healing.usingUtility.add(player);
-        attemptUse(player, getUtility().getType(), 20, false, "§eUsing pills...", player1 -> {
+        player.setCooldown(getUtility().getType(), getCooldown() + 1);
+
+        attemptUse(player, item, 20, false, "§eUsing pills...", player1 -> {
             double absorption = Math.min(20, player1.getAbsorptionAmount() + 10);
             player1.setAbsorptionAmount(absorption);
             player1.getInventory().getItemInMainHand().setAmount(player1.getInventory().getItemInMainHand().getAmount() - 1);
@@ -31,5 +30,25 @@ public class Pills extends Healing {
                 Achievements.OVERDOSE.grant(player1);
             }
         });
+    }
+
+    @Override
+    public int getCooldown() {
+        return 20;
+    }
+
+    @Override
+    public Material getMaterial() {
+        return Material.WHITE_CANDLE;
+    }
+
+    @Override
+    public String getName() {
+        return "&fPills";
+    }
+
+    @Override
+    public Slot getSlot() {
+        return Slot.QUINARY;
     }
 }
