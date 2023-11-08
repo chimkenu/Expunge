@@ -7,11 +7,7 @@ import org.bukkit.entity.*;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-public class Molotov extends Throwable {
-    public Molotov() {
-        super(20, Material.LANTERN, "&6Molotov", Slot.TERTIARY, "THROWABLE_MOLOTOV");
-    }
-
+public class Molotov implements Throwable {
     @Override
     public void use(LivingEntity entity) {
         entity.getWorld().playSound(entity.getLocation(), Sound.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 0.5f, 0);
@@ -50,5 +46,20 @@ public class Molotov extends Throwable {
                 }
             }
         }.runTaskTimer(Expunge.instance, 0, 1);
+    }
+
+    @Override
+    public Material getMaterial() {
+        return Material.LANTERN;
+    }
+
+    @Override
+    public String getName() {
+        return "&6Molotov";
+    }
+
+    @Override
+    public String getTag() {
+        return "THROWABLE_MOLOTOV";
     }
 }

@@ -8,11 +8,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Objects;
 
-public class Bile extends Throwable {
-    public Bile() {
-        super(20, Material.LIME_CANDLE, "&aBile", Slot.TERTIARY, "THROWABLE_BILE");
-    }
-
+public class Bile implements Throwable {
     @Override
     public void use(LivingEntity entity) {
         entity.getWorld().playSound(entity.getLocation(), Sound.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 0.5f, 0);
@@ -57,5 +53,20 @@ public class Bile extends Throwable {
                 }
             }
         }.runTaskTimer(Expunge.instance, 0, 10);
+    }
+
+    @Override
+    public Material getMaterial() {
+        return Material.LIME_CANDLE;
+    }
+
+    @Override
+    public String getName() {
+        return "&aBile";
+    }
+
+    @Override
+    public String getTag() {
+        return "THROWABLE_BILE";
     }
 }

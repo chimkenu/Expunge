@@ -1,20 +1,13 @@
 package me.chimkenu.expunge.items.utilities;
 
-import me.chimkenu.expunge.enums.Slot;
 import me.chimkenu.expunge.items.GameItem;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public abstract class Utility implements GameItem {
-
-    public Utility(int cooldown, Material material, String name, Slot slot) {
-        super(cooldown, material, name, slot);
-    }
-
-    public ItemStack getUtility() {
+public interface Utility extends GameItem {
+    default ItemStack getUtility() {
         ItemStack utility = new ItemStack(getMaterial());
         ItemMeta meta = utility.getItemMeta();
         if (meta != null) {
@@ -24,5 +17,5 @@ public abstract class Utility implements GameItem {
         return utility;
     }
 
-    public abstract void use(LivingEntity entity);
+    void use(LivingEntity entity);
 }

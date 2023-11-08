@@ -11,11 +11,7 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 
-public class Spit extends Throwable {
-    public Spit() {
-        super(20, Material.SLIME_BALL, "&2Spit", Slot.TERTIARY, "THROWABLE_SPIT");
-    }
-
+public class Spit implements Throwable {
     @Override
     public void use(LivingEntity entity) {
         entity.getWorld().playSound(entity.getLocation(), Sound.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.HOSTILE, 0.5f, 0);
@@ -112,5 +108,20 @@ public class Spit extends Throwable {
                 if (t <= 0) this.cancel();
             }
         }.runTaskTimer(Expunge.instance, 1, 4);
+    }
+
+    @Override
+    public Material getMaterial() {
+        return Material.SLIME_BALL;
+    }
+
+    @Override
+    public String getName() {
+        return "&2Spit";
+    }
+
+    @Override
+    public String getTag() {
+        return "THROWABLE_SPIT";
     }
 }

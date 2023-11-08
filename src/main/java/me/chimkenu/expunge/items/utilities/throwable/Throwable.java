@@ -3,21 +3,21 @@ package me.chimkenu.expunge.items.utilities.throwable;
 import me.chimkenu.expunge.enums.Slot;
 import me.chimkenu.expunge.items.utilities.Utility;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 
-public abstract class Throwable extends Utility {
-    private final String tag;
+public interface Throwable extends Utility {
+    String getTag();
 
-    public Throwable(int cooldown, Material material, String name, Slot slot, String tag) {
-        super(cooldown, material, name, slot);
-        this.tag = tag;
+    void onLand(World world, Location loc, Entity shooter);
+
+    @Override
+    default int getCooldown() {
+        return 20;
     }
 
-    public String getTag() {
-        return tag;
+    @Override
+    default Slot getSlot() {
+        return Slot.TERTIARY;
     }
-
-    public abstract void onLand(World world, Location loc, Entity shooter);
 }

@@ -7,11 +7,7 @@ import org.bukkit.entity.*;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class FreshAir extends Throwable {
-    public FreshAir() {
-        super(20, Material.GLASS_BOTTLE, "&3Fresh Air™", Slot.TERTIARY, "THROWABLE_FRESH_AIR");
-    }
-
+public class FreshAir implements Throwable {
     @Override
     public void use(LivingEntity entity) {
         entity.getWorld().playSound(entity.getLocation(), Sound.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 0.5f, 0);
@@ -45,5 +41,20 @@ public class FreshAir extends Throwable {
         if (numOfMobs >= 20 && shooter instanceof Player player) {
             Achievements.ZERO_GRAVITY.grant(player);
         }
+    }
+
+    @Override
+    public Material getMaterial() {
+        return Material.GLASS_BOTTLE;
+    }
+
+    @Override
+    public String getName() {
+        return "&3Fresh Air";
+    }
+
+    @Override
+    public String getTag() {
+        return "THROWABLE_FRESH_AIR";
     }
 }

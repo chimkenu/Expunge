@@ -5,11 +5,7 @@ import me.chimkenu.expunge.enums.Slot;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 
-public class Grenade extends Throwable {
-    public Grenade() {
-        super(20, Material.COAL, "&8Grenade", Slot.TERTIARY, "THROWABLE_GRENADE");
-    }
-
+public class Grenade implements Throwable {
     @Override
     public void use(LivingEntity entity) {
         entity.getWorld().playSound(entity.getLocation(), Sound.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 0.5f, 0);
@@ -44,5 +40,20 @@ public class Grenade extends Throwable {
         if (numOfMobs >= 20 && shooter instanceof Player player) {
             Achievements.WHEN_GUTS_FLY.grant(player);
         }
+    }
+
+    @Override
+    public Material getMaterial() {
+        return Material.COAL;
+    }
+
+    @Override
+    public String getName() {
+        return "&8Grenade";
+    }
+
+    @Override
+    public String getTag() {
+        return "THROWABLE_GRENADE";
     }
 }
