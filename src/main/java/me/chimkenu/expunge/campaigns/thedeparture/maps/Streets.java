@@ -38,7 +38,7 @@ public class Streets extends CampaignMap {
 
     @Override
     public BoundingBox endRegion() {
-        return new BoundingBox(32, 41, -94, 39, 49, -89);
+        return new BoundingBox(25, 41, -30, 13, 57, -3);
     }
 
     @Override
@@ -75,7 +75,26 @@ public class Streets extends CampaignMap {
                 new Vector(27.5, 50.0, -87.5),
                 new Vector(27.5, 56.0, -87.5),
                 new Vector(21.5, 56.0, -97.5),
-                new Vector(20.5, 56.0, -108.5)
+                new Vector(20.5, 56.0, -108.5),
+
+                // Alleys
+                new Vector(29.5, 43, -64.5),
+                new Vector(51.5, 43.0, -93.5),
+                new Vector(66.49, 43.0, -84.5),
+                new Vector(53.0, 43.0, -78),
+                new Vector(63.0, 43.0, -71),
+                new Vector(60.5, 44.0, -50.5),
+                new Vector(62.5, 43.0, -46.5),
+                new Vector(40.5, 44.0, -50.5),
+                new Vector(33.5, 43.0, -40.5),
+                new Vector(25.5, 43.0, -57.5),
+                new Vector(47.5, 43.0, -54.5),
+                new Vector(67.5, 42.0, -19.5),
+                new Vector(45.5, 43.0, -17.5),
+                new Vector(37.5, 43.0, -12.5),
+                new Vector(26.5, 43.0, -35.5),
+                new Vector(37.5, 43.0, -28.5)
+
 
         };
     }
@@ -97,14 +116,28 @@ public class Streets extends CampaignMap {
                 new Vector(32.524940724847276, 56.0, -93.532509254534),
                 new Vector(13.500104322620455, 56.0, -96.531607514342),
                 new Vector(28.486186448310615, 56.0, -104.45339679608),
-                new Vector(16.568158626096178, 57.0, -107.49615572235)
+                new Vector(16.568158626096178, 57.0, -107.49615572235),
 
+                // Alleys
+                new Vector(27.5, 44.0, -26.5),
+                new Vector(31.5, 44.0, -14.5),
+                new Vector(19.5, 42.5, -33.5),
+                new Vector(43.5, 44.0, -27.5),
+                new Vector(35.5, 44.0, -52.5),
+                new Vector(52.5, 44.0, -56.5),
+                new Vector(65.5, 44.0, -86.5),
+                new Vector(40.5, 44.0, -82.5),
+
+                // Shed (put stuff here)
+                new Vector(34, 44.0, -93.5), // weapon
+                new Vector(34, 44.0, -90.5), // weapon
+                new Vector(36.5, 44.0, -93)  // medkit probably
         };
     }
 
     @Override
     public int baseItemsToSpawn() {
-        return 0;
+        return 4;
     }
 
     @Override
@@ -120,13 +153,14 @@ public class Streets extends CampaignMap {
     @Override
     public Vector[] ammoLocations() {
         return new Vector[]{
-                new Vector(-230.5, 44, -100.5)
+                new Vector(-230.5, 44, -100.5),
+                new Vector(36.5, 44.0, -90.5)
         };
     }
 
     @Override
     public Vector buttonLocation() {
-        return new Vector(33, 44, -92);
+        return new Vector(20, 44, -21);
     }
 
     @Override
