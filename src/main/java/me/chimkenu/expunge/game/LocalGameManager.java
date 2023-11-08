@@ -258,6 +258,7 @@ public class LocalGameManager implements GameManager {
         for (Player p : currentWorld.getWorld().getPlayers()) {
             p.teleport(getMap().startLocation().toLocation(nextWorld.getWorld())); // This is here to teleport any non-playing players
         }
+        currentWorld.unload();
         startMap();
     }
 
