@@ -11,6 +11,7 @@ import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -23,7 +24,7 @@ public class SwingListener extends GameListener {
         super(plugin, localGameManager);
     }
 
-    private void swing(Player player, Melee melee, boolean playSound) {
+    private void swing(Player player, Melee melee) {
         ArrayList<LivingEntity> entities = new ArrayList<>();
         World world = player.getWorld();
         Location loc = player.getEyeLocation();
@@ -59,7 +60,7 @@ public class SwingListener extends GameListener {
         }
 
         // play sound depending on whether an entity was hit (only if playSound is true)
-        if (entities.size() < 1 && playSound) {
+        if (entities.isEmpty()) {
             if (melee.getRange() <= 2) player.getWorld().playSound(loc, Sound.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 1, 1);
             else player.getWorld().playSound(loc, Sound.ENTITY_PLAYER_ATTACK_KNOCKBACK, SoundCategory.PLAYERS, 1, 1);
             return;
@@ -90,26 +91,33 @@ public class SwingListener extends GameListener {
 
     @EventHandler
     public void onSwing(PlayerInteractEvent e) {
+        Player player = e.getPlayer();
+        if (!localGameManager.getPlayers().contains(player)) {
+            return;
+        }
         if (e.getHand() == null || e.getHand().equals(EquipmentSlot.OFF_HAND)) {
             return;
         }
+
         if (!(e.getAction().equals(Action.LEFT_CLICK_AIR) || e.getAction().equals(Action.LEFT_CLICK_BLOCK))) {
             return;
         }
 
-        Player player = e.getPlayer();
         ItemStack mainHand = player.getInventory().getItemInMainHand();
-        if (player.getCooldown(mainHand.getType()) > 1) {
-            return;
-        }
 
         Melee weapon = Utils.getPlayerHeldMelee(mainHand);
         if (weapon == null) {
             return;
         }
+
+        e.setCancelled(true);
+        if (player.getCooldown(mainHand.getType()) > 1) {
+            return;
+        }
+
         player.setCooldown(mainHand.getType(), weapon.getCooldown());
         if (!(weapon instanceof Chainsaw)) {
-            swing(player, weapon, true);
+            swing(player, weapon);
             return;
         }
         new BukkitRunnable() {
@@ -121,10 +129,16 @@ public class SwingListener extends GameListener {
                 if (i % 5 == 0) {
                     Location loc = player.getEyeLocation().add(player.getLocation().getDirection().multiply(1.5));
                     player.getWorld().spawnParticle(Particle.SWEEP_ATTACK, loc, 1);
-                    swing(player, weapon, false);
+                    swing(player, weapon);
                 }
-                i = (i + 1) % 20;
+                i++;
             }
         }.runTaskTimer(plugin, 1, 1);
+    }
+
+    @EventHandler
+    public void stopWeaponDamage(PlayerItemDamageEvent e) {
+        if (localGameManager.getPlayers().contains(e.getPlayer()))
+            e.setCancelled(true);
     }
 }
