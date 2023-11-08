@@ -63,7 +63,7 @@ public class MobHandler {
                 else if (r < 0.86)
                     getActiveMobs().add(new Choker(plugin, director.getWorld(), getRandomSpawnLocation()));
                 else
-                    getActiveMobs().add(new Spitter(plugin, director.getWorld(), getRandomSpawnLocation()));
+                    getActiveMobs().add(new Spitter(plugin, director.getLocalGameManager(), director.getWorld(), getRandomSpawnLocation()));
             }
 
             // spawn additional mobs if number of mobs are too low

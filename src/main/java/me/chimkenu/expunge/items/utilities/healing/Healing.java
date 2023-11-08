@@ -9,6 +9,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
@@ -16,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 
 public interface Healing extends Utility {
-    default void attemptUse(Player player, ItemStack itemStack, int useTime, boolean hasToStayStill, String prefix, GameAction gameActionWhenSuccessful) {
+    default void attemptUse(JavaPlugin plugin, Player player, ItemStack itemStack, int useTime, boolean hasToStayStill, String prefix, GameAction gameActionWhenSuccessful) {
         Vector loc = null;
         if (hasToStayStill) {
             loc = player.getLocation().toVector();
@@ -64,7 +65,7 @@ public interface Healing extends Utility {
                 String progress_bar = "§e" + "Progress: " + "§7" + "[" + "§a" + progress_bar_complete + "§7" + progress_bar_incomplete + "§7" + "]" + "§8" + " [" + percentage + "%]";
                 return progress_bar;
             }
-        }.runTaskTimer(Expunge.instance, 1, 1);
+        }.runTaskTimer(plugin, 1, 1);
     }
 
     @Override

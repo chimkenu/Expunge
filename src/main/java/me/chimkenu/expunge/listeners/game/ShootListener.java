@@ -98,7 +98,7 @@ public class ShootListener extends GameListener {
         if (gun instanceof SMG) offset += 0.005;
         else if (gun instanceof MP5) offset += 0.005;
 
-        if (gun instanceof GrenadeLauncher) new Grenade().use(player);
+        if (gun instanceof GrenadeLauncher) new Grenade().use(plugin, localGameManager, player);
         else {
             if (gun.getPellets() > 1) {
                 offset += ThreadLocalRandom.current().nextDouble(0.05, 0.1);

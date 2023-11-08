@@ -5,11 +5,12 @@ import me.chimkenu.expunge.items.utilities.Utility;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public interface Throwable extends Utility {
     String getTag();
 
-    void onLand(World world, Location loc, Entity shooter);
+    void onLand(JavaPlugin plugin, World world, Location loc, Entity shooter);
 
     @Override
     default int getCooldown() {

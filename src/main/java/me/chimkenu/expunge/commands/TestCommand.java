@@ -21,7 +21,7 @@ public class TestCommand implements CommandExecutor {
         }
         if (args.length > 1) {
             for (String s : components) {
-                Expunge.instance.getLogger().log(Level.INFO, s);
+                // Expunge.instance.getLogger().log(Level.INFO, s);
             }
             return true;
         }

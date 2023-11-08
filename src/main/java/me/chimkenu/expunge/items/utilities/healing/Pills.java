@@ -2,14 +2,16 @@ package me.chimkenu.expunge.items.utilities.healing;
 
 import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.enums.Slot;
+import me.chimkenu.expunge.game.LocalGameManager;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public class Pills implements Healing {
     @Override
-    public void use(LivingEntity entity) {
+    public void use(JavaPlugin plugin, LocalGameManager localGameManager, LivingEntity entity) {
         if (!(entity instanceof Player player)) {
             return;
         }
@@ -20,7 +22,7 @@ public class Pills implements Healing {
 
         player.setCooldown(getUtility().getType(), getCooldown() + 1);
 
-        attemptUse(player, item, 20, false, "§eUsing pills...", player1 -> {
+        attemptUse(plugin, player, item, 20, false, "§eUsing pills...", player1 -> {
             double absorption = Math.min(20, player1.getAbsorptionAmount() + 10);
             player1.setAbsorptionAmount(absorption);
             player1.getInventory().getItemInMainHand().setAmount(player1.getInventory().getItemInMainHand().getAmount() - 1);

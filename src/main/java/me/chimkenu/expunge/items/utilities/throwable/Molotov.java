@@ -1,15 +1,15 @@
 package me.chimkenu.expunge.items.utilities.throwable;
 
-import me.chimkenu.expunge.Expunge;
-import me.chimkenu.expunge.enums.Slot;
+import me.chimkenu.expunge.game.LocalGameManager;
 import org.bukkit.*;
 import org.bukkit.entity.*;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 public class Molotov implements Throwable {
     @Override
-    public void use(LivingEntity entity) {
+    public void use(JavaPlugin plugin, LocalGameManager localGameManager, LivingEntity entity) {
         entity.getWorld().playSound(entity.getLocation(), Sound.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 0.5f, 0);
         Projectile ball = entity.launchProjectile(Snowball.class);
         ball.addScoreboardTag(getTag());
@@ -17,7 +17,7 @@ public class Molotov implements Throwable {
     }
 
     @Override
-    public void onLand(World world, Location loc, Entity shooter) {
+    public void onLand(JavaPlugin plugin, World world, Location loc, Entity shooter) {
         world.playSound(loc, Sound.ITEM_FIRECHARGE_USE, 1, 0);
         new BukkitRunnable() {
             int t = 0;
@@ -45,7 +45,7 @@ public class Molotov implements Throwable {
                     }
                 }
             }
-        }.runTaskTimer(Expunge.instance, 0, 1);
+        }.runTaskTimer(plugin, 0, 1);
     }
 
     @Override

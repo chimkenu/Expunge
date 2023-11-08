@@ -2,14 +2,16 @@ package me.chimkenu.expunge.items.utilities.throwable;
 
 import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.enums.Slot;
+import me.chimkenu.expunge.game.LocalGameManager;
 import org.bukkit.*;
 import org.bukkit.entity.*;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class FreshAir implements Throwable {
     @Override
-    public void use(LivingEntity entity) {
+    public void use(JavaPlugin plugin, LocalGameManager localGameManager, LivingEntity entity) {
         entity.getWorld().playSound(entity.getLocation(), Sound.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 0.5f, 0);
         Projectile ball = entity.launchProjectile(Snowball.class);
         ball.addScoreboardTag(getTag());
@@ -17,7 +19,7 @@ public class FreshAir implements Throwable {
     }
 
     @Override
-    public void onLand(World world, Location loc, Entity shooter) {
+    public void onLand(JavaPlugin plugin, World world, Location loc, Entity shooter) {
         world.spawnParticle(Particle.SPELL, loc, 200, 2, 0.5, 2, 0);
         world.playSound(loc, Sound.BLOCK_GLASS_BREAK, SoundCategory.PLAYERS, 1, 0);
         world.playSound(loc, Sound.BLOCK_REDSTONE_TORCH_BURNOUT, SoundCategory.PLAYERS, 1, 0);

@@ -1,11 +1,11 @@
 package me.chimkenu.expunge.items.utilities.throwable;
 
-import me.chimkenu.expunge.Expunge;
-import me.chimkenu.expunge.enums.Slot;
+import me.chimkenu.expunge.game.LocalGameManager;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
@@ -13,7 +13,7 @@ import java.util.*;
 
 public class Spit implements Throwable {
     @Override
-    public void use(LivingEntity entity) {
+    public void use(JavaPlugin plugin, LocalGameManager localGameManager, LivingEntity entity) {
         entity.getWorld().playSound(entity.getLocation(), Sound.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.HOSTILE, 0.5f, 0);
         Projectile ball = entity.launchProjectile(Snowball.class);
         ball.addScoreboardTag(getTag());
@@ -21,7 +21,7 @@ public class Spit implements Throwable {
     }
 
     @Override
-    public void onLand(World world, Location loc, Entity shooter) {
+    public void onLand(JavaPlugin plugin, World world, Location loc, Entity shooter) {
         Block origin = loc.getBlock();
         BlockFace[] faces = new BlockFace[]{BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
 
@@ -107,7 +107,7 @@ public class Spit implements Throwable {
                 t--;
                 if (t <= 0) this.cancel();
             }
-        }.runTaskTimer(Expunge.instance, 1, 4);
+        }.runTaskTimer(plugin, 1, 4);
     }
 
     @Override

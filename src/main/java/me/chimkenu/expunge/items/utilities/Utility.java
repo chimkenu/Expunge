@@ -1,10 +1,12 @@
 package me.chimkenu.expunge.items.utilities;
 
+import me.chimkenu.expunge.game.LocalGameManager;
 import me.chimkenu.expunge.items.GameItem;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public interface Utility extends GameItem {
     default ItemStack getUtility() {
@@ -17,5 +19,5 @@ public interface Utility extends GameItem {
         return utility;
     }
 
-    void use(LivingEntity entity);
+    void use(JavaPlugin plugin, LocalGameManager localGameManager, LivingEntity entity);
 }
