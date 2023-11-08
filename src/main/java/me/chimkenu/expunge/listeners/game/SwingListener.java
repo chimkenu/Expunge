@@ -81,7 +81,7 @@ public class SwingListener extends GameListener {
                     case ZOGLIN -> livingEntity.damage((400 + (localGameManager.getDifficulty().ordinal() * 200)) * 0.5, player);
                     case IRON_GOLEM -> livingEntity.damage(2500 + (localGameManager.getDifficulty().ordinal() * 1000) * 0.05, player);
                     case ENDERMAN -> livingEntity.damage(1000 * 0.25, player);
-                    default -> livingEntity.damage(livingEntity.getHealth() + livingEntity.getAbsorptionAmount() + 1, player);
+                    default -> livingEntity.damage(livingEntity.getHealth() + livingEntity.getAbsorptionAmount() * 2, player);
                 }
             else // fixed damage
                 livingEntity.damage(melee.getDamage(), player);
