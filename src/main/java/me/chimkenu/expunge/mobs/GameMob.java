@@ -22,6 +22,7 @@ public abstract class GameMob {
     public <T extends Mob> GameMob(JavaPlugin plugin, World world, Vector locationToSpawn, Class<T> mobToSpawn, MobBehavior behavior) {
         mob = world.spawn(new Location(world, locationToSpawn.getX(), locationToSpawn.getY(), locationToSpawn.getZ()), mobToSpawn);
         mob.addScoreboardTag("MOB");
+        mob.setCanPickupItems(false);
         runnable = behavior == null ? null : new BukkitRunnable() {
             @Override
             public void run() {
