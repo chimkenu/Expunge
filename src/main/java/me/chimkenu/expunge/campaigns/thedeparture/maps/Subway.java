@@ -39,7 +39,7 @@ public class Subway extends CampaignMap {
 
     @Override
     public BoundingBox endRegion() {
-        return new BoundingBox(24, 24, 184, 11, 31, 178);
+        return new BoundingBox(-75, 34, 326, -62, 43, 339);
     }
 
     @Override
@@ -49,7 +49,43 @@ public class Subway extends CampaignMap {
 
     @Override
     public Vector[] spawnLocations() {
-        return new Vector[0];
+        return new Vector[]{
+                new Vector(15.5, 43.5, -20.5),
+                new Vector(-23.5, 43.0, -3.5),
+                new Vector(-24, 43.0, -81),
+                new Vector(15, 43.0, -66),
+                new Vector(-33.5, 24.0, 4.5),
+                new Vector(-10.5, 21.0, -12.5),
+                new Vector(-21.5, 16.0, -16.5),
+                new Vector(-6.5, 27.0, 46.5),
+                new Vector(27.5, 25.0, 36.5),
+                new Vector(30, 25.0, 46),
+                new Vector(78.5, 25.0, 24.5),
+                new Vector(101.5, 25.0, 77.5),
+                new Vector(79.5, 25.0, 77.5),
+                new Vector(79.5, 26.0, 117.5),
+                new Vector(63.5, 25.0, 137.5),
+                new Vector(41.5, 25.0, 137.5),
+                new Vector(52.5, 25.0, 154.5),
+                new Vector(23.5, 25.0, 184.5),
+                new Vector(23.5, 25.0, 178.5),
+                new Vector(16.5, 36.0, 193.5),// after
+                new Vector(25.5, 36.0, 215.5),
+                new Vector(-0.5, 36.0, 215.5),
+                new Vector(-70.5, 37.5, 180.5),
+                new Vector(-90.5, 37.0, 203.5),
+                new Vector(-84.5, 37.0, 230.5),
+                new Vector(-79.5, 37.0, 224.5),
+                new Vector(-75.5, 37.0, 179.5),
+                new Vector(-110.5, 37.0, 248.5),
+                new Vector(-82, 37.0, 246),
+                new Vector(-84.5, 39.0, 280.5),
+                new Vector(-113.5, 37.0, 296.5),
+                new Vector(-115.5, 37.0, 323.5),
+                new Vector(-75.5, 42.0, 312.5),
+                new Vector(-66.5, 36.0, 326.5),
+
+        };
     }
 
     @Override
@@ -59,27 +95,59 @@ public class Subway extends CampaignMap {
 
     @Override
     public Vector[] itemLocations() {
-        return new Vector[0];
+        return new Vector[]{
+                new Vector(25.5, 36.0, 215.5),
+                new Vector(-0.5, 36.0, 215.5),
+                new Vector(-70.5, 37.5, 180.5),
+                new Vector(-90.5, 37.0, 203.5),
+                new Vector(-84.5, 37.0, 230.5),
+                new Vector(-75.5, 37.0, 179.5),
+                new Vector(-110.5, 37.0, 248.5),
+                new Vector(-82, 37.0, 246),
+                new Vector(-84.5, 39.0, 280.5),
+                new Vector(-115.5, 37.0, 323.5),
+                new Vector(-75.5, 42.0, 312.5),
+                new Vector(-66.5, 36.0, 326.5),
+                new Vector(-20.5, 16.0, -13.5),
+
+                new Vector(-20.5, 16.0, -13.5), // Highway
+                new Vector(0.5, 28.0, 48.5),
+                new Vector(0.5, 28.0, 51.5),
+                new Vector(82.5, 27.0, 30),
+                new Vector(61.5, 25.0, 171.5),
+                new Vector(15.5, 26.0, 182.5),
+                new Vector(20.5, 26.0, 180.5),
+                new Vector(-16.5, 26.0, 181.5),
+                new Vector(-67.5, 37.0, 193.5)
+        };
     }
 
     @Override
     public int baseItemsToSpawn() {
-        return 0;
+        return 4;
     }
 
     @Override
     public Vector[] weaponLocations() {
-        return new Vector[0];
+        return new Vector[]{
+                new Vector(3.5, 25.0, 175.5),
+                new Vector(-113.5, 37.0, 296.5),
+                new Vector(-79.5, 37.0, 224.5),
+                new Vector(88.5, 26.0, 68.5),
+        };
     }
 
     @Override
     public Vector[] ammoLocations() {
-        return new Vector[0];
+        return new Vector[]{
+                new Vector(21.5, 26, 182.5),
+                new Vector()
+        };
     }
 
     @Override
     public Vector buttonLocation() {
-        return new Vector(18, 27, 180);
+        return new Vector(-71, 37, 330);
     }
 
     @Override
