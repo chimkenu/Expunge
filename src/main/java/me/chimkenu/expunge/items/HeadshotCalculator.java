@@ -1,5 +1,6 @@
 package me.chimkenu.expunge.items;
 
+import me.chimkenu.expunge.utils.RayTrace;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.BoundingBox;
 

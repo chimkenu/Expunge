@@ -1,4 +1,4 @@
-package me.chimkenu.expunge.items;
+package me.chimkenu.expunge.utils;
 
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;

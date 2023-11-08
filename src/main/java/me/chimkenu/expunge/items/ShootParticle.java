@@ -2,6 +2,7 @@ package me.chimkenu.expunge.items;
 
 import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.game.BreakGlass;
+import me.chimkenu.expunge.utils.RayTrace;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
