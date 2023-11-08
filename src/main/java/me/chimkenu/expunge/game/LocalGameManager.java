@@ -69,7 +69,7 @@ public class LocalGameManager implements GameManager {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    if (players.size() < 1) this.cancel();
+                    if (players.isEmpty()) this.cancel();
                     for (Player player : players) {
                         player.setGameMode(GameMode.ADVENTURE);
                     }
@@ -197,7 +197,7 @@ public class LocalGameManager implements GameManager {
         }
 
         // REGISTER EVENTS AND HAPPENINGS
-        if (listeners.size() != 0) {
+        if (!listeners.isEmpty()) {
             for (Listener listener : listeners) {
                 HandlerList.unregisterAll(listener);
             }
@@ -222,11 +222,6 @@ public class LocalGameManager implements GameManager {
         director.setSpawningEnabled(false);
 
         if (getMap().runAtEnd() != null) getMap().runAtEnd().run(null);
-
-        for (Listener listener : listeners) {
-            HandlerList.unregisterAll(listener);
-        }
-        listeners.clear();
 
         director.resetSceneAttempts();
         director.clearEntities();

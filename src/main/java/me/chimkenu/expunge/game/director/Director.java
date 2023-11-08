@@ -215,9 +215,10 @@ public class Director implements Listener {
     public void onMobDeath(EntityDeathEvent e) {
         LivingEntity dead = e.getEntity();
         GameMob mobToRemove = null;
+        if (dead.getKiller() == null || !localGameManager.getPlayers().contains(dead.getKiller())) return;
         for (GameMob mob : mobHandler.getActiveMobs()) {
             if (mob.getMob().equals(dead)) {
-                if (dead.getKiller() != null && localGameManager.getPlayers().contains(dead.getKiller())) {
+                if (localGameManager.getPlayers().contains(dead.getKiller())) {
                     statsHandler.kills.putIfAbsent(dead.getKiller(), 0);
                     statsHandler.kills.put(dead.getKiller(), statsHandler.kills.get(dead.getKiller()) + 1);
 

@@ -334,7 +334,8 @@ public class Subway extends CampaignMap {
                 new PickUpListener(plugin, localGameManager),
                 new ShootListener(plugin, localGameManager),
                 new ShoveListener(plugin, localGameManager),
-                new SwingListener(plugin, localGameManager)
+                new SwingListener(plugin, localGameManager),
+                new JoinLeaveListener(plugin, localGameManager)
         };
     }
 }

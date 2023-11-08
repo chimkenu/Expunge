@@ -1,6 +1,7 @@
-package me.chimkenu.expunge.listeners;
+package me.chimkenu.expunge.listeners.game;
 
 import me.chimkenu.expunge.game.LocalGameManager;
+import me.chimkenu.expunge.listeners.GameListener;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;

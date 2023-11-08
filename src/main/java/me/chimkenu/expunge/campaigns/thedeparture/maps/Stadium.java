@@ -35,7 +35,7 @@ public class Stadium extends CampaignMap {
 
     @Override
     public Vector startLocation() {
-        return null;
+        return new Vector(-103, 36, -148);
     }
 
     @Override
@@ -50,7 +50,35 @@ public class Stadium extends CampaignMap {
 
     @Override
     public Vector[] spawnLocations() {
-        return new Vector[0];
+        return new Vector[]{
+                 new Vector(-142.16, 37.0, -123.),
+                 new Vector(-136.25, 36.0, -123.),
+                 new Vector(-118.53, 36.0, -136.),
+                 new Vector(-92.49, 36.0, -152.5),
+                 new Vector(-136.13, 36.0, -67.1),
+                 new Vector(-115.95, 37.0, -30.5),
+                 new Vector(-110.09, 37.0, -30.5),
+                 new Vector(-96.53, 39.0, -10.55),
+                 new Vector(-79.52, 37.0, -13.56),
+                 new Vector(-43.58, 38.0, -43.44),
+                 new Vector(-22.44, 36.0, 33.325),
+                 new Vector(4.551, 36.0, 49.498),
+                 new Vector(96.49, 36.0, 59.5264),
+                 new Vector(118.53, 45.0, 128.95),
+                 new Vector(85.53, 36.0, 172.534),
+                 new Vector(97.44, 36.0, 136.456),
+                 new Vector(111.54, 36.0, 138.46),
+                 new Vector(98.50, 36.0, 127.501),
+                 new Vector(101.5, 36.0, 104.572),
+                 new Vector(44.496, 36.0, 95.537),
+                 new Vector(57.396, 36.0, 92.514),
+                 new Vector(15.55, 36.0, 164.403),
+                 new Vector(2.4682, 36.0, 138.46),
+                 new Vector(-10.545, 36.0, 135.4),
+                 new Vector(-10.536, 36.0, 130.5),
+                 new Vector(2.4294, 36.0, 130.52),
+                 new Vector(7.442, 36.0, 104.414)
+        };
     }
 
     @Override
@@ -60,7 +88,25 @@ public class Stadium extends CampaignMap {
 
     @Override
     public Vector[] itemLocations() {
-        return new Vector[0];
+        return new Vector[]{
+                new Vector(7.5, 37.0, 38.5),
+                new Vector(35.5, 37.0, 69.5),
+                new Vector(65.5, 37.0, 66.5),
+                new Vector(48.5, 36.0, 94.5),
+                new Vector(58.5, 37.0, 114.5),
+                new Vector(39.5, 37.0, 154.5),
+                new Vector(42.5, 37.0, 114.5),
+                new Vector(39.5, 37.0, 114.5),
+                new Vector(91.5, 37.0, 168.5),
+                new Vector(97.5, 36.0, 131.5),
+                new Vector(97.5, 37.0, 141.5),
+                new Vector(95.5, 37.0, 100.5),
+                new Vector(8.5, 37.0, 100.5),
+                new Vector(4.5, 37.0, 132.5),
+                new Vector(-15.5, 37.0, 135.5),
+                new Vector(9.5, 37.0, 168.5),
+                new Vector(50.5, 46.0, 180.5)
+        };
     }
 
     @Override
@@ -80,7 +126,7 @@ public class Stadium extends CampaignMap {
 
     @Override
     public Vector buttonLocation() {
-        return null;
+        return new Vector(49, 40, 134);
     }
 
     @Override
@@ -276,7 +322,8 @@ public class Stadium extends CampaignMap {
                 new PickUpListener(plugin, localGameManager),
                 new ShootListener(plugin, localGameManager),
                 new ShoveListener(plugin, localGameManager),
-                new SwingListener(plugin, localGameManager)
+                new SwingListener(plugin, localGameManager),
+                new JoinLeaveListener(plugin, localGameManager)
         };
     }
 
