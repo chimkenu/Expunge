@@ -100,6 +100,8 @@ public class LocalGameManager implements GameManager {
         if (main != null) main.cancel();
         main = null;
 
+        director.clearEntities();
+
         for (Listener listener : listeners) {
             HandlerList.unregisterAll(listener);
         }
@@ -116,8 +118,8 @@ public class LocalGameManager implements GameManager {
 
         for (Player player : gameWorld.getWorld().getPlayers()) {
             player.sendMessage(ChatColor.BLUE + "Game ended at " + ChatColor.DARK_AQUA + gameTime);
-            plugin.getLobby().setSpectator(player);
             if (isAbrupt) plugin.getLobby().teleportToLobby(player);
+            plugin.getLobby().setSpectator(player);
         }
 
         if (isAbrupt) {
