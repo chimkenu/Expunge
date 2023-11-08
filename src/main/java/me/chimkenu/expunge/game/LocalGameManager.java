@@ -118,7 +118,10 @@ public class LocalGameManager implements GameManager {
 
         for (Player player : gameWorld.getWorld().getPlayers()) {
             player.sendMessage(ChatColor.BLUE + "Game ended at " + ChatColor.DARK_AQUA + gameTime);
-            if (isAbrupt) plugin.getLobby().teleportToLobby(player);
+            if (isAbrupt) {
+                plugin.getLobby().teleportToLobby(player);
+                continue;
+            }
             plugin.getLobby().setSpectator(player);
         }
 
