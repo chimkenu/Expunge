@@ -17,12 +17,10 @@ import java.net.URISyntaxException;
 import java.util.logging.Level;
 
 public final class Expunge extends JavaPlugin {
-    public static Expunge instance;
     private Lobby lobby;
 
     @Override
     public void onEnable() {
-        instance = this;
         try {
             ResourceCopy.copyFromJar(this.getClass(), "Maps", getDataFolder().toPath());
         } catch (URISyntaxException | IOException e) {
