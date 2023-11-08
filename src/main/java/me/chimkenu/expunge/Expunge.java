@@ -29,7 +29,6 @@ public final class Expunge extends JavaPlugin {
             Bukkit.getLogger().log(Level.SEVERE, "Couldn't copy the maps to the plugin directory!");
             throw new RuntimeException(e);
         }
-        registerGameEvents();
 
         registerCommand("join", new Join());
         registerCommand("values", new Values());
@@ -37,7 +36,7 @@ public final class Expunge extends JavaPlugin {
         registerCommand("startgame", new StartGame(this));
         registerCommand("stats", new Stats());
         registerCommand("getgun", new GetGun());
-        registerCommand("getutiltiy", new GetUtility());
+        registerCommand("getutility", new GetUtility());
         registerCommand("getmelee", new GetMelee());
         registerCommand("tutorial", new Tutorial());
         registerCommand("spawn", new Spawn());
@@ -55,11 +54,6 @@ public final class Expunge extends JavaPlugin {
         for (GameManager gameManager : lobby.getGames()) {
             gameManager.stop(true);
         }
-    }
-
-    public void registerGameEvents() {
-        HandlerList.unregisterAll(this);
-        getServer().getPluginManager().registerEvents(new UtilityListener(), this);
     }
 
     private void registerCommand(String commandName, CommandExecutor executioner) {
