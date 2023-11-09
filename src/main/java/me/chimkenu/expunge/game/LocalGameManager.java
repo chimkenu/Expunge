@@ -140,7 +140,7 @@ public class LocalGameManager implements GameManager {
                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§7Returning to lobby in §c" + (i / 20) + "§3..."));
                 }
 
-                if (gameWorld.getWorld().getPlayers().size() < 1) {
+                if (gameWorld.getWorld().getPlayers().isEmpty()) {
                     this.cancel();
                 }
 

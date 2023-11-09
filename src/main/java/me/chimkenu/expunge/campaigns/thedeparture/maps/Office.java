@@ -3,6 +3,7 @@ package me.chimkenu.expunge.campaigns.thedeparture.maps;
 import me.chimkenu.expunge.GameAction;
 import me.chimkenu.expunge.campaigns.Campaign;
 import me.chimkenu.expunge.campaigns.CampaignMap;
+import me.chimkenu.expunge.campaigns.Dialogue;
 import me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue;
 import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.game.LocalGameManager;
@@ -29,8 +30,6 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
-
-import static me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue.playDialogue;
 
 public class Office extends CampaignMap {
     @Override
@@ -193,7 +192,7 @@ public class Office extends CampaignMap {
                         BoundingBox box = new BoundingBox(-7, 51, -91, -13, 58, -104);
                         if (!box.contains(e.getPlayer().getLocation().toVector()))
                             return;
-                        playDialogue(DepartureDialogue.OFFICE_JUMP);
+                        Dialogue.display(plugin, localGameManager.getPlayers(), DepartureDialogue.OFFICE_JUMP.pickRandom(localGameManager.getPlayers().size()));
                         HandlerList.unregisterAll(this);
                     }
                 },
@@ -250,7 +249,7 @@ public class Office extends CampaignMap {
                         BoundingBox box = new BoundingBox(0, 41, -95, -10, 48, -86);
                         if (!box.contains(e.getPlayer().getLocation().toVector()))
                             return;
-                        playDialogue(DepartureDialogue.OFFICE_VENTS);
+                        Dialogue.display(plugin, localGameManager.getPlayers(), DepartureDialogue.OFFICE_VENTS.pickRandom(localGameManager.getPlayers().size()));
                         HandlerList.unregisterAll(this);
                     }
                 },
@@ -262,7 +261,7 @@ public class Office extends CampaignMap {
                         BoundingBox box = new BoundingBox(29, 43, -93, 24, 47, -85);
                         if (!box.contains(e.getPlayer().getLocation().toVector()))
                             return;
-                        playDialogue(DepartureDialogue.OFFICE_SAFE_ROOM);
+                        Dialogue.display(plugin, localGameManager.getPlayers(), DepartureDialogue.OFFICE_SAFE_ROOM.pickRandom(localGameManager.getPlayers().size()));
                         HandlerList.unregisterAll(this);
                     }
                 }

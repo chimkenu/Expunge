@@ -3,6 +3,7 @@ package me.chimkenu.expunge.campaigns.thedeparture.maps;
 import me.chimkenu.expunge.GameAction;
 import me.chimkenu.expunge.campaigns.Campaign;
 import me.chimkenu.expunge.campaigns.CampaignMap;
+import me.chimkenu.expunge.campaigns.Dialogue;
 import me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue;
 import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.game.LocalGameManager;
@@ -22,8 +23,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
-
-import static me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue.playDialogue;
 
 public class Streets extends CampaignMap {
     @Override
@@ -184,7 +183,7 @@ public class Streets extends CampaignMap {
                         BoundingBox box = new BoundingBox(861, 42, 899, 851, 48, 903);
                         if (!box.contains(e.getPlayer().getLocation().toVector()))
                             return;
-                        playDialogue(DepartureDialogue.STREETS_OPENING);
+                        Dialogue.display(plugin, localGameManager.getPlayers(), DepartureDialogue.STREETS_OPENING.pickRandom(localGameManager.getPlayers().size()));
                         HandlerList.unregisterAll(this);
                     }
                 },
@@ -196,7 +195,7 @@ public class Streets extends CampaignMap {
                         BoundingBox box = new BoundingBox(1084, 40, 899, 1079, 57, 851);
                         if (!box.contains(e.getPlayer().getLocation().toVector()))
                             return;
-                        playDialogue(DepartureDialogue.STREETS_APARTMENTS);
+                        Dialogue.display(plugin, localGameManager.getPlayers(), DepartureDialogue.STREETS_APARTMENTS.pickRandom(localGameManager.getPlayers().size()));
                         HandlerList.unregisterAll(this);
                     }
                 },
@@ -251,7 +250,7 @@ public class Streets extends CampaignMap {
                         BoundingBox box = new BoundingBox(1138, 56, 896, 1140, 60, 906);
                         if (!box.contains(e.getPlayer().getLocation().toVector()))
                             return;
-                        playDialogue(DepartureDialogue.STREETS_SHED);
+                        Dialogue.display(plugin, localGameManager.getPlayers(), DepartureDialogue.STREETS_SHED.pickRandom(localGameManager.getPlayers().size()));
                         HandlerList.unregisterAll(this);
                     }
                 },

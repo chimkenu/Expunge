@@ -1,7 +1,5 @@
-package me.chimkenu.expunge.game;
+package me.chimkenu.expunge.campaigns;
 
-import me.chimkenu.expunge.GameAction;
-import me.chimkenu.expunge.Expunge;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -9,14 +7,12 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Dialogue {
-    private final List<String> dialogue;
-    private final List<String> speakers;
-    private final GameAction gameActionAtEnd;
-
-    public Dialogue(GameAction gameActionAtEnd, String... strings) {
+    public static void display(JavaPlugin plugin, Set<Player> playerSet, String[] strings) {
+        List<Player> players = playerSet.stream().toList();
         List<String> dialogue = new ArrayList<>();
         List<String> speakers = new ArrayList<>();
         for (String s : strings) {
@@ -25,13 +21,8 @@ public class Dialogue {
             speakers.add(split[0]);
             dialogue.add(split[1]);
         }
-        this.dialogue = dialogue;
-        this.speakers = speakers;
-        this.gameActionAtEnd = gameActionAtEnd;
-    }
 
-    public void displayDialogue(JavaPlugin plugin, List<Player> players) {
-        if (players.size() < 1) return; // no players to show dialogue to
+        if (players.isEmpty()) return; // no players to show dialogue to
         if (players.size() > 3) {
             for (int i = players.size() - 1; i > 0; i--) {
                 int index = ThreadLocalRandom.current().nextInt(i + 1);
@@ -61,15 +52,7 @@ public class Dialogue {
                     }
                 }
             }.runTaskLater(plugin, totalTime);
-            if (i < dialogue.size()) totalTime += delay;
-        }
-        if (gameActionAtEnd != null) {
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    gameActionAtEnd.run(players.get(0));
-                }
-            }.runTaskLater(plugin, totalTime + 1);
+            if (i < dialogue.size()) totalTime += (int) delay;
         }
     }
 }

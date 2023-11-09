@@ -3,6 +3,7 @@ package me.chimkenu.expunge.campaigns.thedeparture.maps;
 import me.chimkenu.expunge.GameAction;
 import me.chimkenu.expunge.campaigns.Campaign;
 import me.chimkenu.expunge.campaigns.CampaignMap;
+import me.chimkenu.expunge.campaigns.Dialogue;
 import me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue;
 import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.game.LocalGameManager;
@@ -24,8 +25,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
-
-import static me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue.playDialogue;
 
 public class Stadium extends CampaignMap {
     @Override
@@ -164,7 +163,7 @@ public class Stadium extends CampaignMap {
                             return;
                         localGameManager.getDirector().bile(plugin, e.getPlayer(), 5);
                         localGameManager.getDirector().spawnAtRandomLocations(new BoundingBox(1179, 35, 1466, 1239, 35, 1569), 20 + (localGameManager.getDifficulty().ordinal() * 10));
-                        playDialogue(DepartureDialogue.STADIUM_PARKING_LOT);
+                        Dialogue.display(plugin, localGameManager.getPlayers(), DepartureDialogue.STADIUM_PARKING_LOT.pickRandom(localGameManager.getPlayers().size()));
                         HandlerList.unregisterAll(this);
                     }
                 },
@@ -176,7 +175,7 @@ public class Stadium extends CampaignMap {
                         BoundingBox box = new BoundingBox(1182, 34, 1580, 1190, 39, 1587);
                         if (!box.contains(e.getPlayer().getLocation().toVector()))
                             return;
-                        playDialogue(DepartureDialogue.STADIUM_ENTER);
+                        Dialogue.display(plugin, localGameManager.getPlayers(), DepartureDialogue.STADIUM_ENTER.pickRandom(localGameManager.getPlayers().size()));
                         localGameManager.getDirector().bile(plugin, e.getPlayer(), 5);
                         localGameManager.getDirector().spawnAtRandomLocations(new BoundingBox(1219, 35, 1616, 1153, 35, 1660), 30 + (localGameManager.getDifficulty().ordinal() * 10));
                         HandlerList.unregisterAll(this);
@@ -264,7 +263,7 @@ public class Stadium extends CampaignMap {
                                                         @EventHandler
                                                         public void afterTank(EntityDeathEvent e) {
                                                             if (e.getEntityType().equals(EntityType.IRON_GOLEM)) {
-                                                                playDialogue(DepartureDialogue.STADIUM_ENDING);
+                                                                Dialogue.display(plugin, localGameManager.getPlayers(), DepartureDialogue.STADIUM_ENDING.pickRandom(localGameManager.getPlayers().size()));
                                                                 // TODO: Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "setblock 1168 17 1626 minecraft:redstone_block");
                                                             }
                                                         }
