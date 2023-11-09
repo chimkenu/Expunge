@@ -5,12 +5,15 @@ import me.chimkenu.expunge.enums.Slot;
 import me.chimkenu.expunge.game.LocalGameManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+
+import java.util.Objects;
 
 public class Adrenaline implements Healing {
     @Override
@@ -27,8 +30,8 @@ public class Adrenaline implements Healing {
         attemptUse(plugin, player, item, getCooldown(), false, "§eUsing adrenaline...", player1 -> {
             player1.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20 * 15, 1, false, false, true));
             double absorption = Math.min(20, player1.getAbsorptionAmount() + 5);
+            Objects.requireNonNull(player1.getAttribute(Attribute.GENERIC_MAX_ABSORPTION)).setBaseValue(20);
             player1.setAbsorptionAmount(absorption);
-            Bukkit.broadcastMessage(absorption + "");
             player1.getInventory().getItemInMainHand().setAmount(player1.getInventory().getItemInMainHand().getAmount() - 1);
 
             // achievement
