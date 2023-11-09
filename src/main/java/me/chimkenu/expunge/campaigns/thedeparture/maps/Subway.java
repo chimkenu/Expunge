@@ -144,7 +144,7 @@ public class Subway extends CampaignMap {
     public Vector[] ammoLocations() {
         return new Vector[]{
                 new Vector(21.5, 26, 182.5),
-                new Vector()
+                new Vector(19.5, 44, -32.5)
         };
     }
 
