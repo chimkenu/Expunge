@@ -38,7 +38,7 @@ public class NextMapListener extends GameListener {
             if (!localGameManager.getPlayers().contains(e.getPlayer())) {
                 return;
             }
-            if (!localGameManager.getDirector().isSpawningEnabled()) {
+            if (!localGameManager.getDirector().getMobHandler().isSpawningEnabled()) {
                 return;
             }
 

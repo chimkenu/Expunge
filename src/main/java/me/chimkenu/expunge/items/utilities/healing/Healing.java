@@ -3,6 +3,7 @@ package me.chimkenu.expunge.items.utilities.healing;
 import me.chimkenu.expunge.GameAction;
 import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.enums.Slot;
+import me.chimkenu.expunge.game.director.Director;
 import me.chimkenu.expunge.items.utilities.Utility;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -17,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 
 public interface Healing extends Utility {
-    default void attemptUse(JavaPlugin plugin, Player player, ItemStack itemStack, int useTime, boolean hasToStayStill, String prefix, GameAction gameActionWhenSuccessful) {
+    default void attemptUse(JavaPlugin plugin, Director director, Player player, ItemStack itemStack, int useTime, boolean hasToStayStill, String prefix, GameAction gameActionWhenSuccessful) {
         Vector loc = null;
         if (hasToStayStill) {
             loc = player.getLocation().toVector();
@@ -47,7 +48,7 @@ public interface Healing extends Utility {
                 }
                 if (i <= 0) {
                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§aSuccessful."));
-                    gameActionWhenSuccessful.run(player);
+                    gameActionWhenSuccessful.run(plugin, director, player);
                     player.setCooldown(itemStack.getType(), 0);
                     this.cancel();
                 }

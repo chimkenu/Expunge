@@ -6,7 +6,10 @@ import me.chimkenu.expunge.campaigns.CampaignMap;
 import me.chimkenu.expunge.campaigns.Dialogue;
 import me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue;
 import me.chimkenu.expunge.enums.Achievements;
+import me.chimkenu.expunge.enums.Tier;
 import me.chimkenu.expunge.game.LocalGameManager;
+import me.chimkenu.expunge.game.director.ItemHandler;
+import me.chimkenu.expunge.items.utilities.healing.Medkit;
 import me.chimkenu.expunge.listeners.GameListener;
 import me.chimkenu.expunge.listeners.game.*;
 import me.chimkenu.expunge.mobs.common.Horde;
@@ -164,7 +167,16 @@ public class Streets extends CampaignMap {
 
     @Override
     public GameAction runAtStart() {
-        return null;
+        return (plugin, director, player) -> {
+            for (int i = 0; i < 4; i++) {
+                director.getItemHandler().spawnUtility(new Vector(-226.5, 44, -97), new Medkit(), false);
+            }
+
+            director.getItemHandler().spawnWeapon(new Vector(-230.5, 44, -100.5), ItemHandler.getRandomGun(Tier.TIER2), true);
+            director.getItemHandler().spawnWeapon(new Vector(-226.5, 44, -95), ItemHandler.getRandomGun(Tier.TIER2), true);
+
+            Dialogue.display(plugin, director.getLocalGameManager().getPlayers(), DepartureDialogue.OFFICE_RADIO.pickRandom(director.getLocalGameManager().getPlayers().size()));
+        };
     }
 
     @Override
@@ -180,7 +192,7 @@ public class Streets extends CampaignMap {
                     public void streetsOpeningTrigger(PlayerMoveEvent e) {
                         if (!localGameManager.getPlayers().contains(e.getPlayer()))
                             return;
-                        BoundingBox box = new BoundingBox(861, 42, 899, 851, 48, 903);
+                        BoundingBox box = new BoundingBox(-243, 41, -105, -254, 52, -115);
                         if (!box.contains(e.getPlayer().getLocation().toVector()))
                             return;
                         Dialogue.display(plugin, localGameManager.getPlayers(), DepartureDialogue.STREETS_OPENING.pickRandom(localGameManager.getPlayers().size()));
@@ -192,7 +204,7 @@ public class Streets extends CampaignMap {
                     public void streetsApartmentsTrigger(PlayerMoveEvent e) {
                         if (!localGameManager.getPlayers().contains(e.getPlayer()))
                             return;
-                        BoundingBox box = new BoundingBox(1084, 40, 899, 1079, 57, 851);
+                        BoundingBox box = new BoundingBox(-10, 40, -105, -32, 52, -157);
                         if (!box.contains(e.getPlayer().getLocation().toVector()))
                             return;
                         Dialogue.display(plugin, localGameManager.getPlayers(), DepartureDialogue.STREETS_APARTMENTS.pickRandom(localGameManager.getPlayers().size()));
@@ -206,7 +218,7 @@ public class Streets extends CampaignMap {
                         if (!localGameManager.getPlayers().contains(e.getPlayer())) {
                             return;
                         }
-                        if (block == null || !(e.getAction().equals(Action.PHYSICAL) && (block.getLocation().toVector().equals(new Vector(1120, 43, 898)) || block.getLocation().toVector().equals(new Vector(1120, 43, 899))))) {
+                        if (block == null || !(e.getAction().equals(Action.PHYSICAL) && (block.getLocation().toVector().equals(new Vector(16, 43, -110)) || block.getLocation().toVector().equals(new Vector(16, 43, -109))))) {
                             return;
                         }
 
@@ -217,24 +229,24 @@ public class Streets extends CampaignMap {
 
                             @Override
                             public void run() {
-                                localGameManager.getDirector() .spawnMob(new Horde(plugin, world, new Vector(1121.5, 43, 922.5), localGameManager.getDifficulty()));
-                                localGameManager.getDirector() .spawnMob(new Horde(plugin, world, new Vector(1118.5, 43, 843), localGameManager.getDifficulty()));
-                                localGameManager.getDirector() .spawnMob(new Horde(plugin, world, new Vector(1076.5, 43, 894.5), localGameManager.getDifficulty()));
-                                localGameManager.getDirector() .spawnMob(new Horde(plugin, world, new Vector(1134, 43, 898.5), localGameManager.getDifficulty()));
-                                localGameManager.getDirector() .spawnMob(new Horde(plugin, world, new Vector(1125.5, 50, 899.5), localGameManager.getDifficulty()));
-                                localGameManager.getDirector() .spawnMob(new Horde(plugin, world, new Vector(1131.5, 50, 909.5), localGameManager.getDifficulty()));
-                                localGameManager.getDirector() .spawnMob(new Horde(plugin, world, new Vector(1125.5, 50, 910.5), localGameManager.getDifficulty()));
-                                localGameManager.getDirector() .spawnMob(new Horde(plugin, world, new Vector(1131.5, 50, 920.5), localGameManager.getDifficulty()));
-                                localGameManager.getDirector() .spawnMob(new Horde(plugin, world, new Vector(1131.5, 50, 920.5), localGameManager.getDifficulty()));
-                                localGameManager.getDirector() .spawnMob(new Horde(plugin, world, new Vector(1131.5, 56, 920.5), localGameManager.getDifficulty()));
-                                localGameManager.getDirector() .spawnMob(new Horde(plugin, world, new Vector(1125.5, 56, 910.5), localGameManager.getDifficulty()));
-                                localGameManager.getDirector() .spawnMob(new Horde(plugin, world, new Vector(1131.5, 56, 909.5), localGameManager.getDifficulty()));
-                                localGameManager.getDirector() .spawnMob(new Horde(plugin, world, new Vector(1125.5, 56, 899.5), localGameManager.getDifficulty()));
+                                localGameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1121.5, 43, 922.5), localGameManager.getDifficulty()));
+                                localGameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1118.5, 43, 843), localGameManager.getDifficulty()));
+                                localGameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1076.5, 43, 894.5), localGameManager.getDifficulty()));
+                                localGameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1134, 43, 898.5), localGameManager.getDifficulty()));
+                                localGameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1125.5, 50, 899.5), localGameManager.getDifficulty()));
+                                localGameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1131.5, 50, 909.5), localGameManager.getDifficulty()));
+                                localGameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1125.5, 50, 910.5), localGameManager.getDifficulty()));
+                                localGameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1131.5, 50, 920.5), localGameManager.getDifficulty()));
+                                localGameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1131.5, 50, 920.5), localGameManager.getDifficulty()));
+                                localGameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1131.5, 56, 920.5), localGameManager.getDifficulty()));
+                                localGameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1125.5, 56, 910.5), localGameManager.getDifficulty()));
+                                localGameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1131.5, 56, 909.5), localGameManager.getDifficulty()));
+                                localGameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1125.5, 56, 899.5), localGameManager.getDifficulty()));
                                 i++;
                                 if (i >= 3) {
                                     this.cancel();
                                 }
-                                if (localGameManager.getCampaignMapIndex() != 1) {
+                                if (!localGameManager.isRunning() || !localGameManager.getDirector().getMobHandler().isSpawningEnabled()) {
                                     this.cancel();
                                 }
                             }
@@ -247,7 +259,7 @@ public class Streets extends CampaignMap {
                     public void streetsShedTrigger(PlayerMoveEvent e) {
                         if (!localGameManager.getPlayers().contains(e.getPlayer()))
                             return;
-                        BoundingBox box = new BoundingBox(1138, 56, 896, 1140, 60, 906);
+                        BoundingBox box = new BoundingBox(33, 55, -112, 38, 61, -103);
                         if (!box.contains(e.getPlayer().getLocation().toVector()))
                             return;
                         Dialogue.display(plugin, localGameManager.getPlayers(), DepartureDialogue.STREETS_SHED.pickRandom(localGameManager.getPlayers().size()));
@@ -261,7 +273,7 @@ public class Streets extends CampaignMap {
                     public void alleysOpening(PlayerMoveEvent e) {
                         if (!localGameManager.getPlayers().contains(e.getPlayer())) return;
 
-                        BoundingBox box = new BoundingBox(1157, 42, 933, 1148, 51, 929);
+                        BoundingBox box = new BoundingBox(34, 41, -89, 43, 48, -84);
                         if (!box.contains(e.getPlayer().getLocation().toVector())) return;
 
                         // playDialogue(DepartureDialogue.ALLEYS_OPENING);
@@ -273,7 +285,7 @@ public class Streets extends CampaignMap {
                     public void alleysPurpleCar(PlayerMoveEvent e) {
                         if (!localGameManager.getPlayers().contains(e.getPlayer())) return;
 
-                        BoundingBox box = new BoundingBox(1147, 43, 935, 1142, 47, 942);
+                        BoundingBox box = new BoundingBox(42, 41, -73, 32, 47, -66);
                         if (!box.contains(e.getPlayer().getLocation().toVector())) return;
 
                         // DepartureDialogue.PURPLE_CAR.getSolo().displayDialogue(plugin, List.of(e.getPlayer()));
@@ -285,7 +297,7 @@ public class Streets extends CampaignMap {
                     public void alleysSafeHouse(PlayerMoveEvent e) {
                         if (!localGameManager.getPlayers().contains(e.getPlayer())) return;
 
-                        BoundingBox box = new BoundingBox(1147, 42, 983, 1141, 56, 990);
+                        BoundingBox box = new BoundingBox(54, 41, -19, 41, 53, -25);
                         if (!box.contains(e.getPlayer().getLocation().toVector())) return;
 
                         // playDialogue(DepartureDialogue.ALLEYS_SAFE_HOUSE);
@@ -299,7 +311,7 @@ public class Streets extends CampaignMap {
                         if (!e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) return;
                         if (e.getClickedBlock() == null || !(e.getClickedBlock().getType() == Material.STONE_BUTTON)) return;
 
-                        if (e.getClickedBlock().getLocation().toVector().equals(new Vector(1126, 44, 997))) {
+                        if (e.getClickedBlock().getLocation().toVector().equals(new Vector(22, 44, -11))) {
                             Achievements.A_BITE_TO_EAT.grant(e.getPlayer());
                         }
                     }

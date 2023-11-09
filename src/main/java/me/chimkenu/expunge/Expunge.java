@@ -2,14 +2,11 @@ package me.chimkenu.expunge;
 
 import me.chimkenu.expunge.commands.*;
 import me.chimkenu.expunge.game.GameManager;
-import me.chimkenu.expunge.listeners.*;
-import me.chimkenu.expunge.listeners.game.*;
 import me.chimkenu.expunge.utils.ResourceCopy;
 import org.bukkit.*;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
-import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
@@ -38,7 +35,7 @@ public final class Expunge extends JavaPlugin {
         registerCommand("getmelee", new GetMelee());
         registerCommand("tutorial", new Tutorial());
         registerCommand("spawn", new Spawn());
-        registerCommand("test", new TestCommand());
+        registerCommand("test", new TestCommand(this));
 
         lobby = new Lobby(this, Bukkit.getWorld("world"), new Location(Bukkit.getWorld("world"), 0, 0, 0));
         getServer().getPluginManager().registerEvents(lobby, this);

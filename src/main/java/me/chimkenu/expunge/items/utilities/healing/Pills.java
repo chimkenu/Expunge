@@ -25,7 +25,7 @@ public class Pills implements Healing {
 
         player.setCooldown(getUtility().getType(), getCooldown() + 1);
 
-        attemptUse(plugin, player, item, 20, false, "§eUsing pills...", player1 -> {
+        attemptUse(plugin, null, player, item, 20, false, "§eUsing pills...", (plugin1, director, player1) -> {
             double absorption = Math.min(20, player1.getAbsorptionAmount() + 10);
             Objects.requireNonNull(player1.getAttribute(Attribute.GENERIC_MAX_ABSORPTION)).setBaseValue(20);
             player1.setAbsorptionAmount(absorption);

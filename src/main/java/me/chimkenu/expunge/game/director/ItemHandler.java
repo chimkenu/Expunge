@@ -28,7 +28,9 @@ public class ItemHandler {
         this.director = director;
     }
 
-    public void generateItems(CampaignMap map, double directorRating) {
+    public void generateStartingItems() {
+        CampaignMap map = director.getMap();
+        double directorRating = director.calculateRating();
         int itemsToSpawn = map.baseItemsToSpawn();
         itemsToSpawn += (int) (4 * (1 - directorRating));
         for (int i = 0; i < itemsToSpawn; i++) {
@@ -71,7 +73,7 @@ public class ItemHandler {
 
         // Spawn ammo
         for (Vector v : map.ammoLocations()) {
-            spawnAmmo(v.toLocation(director.getWorld()));
+            spawnAmmo(v);
         }
     }
 
@@ -80,7 +82,7 @@ public class ItemHandler {
         Vector[] weaponLocations = map.weaponLocations();
         if (weaponLocations.length < 1) return;
         int index = weaponLocations.length == 1 ? 0 : ThreadLocalRandom.current().nextInt(0, weaponLocations.length);
-        spawnWeapon(weaponLocations[index].toLocation(director.getWorld()), gun, false);
+        spawnWeapon(weaponLocations[index], gun, false);
     }
 
     public void spawnMeleeAtRandom(Melee melee) {
@@ -88,11 +90,11 @@ public class ItemHandler {
         Vector[] weaponLocations = map.weaponLocations();
         if (weaponLocations.length < 1) return;
         int index = weaponLocations.length == 1 ? 0 : ThreadLocalRandom.current().nextInt(0, weaponLocations.length);
-        spawnWeapon(weaponLocations[index].toLocation(director.getWorld()), melee, false);
+        spawnWeapon(weaponLocations[index], melee, false);
     }
 
-    public void spawnWeapon(Location loc, Weapon weapon, boolean isInvulnerable) {
-        Item item = director.getWorld().dropItem(loc, weapon.getWeapon());
+    public void spawnWeapon(Vector loc, Weapon weapon, boolean isInvulnerable) {
+        Item item = director.getWorld().dropItem(loc.toLocation(director.getWorld()), weapon.getWeapon());
         if (isInvulnerable) {
             ItemMeta meta = item.getItemStack().getItemMeta();
             if (meta != null && meta.getLore() != null) {
@@ -109,19 +111,19 @@ public class ItemHandler {
         Vector[] itemLocations = map.itemLocations();
         if (itemLocations.length < 1) return;
         int index = itemLocations.length == 1 ? 0 : ThreadLocalRandom.current().nextInt(0, itemLocations.length);
-        spawnUtility(itemLocations[index].toLocation(director.getWorld()), utility);
+        spawnUtility(itemLocations[index], utility, false);
     }
 
-    public void spawnUtility(Location loc, Utility utility) {
-        Item item = loc.getWorld().spawn(loc, Item.class);
+    public void spawnUtility(Vector loc, Utility utility, boolean isInvulnerable) {
+        Item item = director.getWorld().spawn(loc.toLocation(director.getWorld()), Item.class);
         item.setItemStack(utility.getUtility());
-        item.setInvulnerable(true);
+        item.setInvulnerable(isInvulnerable);
         item.setGlowing(true);
         item.addScoreboardTag("ITEM");
     }
 
-    private void spawnAmmo(Location loc) {
-        FallingBlock ammoPile = loc.getWorld().spawn(loc, FallingBlock.class);
+    private void spawnAmmo(Vector loc) {
+        FallingBlock ammoPile = director.getWorld().spawn(loc.toLocation(director.getWorld()), FallingBlock.class);
         ammoPile.setGravity(false);
         ammoPile.setGlowing(true);
         ammoPile.setDropItem(false);

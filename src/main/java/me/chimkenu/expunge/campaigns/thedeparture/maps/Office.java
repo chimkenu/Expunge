@@ -7,6 +7,11 @@ import me.chimkenu.expunge.campaigns.Dialogue;
 import me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue;
 import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.game.LocalGameManager;
+import me.chimkenu.expunge.items.utilities.healing.Medkit;
+import me.chimkenu.expunge.items.weapons.melees.Crowbar;
+import me.chimkenu.expunge.items.weapons.melees.FireAxe;
+import me.chimkenu.expunge.items.weapons.melees.Melee;
+import me.chimkenu.expunge.items.weapons.melees.Nightstick;
 import me.chimkenu.expunge.listeners.GameListener;
 import me.chimkenu.expunge.listeners.game.*;
 import me.chimkenu.expunge.mobs.common.Horde;
@@ -30,6 +35,9 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
+
+import java.util.ArrayList;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Office extends CampaignMap {
     @Override
@@ -136,7 +144,16 @@ public class Office extends CampaignMap {
 
     @Override
     public GameAction runAtStart() {
-        return null;
+        return (plugin, director, player) -> {
+            for (int i = 0; i < 4; i++)
+                director.getItemHandler().spawnUtility(new Vector(-3, 10, -17.5), new Medkit(), false);
+            ArrayList<Melee> meleeWeapons = new ArrayList<>();
+            meleeWeapons.add(new FireAxe());
+            meleeWeapons.add(new Crowbar());
+            meleeWeapons.add(new Nightstick());
+            director.getItemHandler().spawnWeapon(new Vector(-12, 10, -17.5), meleeWeapons.get(ThreadLocalRandom.current().nextInt(0, meleeWeapons.size())), true);
+            Dialogue.display(plugin, director.getLocalGameManager().getPlayers(), DepartureDialogue.OFFICE_OPENING.pickRandom(director.getLocalGameManager().getPlayers().size()));
+        };
     }
 
     @Override
@@ -175,13 +192,25 @@ public class Office extends CampaignMap {
                                 }
                             }
 
-                            localGameManager.getWorld().getBlockAt(-2, 81, -94).setType(Material.REDSTONE_BLOCK);
-
                             for (Player p : localGameManager.getPlayers()) {
                                 p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 5 * 20, 5, false, true));
                                 p.teleport(new Location(localGameManager.getWorld(), 3, 77, -94, 0, 0));
                             }
+
+                            Dialogue.display(plugin, localGameManager.getPlayers(), DepartureDialogue.OFFICE_ELEVATOR.pickRandom(localGameManager.getPlayers().size()));
                         }
+                    }
+                },
+                new Listener() {
+                    @EventHandler
+                    public void officeRubble(PlayerMoveEvent e) {
+                        if (!localGameManager.getPlayers().contains(e.getPlayer()))
+                            return;
+                        BoundingBox box = new BoundingBox(14, 75, -75, 24, 82, -85);
+                        if (!box.contains(e.getPlayer().getLocation().toVector()))
+                            return;
+                        Dialogue.display(plugin, localGameManager.getPlayers(), DepartureDialogue.OFFICE_RUBBLE.pickRandom(localGameManager.getPlayers().size()));
+                        HandlerList.unregisterAll(this);
                     }
                 },
                 new Listener() {
@@ -210,7 +239,7 @@ public class Office extends CampaignMap {
                         if (!localGameManager.getPlayers().contains(e.getPlayer())) {
                             return;
                         }
-                        if (block == null || !(e.getAction().equals(Action.PHYSICAL) && block.getLocation().toVector().equals(new Vector(-2, 45, -84)))) {
+                        if (block == null || !(e.getAction().equals(Action.PHYSICAL) && block.getLocation().toVector().equals(new Vector(-2, 45, -83)))) {
                             return;
                         }
 
@@ -221,16 +250,16 @@ public class Office extends CampaignMap {
 
                             @Override
                             public void run() {
-                                localGameManager.getDirector().spawnMob(new Horde(plugin, world, new Vector(-2.5, 49, -79.5), localGameManager.getDifficulty()));
-                                localGameManager.getDirector().spawnMob(new Horde(plugin, world, new Vector(-5.5, 48, -68.5), localGameManager.getDifficulty()));
-                                localGameManager.getDirector().spawnMob(new Horde(plugin, world, new Vector(18.5, 49, -68.5), localGameManager.getDifficulty()));
-                                localGameManager.getDirector().spawnMob(new Horde(plugin, world, new Vector(24.5, 49, -76.5), localGameManager.getDifficulty()));
-                                localGameManager.getDirector().spawnMob(new Horde(plugin, world, new Vector(28.5, 49, -82.5), localGameManager.getDifficulty()));
+                                localGameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(-2.5, 49, -79.5), localGameManager.getDifficulty()));
+                                localGameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(-5.5, 48, -68.5), localGameManager.getDifficulty()));
+                                localGameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(18.5, 49, -68.5), localGameManager.getDifficulty()));
+                                localGameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(24.5, 49, -76.5), localGameManager.getDifficulty()));
+                                localGameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(28.5, 49, -82.5), localGameManager.getDifficulty()));
                                 i++;
                                 if (i >= 5) {
                                     this.cancel();
                                 }
-                                if (localGameManager.getCampaignMapIndex() != 1) {
+                                if (!localGameManager.isRunning() || !localGameManager.getDirector().getMobHandler().isSpawningEnabled()) {
                                     this.cancel();
                                 }
                             }

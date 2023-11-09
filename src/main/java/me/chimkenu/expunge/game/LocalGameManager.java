@@ -169,14 +169,14 @@ public class LocalGameManager implements GameManager {
     }
 
     public void restartMap() {
-        director.setSpawningEnabled(false);
+        director.getMobHandler().setSpawningEnabled(false);
         director.clearEntities();
         director.incrementSceneAttempts();
         startMap();
     }
 
     public void startMap() {
-        director.setSpawningEnabled(true);
+        director.getMobHandler().setSpawningEnabled(true);
 
         for (Player p : getPlayers()) {
             p.leaveVehicle();
@@ -217,16 +217,16 @@ public class LocalGameManager implements GameManager {
             plugin.getServer().getPluginManager().registerEvents(listener, plugin);
         }
 
-        director.generateStartingItems();
-        director.spawnStartingMobs();
+        director.getItemHandler().generateStartingItems();
+        director.getMobHandler().spawnStartingMobs();
 
-        if (getMap().runAtStart() != null) getMap().runAtStart().run(null);
+        if (getMap().runAtStart() != null) getMap().runAtStart().run(plugin, director, null);
     }
 
     public void endMap() {
-        director.setSpawningEnabled(false);
+        director.getMobHandler().setSpawningEnabled(false);
 
-        if (getMap().runAtEnd() != null) getMap().runAtEnd().run(null);
+        if (getMap().runAtEnd() != null) getMap().runAtEnd().run(plugin, director, null);
 
         director.resetSceneAttempts();
         director.clearEntities();

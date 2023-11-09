@@ -32,8 +32,8 @@ public class Dialogue {
                 players.set(i, p);
             }
         }
-        String speakerA = players.get(0).displayName() + " ";
-        String speakerB = players.get(Math.min(1, players.size() - 1)).displayName() + " ";
+        String speakerA = players.get(0).getDisplayName() + " ";
+        String speakerB = players.get(Math.min(1, players.size() - 1)).getDisplayName() + " ";
         int totalTime = 0;
         double wordsPerSecond = 2.5;
         for (int i = 0; i < dialogue.size(); i++) {

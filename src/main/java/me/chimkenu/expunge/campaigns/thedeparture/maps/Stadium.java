@@ -6,7 +6,12 @@ import me.chimkenu.expunge.campaigns.CampaignMap;
 import me.chimkenu.expunge.campaigns.Dialogue;
 import me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue;
 import me.chimkenu.expunge.enums.Achievements;
+import me.chimkenu.expunge.enums.Tier;
 import me.chimkenu.expunge.game.LocalGameManager;
+import me.chimkenu.expunge.game.director.ItemHandler;
+import me.chimkenu.expunge.items.utilities.healing.Adrenaline;
+import me.chimkenu.expunge.items.utilities.healing.Medkit;
+import me.chimkenu.expunge.items.utilities.healing.Pills;
 import me.chimkenu.expunge.listeners.GameListener;
 import me.chimkenu.expunge.listeners.game.*;
 import net.md_5.bungee.api.ChatMessageType;
@@ -130,7 +135,21 @@ public class Stadium extends CampaignMap {
 
     @Override
     public GameAction runAtStart() {
-        return null;
+        return (plugin, director, player) -> {
+            for (int i = 0; i < 4; i++) {
+                director.getItemHandler().spawnUtility(new Vector(-104.5, 37, -146), new Medkit(), false);
+                director.getItemHandler().spawnUtility(new Vector(1196, 36, 1658), new Medkit(), false);
+            }
+            director.getItemHandler().spawnUtility(new Vector(63.5, 37, 64.5), new Medkit(), false);
+            director.getItemHandler().spawnUtility(new Vector(50.5, 46, 180.5), new Medkit(), false);
+            director.getItemHandler().spawnWeapon(new Vector(-101.5, 37, -147), ItemHandler.getRandomGun(Tier.TIER2), true);
+            director.getItemHandler().spawnWeapon(new Vector(-101.5, 37, -145), ItemHandler.getRandomMelee(Tier.TIER1), false);
+            director.getItemHandler().spawnUtility(new Vector(-97.5, 36, -151.5), new Pills(), false);
+            director.getItemHandler().spawnUtility(new Vector(-97.5, 36, -144.5), new Adrenaline(), false);
+
+            Dialogue.display(plugin, director.getLocalGameManager().getPlayers(), DepartureDialogue.STADIUM_OPENING.pickRandom(director.getLocalGameManager().getPlayers().size()));
+            director.getLocalGameManager().getWorld().getBlockAt(32, 17, 123).setType(Material.REDSTONE_BLOCK);
+        };
     }
 
     @Override
@@ -143,26 +162,14 @@ public class Stadium extends CampaignMap {
         return new Listener[]{
                 new Listener() {
                     @EventHandler
-                    public void stadiumParkingLotA(PlayerMoveEvent e) {
-                        if (!localGameManager.getPlayers().contains(e.getPlayer()))
-                            return;
-                        BoundingBox box = new BoundingBox(1034, 34, 1449, 1042, 50, 1500);
-                        if (!box.contains(e.getPlayer().getLocation().toVector()))
-                            return;
-                        localGameManager.getDirector().spawnAtRandomLocations(new BoundingBox(1108, 35, 1466, 1170, 35, 1534), 20 + (localGameManager.getDifficulty().ordinal() * 15));
-                        HandlerList.unregisterAll(this);
-                    }
-                },
-                new Listener() {
-                    @EventHandler
                     public void stadiumParkingLotB(PlayerMoveEvent e) {
                         if (!localGameManager.getPlayers().contains(e.getPlayer()))
                             return;
-                        BoundingBox box = new BoundingBox(1106, 34, 1492, 1102, 55, 1455);
+                        BoundingBox box = new BoundingBox(-32, 34, -17, 7, 52, -47);
                         if (!box.contains(e.getPlayer().getLocation().toVector()))
                             return;
                         localGameManager.getDirector().bile(plugin, e.getPlayer(), 5);
-                        localGameManager.getDirector().spawnAtRandomLocations(new BoundingBox(1179, 35, 1466, 1239, 35, 1569), 20 + (localGameManager.getDifficulty().ordinal() * 10));
+                        localGameManager.getDirector().getMobHandler().spawnAtRandomLocations(new BoundingBox(1179, 35, 1466, 1239, 35, 1569), 20 + (localGameManager.getDifficulty().ordinal() * 10));
                         Dialogue.display(plugin, localGameManager.getPlayers(), DepartureDialogue.STADIUM_PARKING_LOT.pickRandom(localGameManager.getPlayers().size()));
                         HandlerList.unregisterAll(this);
                     }
@@ -172,12 +179,11 @@ public class Stadium extends CampaignMap {
                     public void stadiumEnter(PlayerMoveEvent e) {
                         if (!localGameManager.getPlayers().contains(e.getPlayer()))
                             return;
-                        BoundingBox box = new BoundingBox(1182, 34, 1580, 1190, 39, 1587);
+                        BoundingBox box = new BoundingBox(45, 35, 75, 55, 39, 82);
                         if (!box.contains(e.getPlayer().getLocation().toVector()))
                             return;
                         Dialogue.display(plugin, localGameManager.getPlayers(), DepartureDialogue.STADIUM_ENTER.pickRandom(localGameManager.getPlayers().size()));
                         localGameManager.getDirector().bile(plugin, e.getPlayer(), 5);
-                        localGameManager.getDirector().spawnAtRandomLocations(new BoundingBox(1219, 35, 1616, 1153, 35, 1660), 30 + (localGameManager.getDifficulty().ordinal() * 10));
                         HandlerList.unregisterAll(this);
                     }
                 },
@@ -194,7 +200,7 @@ public class Stadium extends CampaignMap {
                             return;
                         }
                         Vector clickedLoc = e.getClickedBlock().getLocation().toVector();
-                        if (clickedLoc.equals(new Vector(1185, 46, 1684)) || clickedLoc.equals(new Vector(1187, 46, 1684))) {
+                        if (clickedLoc.equals(new Vector(49, 46, 180)) || clickedLoc.equals(new Vector(51, 46, 180))) {
                             Campaign.playCrescendoEventEffect(localGameManager.getPlayers());
                             summonHorde(plugin, localGameManager);
                             new BukkitRunnable() {
@@ -202,7 +208,7 @@ public class Stadium extends CampaignMap {
                                 @Override
                                 public void run() {
                                     i--;
-                                    if (!localGameManager.isRunning() || !localGameManager.getDirector().isSpawningEnabled()) this.cancel();
+                                    if (!localGameManager.isRunning() || !localGameManager.getDirector().getMobHandler().isSpawningEnabled()) this.cancel();
                                     if (i <= 0) {
                                         summonHorde(plugin, localGameManager);
                                         this.cancel();
@@ -214,8 +220,8 @@ public class Stadium extends CampaignMap {
                             plugin.getServer().getPluginManager().registerEvents(new Listener() {
                                 @EventHandler
                                 public void afterHorde(EntityDeathEvent e) {
-                                    if (localGameManager.getDirector().getActiveMobs() <= 5) {
-                                        localGameManager.getDirector().spawnTank();
+                                    if (localGameManager.getDirector().getMobHandler().getActiveMobs().size() <= 5) {
+                                        localGameManager.getDirector().getMobHandler().spawnTank();
                                         HandlerList.unregisterAll(this);
                                     }
                                 }
@@ -241,7 +247,7 @@ public class Stadium extends CampaignMap {
                                                         @Override
                                                         public void run() {
                                                             i--;
-                                                            if (!localGameManager.isRunning() || !localGameManager.getDirector().isSpawningEnabled()) this.cancel();
+                                                            if (!localGameManager.isRunning() || !localGameManager.getDirector().getMobHandler().isSpawningEnabled()) this.cancel();
                                                             if (i <= 0) {
                                                                 summonHorde(plugin, localGameManager);
                                                                 this.cancel();
@@ -252,8 +258,8 @@ public class Stadium extends CampaignMap {
                                                     plugin.getServer().getPluginManager().registerEvents(new Listener() {
                                                         @EventHandler
                                                         public void afterHorde(EntityDeathEvent e) {
-                                                            if (localGameManager.getDirector().getActiveMobs() <= 5) {
-                                                                localGameManager.getDirector().spawnTank();
+                                                            if (localGameManager.getDirector().getMobHandler().getActiveMobs().size() <= 5) {
+                                                                localGameManager.getDirector().getMobHandler().spawnTank();
                                                                 HandlerList.unregisterAll(this);
                                                             }
                                                         }
@@ -264,7 +270,7 @@ public class Stadium extends CampaignMap {
                                                         public void afterTank(EntityDeathEvent e) {
                                                             if (e.getEntityType().equals(EntityType.IRON_GOLEM)) {
                                                                 Dialogue.display(plugin, localGameManager.getPlayers(), DepartureDialogue.STADIUM_ENDING.pickRandom(localGameManager.getPlayers().size()));
-                                                                // TODO: Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "setblock 1168 17 1626 minecraft:redstone_block");
+                                                                localGameManager.getWorld().getBlockAt(32, 17, 122).setType(Material.REDSTONE_BLOCK);
                                                             }
                                                         }
                                                     }, plugin);
@@ -274,7 +280,7 @@ public class Stadium extends CampaignMap {
 
 
                                                 // timer
-                                                if (!localGameManager.isRunning() || !localGameManager.getDirector().isSpawningEnabled()) this.cancel();
+                                                if (!localGameManager.isRunning() || !localGameManager.getDirector().getMobHandler().isSpawningEnabled()) this.cancel();
                                                 for (Player p : localGameManager.getPlayers()) {
                                                     p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§7" + i));
                                                 }
@@ -291,7 +297,7 @@ public class Stadium extends CampaignMap {
                 },
                 new Listener() {
                     @EventHandler
-                    public void finaleBegin(PlayerInteractEvent e) {
+                    public void achievement(PlayerInteractEvent e) {
                         if (!localGameManager.getPlayers().contains(e.getPlayer())) {
                             return;
                         }
@@ -302,7 +308,7 @@ public class Stadium extends CampaignMap {
                             return;
                         }
                         Vector clickedLoc = e.getClickedBlock().getLocation().toVector();
-                        if (clickedLoc.equals(new Vector(1185, 39, 1642)) || clickedLoc.equals(new Vector(1185, 39, 1634))) {
+                        if (clickedLoc.equals(new Vector(49, 39, 130)) || clickedLoc.equals(new Vector(49, 39, 138))) {
                             Achievements.HEY_DONT_TOUCH_THAT.grant(e.getPlayer());
                         }
                     }
@@ -333,9 +339,9 @@ public class Stadium extends CampaignMap {
             @Override
             public void run() {
                 if (i <= 0) this.cancel();
-                if (!localGameManager.isRunning() || !localGameManager.getDirector().isSpawningEnabled()) this.cancel();
+                if (!localGameManager.isRunning() || !localGameManager.getDirector().getMobHandler().isSpawningEnabled()) this.cancel();
                 for (int j = 0; j < 5; j++) {
-                    localGameManager.getDirector().spawnAdditionalMob();
+                    localGameManager.getDirector().getMobHandler().spawnAdditionalMob();
                 }
                 i--;
             }

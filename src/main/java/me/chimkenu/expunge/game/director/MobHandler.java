@@ -98,7 +98,12 @@ public class MobHandler {
         }
     }
 
-    public void spawnStartingMobs(int sceneIndex, int sceneAttempts, Difficulty difficulty, int numberOfPlayers) {
+    public void spawnStartingMobs() {
+        int sceneIndex = director.getLocalGameManager().getCampaignMapIndex();
+        int sceneAttempts = director.getSceneAttempts();
+        Difficulty difficulty = director.getDifficulty();
+        int numberOfPlayers = director.getPlayers().size();
+        
         // MOB CALCULATION: STARTING HORDE IS DEFINED BY THE FOLLOWING EQUATION:
         // 6 + sd + 2p - (a - (a / 5) % 5)
         // WHEREIN 's' IS THE SCENE INDEX, 'd' IS THE DIFFICULTY (0-2),

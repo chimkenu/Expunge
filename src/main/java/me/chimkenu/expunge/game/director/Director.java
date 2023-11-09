@@ -143,34 +143,6 @@ public class Director implements Listener {
         return (totalHealth * 0.2) + (skillAverage * 0.45) + (mobsOnPlayer * 0.35);
     }
 
-    public void generateStartingItems() {
-        itemHandler.generateItems(getMap(), calculateRating());
-    }
-
-    public void spawnWeapon(Location loc, Weapon weapon, boolean isInvulnerable) {
-        itemHandler.spawnWeapon(loc, weapon, isInvulnerable);
-    }
-
-    public void spawnStartingMobs() {
-        mobHandler.spawnStartingMobs(getLocalGameManager().getCampaignMapIndex(), sceneAttempts, getDifficulty(), getPlayers().size());
-    }
-
-    public void spawnMob(GameMob mob) {
-        mobHandler.spawnMob(mob);
-    }
-
-    public void spawnAtRandomLocations(BoundingBox boundingBox, int numToSpawn) {
-        mobHandler.spawnAtRandomLocations(boundingBox, numToSpawn);
-    }
-
-    public void spawnAdditionalMob() {
-        mobHandler.spawnAdditionalMob();
-    }
-
-    public void spawnTank() {
-        mobHandler.spawnTank();
-    }
-
     public LocalGameManager getLocalGameManager() {
         return localGameManager;
     }
@@ -191,24 +163,24 @@ public class Director implements Listener {
         return localGameManager.getDifficulty();
     }
 
-    public long getSceneTime() {
+    public ItemHandler getItemHandler() {
+        return itemHandler;
+    }
+
+    public MobHandler getMobHandler() {
+        return mobHandler;
+    }
+
+    public StatsHandler getStatsHandler() {
+        return statsHandler;
+    }
+
+    public int getSceneTime() {
         return sceneTime;
     }
 
     public int getSceneAttempts() {
         return sceneAttempts;
-    }
-
-    public int getActiveMobs() {
-        return mobHandler.getActiveMobs().size();
-    }
-
-    public boolean isSpawningEnabled() {
-        return mobHandler.isSpawningEnabled();
-    }
-
-    public void setSpawningEnabled(boolean spawningEnabled) {
-        mobHandler.setSpawningEnabled(spawningEnabled);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
