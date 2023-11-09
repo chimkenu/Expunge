@@ -58,6 +58,30 @@ public enum DepartureDialogue {
             };
         }
     },
+    OFFICE_RUBBLE {
+        @Override
+        public String[] getA() {
+            return new String[]{
+                    "A: We need to get around this rubble.",
+                    "B: I think we can get past it through the offices to the right."
+            };
+        }
+
+        @Override
+        public String[] getB() {
+            return new String[]{
+                    "A: How do we get past this rubble?",
+                    "B: I think I see a way around through the offices to the right."
+            };
+        }
+
+        @Override
+        public String[] getSolo() {
+            return new String[]{
+                    "A » I think if I go through the hole in the wall to the right, then I can get past this blockage."
+            };
+        }
+    },
     OFFICE_JUMP {
         @Override
         public String[] getA() {
