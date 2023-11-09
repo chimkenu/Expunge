@@ -362,7 +362,7 @@ public enum DepartureDialogue {
             return new String[]{ "A » Go to Station B, follow the railroad then head right when the road forks. Simple enough."};
         }
     },
-    SUBWAY_SAFE_ZONE {
+    SUBWAY_PASSENGER_TRAIN {
         @Override
         public String[] getA() {
             return new String[]{ "A » Take cover in that passenger train!"};
