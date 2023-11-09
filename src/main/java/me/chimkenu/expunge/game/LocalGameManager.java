@@ -176,8 +176,6 @@ public class LocalGameManager implements GameManager {
     }
 
     public void startMap() {
-        director.getMobHandler().setSpawningEnabled(true);
-
         for (Player p : getPlayers()) {
             p.leaveVehicle();
             p.teleport(getMap().startLocation().toLocation(getWorld()));
@@ -221,6 +219,7 @@ public class LocalGameManager implements GameManager {
         director.getMobHandler().spawnStartingMobs();
 
         if (getMap().runAtStart() != null) getMap().runAtStart().run(plugin, director, null);
+        director.getMobHandler().setSpawningEnabled(true);
     }
 
     public void endMap() {
@@ -247,6 +246,7 @@ public class LocalGameManager implements GameManager {
     }
 
     public void moveToNextMap() throws RuntimeException {
+        director.getMobHandler().setSpawningEnabled(false);
         if (gameWorlds.size() < 2) {
             throw new RuntimeException("There's no next map to go to!");
         }

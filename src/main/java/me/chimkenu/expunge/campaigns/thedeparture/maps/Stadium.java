@@ -44,7 +44,7 @@ public class Stadium extends CampaignMap {
 
     @Override
     public BoundingBox endRegion() {
-        return null;
+        return new BoundingBox(52, 37, 132, 48, 42, 136);
     }
 
     @Override
@@ -87,7 +87,9 @@ public class Stadium extends CampaignMap {
 
     @Override
     public Vector[] bossLocations() {
-        return new Vector[0];
+        return new Vector[]{
+                new Vector(50.5, 45, 87.5)
+        };
     }
 
     @Override

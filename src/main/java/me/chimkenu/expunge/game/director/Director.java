@@ -131,16 +131,19 @@ public class Director implements Listener {
             skillAverage += statsHandler.calculateRating(p);
         }
 
-        double mobsOnPlayer = 0;
-        for (GameMob mob : mobHandler.getActiveMobs()) {
-            if (mob.getMob().getTarget() instanceof Player player && mob.getMob().getLocation().distanceSquared(player.getLocation()) < 8) mobsOnPlayer++;
+        if (mobHandler.isSpawningEnabled()) {
+            double mobsOnPlayer = 0;
+            for (GameMob mob : mobHandler.getActiveMobs()) {
+                if (mob.getMob().getTarget() instanceof Player player && mob.getMob().getLocation().distanceSquared(player.getLocation()) < 8)
+                    mobsOnPlayer++;
+            }
+
+            totalHealth = totalHealth / (20 * localGameManager.getPlayers().size());
+            skillAverage = skillAverage / localGameManager.getPlayers().size();
+            mobsOnPlayer = 1 - (mobsOnPlayer / mobHandler.getActiveMobs().size());
+            return (totalHealth * 0.2) + (skillAverage * 0.45) + (mobsOnPlayer * 0.35);
         }
-
-        totalHealth = totalHealth / (20 * localGameManager.getPlayers().size());
-        skillAverage = skillAverage / localGameManager.getPlayers().size();
-        mobsOnPlayer = 1 - (mobsOnPlayer / mobHandler.getActiveMobs().size());
-
-        return (totalHealth * 0.2) + (skillAverage * 0.45) + (mobsOnPlayer * 0.35);
+        return totalHealth * 0.5 + skillAverage * 0.5;
     }
 
     public LocalGameManager getLocalGameManager() {
