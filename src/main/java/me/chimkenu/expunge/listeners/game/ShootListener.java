@@ -11,10 +11,7 @@ import me.chimkenu.expunge.items.weapons.guns.MP5;
 import me.chimkenu.expunge.items.weapons.guns.SMG;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.SoundCategory;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
@@ -175,6 +172,9 @@ public class ShootListener extends GameListener {
 
             if (gun != null) {
                 e.setCancelled(true);
+
+                if (player.getGameMode() != GameMode.ADVENTURE)
+                    return;
                 if (!player.isSneaking())
                     fireGun(player, gun);
                 else
@@ -198,6 +198,8 @@ public class ShootListener extends GameListener {
         Gun gun = Utils.getPlayerHeldGun(player.getInventory().getItemInMainHand());
         if (gun != null) {
             e.setCancelled(true);
+            if (player.getGameMode() != GameMode.ADVENTURE)
+                return;
             if (!player.isSneaking())
                 fireGun(player, gun);
             else
