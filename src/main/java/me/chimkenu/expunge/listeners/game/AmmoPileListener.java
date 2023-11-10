@@ -1,5 +1,6 @@
 package me.chimkenu.expunge.listeners.game;
 
+import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.game.LocalGameManager;
 import me.chimkenu.expunge.listeners.GameListener;
 import me.chimkenu.expunge.utils.Utils;
@@ -16,8 +17,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class AmmoPileListener extends GameListener {
-    public AmmoPileListener(JavaPlugin plugin, LocalGameManager localGameManager) {
-        super(plugin, localGameManager);
+    public AmmoPileListener(JavaPlugin plugin, GameManager gameManager) {
+        super(plugin, gameManager);
     }
 
     @EventHandler

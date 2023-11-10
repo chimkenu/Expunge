@@ -168,6 +168,7 @@ public class LocalGameManager implements GameManager {
         return main != null && !main.isCancelled();
     }
 
+    @Override
     public void restartMap() {
         director.getMobHandler().setSpawningEnabled(false);
         director.clearEntities();
@@ -175,6 +176,7 @@ public class LocalGameManager implements GameManager {
         startMap();
     }
 
+    @Override
     public void startMap() {
         for (Player p : getPlayers()) {
             p.leaveVehicle();
@@ -218,14 +220,15 @@ public class LocalGameManager implements GameManager {
         director.getItemHandler().generateStartingItems();
         director.getMobHandler().spawnStartingMobs();
 
-        if (getMap().runAtStart() != null) getMap().runAtStart().run(plugin, director, null);
+        if (getMap().runAtStart() != null) getMap().runAtStart().run(plugin, director.getGameManager(), null);
         director.getMobHandler().setSpawningEnabled(true);
     }
 
+    @Override
     public void endMap() {
         director.getMobHandler().setSpawningEnabled(false);
 
-        if (getMap().runAtEnd() != null) getMap().runAtEnd().run(plugin, director, null);
+        if (getMap().runAtEnd() != null) getMap().runAtEnd().run(plugin, director.getGameManager(), null);
 
         director.resetSceneAttempts();
         director.clearEntities();
@@ -236,6 +239,7 @@ public class LocalGameManager implements GameManager {
         }
     }
 
+    @Override
     public void loadNextMap() throws RuntimeException {
         campaignMapIndex++;
         CampaignMap map = getMap();
@@ -245,6 +249,7 @@ public class LocalGameManager implements GameManager {
         }
     }
 
+    @Override
     public void moveToNextMap() throws RuntimeException {
         director.getMobHandler().setSpawningEnabled(false);
         if (gameWorlds.size() < 2) {
@@ -262,35 +267,43 @@ public class LocalGameManager implements GameManager {
         startMap();
     }
 
+    @Override
     public Campaign getCampaign() {
         return campaign;
     }
 
+    @Override
     public int getCampaignMapIndex() {
         return campaignMapIndex;
     }
 
+    @Override
     public CampaignMap getMap() {
         return campaign.getMaps()[campaignMapIndex];
     }
 
+    @Override
     public World getWorld() {
         if (gameWorlds.isEmpty()) return null;
         return gameWorlds.peek().getWorld();
     }
 
+    @Override
     public Difficulty getDifficulty() {
         return difficulty;
     }
 
+    @Override
     public Set<Player> getPlayers() {
         return players.keySet();
     }
 
+    @Override
     public PlayerStats getPlayerStat(Player player) {
         return players.get(player);
     }
 
+    @Override
     public Director getDirector() {
         return director;
     }

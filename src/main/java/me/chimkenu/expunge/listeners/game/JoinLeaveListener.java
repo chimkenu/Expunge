@@ -1,5 +1,6 @@
 package me.chimkenu.expunge.listeners.game;
 
+import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.game.LocalGameManager;
 import me.chimkenu.expunge.listeners.GameListener;
 import org.bukkit.Bukkit;
@@ -9,18 +10,18 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class JoinLeaveListener extends GameListener {
-    public JoinLeaveListener(JavaPlugin plugin, LocalGameManager localGameManager) {
-        super(plugin, localGameManager);
+    public JoinLeaveListener(JavaPlugin plugin, GameManager gameManager) {
+        super(plugin, gameManager);
     }
 
     @EventHandler
     public void onLeave(PlayerQuitEvent e) {
-        if (localGameManager.getPlayers().contains(e.getPlayer())) {
-            localGameManager.getPlayers().remove(e.getPlayer());
+        if (gameManager.getPlayers().contains(e.getPlayer())) {
+            gameManager.getPlayers().remove(e.getPlayer());
 
-            if (localGameManager.getPlayers().size() < 1) {
+            if (gameManager.getPlayers().size() < 1) {
                 Bukkit.broadcastMessage(ChatColor.RED + "All players left, stopping game...");
-                localGameManager.stop(true);
+                gameManager.stop(true);
             }
         }
     }

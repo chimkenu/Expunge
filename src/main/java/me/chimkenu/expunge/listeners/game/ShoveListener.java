@@ -1,13 +1,13 @@
 package me.chimkenu.expunge.listeners.game;
 
 import me.chimkenu.expunge.game.BreakGlass;
+import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.game.LocalGameManager;
 import me.chimkenu.expunge.game.PlayerStats;
 import me.chimkenu.expunge.listeners.GameListener;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -15,17 +15,15 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.HashMap;
-
 public class ShoveListener extends GameListener {
 
-    public ShoveListener(JavaPlugin plugin, LocalGameManager localGameManager) {
-        super(plugin, localGameManager);
+    public ShoveListener(JavaPlugin plugin, GameManager gameManager) {
+        super(plugin, gameManager);
     }
 
     private boolean canShove(Player player) {
-        int cooldown = localGameManager.getPlayerStat(player).getNumberOfRecentShoves() > 7 ? 3 : 1;
-        return ((System.currentTimeMillis() - localGameManager.getPlayerStat(player).getTimeSinceLastShove()) > (cooldown * 1000));
+        int cooldown = gameManager.getPlayerStat(player).getNumberOfRecentShoves() > 7 ? 3 : 1;
+        return ((System.currentTimeMillis() - gameManager.getPlayerStat(player).getTimeSinceLastShove()) > (cooldown * 1000));
     }
 
     private boolean onShove(Player attacker) {
@@ -36,7 +34,7 @@ public class ShoveListener extends GameListener {
             return false;
         }
 
-        PlayerStats playerStats = localGameManager.getPlayerStat(attacker);
+        PlayerStats playerStats = gameManager.getPlayerStat(attacker);
 
         playerStats.setNumberOfRecentShoves(playerStats.getNumberOfRecentShoves() + 1);
         if (System.currentTimeMillis() - playerStats.getTimeSinceLastShove() > 6000) {
@@ -79,7 +77,7 @@ public class ShoveListener extends GameListener {
 
     @EventHandler
     public void onShove(PlayerInteractEvent e) {
-        if (!localGameManager.getPlayers().contains(e.getPlayer())) {
+        if (!gameManager.getPlayers().contains(e.getPlayer())) {
             return;
         }
         if (!(e.getAction() == Action.RIGHT_CLICK_AIR || (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock() != null && e.getClickedBlock().getType().toString().contains("GLASS")))) {
@@ -91,7 +89,7 @@ public class ShoveListener extends GameListener {
 
     @EventHandler
     public void onShove(PlayerInteractEntityEvent e) {
-        if (!localGameManager.getPlayers().contains(e.getPlayer())) {
+        if (!gameManager.getPlayers().contains(e.getPlayer())) {
             return;
         }
         if (e.getRightClicked() instanceof FallingBlock fallingBlock && fallingBlock.getScoreboardTags().contains("AMMO_PILE")) {

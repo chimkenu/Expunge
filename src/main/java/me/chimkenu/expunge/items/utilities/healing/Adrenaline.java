@@ -2,8 +2,7 @@ package me.chimkenu.expunge.items.utilities.healing;
 
 import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.enums.Slot;
-import me.chimkenu.expunge.game.LocalGameManager;
-import org.bukkit.Bukkit;
+import me.chimkenu.expunge.game.GameManager;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
@@ -17,7 +16,7 @@ import java.util.Objects;
 
 public class Adrenaline implements Healing {
     @Override
-    public void use(JavaPlugin plugin, LocalGameManager localGameManager, LivingEntity entity) {
+    public void use(JavaPlugin plugin, GameManager gameManager, LivingEntity entity) {
         if (!(entity instanceof Player player)) {
             return;
         }
@@ -27,7 +26,7 @@ public class Adrenaline implements Healing {
         }
 
         player.setCooldown(getUtility().getType(), getCooldown() + 1);
-        attemptUse(plugin, null, player, item, getCooldown(), false, "§eUsing adrenaline...", (plugin1, director, player1) -> {
+        attemptUse(plugin, null, player, item, getCooldown(), false, "§eUsing adrenaline...", (plugin1, gameManager1, player1) -> {
             player1.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20 * 15, 1, false, false, true));
             double absorption = Math.min(20, player1.getAbsorptionAmount() + 5);
             Objects.requireNonNull(player1.getAttribute(Attribute.GENERIC_MAX_ABSORPTION)).setBaseValue(20);

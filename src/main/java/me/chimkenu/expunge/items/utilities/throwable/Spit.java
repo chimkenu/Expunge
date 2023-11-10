@@ -1,6 +1,6 @@
 package me.chimkenu.expunge.items.utilities.throwable;
 
-import me.chimkenu.expunge.game.LocalGameManager;
+import me.chimkenu.expunge.game.GameManager;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -13,7 +13,7 @@ import java.util.*;
 
 public class Spit implements Throwable {
     @Override
-    public void use(JavaPlugin plugin, LocalGameManager localGameManager, LivingEntity entity) {
+    public void use(JavaPlugin plugin, GameManager gameManager, LivingEntity entity) {
         entity.getWorld().playSound(entity.getLocation(), Sound.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.HOSTILE, 0.5f, 0);
         Projectile ball = entity.launchProjectile(Snowball.class);
         ball.addScoreboardTag(getTag());

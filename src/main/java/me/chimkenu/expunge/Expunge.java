@@ -8,6 +8,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.util.Vector;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -37,7 +38,6 @@ public final class Expunge extends JavaPlugin {
         registerCommand("spawn", new Spawn());
         registerCommand("test", new TestCommand(this));
 
-        lobby = new Lobby(this, Bukkit.getWorld("world"), new Location(Bukkit.getWorld("world"), 0, 0, 0));
         getServer().getPluginManager().registerEvents(lobby, this);
     }
 
@@ -64,6 +64,9 @@ public final class Expunge extends JavaPlugin {
     }
 
     public Lobby getLobby() {
+        if (lobby == null) {
+            lobby = new Lobby(this, Bukkit.getWorld("world"), new Vector(0, 0, 0));
+        }
         return lobby;
     }
 }

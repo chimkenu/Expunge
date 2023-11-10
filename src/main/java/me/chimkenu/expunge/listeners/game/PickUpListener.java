@@ -1,11 +1,11 @@
 package me.chimkenu.expunge.listeners.game;
 
+import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.game.LocalGameManager;
 import me.chimkenu.expunge.listeners.GameListener;
 import me.chimkenu.expunge.utils.Utils;
 import me.chimkenu.expunge.items.GameItem;
 import me.chimkenu.expunge.items.utilities.Utility;
-import me.chimkenu.expunge.items.utilities.healing.Healing;
 import me.chimkenu.expunge.items.weapons.Weapon;
 import me.chimkenu.expunge.items.weapons.guns.Gun;
 import net.md_5.bungee.api.ChatMessageType;
@@ -30,8 +30,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.HashMap;
 
 public class PickUpListener extends GameListener {
-    public PickUpListener(JavaPlugin plugin, LocalGameManager localGameManager) {
-        super(plugin, localGameManager);
+    public PickUpListener(JavaPlugin plugin, GameManager gameManager) {
+        super(plugin, gameManager);
     }
 
     private static HashMap<ItemStack, GameItem> getItems() {
@@ -86,15 +86,15 @@ public class PickUpListener extends GameListener {
         if (player.getGameMode().equals(GameMode.CREATIVE)) {
             return;
         }
-        if (!localGameManager.isRunning()) {
+        if (!gameManager.isRunning()) {
             e.setCancelled(true);
             return;
         }
-        if (!localGameManager.getPlayers().contains(player)) {
+        if (!gameManager.getPlayers().contains(player)) {
             e.setCancelled(true);
             return;
         }
-        if (!localGameManager.getPlayerStat(player).isAlive()) {
+        if (!gameManager.getPlayerStat(player).isAlive()) {
             e.setCancelled(true);
             return;
         }
@@ -181,15 +181,15 @@ public class PickUpListener extends GameListener {
         if (player.getGameMode().equals(GameMode.CREATIVE)) {
             return;
         }
-        if (!localGameManager.isRunning()) {
+        if (!gameManager.isRunning()) {
             cancelDrop(e);
             return;
         }
-        if (!localGameManager.getPlayers().contains(player)) {
+        if (!gameManager.getPlayers().contains(player)) {
             cancelDrop(e);
             return;
         }
-        if (!localGameManager.getPlayerStat(player).isAlive()) {
+        if (!gameManager.getPlayerStat(player).isAlive()) {
             cancelDrop(e);
             return;
         }
@@ -225,13 +225,13 @@ public class PickUpListener extends GameListener {
 
     @EventHandler
     public void onItemMerge(ItemMergeEvent e) {
-        if (localGameManager.isRunning())
+        if (gameManager.isRunning())
             e.setCancelled(true);
     }
 
     @EventHandler
     public void onItemDespawn(ItemDespawnEvent e) {
-        if (localGameManager.isRunning())
+        if (gameManager.isRunning())
             e.setCancelled(true);
     }
 }

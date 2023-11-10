@@ -1,6 +1,6 @@
 package me.chimkenu.expunge.items.utilities;
 
-import me.chimkenu.expunge.game.LocalGameManager;
+import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.items.GameItem;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.LivingEntity;
@@ -19,5 +19,5 @@ public interface Utility extends GameItem {
         return utility;
     }
 
-    void use(JavaPlugin plugin, LocalGameManager localGameManager, LivingEntity entity);
+    void use(JavaPlugin plugin, GameManager gameManager, LivingEntity entity);
 }

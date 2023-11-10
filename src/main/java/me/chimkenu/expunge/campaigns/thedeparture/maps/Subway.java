@@ -155,15 +155,15 @@ public class Subway extends CampaignMap {
 
     @Override
     public GameAction runAtStart() {
-        return (plugin, director, player) -> {
+        return (plugin, gameManager, player) -> {
             for (int i = 0; i < 4; i++) {
-                director.getItemHandler().spawnUtility(new Vector(19.5, 44, -27.5), new Medkit(), false);
+                gameManager.getDirector().getItemHandler().spawnUtility(new Vector(19.5, 44, -27.5), new Medkit(), false);
             }
-            director.getItemHandler().spawnWeapon(new Vector(18.5, 44, -42), ItemHandler.getRandomGun(Tier.TIER2), true);
-            director.getItemHandler().spawnWeapon(new Vector(15.5, 44, -41), ItemHandler.getRandomGun(Tier.TIER2), true);
-            director.getItemHandler().spawnWeapon(new Vector(15.5, 44.5, -30.5), ItemHandler.getRandomMelee(Tier.TIER1), false);
-            director.getItemHandler().spawnUtility(new Vector(22, 50.2, -40.5), new Pills(), false);
-            director.getItemHandler().spawnUtility(new Vector(17, 50.2, -40.5), new Adrenaline(), false);
+            gameManager.getDirector().getItemHandler().spawnWeapon(new Vector(18.5, 44, -42), ItemHandler.getRandomGun(Tier.TIER2), true);
+            gameManager.getDirector().getItemHandler().spawnWeapon(new Vector(15.5, 44, -41), ItemHandler.getRandomGun(Tier.TIER2), true);
+            gameManager.getDirector().getItemHandler().spawnWeapon(new Vector(15.5, 44.5, -30.5), ItemHandler.getRandomMelee(Tier.TIER1), false);
+            gameManager.getDirector().getItemHandler().spawnUtility(new Vector(22, 50.2, -40.5), new Pills(), false);
+            gameManager.getDirector().getItemHandler().spawnUtility(new Vector(17, 50.2, -40.5), new Adrenaline(), false);
         };
     }
 

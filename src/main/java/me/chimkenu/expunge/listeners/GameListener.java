@@ -1,15 +1,16 @@
 package me.chimkenu.expunge.listeners;
 
+import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.game.LocalGameManager;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public abstract class GameListener implements Listener {
     protected final JavaPlugin plugin;
-    protected final LocalGameManager localGameManager;
+    protected final GameManager gameManager;
 
-    protected GameListener(JavaPlugin plugin, LocalGameManager localGameManager) {
+    protected GameListener(JavaPlugin plugin, GameManager gameManager) {
         this.plugin = plugin;
-        this.localGameManager = localGameManager;
+        this.gameManager = gameManager;
     }
 }

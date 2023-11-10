@@ -2,6 +2,7 @@ package me.chimkenu.expunge.listeners.game;
 
 import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.enums.Weapons;
+import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.game.LocalGameManager;
 import me.chimkenu.expunge.game.PlayerStats;
 import me.chimkenu.expunge.listeners.GameListener;
@@ -30,8 +31,8 @@ import java.util.ArrayList;
 public class DeathReviveListener extends GameListener {
     public final ArrayList<Player> beingRevived = new ArrayList<>();
 
-    public DeathReviveListener(JavaPlugin plugin, LocalGameManager localGameManager) {
-        super(plugin, localGameManager);
+    public DeathReviveListener(JavaPlugin plugin, GameManager gameManager) {
+        super(plugin, gameManager);
     }
 
     private void dead(Player player) {
@@ -49,9 +50,9 @@ public class DeathReviveListener extends GameListener {
             }
         }
         player.getInventory().clear(5); // pistol if they were down
-        if (localGameManager.getPlayers().contains(player)) {
-            localGameManager.getPlayerStat(player).setAlive(false);
-            localGameManager.getPlayerStat(player).setLives(0);
+        if (gameManager.getPlayers().contains(player)) {
+            gameManager.getPlayerStat(player).setAlive(false);
+            gameManager.getPlayerStat(player).setLives(0);
         }
     }
 
@@ -59,21 +60,21 @@ public class DeathReviveListener extends GameListener {
     public void onDeath(PlayerDeathEvent e) {
         Player player = e.getEntity();
 
-        if (!localGameManager.getPlayers().contains(player)) {
+        if (!gameManager.getPlayers().contains(player)) {
             return;
         }
 
-        if (!localGameManager.getPlayerStat(player).isAlive()) {
+        if (!gameManager.getPlayerStat(player).isAlive()) {
             // player died while down
             Bukkit.broadcastMessage(ChatColor.RED + player.getName() + " died.");
             player.leaveVehicle();
             dead(player);
         } else {
             // update value
-            localGameManager.getPlayerStat(player).setAlive(false);
+            gameManager.getPlayerStat(player).setAlive(false);
 
             // lives check
-            if (localGameManager.getPlayerStat(player).getLives() > 1) {
+            if (gameManager.getPlayerStat(player).getLives() > 1) {
                 Bukkit.broadcastMessage(ChatColor.RED + player.getName() + " is down.");
                 Location loc = player.getLocation();
                 while (loc.getBlock().getType().equals(Material.AIR)) {
@@ -105,23 +106,23 @@ public class DeathReviveListener extends GameListener {
         }
 
         // check if all players have died
-        for (Player p : localGameManager.getPlayers()) {
-            if (localGameManager.getPlayerStat(p).isAlive()) {
+        for (Player p : gameManager.getPlayers()) {
+            if (gameManager.getPlayerStat(p).isAlive()) {
                 return;
             }
         }
 
         // this is reached if all players are dead
         Bukkit.broadcastMessage(ChatColor.RED + "All players have died, returning to last checkpoint...");
-        for (Player p : localGameManager.getPlayers()) {
+        for (Player p : gameManager.getPlayers()) {
             p.setGameMode(GameMode.SPECTATOR);
             p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 3, 4, false, false, false));
         }
-        localGameManager.getDirector().clearEntities();
+        gameManager.getDirector().clearEntities();
         new BukkitRunnable() {
             @Override
             public void run() {
-                localGameManager.restartMap();
+                gameManager.restartMap();
             }
         }.runTaskLater(plugin, 20 * 3);
     }
@@ -131,13 +132,13 @@ public class DeathReviveListener extends GameListener {
         if (!(e.getEntity() instanceof Player player)) {
             return;
         }
-        if (!localGameManager.getPlayers().contains(player)) {
+        if (!gameManager.getPlayers().contains(player)) {
             return;
         }
-        if (localGameManager.getPlayerStat(player).isAlive() || player.getGameMode() == GameMode.SPECTATOR) {
+        if (gameManager.getPlayerStat(player).isAlive() || player.getGameMode() == GameMode.SPECTATOR) {
             return;
         }
-        if (localGameManager.getPlayerStat(player).getLives() < 1) {
+        if (gameManager.getPlayerStat(player).getLives() < 1) {
             return;
         }
         if (e.getDismounted().getScoreboardTags().contains("RESPAWN_ARMOR_STAND")) {
@@ -146,8 +147,8 @@ public class DeathReviveListener extends GameListener {
     }
 
     private void revive(Player target, Player savior) {
-        if (localGameManager.getPlayers().contains(target)) {
-            PlayerStats targetStats = localGameManager.getPlayerStat(target);
+        if (gameManager.getPlayers().contains(target)) {
+            PlayerStats targetStats = gameManager.getPlayerStat(target);
             targetStats.setAlive(true);
             targetStats.setLives(targetStats.getLives() - 1);
 
@@ -170,8 +171,8 @@ public class DeathReviveListener extends GameListener {
                     @Override
                     public void run() {
                         if (i <= 0 ||
-                                !localGameManager.isRunning() ||
-                                !localGameManager.getPlayers().contains(target) ||
+                                !gameManager.isRunning() ||
+                                !gameManager.getPlayers().contains(target) ||
                                 target.getGameMode() != GameMode.ADVENTURE ||
                                 targetStats.getLives() > 1
                         ) this.cancel();
@@ -193,17 +194,17 @@ public class DeathReviveListener extends GameListener {
 
     @EventHandler
     public void onSneakToggle(PlayerToggleSneakEvent e) {
-        if (!localGameManager.isRunning()) {
+        if (!gameManager.isRunning()) {
             return;
         }
         Player player = e.getPlayer();
-        if (!localGameManager.getPlayers().contains(player)) {
+        if (!gameManager.getPlayers().contains(player)) {
             return;
         }
         if (player.isSneaking()) {
             return;
         }
-        if (!localGameManager.getPlayerStat(player).isAlive()) {
+        if (!gameManager.getPlayerStat(player).isAlive()) {
             return;
         }
 
@@ -214,17 +215,17 @@ public class DeathReviveListener extends GameListener {
             if (target == player) {
                 continue;
             }
-            if (!localGameManager.getPlayers().contains(target)) {
+            if (!gameManager.getPlayers().contains(target)) {
                 continue;
             }
             if (beingRevived.contains(target)) {
                 player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§b" + target.getDisplayName() + " §eis already being revived."));
                 continue;
             }
-            if (localGameManager.getPlayerStat(target).isAlive()) {
+            if (gameManager.getPlayerStat(target).isAlive()) {
                 continue;
             }
-            if (localGameManager.getPlayerStat(target).getLives() <= 1) {
+            if (gameManager.getPlayerStat(target).getLives() <= 1) {
                 continue;
             }
 

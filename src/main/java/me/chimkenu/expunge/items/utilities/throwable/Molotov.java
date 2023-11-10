@@ -1,6 +1,6 @@
 package me.chimkenu.expunge.items.utilities.throwable;
 
-import me.chimkenu.expunge.game.LocalGameManager;
+import me.chimkenu.expunge.game.GameManager;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -9,7 +9,7 @@ import org.bukkit.util.Vector;
 
 public class Molotov implements Throwable {
     @Override
-    public void use(JavaPlugin plugin, LocalGameManager localGameManager, LivingEntity entity) {
+    public void use(JavaPlugin plugin, GameManager gameManager, LivingEntity entity) {
         entity.getWorld().playSound(entity.getLocation(), Sound.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 0.5f, 0);
         Projectile ball = entity.launchProjectile(Snowball.class);
         ball.addScoreboardTag(getTag());

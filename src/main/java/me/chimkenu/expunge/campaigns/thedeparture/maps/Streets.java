@@ -167,15 +167,15 @@ public class Streets extends CampaignMap {
 
     @Override
     public GameAction runAtStart() {
-        return (plugin, director, player) -> {
+        return (plugin, gameManager, player) -> {
             for (int i = 0; i < 4; i++) {
-                director.getItemHandler().spawnUtility(new Vector(-226.5, 44, -97), new Medkit(), false);
+                gameManager.getDirector().getItemHandler().spawnUtility(new Vector(-226.5, 44, -97), new Medkit(), false);
             }
 
-            director.getItemHandler().spawnWeapon(new Vector(-230.5, 44, -100.5), ItemHandler.getRandomGun(Tier.TIER2), true);
-            director.getItemHandler().spawnWeapon(new Vector(-226.5, 44, -95), ItemHandler.getRandomGun(Tier.TIER2), true);
+            gameManager.getDirector().getItemHandler().spawnWeapon(new Vector(-230.5, 44, -100.5), ItemHandler.getRandomGun(Tier.TIER2), true);
+            gameManager.getDirector().getItemHandler().spawnWeapon(new Vector(-226.5, 44, -95), ItemHandler.getRandomGun(Tier.TIER2), true);
 
-            Dialogue.display(plugin, director.getLocalGameManager().getPlayers(), DepartureDialogue.OFFICE_RADIO.pickRandom(director.getLocalGameManager().getPlayers().size()));
+            Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.OFFICE_RADIO.pickRandom(gameManager.getPlayers().size()));
         };
     }
 

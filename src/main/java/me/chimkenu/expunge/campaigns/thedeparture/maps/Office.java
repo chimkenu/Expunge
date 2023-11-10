@@ -19,7 +19,6 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -144,15 +143,15 @@ public class Office extends CampaignMap {
 
     @Override
     public GameAction runAtStart() {
-        return (plugin, director, player) -> {
+        return (plugin, gameManager, player) -> {
             for (int i = 0; i < 4; i++)
-                director.getItemHandler().spawnUtility(new Vector(-3, 10, -17.5), new Medkit(), false);
+                gameManager.getDirector().getItemHandler().spawnUtility(new Vector(-3, 10, -17.5), new Medkit(), false);
             ArrayList<Melee> meleeWeapons = new ArrayList<>();
             meleeWeapons.add(new FireAxe());
             meleeWeapons.add(new Crowbar());
             meleeWeapons.add(new Nightstick());
-            director.getItemHandler().spawnWeapon(new Vector(-12, 10, -17.5), meleeWeapons.get(ThreadLocalRandom.current().nextInt(0, meleeWeapons.size())), true);
-            Dialogue.display(plugin, director.getLocalGameManager().getPlayers(), DepartureDialogue.OFFICE_OPENING.pickRandom(director.getLocalGameManager().getPlayers().size()));
+            gameManager.getDirector().getItemHandler().spawnWeapon(new Vector(-12, 10, -17.5), meleeWeapons.get(ThreadLocalRandom.current().nextInt(0, meleeWeapons.size())), true);
+            Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.OFFICE_OPENING.pickRandom(gameManager.getPlayers().size()));
         };
     }
 

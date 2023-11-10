@@ -1,5 +1,6 @@
 package me.chimkenu.expunge.listeners.game;
 
+import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.game.LocalGameManager;
 import me.chimkenu.expunge.listeners.GameListener;
 import me.chimkenu.expunge.utils.Utils;
@@ -16,8 +17,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffectType;
 
 public class InventoryListener extends GameListener {
-    public InventoryListener(JavaPlugin plugin, LocalGameManager localGameManager) {
-        super(plugin, localGameManager);
+    public InventoryListener(JavaPlugin plugin, GameManager gameManager) {
+        super(plugin, gameManager);
     }
 
     @EventHandler
@@ -46,7 +47,7 @@ public class InventoryListener extends GameListener {
     public void onFlowerPotInteract(PlayerInteractEvent e) {
         Block block = e.getClickedBlock();
         if (block != null && (block.getType().name().startsWith("POTTED_") || block.getType() == Material.FLOWER_POT)) {
-            if (localGameManager.getPlayers().contains(e.getPlayer())) {
+            if (gameManager.getPlayers().contains(e.getPlayer())) {
                 e.setCancelled(true);
             }
         }

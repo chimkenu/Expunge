@@ -1,5 +1,6 @@
 package me.chimkenu.expunge.listeners.game;
 
+import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.game.LocalGameManager;
 import me.chimkenu.expunge.listeners.GameListener;
 import me.chimkenu.expunge.utils.Utils;
@@ -10,7 +11,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -18,15 +18,15 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class UtilityListener extends GameListener {
-    public UtilityListener(JavaPlugin plugin, LocalGameManager localGameManager) {
-        super(plugin, localGameManager);
+    public UtilityListener(JavaPlugin plugin, GameManager gameManager) {
+        super(plugin, gameManager);
     }
 
     private void useUtil(Player player, Utility utility) {
         ItemStack item = player.getInventory().getItemInMainHand();
 
         if (item.isSimilar(utility.getUtility()) && player.getCooldown(utility.getMaterial()) == 0) {
-            utility.use(plugin, localGameManager, player);
+            utility.use(plugin, gameManager, player);
             player.setCooldown(utility.getMaterial(), utility.getCooldown());
             if (utility instanceof Healing) {
                 return;
@@ -38,7 +38,7 @@ public class UtilityListener extends GameListener {
     @EventHandler
     public void onClickBlock(PlayerInteractEvent e) {
         Player player = e.getPlayer();
-        if (!localGameManager.getPlayers().contains(player)) {
+        if (!gameManager.getPlayers().contains(player)) {
             return;
         }
 
@@ -57,7 +57,7 @@ public class UtilityListener extends GameListener {
     public void onProjectileLand(ProjectileHitEvent e) {
         Projectile projectile = e.getEntity();
 
-        if (!localGameManager.getWorld().equals(projectile.getWorld())) {
+        if (!gameManager.getWorld().equals(projectile.getWorld())) {
             return;
         }
 

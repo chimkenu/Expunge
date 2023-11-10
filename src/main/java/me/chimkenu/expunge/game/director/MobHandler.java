@@ -63,14 +63,14 @@ public class MobHandler {
                 else if (r < 0.86)
                     getActiveMobs().add(new Choker(plugin, director.getWorld(), getRandomSpawnLocation()));
                 else
-                    getActiveMobs().add(new Spitter(plugin, director.getLocalGameManager(), director.getWorld(), getRandomSpawnLocation()));
+                    getActiveMobs().add(new Spitter(plugin, director.getGameManager(), director.getWorld(), getRandomSpawnLocation()));
             }
 
             // spawn additional mobs if number of mobs are too low
             if (!chillOut && getActiveMobs().size() < 5 && sceneTime > 20 * 20) {
                 chillOut = true;
                 timeSinceLastHorde = sceneTime;
-                for (int i = 0; i < (20 + (director.getLocalGameManager().getPlayers().size() * 5)); i++) {
+                for (int i = 0; i < (20 + (director.getGameManager().getPlayers().size() * 5)); i++) {
                     spawnAdditionalMob();
                 }
             } else if (sceneTime - timeSinceLastHorde > 30 * 20) {
@@ -86,7 +86,7 @@ public class MobHandler {
                     mobsToRemove.add(mob);
                     continue;
                 }
-                if (mob instanceof Zombie zombie && zombie.getTarget() != null && zombie.getTarget() instanceof Player target && director.getLocalGameManager().getPlayers().contains(target)) {
+                if (mob instanceof Zombie zombie && zombie.getTarget() != null && zombie.getTarget() instanceof Player target && director.getGameManager().getPlayers().contains(target)) {
                     if (zombie.getLocation().distanceSquared(target.getLocation()) < 20 * 20) continue;
                 }
                 if (playerNearestDistanceFrom(mob.getMob().getLocation().toVector()) > 20 * 20) {
@@ -99,7 +99,7 @@ public class MobHandler {
     }
 
     public void spawnStartingMobs() {
-        int sceneIndex = director.getLocalGameManager().getCampaignMapIndex();
+        int sceneIndex = director.getGameManager().getCampaignMapIndex();
         int sceneAttempts = director.getSceneAttempts();
         Difficulty difficulty = director.getDifficulty();
         int numberOfPlayers = director.getPlayers().size();
@@ -226,7 +226,7 @@ public class MobHandler {
 
         // random chance to spawn boss
         int random = ThreadLocalRandom.current().nextInt(0, 10);
-        if (random > 7 - director.getLocalGameManager().getDifficulty().ordinal()) {
+        if (random > 7 - director.getGameManager().getDifficulty().ordinal()) {
             if (random == 8)
                 spawnTank();
             else
@@ -252,7 +252,7 @@ public class MobHandler {
 
     private double playerNearestDistanceFrom(Vector vector) {
         double smallest = 2147483647;
-        for (Player player : director.getLocalGameManager().getPlayers()) {
+        for (Player player : director.getGameManager().getPlayers()) {
             smallest = Math.min(smallest, player.getLocation().toVector().distanceSquared(vector));
         }
         return smallest;

@@ -1,6 +1,7 @@
 package me.chimkenu.expunge.listeners.game;
 
 import me.chimkenu.expunge.enums.Achievements;
+import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.game.LocalGameManager;
 import me.chimkenu.expunge.items.utilities.throwable.FreshAir;
 import me.chimkenu.expunge.listeners.GameListener;
@@ -18,8 +19,8 @@ import org.bukkit.util.Vector;
 import org.spigotmc.event.entity.EntityDismountEvent;
 
 public class MobListener extends GameListener {
-    public MobListener(JavaPlugin plugin, LocalGameManager localGameManager) {
-        super(plugin, localGameManager);
+    public MobListener(JavaPlugin plugin, GameManager gameManager) {
+        super(plugin, gameManager);
     }
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -59,7 +60,7 @@ public class MobListener extends GameListener {
                 player.damage(2, explode);
                 player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 20 * 15, 0, false, true, false));
                 world.spawnParticle(Particle.BLOCK_CRACK, livingEntity.getLocation().add(0, .5, 0), 50, 0.2, 0.2, 0.2, Material.NETHER_WART_BLOCK.createBlockData());
-                localGameManager.getDirector().bile(plugin, player, 25);
+                gameManager.getDirector().bile(plugin, player, 25);
             }
         }
         explode.remove();

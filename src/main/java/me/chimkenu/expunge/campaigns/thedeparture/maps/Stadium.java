@@ -137,20 +137,20 @@ public class Stadium extends CampaignMap {
 
     @Override
     public GameAction runAtStart() {
-        return (plugin, director, player) -> {
+        return (plugin, gameManager, player) -> {
             for (int i = 0; i < 4; i++) {
-                director.getItemHandler().spawnUtility(new Vector(-104.5, 37, -146), new Medkit(), false);
-                director.getItemHandler().spawnUtility(new Vector(1196, 36, 1658), new Medkit(), false);
+                gameManager.getDirector().getItemHandler().spawnUtility(new Vector(-104.5, 37, -146), new Medkit(), false);
+                gameManager.getDirector().getItemHandler().spawnUtility(new Vector(1196, 36, 1658), new Medkit(), false);
             }
-            director.getItemHandler().spawnUtility(new Vector(63.5, 37, 64.5), new Medkit(), false);
-            director.getItemHandler().spawnUtility(new Vector(50.5, 46, 180.5), new Medkit(), false);
-            director.getItemHandler().spawnWeapon(new Vector(-101.5, 37, -147), ItemHandler.getRandomGun(Tier.TIER2), true);
-            director.getItemHandler().spawnWeapon(new Vector(-101.5, 37, -145), ItemHandler.getRandomMelee(Tier.TIER1), false);
-            director.getItemHandler().spawnUtility(new Vector(-97.5, 36, -151.5), new Pills(), false);
-            director.getItemHandler().spawnUtility(new Vector(-97.5, 36, -144.5), new Adrenaline(), false);
+            gameManager.getDirector().getItemHandler().spawnUtility(new Vector(63.5, 37, 64.5), new Medkit(), false);
+            gameManager.getDirector().getItemHandler().spawnUtility(new Vector(50.5, 46, 180.5), new Medkit(), false);
+            gameManager.getDirector().getItemHandler().spawnWeapon(new Vector(-101.5, 37, -147), ItemHandler.getRandomGun(Tier.TIER2), true);
+            gameManager.getDirector().getItemHandler().spawnWeapon(new Vector(-101.5, 37, -145), ItemHandler.getRandomMelee(Tier.TIER1), false);
+            gameManager.getDirector().getItemHandler().spawnUtility(new Vector(-97.5, 36, -151.5), new Pills(), false);
+            gameManager.getDirector().getItemHandler().spawnUtility(new Vector(-97.5, 36, -144.5), new Adrenaline(), false);
 
-            Dialogue.display(plugin, director.getLocalGameManager().getPlayers(), DepartureDialogue.STADIUM_OPENING.pickRandom(director.getLocalGameManager().getPlayers().size()));
-            director.getLocalGameManager().getWorld().getBlockAt(32, 17, 123).setType(Material.REDSTONE_BLOCK);
+            Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.STADIUM_OPENING.pickRandom(gameManager.getPlayers().size()));
+            gameManager.getWorld().getBlockAt(32, 17, 123).setType(Material.REDSTONE_BLOCK);
         };
     }
 

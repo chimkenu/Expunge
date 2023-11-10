@@ -1,8 +1,8 @@
 package me.chimkenu.expunge.listeners.game;
 
 import me.chimkenu.expunge.game.BreakGlass;
+import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.game.LocalGameManager;
-import me.chimkenu.expunge.items.weapons.guns.Gun;
 import me.chimkenu.expunge.items.weapons.melees.Chainsaw;
 import me.chimkenu.expunge.items.weapons.melees.Melee;
 import me.chimkenu.expunge.listeners.GameListener;
@@ -22,8 +22,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 
 public class SwingListener extends GameListener {
-    public SwingListener(JavaPlugin plugin, LocalGameManager localGameManager) {
-        super(plugin, localGameManager);
+    public SwingListener(JavaPlugin plugin, GameManager gameManager) {
+        super(plugin, gameManager);
     }
 
     private void swing(Player player, Melee melee) {
@@ -81,8 +81,8 @@ public class SwingListener extends GameListener {
              */
             if (melee.getDamage() == 0)
                 switch (livingEntity.getType()) {
-                    case ZOGLIN -> livingEntity.damage((400 + (localGameManager.getDifficulty().ordinal() * 200)) * 0.5, player);
-                    case IRON_GOLEM -> livingEntity.damage(2500 + (localGameManager.getDifficulty().ordinal() * 1000) * 0.05, player);
+                    case ZOGLIN -> livingEntity.damage((400 + (gameManager.getDifficulty().ordinal() * 200)) * 0.5, player);
+                    case IRON_GOLEM -> livingEntity.damage(2500 + (gameManager.getDifficulty().ordinal() * 1000) * 0.05, player);
                     case ENDERMAN -> livingEntity.damage(1000 * 0.25, player);
                     default -> livingEntity.damage((livingEntity.getHealth() + livingEntity.getAbsorptionAmount()) * 2, player);
                 }
@@ -94,7 +94,7 @@ public class SwingListener extends GameListener {
     @EventHandler
     public void onSwing(PlayerInteractEvent e) {
         Player player = e.getPlayer();
-        if (!localGameManager.getPlayers().contains(player)) {
+        if (!gameManager.getPlayers().contains(player)) {
             return;
         }
         if (e.getHand() == null || e.getHand().equals(EquipmentSlot.OFF_HAND)) {
@@ -143,7 +143,7 @@ public class SwingListener extends GameListener {
         if (!(e.getDamager() instanceof Player player)) {
             return;
         }
-        if (!localGameManager.getPlayers().contains(player)) {
+        if (!gameManager.getPlayers().contains(player)) {
             return;
         }
         if (e.getDamage() > 2) {
@@ -185,7 +185,7 @@ public class SwingListener extends GameListener {
 
     @EventHandler
     public void stopWeaponDamage(PlayerItemDamageEvent e) {
-        if (localGameManager.getPlayers().contains(e.getPlayer()))
+        if (gameManager.getPlayers().contains(e.getPlayer()))
             e.setCancelled(true);
     }
 }

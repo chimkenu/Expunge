@@ -1,5 +1,6 @@
 package me.chimkenu.expunge.listeners.game;
 
+import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.game.LocalGameManager;
 import me.chimkenu.expunge.listeners.GameListener;
 import me.chimkenu.expunge.utils.Utils;
@@ -28,8 +29,8 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class ShootListener extends GameListener {
-    public ShootListener(JavaPlugin plugin, LocalGameManager localGameManager) {
-        super(plugin, localGameManager);
+    public ShootListener(JavaPlugin plugin, GameManager gameManager) {
+        super(plugin, gameManager);
     }
 
     public static int getAmmo(ItemStack item) {
@@ -95,7 +96,7 @@ public class ShootListener extends GameListener {
         if (gun instanceof SMG) offset += 0.005;
         else if (gun instanceof MP5) offset += 0.005;
 
-        if (gun instanceof GrenadeLauncher) new Grenade().use(plugin, localGameManager, player);
+        if (gun instanceof GrenadeLauncher) new Grenade().use(plugin, gameManager, player);
         else {
             if (gun.getPellets() > 1) {
                 offset += ThreadLocalRandom.current().nextDouble(0.05, 0.1);
@@ -188,7 +189,7 @@ public class ShootListener extends GameListener {
         if (!(e.getDamager() instanceof Player player)) {
             return;
         }
-        if (!localGameManager.getPlayers().contains(player)) {
+        if (!gameManager.getPlayers().contains(player)) {
             return;
         }
         if (e.getDamage() > 2) {

@@ -12,6 +12,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.Vector;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -23,10 +24,10 @@ public class Lobby implements Listener {
     private final Set<GameManager> games = new HashSet<>();
     private final Set<Queue> queues = new HashSet<>();
 
-    public Lobby(JavaPlugin plugin, World world, Location lobbySpawn) {
+    public Lobby(JavaPlugin plugin, World world, Vector lobbySpawn) {
         this.plugin = plugin;
         this.world = world;
-        this.lobbySpawn = lobbySpawn;
+        this.lobbySpawn = lobbySpawn.toLocation(world);
     }
 
     public void teleportToLobby(Player player) {

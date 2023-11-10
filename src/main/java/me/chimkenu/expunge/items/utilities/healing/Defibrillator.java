@@ -1,6 +1,6 @@
 package me.chimkenu.expunge.items.utilities.healing;
 
-import me.chimkenu.expunge.game.LocalGameManager;
+import me.chimkenu.expunge.game.GameManager;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Material;
@@ -10,7 +10,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Defibrillator implements Healing {
     @Override
-    public void use(JavaPlugin plugin, LocalGameManager localGameManager, LivingEntity entity) {
+    public void use(JavaPlugin plugin, GameManager gameManager, LivingEntity entity) {
         if (!(entity instanceof Player player)) {
             return;
         }

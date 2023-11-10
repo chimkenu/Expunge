@@ -2,8 +2,7 @@ package me.chimkenu.expunge.game.director;
 
 import me.chimkenu.expunge.campaigns.CampaignMap;
 import me.chimkenu.expunge.enums.Difficulty;
-import me.chimkenu.expunge.game.LocalGameManager;
-import me.chimkenu.expunge.items.weapons.Weapon;
+import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.mobs.GameMob;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
@@ -19,12 +18,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.BoundingBox;
 
 import java.util.Set;
 
 public class Director implements Listener {
-    private final LocalGameManager localGameManager;
+    private final GameManager gameManager;
     private final ItemHandler itemHandler;
     private final MobHandler mobHandler;
     private final StatsHandler statsHandler;
@@ -32,8 +30,8 @@ public class Director implements Listener {
     private int sceneTime = 0;
     private int sceneAttempts = 0;
 
-    public Director(JavaPlugin plugin, LocalGameManager localGameManager) {
-        this.localGameManager = localGameManager;
+    public Director(JavaPlugin plugin, GameManager gameManager) {
+        this.gameManager = gameManager;
         itemHandler = new ItemHandler(this);
         mobHandler = new MobHandler(plugin, this);
         statsHandler = new StatsHandler(this);
@@ -41,15 +39,15 @@ public class Director implements Listener {
 
     public void run() {
         sceneTime++;
-        mobHandler.run(sceneTime, sceneAttempts, localGameManager.getDifficulty());
+        mobHandler.run(sceneTime, sceneAttempts, gameManager.getDifficulty());
 
         // players
-        for (Player p : localGameManager.getPlayers()) {
+        for (Player p : gameManager.getPlayers()) {
             // decrease absorption points & kill down players
             if (p.getAbsorptionAmount() > 0) {
                 if ((sceneTime % (20 * 15)) == 0) p.setAbsorptionAmount(Math.max(0, p.getAbsorptionAmount() - 1));
             }
-            if (!localGameManager.getPlayerStat(p).isAlive()) {
+            if (!gameManager.getPlayerStat(p).isAlive()) {
                 if ((sceneTime % (20 * 10)) == 0) {
                     p.damage(1);
                 }
@@ -122,9 +120,9 @@ public class Director implements Listener {
         double totalHealth = 0;
         double skillAverage = 0;
 
-        for (Player p : localGameManager.getPlayers()) {
+        for (Player p : gameManager.getPlayers()) {
             // Health
-            double estimateHealth = localGameManager.getPlayerStat(p).isAlive() ? p.getHealth() + p.getAbsorptionAmount() : 0;
+            double estimateHealth = gameManager.getPlayerStat(p).isAlive() ? p.getHealth() + p.getAbsorptionAmount() : 0;
             if (p.getInventory().contains(Material.BRICK)) estimateHealth += (20 - estimateHealth) * 0.8;
             estimateHealth = Math.min(estimateHealth, 20);
             totalHealth += estimateHealth;
@@ -138,32 +136,32 @@ public class Director implements Listener {
                     mobsOnPlayer++;
             }
 
-            totalHealth = totalHealth / (20 * localGameManager.getPlayers().size());
-            skillAverage = skillAverage / localGameManager.getPlayers().size();
+            totalHealth = totalHealth / (20 * gameManager.getPlayers().size());
+            skillAverage = skillAverage / gameManager.getPlayers().size();
             mobsOnPlayer = 1 - (mobsOnPlayer / mobHandler.getActiveMobs().size());
             return (totalHealth * 0.2) + (skillAverage * 0.45) + (mobsOnPlayer * 0.35);
         }
         return totalHealth * 0.5 + skillAverage * 0.5;
     }
 
-    public LocalGameManager getLocalGameManager() {
-        return localGameManager;
+    public GameManager getGameManager() {
+        return gameManager;
     }
 
     protected CampaignMap getMap() {
-        return localGameManager.getMap();
+        return gameManager.getMap();
     }
 
     protected World getWorld() {
-        return localGameManager.getWorld();
+        return gameManager.getWorld();
     }
 
     protected Set<Player> getPlayers() {
-        return localGameManager.getPlayers();
+        return gameManager.getPlayers();
     }
 
     protected Difficulty getDifficulty() {
-        return localGameManager.getDifficulty();
+        return gameManager.getDifficulty();
     }
 
     public ItemHandler getItemHandler() {
@@ -190,10 +188,10 @@ public class Director implements Listener {
     public void onMobDeath(EntityDeathEvent e) {
         LivingEntity dead = e.getEntity();
         GameMob mobToRemove = null;
-        if (dead.getKiller() == null || !localGameManager.getPlayers().contains(dead.getKiller())) return;
+        if (dead.getKiller() == null || !gameManager.getPlayers().contains(dead.getKiller())) return;
         for (GameMob mob : mobHandler.getActiveMobs()) {
             if (mob.getMob().equals(dead)) {
-                if (localGameManager.getPlayers().contains(dead.getKiller())) {
+                if (gameManager.getPlayers().contains(dead.getKiller())) {
                     statsHandler.kills.putIfAbsent(dead.getKiller(), 0);
                     statsHandler.kills.put(dead.getKiller(), statsHandler.kills.get(dead.getKiller()) + 1);
 

@@ -48,7 +48,7 @@ public interface Healing extends Utility {
                 }
                 if (i <= 0) {
                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§aSuccessful."));
-                    gameActionWhenSuccessful.run(plugin, director, player);
+                    gameActionWhenSuccessful.run(plugin, director.getGameManager(), player);
                     player.setCooldown(itemStack.getType(), 0);
                     this.cancel();
                 }
