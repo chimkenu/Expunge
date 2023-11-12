@@ -26,7 +26,7 @@ public class Medkit implements Healing {
         }
 
 
-        attemptUse(plugin, null, player, item, getCooldown(), true, "§eUsing medkit...",
+        attemptUse(plugin, gameManager, player, item, getCooldown(), true, "§eUsing medkit...",
                 (plugin1, gameManager1, player1) -> {
                     player1.setHealth(player1.getHealth() + ((20 - player1.getHealth()) * 0.8));
                     player1.getInventory().getItemInMainHand().setAmount(player1.getInventory().getItemInMainHand().getAmount() - 1);
