@@ -1,6 +1,9 @@
 package me.chimkenu.expunge.commands;
 
 import me.chimkenu.expunge.utils.RayTrace;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
@@ -25,6 +28,16 @@ public class TestCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!(sender instanceof Player player)) {
+            return true;
+        }
+
+        if (args.length == 1) {
+            Component component = Component.text(args[0]);
+            Bukkit.broadcastMessage(PlainTextComponentSerializer.plainText().serialize(component));
+
+            Component test = Component.text("cum lord", NamedTextColor.BLUE);
+            Bukkit.broadcast(test);
+            Bukkit.broadcastMessage(PlainTextComponentSerializer.plainText().serialize(test));
             return true;
         }
 

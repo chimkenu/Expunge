@@ -38,15 +38,15 @@ public final class Expunge extends JavaPlugin {
         registerCommand("spawn", new Spawn());
         registerCommand("test", new TestCommand(this));
 
-        getServer().getPluginManager().registerEvents(lobby, this);
+        getServer().getPluginManager().registerEvents(getLobby(), this);
     }
 
     @Override
     public void onDisable() {
-        for (Queue queue : lobby.getQueues()) {
+        for (Queue queue : getLobby().getQueues()) {
             queue.stop(true);
         }
-        for (GameManager gameManager : lobby.getGames()) {
+        for (GameManager gameManager : getLobby().getGames()) {
             gameManager.stop(true);
         }
     }

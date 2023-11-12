@@ -2,10 +2,12 @@ package me.chimkenu.expunge.campaigns.thedeparture.maps;
 
 import me.chimkenu.expunge.GameAction;
 import me.chimkenu.expunge.campaigns.Campaign;
+import me.chimkenu.expunge.campaigns.CampaignIntro;
 import me.chimkenu.expunge.campaigns.CampaignMap;
 import me.chimkenu.expunge.campaigns.Dialogue;
 import me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue;
 import me.chimkenu.expunge.enums.Achievements;
+import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.game.LocalGameManager;
 import me.chimkenu.expunge.items.utilities.healing.Medkit;
 import me.chimkenu.expunge.items.weapons.melees.Crowbar;
@@ -15,6 +17,8 @@ import me.chimkenu.expunge.items.weapons.melees.Nightstick;
 import me.chimkenu.expunge.listeners.GameListener;
 import me.chimkenu.expunge.listeners.game.*;
 import me.chimkenu.expunge.mobs.common.Horde;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.GameMode;
@@ -35,10 +39,11 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Office extends CampaignMap {
+public class Office extends CampaignMap implements CampaignIntro {
     @Override
     public String directory() {
         return "Office";
@@ -250,7 +255,7 @@ public class Office extends CampaignMap {
                             @Override
                             public void run() {
                                 localGameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(-2.5, 49, -79.5), localGameManager.getDifficulty()));
-                                localGameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(-5.5, 48, -68.5), localGameManager.getDifficulty()));
+                                localGameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(5.5, 48, -68.5), localGameManager.getDifficulty()));
                                 localGameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(18.5, 49, -68.5), localGameManager.getDifficulty()));
                                 localGameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(24.5, 49, -76.5), localGameManager.getDifficulty()));
                                 localGameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(28.5, 49, -82.5), localGameManager.getDifficulty()));
@@ -311,5 +316,21 @@ public class Office extends CampaignMap {
                 new JoinLeaveListener(plugin, localGameManager),
                 new UtilityListener(plugin, localGameManager)
         };
+    }
+
+    @Override
+    public int play(GameManager gameManager) {
+        final Location[] points = new Location[]{
+                new Location(gameManager.getWorld(), -6.25, 10.5, -1.7, -45, 28),
+                new Location(gameManager.getWorld(), -6.25, 10.5, -1.7, -45, 28),
+                new Location(gameManager.getWorld(), -7.6, 9.75, -5.85, -30.5f, 9.5f),
+                new Location(gameManager.getWorld(), -7.5, 9.4, -9.5, 0, 0),
+                new Location(gameManager.getWorld(), -7.5, 9, -16.5, 0, 0),
+                new Location(gameManager.getWorld(), -7.5, 9, -21.5, 0, 0)
+        };
+        final String main = "The Departure";
+        final Component sub = Component.text("Built by SirSunlight").color(TextColor.color(134, 0, 179));
+
+        return play(gameManager, points, main, sub, new Color(204, 51, 0), new Color(128, 0, 0), 3, 0.05, 10);
     }
 }

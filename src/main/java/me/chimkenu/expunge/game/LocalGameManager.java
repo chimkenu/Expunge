@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -66,16 +67,20 @@ public class LocalGameManager implements GameManager {
         }
 
         if (campaign.getMaps()[this.campaignMapIndex] instanceof CampaignIntro intro) {
+            startWithIntro();
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    if (players.isEmpty()) this.cancel();
-                    for (Player player : players) {
-                        player.setGameMode(GameMode.ADVENTURE);
-                    }
-                    start();
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            if (players.isEmpty()) this.cancel();
+                            start();
+                        }
+                    }.runTaskLater(plugin, intro.play(director.getGameManager()));
                 }
-            }.runTaskLater(plugin, intro.play());
+            }.runTaskLater(plugin, 40); // Wait for players to load map
+
         } else start();
     }
 
@@ -93,6 +98,13 @@ public class LocalGameManager implements GameManager {
             }
         }.runTaskTimer(plugin, 0, 1);
         startMap();
+    }
+
+    private void startWithIntro() {
+        for (Player p : getPlayers()) {
+            p.setGameMode(GameMode.SPECTATOR);
+            p.teleport(getMap().startLocation().toLocation(getWorld()));
+        }
     }
 
     @Override
@@ -301,6 +313,11 @@ public class LocalGameManager implements GameManager {
     @Override
     public PlayerStats getPlayerStat(Player player) {
         return players.get(player);
+    }
+
+    @Override
+    public JavaPlugin getPlugin() {
+        return plugin;
     }
 
     @Override
