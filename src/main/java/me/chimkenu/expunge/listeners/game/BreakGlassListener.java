@@ -10,13 +10,11 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
-public class BreakGlass extends GameListener {
+public class BreakGlassListener extends GameListener {
     private final HashMap<Block, GlassData> glassLocations;
 
-    public BreakGlass(JavaPlugin plugin, GameManager gameManager) {
+    public BreakGlassListener(JavaPlugin plugin, GameManager gameManager) {
         super(plugin, gameManager);
         glassLocations = new HashMap<>();
     }

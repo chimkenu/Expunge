@@ -1,7 +1,6 @@
 package me.chimkenu.expunge.listeners.game;
 
 import me.chimkenu.expunge.game.GameManager;
-import me.chimkenu.expunge.game.LocalGameManager;
 import me.chimkenu.expunge.listeners.GameListener;
 import me.chimkenu.expunge.utils.Utils;
 import me.chimkenu.expunge.items.ShootParticle;
@@ -31,11 +30,11 @@ import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class ShootListener extends GameListener {
-    private final BreakGlass breakGlass;
+    private final BreakGlassListener breakGlassListener;
 
-    public ShootListener(JavaPlugin plugin, GameManager gameManager, BreakGlass breakGlass) {
+    public ShootListener(JavaPlugin plugin, GameManager gameManager, BreakGlassListener breakGlassListener) {
         super(plugin, gameManager);
-        this.breakGlass = breakGlass;
+        this.breakGlassListener = breakGlassListener;
     }
 
     public static int getAmmo(ItemStack item) {
@@ -110,7 +109,7 @@ public class ShootListener extends GameListener {
             for (int i = 0; i < gun.getPellets(); i++) {
                 Set<Block> blocks =  ShootParticle.shoot(gun.getParticle(), gun.getRange(), gun.getDamage(), player, gun.getEntitiesToHit(), offset, gun.getPellets() > 1);
                 for (Block b : blocks) {
-                    breakGlass.breakGlass(b);
+                    breakGlassListener.breakGlass(b);
                 }
             }
         }

@@ -20,11 +20,11 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 
 public class SwingListener extends GameListener {
-    private final BreakGlass breakGlass;
+    private final BreakGlassListener breakGlassListener;
 
-    public SwingListener(JavaPlugin plugin, GameManager gameManager, BreakGlass breakGlass) {
+    public SwingListener(JavaPlugin plugin, GameManager gameManager, BreakGlassListener breakGlassListener) {
         super(plugin, gameManager);
-        this.breakGlass = breakGlass;
+        this.breakGlassListener = breakGlassListener;
     }
 
     private void swing(Player player, Melee melee) {
@@ -35,7 +35,7 @@ public class SwingListener extends GameListener {
             loc.add(loc.getDirection());
 
             // check for glass to break
-            breakGlass.breakGlass(loc.getBlock());
+            breakGlassListener.breakGlass(loc.getBlock());
 
             for (Entity e : world.getNearbyEntities(loc, 0.5, 1, 0.5)) {
                 if (e == player) {

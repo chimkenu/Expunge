@@ -14,11 +14,11 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class ShoveListener extends GameListener {
-    private final BreakGlass breakGlass;
+    private final BreakGlassListener breakGlassListener;
 
-    public ShoveListener(JavaPlugin plugin, GameManager gameManager, BreakGlass breakGlass) {
+    public ShoveListener(JavaPlugin plugin, GameManager gameManager, BreakGlassListener breakGlassListener) {
         super(plugin, gameManager);
-        this.breakGlass = breakGlass;
+        this.breakGlassListener = breakGlassListener;
     }
 
     private boolean canShove(Player player) {
@@ -53,7 +53,7 @@ public class ShoveListener extends GameListener {
         attacker.getWorld().spawnParticle(Particle.SWEEP_ATTACK, loc, 1);
 
         // check for glass to break
-        breakGlass.breakGlass(loc.getBlock());
+        breakGlassListener.breakGlass(loc.getBlock());
 
         for (Entity entity : attacker.getWorld().getNearbyEntities(loc, 1.5, 1.5, 1.5)) {
             if (entity instanceof LivingEntity livingEntity) {
