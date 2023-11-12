@@ -62,16 +62,16 @@ public enum DepartureDialogue {
         @Override
         public String[] getA() {
             return new String[]{
-                    "A: We need to get around this rubble.",
-                    "B: I think we can get past it through the offices to the right."
+                    "A » We need to get around this rubble.",
+                    "B » I think we can get past it through the offices to the right."
             };
         }
 
         @Override
         public String[] getB() {
             return new String[]{
-                    "A: How do we get past this rubble?",
-                    "B: I think I see a way around through the offices to the right."
+                    "A » How do we get past this rubble?",
+                    "B » I think I see a way around through the offices to the right."
             };
         }
 
