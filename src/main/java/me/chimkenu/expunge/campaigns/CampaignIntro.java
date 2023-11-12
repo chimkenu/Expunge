@@ -26,7 +26,7 @@ public interface CampaignIntro {
 
     private void displayTitle(GameManager gameManager, String main, Component sub, Color mainColorStart, Color mainColorEnd, int delay) {
         Title.Times charTime = Title.Times.times(Duration.ZERO, Duration.ofMillis(1000), Duration.ofMillis(100));
-        Title.Times finalTime = Title.Times.times(Duration.ZERO, Duration.ofMillis(3000), Duration.ofMillis(500));
+        Title.Times finalTime = Title.Times.times(Duration.ZERO, Duration.ofMillis(4000), Duration.ofMillis(1000));
 
         int time = delay;
         Component titlePart = Component.text("");

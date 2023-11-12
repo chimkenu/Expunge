@@ -333,6 +333,6 @@ public class Office extends CampaignMap implements CampaignIntro {
         final String main = "The Departure";
         final Component sub = Component.text("Built by SirSunlight").color(TextColor.color(134, 0, 179));
 
-        return play(gameManager, points, main, sub, new Color(204, 51, 0), new Color(128, 0, 0), 3, 0.05, 10);
+        return play(gameManager, points, main, sub, new Color(204, 51, 0), new Color(128, 0, 0), 3, 0.1, 10);
     }
 }
