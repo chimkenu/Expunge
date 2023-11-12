@@ -333,7 +333,8 @@ public class Stadium extends CampaignMap {
                 new SwingListener(plugin, localGameManager, breakGlassListener),
                 new JoinLeaveListener(plugin, localGameManager),
                 new UtilityListener(plugin, localGameManager),
-                breakGlassListener
+                breakGlassListener,
+                new BreakDoorListener(plugin, localGameManager)
         };
     }
 

@@ -1,6 +1,7 @@
 package me.chimkenu.expunge.listeners.game;
 
 import me.chimkenu.expunge.game.GameManager;
+import me.chimkenu.expunge.listeners.CleanUp;
 import me.chimkenu.expunge.listeners.GameListener;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -11,7 +12,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
 
-public class BreakGlassListener extends GameListener {
+public class BreakGlassListener extends GameListener implements CleanUp {
     private final HashMap<Block, GlassData> glassLocations;
 
     public BreakGlassListener(JavaPlugin plugin, GameManager gameManager) {
@@ -19,10 +20,11 @@ public class BreakGlassListener extends GameListener {
         glassLocations = new HashMap<>();
     }
 
-    public void returnGlass() {
+    @Override
+    public void clean() {
         for (Block block : glassLocations.keySet()) {
-            block.getLocation().getBlock().setType(glassLocations.get(block).material());
-            block.getLocation().getBlock().setBlockData(glassLocations.get(block).blockData());
+            block.getLocation().getBlock().setType(glassLocations.get(block).material(), false);
+            block.getLocation().getBlock().setBlockData(glassLocations.get(block).blockData(), false);
         }
         glassLocations.clear();
     }

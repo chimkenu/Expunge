@@ -316,7 +316,8 @@ public class Office extends CampaignMap implements CampaignIntro {
                 new SwingListener(plugin, localGameManager, breakGlassListener),
                 new JoinLeaveListener(plugin, localGameManager),
                 new UtilityListener(plugin, localGameManager),
-                breakGlassListener
+                breakGlassListener,
+                new BreakDoorListener(plugin, localGameManager)
         };
     }
 
@@ -331,7 +332,7 @@ public class Office extends CampaignMap implements CampaignIntro {
                 new Location(gameManager.getWorld(), -7.5, 9, -21.5, 0, 0)
         };
         final String main = "The Departure";
-        final Component sub = Component.text("Built by SirSunlight").color(TextColor.color(134, 0, 179));
+        final Component sub = Component.text("Built by SirSunlight & Pagkain").color(TextColor.color(134, 0, 179));
 
         return play(gameManager, points, main, sub, new Color(204, 51, 0), new Color(128, 0, 0), 3, 0.1, 10);
     }

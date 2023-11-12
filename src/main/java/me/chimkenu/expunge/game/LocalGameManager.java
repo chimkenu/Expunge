@@ -6,6 +6,7 @@ import me.chimkenu.expunge.campaigns.CampaignIntro;
 import me.chimkenu.expunge.campaigns.CampaignMap;
 import me.chimkenu.expunge.enums.Difficulty;
 import me.chimkenu.expunge.game.director.Director;
+import me.chimkenu.expunge.listeners.CleanUp;
 import me.chimkenu.expunge.listeners.game.BreakGlassListener;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -217,8 +218,8 @@ public class LocalGameManager implements GameManager {
         // REGISTER EVENTS AND HAPPENINGS
         if (!listeners.isEmpty()) {
             for (Listener listener : listeners) {
-                if (listener instanceof BreakGlassListener breakGlassListener) {
-                    breakGlassListener.returnGlass();
+                if (listener instanceof CleanUp cleanUp) {
+                    cleanUp.clean();
                 }
 
                 HandlerList.unregisterAll(listener);
