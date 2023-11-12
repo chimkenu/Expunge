@@ -19,6 +19,8 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
 
+import java.util.logging.Level;
+
 public class NextMapListener extends GameListener {
     public NextMapListener(JavaPlugin plugin, GameManager gameManager) {
         super(plugin, gameManager);
@@ -98,14 +100,22 @@ public class NextMapListener extends GameListener {
                 int i = 5 * 20;
                 @Override
                 public void run() {
-                    if (!gameManager.isRunning() || gameManager.getPlayers().size() == 0) {
+                    if (!gameManager.isRunning() || gameManager.getPlayers().isEmpty()) {
                         this.cancel();
                     }
                     for (Player p : gameManager.getPlayers()) {
                         p.sendActionBar(Component.text("Sending you to the next map..."));
                     }
                     if (i <= 0) {
-                        gameManager.moveToNextMap();
+                        try {
+                            gameManager.moveToNextMap();
+                        } catch (RuntimeException e) {
+                            for (Player p : gameManager.getPlayers()) {
+                                p.sendMessage(Component.text("Something went wrong! Sending you back..."));
+                            }
+                            Bukkit.getLogger().log(Level.SEVERE, e.toString());
+                            gameManager.stop(true);
+                        }
                         this.cancel();
                     }
                     i--;
