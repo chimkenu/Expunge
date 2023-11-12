@@ -13,6 +13,7 @@ import me.chimkenu.expunge.items.weapons.guns.SMG;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
@@ -26,11 +27,15 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class ShootListener extends GameListener {
-    public ShootListener(JavaPlugin plugin, GameManager gameManager) {
+    private final BreakGlass breakGlass;
+
+    public ShootListener(JavaPlugin plugin, GameManager gameManager, BreakGlass breakGlass) {
         super(plugin, gameManager);
+        this.breakGlass = breakGlass;
     }
 
     public static int getAmmo(ItemStack item) {
@@ -103,7 +108,10 @@ public class ShootListener extends GameListener {
             }
 
             for (int i = 0; i < gun.getPellets(); i++) {
-                ShootParticle.shoot(gun.getParticle(), gun.getRange(), gun.getDamage(), player, gun.getEntitiesToHit(), offset, gun.getPellets() > 1);
+                Set<Block> blocks =  ShootParticle.shoot(gun.getParticle(), gun.getRange(), gun.getDamage(), player, gun.getEntitiesToHit(), offset, gun.getPellets() > 1);
+                for (Block b : blocks) {
+                    breakGlass.breakGlass(b);
+                }
             }
         }
 

@@ -1,8 +1,6 @@
 package me.chimkenu.expunge.listeners.game;
 
-import me.chimkenu.expunge.game.BreakGlass;
 import me.chimkenu.expunge.game.GameManager;
-import me.chimkenu.expunge.game.LocalGameManager;
 import me.chimkenu.expunge.game.PlayerStats;
 import me.chimkenu.expunge.listeners.GameListener;
 import org.bukkit.*;
@@ -16,9 +14,11 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class ShoveListener extends GameListener {
+    private final BreakGlass breakGlass;
 
-    public ShoveListener(JavaPlugin plugin, GameManager gameManager) {
+    public ShoveListener(JavaPlugin plugin, GameManager gameManager, BreakGlass breakGlass) {
         super(plugin, gameManager);
+        this.breakGlass = breakGlass;
     }
 
     private boolean canShove(Player player) {
@@ -53,7 +53,7 @@ public class ShoveListener extends GameListener {
         attacker.getWorld().spawnParticle(Particle.SWEEP_ATTACK, loc, 1);
 
         // check for glass to break
-        BreakGlass.breakGlass(loc.getBlock());
+        breakGlass.breakGlass(loc.getBlock());
 
         for (Entity entity : attacker.getWorld().getNearbyEntities(loc, 1.5, 1.5, 1.5)) {
             if (entity instanceof LivingEntity livingEntity) {

@@ -1,8 +1,6 @@
 package me.chimkenu.expunge.listeners.game;
 
-import me.chimkenu.expunge.game.BreakGlass;
 import me.chimkenu.expunge.game.GameManager;
-import me.chimkenu.expunge.game.LocalGameManager;
 import me.chimkenu.expunge.items.weapons.melees.Chainsaw;
 import me.chimkenu.expunge.items.weapons.melees.Melee;
 import me.chimkenu.expunge.listeners.GameListener;
@@ -22,8 +20,11 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 
 public class SwingListener extends GameListener {
-    public SwingListener(JavaPlugin plugin, GameManager gameManager) {
+    private final BreakGlass breakGlass;
+
+    public SwingListener(JavaPlugin plugin, GameManager gameManager, BreakGlass breakGlass) {
         super(plugin, gameManager);
+        this.breakGlass = breakGlass;
     }
 
     private void swing(Player player, Melee melee) {
@@ -34,7 +35,7 @@ public class SwingListener extends GameListener {
             loc.add(loc.getDirection());
 
             // check for glass to break
-            BreakGlass.breakGlass(loc.getBlock());
+            breakGlass.breakGlass(loc.getBlock());
 
             for (Entity e : world.getNearbyEntities(loc, 0.5, 1, 0.5)) {
                 if (e == player) {

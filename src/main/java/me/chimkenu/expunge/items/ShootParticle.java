@@ -1,24 +1,26 @@
 package me.chimkenu.expunge.items;
 
 import me.chimkenu.expunge.enums.Achievements;
-import me.chimkenu.expunge.game.BreakGlass;
+import me.chimkenu.expunge.listeners.game.BreakGlass;
 import me.chimkenu.expunge.utils.RayTrace;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class ShootParticle {
-
     private static final double ACCURACY_PARTICLES = 0.3;
     private static final double ACCURACY_TRUE = 0.1;
 
-    public static void shoot(Particle particle, int range, double damage, Player shooter, int entitiesToHit, double offset, boolean decreaseDamage) {
+    public static Set<Block> shoot(Particle particle, int range, double damage, Player shooter, int entitiesToHit, double offset, boolean decreaseDamage) {
         Vector direction = shooter.getEyeLocation().getDirection();
         direction = direction.add(new Vector(ThreadLocalRandom.current().nextDouble(-offset, offset),ThreadLocalRandom.current().nextDouble(-offset, offset), ThreadLocalRandom.current().nextDouble(-offset, offset)));
         RayTrace ray = new RayTrace(shooter.getEyeLocation().toVector(), direction);
@@ -27,13 +29,16 @@ public class ShootParticle {
         World world = shooter.getWorld();
         int wallsThrough = ThreadLocalRandom.current().nextInt(1, 4);
         boolean hasSpoken = false; // boolean for achievement - so that it does not trigger more than once per shot
+
+        Set<Block> blocks = new HashSet<>();
+
         for (int i = 0; i < positions.size(); i++) {
             Vector v = positions.get(i);
             // so the particle does not obscure vision
             if (i > 4) world.spawnParticle(particle, v.toLocation(world), 1, 0, 0, 0, 0);
 
             // check for glass to break
-            BreakGlass.breakGlass(v.toLocation(world).getBlock());
+            blocks.add(v.toLocation(world).getBlock());
 
             for (Entity e : world.getNearbyEntities(v.toLocation(world), ACCURACY_TRUE, ACCURACY_TRUE, ACCURACY_TRUE)) {
                 if (e instanceof LivingEntity livingEntity) {
@@ -77,9 +82,9 @@ public class ShootParticle {
                         if (livingEntity.getScoreboardTags().contains("ROBOT")) {
                             livingEntity.getWorld().playSound(livingEntity.getLocation(), Sound.BLOCK_ANVIL_PLACE, SoundCategory.HOSTILE, 1f, 2f);
                             livingEntity.getWorld().spawnParticle(Particle.SMOKE_NORMAL, intersection.toLocation(livingEntity.getWorld()), 10, 0, 0, 0, 0.05);
-                        }
-                        else
+                        } else {
                             entities.add(livingEntity);
+                        }
                     }
                 }
             }
@@ -108,5 +113,7 @@ public class ShootParticle {
         }
         ShootEvent shootEvent = new ShootEvent(shooter, hitEntities);
         Bukkit.getPluginManager().callEvent(shootEvent);
+
+        return blocks;
     }
 }

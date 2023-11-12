@@ -320,6 +320,7 @@ public class Stadium extends CampaignMap {
 
     @Override
     public GameListener[] gameListeners(JavaPlugin plugin, LocalGameManager localGameManager) {
+        BreakGlass breakGlass = new BreakGlass(plugin, localGameManager);
         return new GameListener[]{
                 new AmmoPileListener(plugin, localGameManager),
                 new DeathReviveListener(plugin, localGameManager),
@@ -327,11 +328,12 @@ public class Stadium extends CampaignMap {
                 new MobListener(plugin, localGameManager),
                 new NextMapListener(plugin, localGameManager),
                 new PickUpListener(plugin, localGameManager),
-                new ShootListener(plugin, localGameManager),
-                new ShoveListener(plugin, localGameManager),
-                new SwingListener(plugin, localGameManager),
+                new ShootListener(plugin, localGameManager, breakGlass),
+                new ShoveListener(plugin, localGameManager, breakGlass),
+                new SwingListener(plugin, localGameManager, breakGlass),
                 new JoinLeaveListener(plugin, localGameManager),
-                new UtilityListener(plugin, localGameManager)
+                new UtilityListener(plugin, localGameManager),
+                breakGlass
         };
     }
 
