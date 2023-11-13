@@ -25,6 +25,9 @@ public class MobListener extends GameListener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onMobTarget(EntityTargetEvent e) {
+        if (e.getEntity().getWorld() != gameManager.getWorld()) {
+            return;
+        }
         if (!(e.getTarget() instanceof Player target)) {
             e.setCancelled(true);
             return;
@@ -68,6 +71,9 @@ public class MobListener extends GameListener {
 
     @EventHandler
     public void onDeath(EntityDeathEvent e) {
+        if (e.getEntity().getWorld() != gameManager.getWorld()) {
+            return;
+        }
         if (e.getEntity().getScoreboardTags().contains("BOOMER")) {
             boom(e.getEntity());
         }
@@ -85,6 +91,9 @@ public class MobListener extends GameListener {
     // Tank takes more damage on fire
     @EventHandler
     public void onDamage(EntityDamageEvent e) {
+        if (e.getEntity().getWorld() != gameManager.getWorld()) {
+            return;
+        }
         if (e.getEntity().getScoreboardTags().contains("TANK") && e.getEntity().getFireTicks() > 0) {
             e.setDamage(e.getDamage() * 5);
         }
@@ -98,13 +107,20 @@ public class MobListener extends GameListener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onSwitch(PlayerItemHeldEvent e) {
-        if (e.getPlayer().getPassengers().size() > 0) {
+        if (e.getPlayer().getWorld() != gameManager.getWorld()) {
+            return;
+        }
+        if (!e.getPlayer().getPassengers().isEmpty()) {
             e.setCancelled(true); // This stops you from switching between items while you're being disabled by a mob
         }
     }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerDamage(EntityDamageByEntityEvent e) {
+        if (e.getEntity().getWorld() != gameManager.getWorld()) {
+            return;
+        }
+
         // Can't deal damage to mobs that are disabling you
         if ((e.getDamager() instanceof Player) && e.getEntity().getPassengers().contains(e.getDamager()) || e.getDamager().getPassengers().contains(e.getEntity())) {
             e.setCancelled(true);
@@ -118,18 +134,29 @@ public class MobListener extends GameListener {
             return;
         }
 
-        // Hit delay:
-        player.setNoDamageTicks(30);
-        new BukkitRunnable() {
-            int i = 10;
-            final Vector v = new Vector();
-            @Override
-            public void run() {
-                player.setVelocity(v);
-                if (i <= 0) this.cancel();
-                i--;
-            }
-        }.runTaskTimer(plugin, 0, 1);
+        if (damager instanceof Zombie && !(damager instanceof ZombieVillager)) {
+
+            // Hit delay:
+            final double RANGE = 3;
+            double damage = e.getDamage();
+            e.setCancelled(true);
+            new BukkitRunnable() {
+                int i = 10;
+
+                @Override
+                public void run() {
+                    player.setVelocity(player.getVelocity().setX(0).setZ(0));
+                    if (damager.isDead() || player.getLocation().distanceSquared(damager.getLocation()) > RANGE) {
+                        this.cancel();
+                    }
+                    if (i <= 0) {
+                        player.damage(damage);
+                        this.cancel();
+                    }
+                    i--;
+                }
+            }.runTaskTimer(plugin, 0, 1);
+        }
 
         // charger knocks down player
         if (damager.getScoreboardTags().contains("CHARGER")) {
@@ -162,13 +189,16 @@ public class MobListener extends GameListener {
         if (!(e.getEntity() instanceof Player player)) {
             return;
         }
+        if (!gameManager.getPlayers().contains(player)) {
+            return;
+        }
         if (!(e.getDismounted() instanceof ArmorStand armorStand)) {
             return;
         }
         if (!armorStand.getScoreboardTags().contains("KNOCKED")) {
             return;
         }
-        if ((player.getNoDamageTicks() < 1 && player.getPassengers().size() < 1) || player.getGameMode() != GameMode.ADVENTURE) {
+        if ((player.getNoDamageTicks() < 1 && player.getPassengers().isEmpty()) || player.getGameMode() != GameMode.ADVENTURE) {
             armorStand.remove();
             player.teleport(player.getLocation().add(0, 1, 0));
         } else {
