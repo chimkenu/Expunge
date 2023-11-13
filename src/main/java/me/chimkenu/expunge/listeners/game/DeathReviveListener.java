@@ -64,6 +64,8 @@ public class DeathReviveListener extends GameListener {
             return;
         }
 
+        e.setCancelled(true);
+
         if (!gameManager.getPlayerStat(player).isAlive()) {
             // player died while down
             Bukkit.broadcastMessage(ChatColor.RED + player.getName() + " died.");
