@@ -1,7 +1,6 @@
 package me.chimkenu.expunge.commands;
 
 import me.chimkenu.expunge.Expunge;
-import me.chimkenu.expunge.Lobby;
 import me.chimkenu.expunge.campaigns.thedeparture.TheDeparture;
 import me.chimkenu.expunge.enums.Difficulty;
 import org.bukkit.Bukkit;
@@ -13,7 +12,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
-import java.util.List;
+import java.util.Objects;
 
 public class StartGame implements CommandExecutor {
     private final Expunge expunge;
@@ -49,7 +48,7 @@ public class StartGame implements CommandExecutor {
             }
         }
         Bukkit.broadcastMessage(ChatColor.RED + player.getDisplayName() + ChatColor.YELLOW + " started a game with " + difficulty.string() + ChatColor.YELLOW + " difficulty.");
-        expunge.getLobby().createGame(expunge, new TheDeparture(), difficulty, new HashSet<>(List.of(player)));
+        expunge.getLobby().createGame(expunge, new TheDeparture(), difficulty, new HashSet<>(Objects.requireNonNull(Bukkit.getWorld("world")).getPlayers()));
         return true;
     }
 }
