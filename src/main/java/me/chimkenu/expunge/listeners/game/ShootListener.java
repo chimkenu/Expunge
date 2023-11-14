@@ -110,10 +110,21 @@ public class ShootListener extends GameListener {
                 Set<Block> blocks =  ShootParticle.shoot(gun.getParticle(), gun.getRange(), gun.getDamage(), player, gun.getEntitiesToHit(), offset, gun.getPellets() > 1);
                 for (Block b : blocks) {
                     breakGlassListener.breakGlass(b);
+                    if (!b.isEmpty()) player.sendBlockDamage(b.getLocation(), (float) Math.random()); // Visual damage
                 }
             }
         }
 
+        // Play flash effect
+        if (!player.getLocation().getBlock().isEmpty()) {
+            player.sendBlockChange(player.getLocation(), Material.LIGHT.createBlockData("[level=" + (1 + Math.random() * 14) + "]"));
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    player.sendBlockChange(player.getLocation(), Material.AIR.createBlockData());
+                }
+            }.runTaskLater(plugin, 2);
+        }
         player.getWorld().playSound(player.getLocation(), gun.getSound(), SoundCategory.PLAYERS, 1, gun.getPitch());
         player.setCooldown(gun.getMaterial(), gun.getCooldown());
 
