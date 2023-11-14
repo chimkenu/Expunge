@@ -96,6 +96,9 @@ public class ShootListener extends GameListener {
         if (player.getVelocity().getZ() != 0) offset += 0.005;
         if (player.isSprinting()) offset += 0.005;
 
+        // is down
+        if (player.getVehicle() != null) offset += 0.1;
+
         // is using a smg
         if (gun instanceof SMG) offset += 0.005;
         else if (gun instanceof MP5) offset += 0.005;
