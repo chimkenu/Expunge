@@ -154,6 +154,11 @@ public class Subway extends CampaignMap {
     }
 
     @Override
+    public Vector[] rescueClosetLocations() {
+        return new Vector[0];
+    }
+
+    @Override
     public GameAction runAtStart() {
         return (plugin, gameManager, player) -> {
             for (int i = 0; i < 4; i++) {

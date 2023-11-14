@@ -34,6 +34,14 @@ public class PlayerStats {
         Arrays.fill(hotbar, new ItemStack(Material.AIR));
     }
 
+    public void revive() {
+        setHealth(10);
+        setAbsorption(0);
+        Arrays.fill(hotbar, new ItemStack(Material.AIR));
+        setAlive(true);
+        setLives(3);
+    }
+
     public double getHealth() {
         return health;
     }

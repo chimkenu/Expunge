@@ -47,6 +47,10 @@ public class BreakDoorListener extends GameListener implements CleanUp {
         doorLocations.putIfAbsent(block, new DoorData(block.getType(), block.getBlockData(), block.getRelative(0, -1, 0).getBlockData()));
     }
 
+    public boolean hasBeenInteractedWith(Block block) {
+        return doorLocations.containsKey(block);
+    }
+
     private record DoorData(Material material, BlockData upper, BlockData lower) {}
 
     @EventHandler

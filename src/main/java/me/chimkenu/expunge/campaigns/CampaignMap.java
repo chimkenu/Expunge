@@ -31,6 +31,8 @@ public abstract class CampaignMap {
 
     public abstract Vector buttonLocation();
 
+    public abstract Vector[] rescueClosetLocations();
+
     public abstract GameAction runAtStart();
 
     public abstract GameAction runAtEnd();
