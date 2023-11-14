@@ -3,6 +3,7 @@ package me.chimkenu.expunge.game.director;
 import me.chimkenu.expunge.campaigns.CampaignMap;
 import me.chimkenu.expunge.enums.Difficulty;
 import me.chimkenu.expunge.game.GameManager;
+import me.chimkenu.expunge.items.ShootEvent;
 import me.chimkenu.expunge.mobs.GameMob;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
@@ -204,5 +205,17 @@ public class Director implements Listener {
             }
         }
         mobHandler.getActiveMobs().remove(mobToRemove);
+    }
+
+    @EventHandler
+    public void onShoot(ShootEvent e) {
+        statsHandler.shots.putIfAbsent(e.getShooter(), new Integer[]{0, 0, 0});
+        Set<LivingEntity> hitEntities = e.getHitEntities().keySet();
+
+        statsHandler.shots.get(e.getShooter())[0] += 1; // shot
+        hitEntities.removeIf(entity -> entity instanceof Player);
+        statsHandler.shots.get(e.getShooter())[1] += !hitEntities.isEmpty() ? 1 : 0; // hit / miss
+        hitEntities.removeIf(entity -> !e.getHitEntities().get(entity));
+        statsHandler.shots.get(e.getShooter())[2] += !hitEntities.isEmpty() ? 1 : 0; // headshot / not
     }
 }

@@ -86,22 +86,12 @@ public class StatsHandler {
         rating += getHeadshotAccuracy(player) * 0.25;
 
         // progress : are you rushing or are you dragging?
-        double diff = Math.abs(getPace(player));
-        diff = (1 - (1 / (1 + Math.exp(-diff)))) + 0.5;
-        rating += diff * 0.5;
+        // double diff = Math.abs(getPace(player));
+        // diff = (1 - (1 / (1 + Math.exp(-diff)))) + 0.5;
+        // rating += diff * 0.5;
 
         return rating;
     }
 
-    @EventHandler
-    public void onShoot(ShootEvent e) {
-        shots.putIfAbsent(e.getShooter(), new Integer[]{0, 0, 0});
-        Set<LivingEntity> hitEntities = e.getHitEntities().keySet();
 
-        shots.get(e.getShooter())[0] += 1; // shot
-        hitEntities.removeIf(entity -> entity instanceof Player);
-        shots.get(e.getShooter())[1] += hitEntities.size() > 0 ? 1 : 0; // hit / miss
-        hitEntities.removeIf(entity -> !e.getHitEntities().get(entity));
-        shots.get(e.getShooter())[2] += hitEntities.size() > 0 ? 1 : 0; // headshot / not
-    }
 }
