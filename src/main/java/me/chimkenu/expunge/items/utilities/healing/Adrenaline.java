@@ -3,6 +3,8 @@ package me.chimkenu.expunge.items.utilities.healing;
 import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.enums.Slot;
 import me.chimkenu.expunge.game.GameManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
@@ -26,7 +28,7 @@ public class Adrenaline implements Healing {
         }
 
         player.setCooldown(getUtility().getType(), getCooldown() + 1);
-        attemptUse(plugin, gameManager, player, item, getCooldown(), false, "§eUsing adrenaline...", (plugin1, gameManager1, player1) -> {
+        attemptUse(plugin, gameManager, player, item, getCooldown(), false, Component.text("Using adrenaline...", NamedTextColor.YELLOW), (plugin1, gameManager1, player1) -> {
             player1.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20 * 15, 1, false, false, true));
             double absorption = Math.min(20, player1.getAbsorptionAmount() + 5);
             Objects.requireNonNull(player1.getAttribute(Attribute.GENERIC_MAX_ABSORPTION)).setBaseValue(20);

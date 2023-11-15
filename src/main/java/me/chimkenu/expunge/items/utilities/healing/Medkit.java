@@ -1,6 +1,8 @@
 package me.chimkenu.expunge.items.utilities.healing;
 
 import me.chimkenu.expunge.game.GameManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Material;
@@ -16,7 +18,7 @@ public class Medkit implements Healing {
             return;
         }
         if (player.getHealth() >= 19) {
-            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§cYou still have some health left..."));
+            player.sendActionBar(Component.text("You still have some health left...", NamedTextColor.RED));
             return;
         }
 
@@ -26,7 +28,7 @@ public class Medkit implements Healing {
         }
 
 
-        attemptUse(plugin, gameManager, player, item, getCooldown(), true, "§eUsing medkit...",
+        attemptUse(plugin, gameManager, player, item, getCooldown(), true, Component.text("Using medkit...", NamedTextColor.YELLOW),
                 (plugin1, gameManager1, player1) -> {
                     player1.setHealth(player1.getHealth() + ((20 - player1.getHealth()) * 0.8));
                     player1.getInventory().getItemInMainHand().setAmount(player1.getInventory().getItemInMainHand().getAmount() - 1);
