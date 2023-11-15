@@ -1,5 +1,7 @@
 package me.chimkenu.expunge.utils;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
+import com.destroystokyo.paper.profile.ProfileProperty;
 import me.chimkenu.expunge.enums.Tier;
 import me.chimkenu.expunge.enums.Weapons;
 import me.chimkenu.expunge.items.utilities.Utility;
@@ -8,12 +10,18 @@ import me.chimkenu.expunge.items.utilities.throwable.*;
 import me.chimkenu.expunge.items.utilities.throwable.Throwable;
 import me.chimkenu.expunge.items.weapons.guns.Gun;
 import me.chimkenu.expunge.items.weapons.melees.Melee;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
+import org.codehaus.plexus.util.Base64;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class Utils {
     public static ArrayList<Gun> getGuns() {
@@ -122,5 +130,24 @@ public class Utils {
             }
         }
         return null;
+    }
+
+    public static ItemStack getSkull(String url) {
+        ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
+        SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
+        skullMeta.setPlayerProfile(Bukkit.createProfile(UUID.randomUUID(), null));
+        PlayerProfile playerProfile = skullMeta.getPlayerProfile();
+        if (playerProfile != null) playerProfile.setProperty(new ProfileProperty("textures", url));
+        skullMeta.setPlayerProfile(playerProfile);
+        skull.setItemMeta(skullMeta);
+        return skull;
+    }
+
+    public static ItemStack getSkull(Player player) {
+        ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
+        SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
+        skullMeta.setOwningPlayer(player);
+        skull.setItemMeta(skullMeta);
+        return skull;
     }
 }
