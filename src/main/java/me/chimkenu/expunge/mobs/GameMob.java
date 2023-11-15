@@ -53,21 +53,4 @@ public abstract class GameMob {
         }
         return null;
     }
-
-    public void putOnRandomClothes(Mob mob) {
-        EntityEquipment equipment = mob.getEquipment();
-        equipment.setChestplate(getDyedArmor(Material.LEATHER_CHESTPLATE));
-        equipment.setLeggings(getDyedArmor(Material.LEATHER_LEGGINGS));
-        equipment.setBoots(getDyedArmor(Material.LEATHER_BOOTS));
-    }
-
-    private ItemStack getDyedArmor(Material material) {
-        ItemStack item = new ItemStack(material);
-        LeatherArmorMeta meta = (LeatherArmorMeta) item.getItemMeta();
-        if (meta != null) {
-            meta.setColor(Color.fromRGB(ThreadLocalRandom.current().nextInt(255), ThreadLocalRandom.current().nextInt(255), ThreadLocalRandom.current().nextInt(255)));
-            item.setItemMeta(meta);
-        }
-        return item;
-    }
 }

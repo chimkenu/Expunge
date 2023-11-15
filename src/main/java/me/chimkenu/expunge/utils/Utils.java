@@ -11,17 +11,23 @@ import me.chimkenu.expunge.items.utilities.throwable.Throwable;
 import me.chimkenu.expunge.items.weapons.guns.Gun;
 import me.chimkenu.expunge.items.weapons.melees.Melee;
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.codehaus.plexus.util.Base64;
 
 import java.util.ArrayList;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Utils {
     public static ArrayList<Gun> getGuns() {
@@ -130,6 +136,22 @@ public class Utils {
             }
         }
         return null;
+    }
+
+    public static void putOnRandomClothes(EntityEquipment equipment) {
+        equipment.setChestplate(getDyedArmor(Material.LEATHER_CHESTPLATE));
+        equipment.setLeggings(getDyedArmor(Material.LEATHER_LEGGINGS));
+        equipment.setBoots(getDyedArmor(Material.LEATHER_BOOTS));
+    }
+
+    public static ItemStack getDyedArmor(Material material) {
+        ItemStack item = new ItemStack(material);
+        LeatherArmorMeta meta = (LeatherArmorMeta) item.getItemMeta();
+        if (meta != null) {
+            meta.setColor(Color.fromRGB(ThreadLocalRandom.current().nextInt(255), ThreadLocalRandom.current().nextInt(255), ThreadLocalRandom.current().nextInt(255)));
+            item.setItemMeta(meta);
+        }
+        return item;
     }
 
     public static ItemStack getSkull(String url) {

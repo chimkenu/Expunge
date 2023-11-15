@@ -3,6 +3,7 @@ package me.chimkenu.expunge.mobs.common;
 import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.enums.Difficulty;
 import me.chimkenu.expunge.mobs.GameMob;
+import me.chimkenu.expunge.utils.Utils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -32,7 +33,7 @@ public class Wanderer extends GameMob {
                     mob.setTarget(getRandomPlayer(world));
             }
         });
-        putOnRandomClothes(getMob());
+        Utils.putOnRandomClothes(getMob().getEquipment());
         getMob().addScoreboardTag("WANDERER");
         try {
             getMob().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(0.25 + (difficulty.ordinal() * 0.25));
