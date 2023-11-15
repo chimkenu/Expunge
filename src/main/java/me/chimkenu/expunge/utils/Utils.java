@@ -13,8 +13,6 @@ import me.chimkenu.expunge.items.weapons.melees.Melee;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.inventory.EntityEquipment;
@@ -23,7 +21,6 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.codehaus.plexus.util.Base64;
 
 import java.util.ArrayList;
 import java.util.UUID;
