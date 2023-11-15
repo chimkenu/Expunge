@@ -119,12 +119,13 @@ public class ShootListener extends GameListener {
         }
 
         // Play flash effect
-        if (!player.getLocation().getBlock().isEmpty()) {
-            player.sendBlockChange(player.getLocation(), Material.LIGHT.createBlockData("[level=" + (1 + Math.random() * 14) + "]"));
+        Location light = player.getLocation();
+        if (light.getBlock().isEmpty()) {
+            player.sendBlockChange(light, Material.LIGHT.createBlockData("[level=" + (int) (10 + Math.random() * 5) + "]"));
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    player.sendBlockChange(player.getLocation(), Material.AIR.createBlockData());
+                    player.sendBlockChange(light, Material.AIR.createBlockData());
                 }
             }.runTaskLater(plugin, 2);
         }
