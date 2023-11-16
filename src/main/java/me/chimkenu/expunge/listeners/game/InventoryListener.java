@@ -24,6 +24,11 @@ public class InventoryListener extends GameListener {
     @EventHandler
     public void switchItem(PlayerItemHeldEvent e) {
         Player player = e.getPlayer();
+
+        if (!gameManager.getPlayers().contains(player)) {
+            return;
+        }
+
         ItemStack item = player.getInventory().getItem(e.getNewSlot());
         player.setLevel(0);
         player.setExp(0);
@@ -46,6 +51,9 @@ public class InventoryListener extends GameListener {
     @EventHandler
     public void onFlowerPotInteract(PlayerInteractEvent e) {
         Block block = e.getClickedBlock();
+        if (!gameManager.getPlayers().contains(e.getPlayer())) {
+            return;
+        }
         if (block != null && (block.getType().name().startsWith("POTTED_") || block.getType() == Material.FLOWER_POT)) {
             if (gameManager.getPlayers().contains(e.getPlayer())) {
                 e.setCancelled(true);
