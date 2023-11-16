@@ -204,6 +204,7 @@ public class PickUpListener extends GameListener {
                     damageable.setDamage(0);
                     item.setItemMeta(damageable);
                     player.setCooldown(item.getType(), 20 * 5);
+                    player.updateInventory();
                 }
             }
             player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§cYou can't drop this."));
@@ -215,6 +216,7 @@ public class PickUpListener extends GameListener {
         player.getInventory().remove(item.getType());
         e.getItemDrop().setItemStack(item);
         e.getItemDrop().addScoreboardTag("ITEM");
+        e.getItemDrop().setGlowing(true);
     }
 
     @EventHandler
