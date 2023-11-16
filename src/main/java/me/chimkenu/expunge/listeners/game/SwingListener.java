@@ -18,13 +18,16 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class SwingListener extends GameListener {
     private final BreakGlassListener breakGlassListener;
+    private final HashSet<Player> playersUsingChainsaw;
 
     public SwingListener(JavaPlugin plugin, GameManager gameManager, BreakGlassListener breakGlassListener) {
         super(plugin, gameManager);
         this.breakGlassListener = breakGlassListener;
+        playersUsingChainsaw = new HashSet<>();
     }
 
     private void swing(Player player, Melee melee) {
@@ -123,12 +126,20 @@ public class SwingListener extends GameListener {
             swing(player, weapon);
             return;
         }
+
+        if (playersUsingChainsaw.contains(player)) {
+            return;
+        }
+
+        playersUsingChainsaw.add(player);
         new BukkitRunnable() {
             int i = 0;
             @Override
             public void run() {
-                if (player.getInventory().getItemInMainHand().getType() != weapon.getMaterial())
+                if (player.getInventory().getItemInMainHand().getType() != weapon.getMaterial()) {
+                    playersUsingChainsaw.remove(player);
                     this.cancel();
+                }
                 if (i % 5 == 0) {
                     Location loc = player.getEyeLocation().add(player.getLocation().getDirection().multiply(1.5));
                     player.getWorld().spawnParticle(Particle.SWEEP_ATTACK, loc, 1);
@@ -172,8 +183,10 @@ public class SwingListener extends GameListener {
             int i = 0;
             @Override
             public void run() {
-                if (player.getInventory().getItemInMainHand().getType() != weapon.getMaterial())
+                if (player.getInventory().getItemInMainHand().getType() != weapon.getMaterial()) {
+
                     this.cancel();
+                }
                 if (i % 5 == 0) {
                     Location loc = player.getEyeLocation().add(player.getLocation().getDirection().multiply(1.5));
                     player.getWorld().spawnParticle(Particle.SWEEP_ATTACK, loc, 1);
