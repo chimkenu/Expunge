@@ -31,6 +31,10 @@ public interface Gun extends Weapon {
 
     float getPitch();
 
+    default double getOffset() {
+        return 0;
+    };
+
     @Override
     default Slot getSlot() {
         return Slot.PRIMARY;

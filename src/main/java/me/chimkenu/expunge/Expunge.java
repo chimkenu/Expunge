@@ -19,6 +19,7 @@ public final class Expunge extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        saveDefaultConfig();
         try {
             ResourceCopy.copyFromJar(this.getClass(), "Maps", getDataFolder().toPath());
         } catch (URISyntaxException | IOException e) {

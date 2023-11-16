@@ -1,14 +1,12 @@
 package me.chimkenu.expunge.listeners.game;
 
 import me.chimkenu.expunge.game.GameManager;
-import me.chimkenu.expunge.listeners.GameListener;
-import me.chimkenu.expunge.utils.Utils;
 import me.chimkenu.expunge.items.ShootParticle;
 import me.chimkenu.expunge.items.utilities.throwable.Grenade;
 import me.chimkenu.expunge.items.weapons.guns.GrenadeLauncher;
 import me.chimkenu.expunge.items.weapons.guns.Gun;
-import me.chimkenu.expunge.items.weapons.guns.MP5;
-import me.chimkenu.expunge.items.weapons.guns.SMG;
+import me.chimkenu.expunge.listeners.GameListener;
+import me.chimkenu.expunge.utils.Utils;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
@@ -76,11 +74,11 @@ public class ShootListener extends GameListener {
         player.setLevel(currentAmmo);
 
         // OFFSET MODIFICATION : Offset is increased based on certain actions/conditions
-        double offset = 0.001;
+        double offset = gun.getOffset();
         Location loc = player.getLocation();
 
         // is on ladder
-        if (loc.subtract(0, 0.1, 0).getBlock().getType() == Material.LADDER) offset += 0.005;
+        if (loc.subtract(0, 0.1, 0).getBlock().getType() == Material.LADDER) offset += plugin.getConfig().getDouble("gun.ladder-offset");
 
         // is not on solid ground
         if (!(loc.subtract(.31, 0.1, .31).getBlock().getType().isSolid() ||
@@ -89,19 +87,16 @@ public class ShootListener extends GameListener {
                 loc.subtract(-.31, 0.1, .31).getBlock().getType().isSolid() ||
                 loc.subtract(0, 0.1, 0).getBlock().getType().isSolid()
                 ))
-            offset += 0.01;
+            offset += plugin.getConfig().getDouble("gun.jumping-offset");
 
         // is moving a lot
-        if (player.getVelocity().getX() != 0) offset += 0.005;
-        if (player.getVelocity().getZ() != 0) offset += 0.005;
-        if (player.isSprinting()) offset += 0.005;
+        double movingOffset = plugin.getConfig().getDouble("gun.moving-offset");
+        if (player.getVelocity().getX() != 0) offset += movingOffset;
+        if (player.getVelocity().getZ() != 0) offset += movingOffset;
+        if (player.isSprinting()) offset += movingOffset;
 
         // is down
-        if (player.getVehicle() != null) offset += 0.1;
-
-        // is using a smg
-        if (gun instanceof SMG) offset += 0.005;
-        else if (gun instanceof MP5) offset += 0.005;
+        if (player.getVehicle() != null) offset += plugin.getConfig().getDouble("gun.downed-offset");
 
         if (gun instanceof GrenadeLauncher) new Grenade().use(plugin, gameManager, player);
         else {

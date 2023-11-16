@@ -1,0 +1,5 @@
+gun:
+  ladder-offset: 0.005
+  jumping-offset: 0.05
+  moving-offset: 0.005
+  downed-offset: 0.25
