@@ -1,6 +1,7 @@
 package me.chimkenu.expunge.campaigns;
 
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -12,7 +13,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Dialogue {
     public static void display(JavaPlugin plugin, Set<Player> playerSet, String[] strings) {
-        List<Player> players = playerSet.stream().toList();
+        List<Player> players = new ArrayList<>(playerSet.stream().toList());
         List<String> dialogue = new ArrayList<>();
         List<String> speakers = new ArrayList<>();
         for (String s : strings) {
@@ -32,8 +33,8 @@ public class Dialogue {
                 players.set(i, p);
             }
         }
-        String speakerA = players.get(0).getDisplayName() + " ";
-        String speakerB = players.get(Math.min(1, players.size() - 1)).getDisplayName() + " ";
+        Component speakerA = players.get(0).displayName();
+        Component speakerB = players.get(Math.min(1, players.size() - 1)).displayName();
         int totalTime = 0;
         double wordsPerSecond = 2.5;
         for (int i = 0; i < dialogue.size(); i++) {
@@ -45,9 +46,10 @@ public class Dialogue {
                 public void run() {
                     for (Player p : players) {
                         String speaker = speakers.get(index);
-                        if (speaker.trim().equalsIgnoreCase("a")) speaker = speakerA;
-                        else if (speaker.trim().equalsIgnoreCase("b")) speaker = speakerB;
-                        String message = ChatColor.translateAlternateColorCodes('&', "&r" + speaker + "&8»&r" + dialogue.get(index));
+                        Component speakerComponent;
+                        if (speaker.trim().equalsIgnoreCase("a")) speakerComponent = speakerA;
+                        else speakerComponent = speakerB;
+                        Component message = speakerComponent.append(Component.text(" » ", NamedTextColor.DARK_GRAY)).append(Component.text(dialogue.get(index)));
                         p.sendMessage(message);
                     }
                 }
