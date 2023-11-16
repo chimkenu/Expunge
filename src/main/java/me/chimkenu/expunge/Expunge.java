@@ -38,6 +38,7 @@ public final class Expunge extends JavaPlugin {
         registerCommand("tutorial", new Tutorial());
         registerCommand("spawn", new Spawn());
         registerCommand("test", new TestCommand(this));
+        registerCommand("reloadconfig", new ReloadConfigCommand(this));
 
         getServer().getPluginManager().registerEvents(getLobby(), this);
     }

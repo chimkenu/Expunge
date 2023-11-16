@@ -29,3 +29,5 @@ commands:
     description: returns all the glass
   test:
     description: test command
+  reloadconfig:
+    description: reloads config
