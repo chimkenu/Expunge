@@ -2,6 +2,7 @@ package me.chimkenu.expunge;
 
 import me.chimkenu.expunge.commands.*;
 import me.chimkenu.expunge.game.GameManager;
+import me.chimkenu.expunge.listeners.global.GUIListener;
 import me.chimkenu.expunge.utils.ResourceCopy;
 import org.bukkit.*;
 import org.bukkit.command.CommandExecutor;
@@ -41,6 +42,7 @@ public final class Expunge extends JavaPlugin {
         registerCommand("reloadconfig", new ReloadConfigCommand(this));
 
         getServer().getPluginManager().registerEvents(getLobby(), this);
+        getServer().getPluginManager().registerEvents(new GUIListener(), this);
     }
 
     @Override
