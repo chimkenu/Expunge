@@ -21,7 +21,7 @@ public class Medkit implements Healing {
         }
 
         ItemStack item = player.getInventory().getItemInMainHand();
-        if (!getUtility().getType().equals(item.getType()) || player.getCooldown(getUtility().getType()) > 0) {
+        if (!get().getType().equals(item.getType()) || player.getCooldown(get().getType()) > 0) {
             return;
         }
 

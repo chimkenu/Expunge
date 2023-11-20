@@ -1,7 +1,6 @@
 package me.chimkenu.expunge.listeners.game;
 
 import me.chimkenu.expunge.game.GameManager;
-import me.chimkenu.expunge.game.LocalGameManager;
 import me.chimkenu.expunge.listeners.GameListener;
 import me.chimkenu.expunge.utils.Utils;
 import me.chimkenu.expunge.items.utilities.Utility;
@@ -25,7 +24,7 @@ public class UtilityListener extends GameListener {
     private void useUtil(Player player, Utility utility) {
         ItemStack item = player.getInventory().getItemInMainHand();
 
-        if (item.isSimilar(utility.getUtility()) && player.getCooldown(utility.getMaterial()) == 0) {
+        if (item.isSimilar(utility.get()) && player.getCooldown(utility.getMaterial()) == 0) {
             utility.use(plugin, gameManager, player);
             player.setCooldown(utility.getMaterial(), utility.getCooldown());
             if (utility instanceof Healing) {

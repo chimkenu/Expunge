@@ -21,7 +21,7 @@ public class ShootParticle {
 
     public static Set<Block> shoot(Particle particle, int range, double damage, Player shooter, int entitiesToHit, double offset, boolean decreaseDamage) {
         Vector direction = shooter.getEyeLocation().getDirection();
-        direction = direction.add(new Vector(ThreadLocalRandom.current().nextDouble(-offset, offset),ThreadLocalRandom.current().nextDouble(-offset, offset), ThreadLocalRandom.current().nextDouble(-offset, offset)));
+        if (offset > 0) direction = direction.add(new Vector(ThreadLocalRandom.current().nextDouble(-offset, offset),ThreadLocalRandom.current().nextDouble(-offset, offset), ThreadLocalRandom.current().nextDouble(-offset, offset)));
         RayTrace ray = new RayTrace(shooter.getEyeLocation().toVector(), direction);
         ArrayList<Vector> positions = ray.traverse(range, ACCURACY_PARTICLES);
         ArrayList<LivingEntity> entities = new ArrayList<>();

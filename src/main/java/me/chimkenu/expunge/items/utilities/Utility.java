@@ -9,7 +9,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public interface Utility extends GameItem {
-    default ItemStack getUtility() {
+    @Override
+    default ItemStack get() {
         ItemStack utility = new ItemStack(getMaterial());
         ItemMeta meta = utility.getItemMeta();
         if (meta != null) {

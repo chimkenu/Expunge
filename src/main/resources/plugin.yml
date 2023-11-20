@@ -5,29 +5,37 @@ api-version: 1.20
 authors: [ Chimkenu ]
 description: A Left4Dead inspired Minecraft mini-game
 commands:
-  join:
-    description: joins a game (or starts one if there is none)
-  values:
-    description: sends important data about the game
-  bye:
-    description: bye bye
-  getgun:
-    description: gets all the guns
-  getutility:
-    description: gets all the utilities
-  getmelee:
-    description: gets all the melees
-  startgame:
-    description: starts the game
-  tutorial:
-    description: for all the new
-  stats:
-    description: see how you are doing in the game
-  spawn:
-    description: spawn a mob
-  returnglass:
-    description: returns all the glass
-  test:
-    description: test command
-  reloadconfig:
-    description: reloads config
+  expunge:
+    description: Expunge command
+    usage: /<command> [tutorial|stats|start|stop|get|spawn|reload]
+permissions:
+  expunge:
+    default: true
+  expunge.tutorial:
+    default: true
+  expunge.stats.player:
+    default: true
+  expunge.stats.game:
+    default: op
+  expunge.start:
+    default: op
+  expunge.stop:
+    default: op
+  expunge.get:
+    default: op
+  expunge.spawn:
+    default: op
+  expunge.reload:
+    default: op
+  expunge.*:
+    default: op
+    children:
+      expunge: true
+      expunge.tutorial: true
+      expunge.stats.player: true
+      expunge.stats.game: true
+      expunge.start: true
+      expunge.stop: true
+      expunge.get: true
+      expunge.spawn: true
+      expunge.reload: true

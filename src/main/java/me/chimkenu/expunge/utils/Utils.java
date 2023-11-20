@@ -92,9 +92,9 @@ public class Utils {
         Damageable damageable = (Damageable) meta;
         if (damageable.getDamage() > 0) return null;
         for (Gun gun : getGuns()) {
-            ItemMeta gunMeta = gun.getWeapon().getItemMeta();
+            ItemMeta gunMeta = gun.get().getItemMeta();
             if (gunMeta == null) continue;
-            if (item.getType() == gun.getWeapon().getType() && meta.hasDisplayName() && gunMeta.hasDisplayName() && meta.getDisplayName().equals(gunMeta.getDisplayName())) {
+            if (item.getType() == gun.get().getType() && meta.hasDisplayName() && gunMeta.hasDisplayName() && meta.getDisplayName().equals(gunMeta.getDisplayName())) {
                 return gun;
             }
         }
@@ -106,7 +106,7 @@ public class Utils {
         utilities.addAll(getHealings());
         utilities.addAll(getThrowables());
         for (Utility utility : utilities) {
-            if (item.isSimilar(utility.getUtility())) {
+            if (item.isSimilar(utility.get())) {
                 return utility;
             }
         }
@@ -117,9 +117,9 @@ public class Utils {
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return null;
         for (Melee melee : getMelees()) {
-            ItemMeta meleeMeta = melee.getWeapon().getItemMeta();
+            ItemMeta meleeMeta = melee.get().getItemMeta();
             if (meleeMeta == null) continue;
-            if (item.getType() == melee.getWeapon().getType() && meta.hasDisplayName() && meleeMeta.hasDisplayName() && meta.getDisplayName().equals(meleeMeta.getDisplayName())) {
+            if (item.getType() == melee.get().getType() && meta.hasDisplayName() && meleeMeta.hasDisplayName() && meta.getDisplayName().equals(meleeMeta.getDisplayName())) {
                 return melee;
             }
         }

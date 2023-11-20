@@ -128,15 +128,4 @@ public abstract class GUI {
         }
         return item;
     }
-
-    public static ItemStack getSkull(UUID uuid, Component displayName) {
-        ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
-        SkullMeta meta = (SkullMeta) skull.getItemMeta();
-        if (meta != null) {
-            meta.displayName(displayName);
-            meta.setOwningPlayer(Bukkit.getOfflinePlayer(uuid));
-            skull.setItemMeta(meta);
-        }
-        return skull;
-    }
 }

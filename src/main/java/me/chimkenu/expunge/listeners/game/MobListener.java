@@ -2,7 +2,6 @@ package me.chimkenu.expunge.listeners.game;
 
 import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.game.GameManager;
-import me.chimkenu.expunge.game.LocalGameManager;
 import me.chimkenu.expunge.items.utilities.throwable.FreshAir;
 import me.chimkenu.expunge.listeners.GameListener;
 import org.bukkit.*;
@@ -15,7 +14,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
 import org.spigotmc.event.entity.EntityDismountEvent;
 
 public class MobListener extends GameListener {
@@ -78,7 +76,7 @@ public class MobListener extends GameListener {
             boom(e.getEntity());
         }
         else if (e.getEntity().getScoreboardTags().contains("ROBOT")) {
-            Item item = e.getEntity().getWorld().dropItemNaturally(e.getEntity().getLocation(), new FreshAir().getUtility());
+            Item item = e.getEntity().getWorld().dropItemNaturally(e.getEntity().getLocation(), new FreshAir().get());
             item.addScoreboardTag("ITEM");
         }
 

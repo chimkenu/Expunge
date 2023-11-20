@@ -1,7 +1,6 @@
 package me.chimkenu.expunge.listeners.game;
 
 import me.chimkenu.expunge.game.GameManager;
-import me.chimkenu.expunge.game.LocalGameManager;
 import me.chimkenu.expunge.listeners.GameListener;
 import me.chimkenu.expunge.utils.Utils;
 import me.chimkenu.expunge.items.GameItem;
@@ -37,23 +36,23 @@ public class PickUpListener extends GameListener {
     private static HashMap<ItemStack, GameItem> getItems() {
         HashMap<ItemStack, GameItem> items = new HashMap<>();
         for (Weapon weapon : Utils.getGuns()) {
-            items.put(weapon.getWeapon(), weapon);
+            items.put(weapon.get(), weapon);
         }
         for (Weapon weapon : Utils.getMelees()) {
-            items.put(weapon.getWeapon(), weapon);
+            items.put(weapon.get(), weapon);
         }
         for (Utility utility : Utils.getThrowables()) {
-            items.put(utility.getUtility(), utility);
+            items.put(utility.get(), utility);
         }
         for (Utility utility : Utils.getHealings()) {
-            items.put(utility.getUtility(), utility);
+            items.put(utility.get(), utility);
         }
         return items;
     }
 
     private ItemStack getValidItemStack(ItemStack item) {
         Gun gun = Utils.getPlayerHeldGun(item);
-        if (gun != null) return gun.getWeapon();
+        if (gun != null) return gun.get();
         for (ItemStack itemStack : getItems().keySet()) {
             if (item.isSimilar(itemStack)) {
                 return itemStack;

@@ -24,7 +24,7 @@ public interface Melee extends Weapon {
     }
 
     @Override
-    default ItemStack getWeapon() {
+    default ItemStack get() {
         ItemStack melee = new ItemStack(getMaterial());
         ItemMeta meta = melee.getItemMeta();
         if (meta != null) {

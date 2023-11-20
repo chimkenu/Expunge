@@ -108,7 +108,7 @@ public class ShootListener extends GameListener {
                 Set<Block> blocks =  ShootParticle.shoot(gun.getParticle(), gun.getRange(), gun.getDamage(), player, gun.getEntitiesToHit(), offset, gun.getPellets() > 1);
                 for (Block b : blocks) {
                     breakGlassListener.breakGlass(b);
-                    if (!b.isEmpty()) player.sendBlockDamage(b.getLocation(), (float) Math.random()); // Visual damage
+                    // if (!b.isEmpty()) player.sendBlockDamage(b.getLocation(), (float) Math.random()); // Visual damage (needs to use BukkitRunnable(), maybe add block particles as well)
                 }
             }
         }

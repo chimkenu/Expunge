@@ -3,7 +3,6 @@ package me.chimkenu.expunge.listeners.game;
 import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.enums.Weapons;
 import me.chimkenu.expunge.game.GameManager;
-import me.chimkenu.expunge.game.LocalGameManager;
 import me.chimkenu.expunge.game.PlayerStats;
 import me.chimkenu.expunge.listeners.GameListener;
 import net.md_5.bungee.api.ChatMessageType;
@@ -99,7 +98,7 @@ public class DeathReviveListener extends GameListener {
                     inventory.setItem(i + 9, inventory.getItem(i));
                     inventory.setItem(i, new ItemStack(Material.AIR));
                 }
-                inventory.setItem(5, Weapons.Guns.PISTOL.getGun().getWeapon());
+                inventory.setItem(5, Weapons.Guns.PISTOL.getGun().get());
 
             } else {
                 Bukkit.broadcastMessage(ChatColor.RED + player.getName() + " died.");

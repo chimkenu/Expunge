@@ -94,7 +94,7 @@ public class ItemHandler {
     }
 
     public void spawnWeapon(Vector loc, Weapon weapon, boolean isInvulnerable) {
-        Item item = director.getWorld().dropItem(loc.toLocation(director.getWorld()), weapon.getWeapon());
+        Item item = director.getWorld().dropItem(loc.toLocation(director.getWorld()), weapon.get());
         if (isInvulnerable) {
             ItemMeta meta = item.getItemStack().getItemMeta();
             if (meta != null && meta.getLore() != null) {
@@ -116,7 +116,7 @@ public class ItemHandler {
 
     public void spawnUtility(Vector loc, Utility utility, boolean isInvulnerable) {
         Item item = director.getWorld().spawn(loc.toLocation(director.getWorld()), Item.class);
-        item.setItemStack(utility.getUtility());
+        item.setItemStack(utility.get());
         item.setInvulnerable(isInvulnerable);
         item.setGlowing(true);
         item.addScoreboardTag("ITEM");

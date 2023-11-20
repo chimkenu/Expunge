@@ -57,11 +57,11 @@ public class Lobby implements Listener {
         return world;
     }
 
-    public Queue createQueue(int countdown, Campaign campaign, Difficulty difficulty) {
+    public Queue createQueue(int countdown, Campaign campaign, Difficulty difficulty, Player creator) {
         final int MIN_PLAYERS = 1;
         final int MAX_PLAYERS = 4;
 
-        Queue queue = new Queue(plugin, this, MIN_PLAYERS, MAX_PLAYERS, countdown, campaign, difficulty);
+        Queue queue = new Queue(plugin, this, MIN_PLAYERS, MAX_PLAYERS, countdown, campaign, difficulty, creator);
         queues.add(queue);
         return queue;
     }

@@ -21,11 +21,11 @@ public class Pills implements Healing {
             return;
         }
         ItemStack item = player.getInventory().getItemInMainHand();
-        if (!getUtility().equals(item) || player.getCooldown(getUtility().getType()) > 0) {
+        if (!get().equals(item) || player.getCooldown(get().getType()) > 0) {
             return;
         }
 
-        player.setCooldown(getUtility().getType(), getCooldown() + 1);
+        player.setCooldown(get().getType(), getCooldown() + 1);
 
         attemptUse(plugin, null, player, item, 20, false, Component.text("Using pills...", NamedTextColor.YELLOW), (plugin1, gameManager1, player1) -> {
             double absorption = Math.min(20, player1.getAbsorptionAmount() + 10);

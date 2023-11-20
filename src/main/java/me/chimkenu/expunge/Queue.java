@@ -24,17 +24,20 @@ public class Queue implements Listener {
     private final int maxPlayers;
     private final Campaign campaign;
     private final Difficulty difficulty;
+    private final Player creator;
     private final Set<Player> queue;
     private final BukkitTask runnable;
 
-    public Queue(JavaPlugin plugin, Lobby lobby, int minPlayers, int maxPlayers, int countdown, Campaign campaign, Difficulty difficulty) {
+    public Queue(JavaPlugin plugin, Lobby lobby, int minPlayers, int maxPlayers, int countdown, Campaign campaign, Difficulty difficulty, Player creator) {
         this.plugin = plugin;
         this.lobby = lobby;
         this.minPlayers = minPlayers;
         this.maxPlayers = maxPlayers;
         this.campaign = campaign;
         this.difficulty = difficulty;
+        this.creator = creator;
         queue = new HashSet<>();
+        queue.add(creator);
 
         runnable = new BukkitRunnable() {
             int timeLeft = countdown * 20; // seconds to ticks
@@ -60,14 +63,15 @@ public class Queue implements Listener {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
-    public void join(Player player) {
-        if (queue.size() >= maxPlayers) return;
-        queue.add(player);
+    public boolean join(Player player) {
+        if (queue.size() >= maxPlayers) return false;
+        return queue.add(player);
     }
 
-    public void quit(Player player) {
+    public boolean quit(Player player) {
         if (queue.contains(player) && queue.size() - 1 <= 0) stop(true);
-        queue.remove(player);
+        if (player == creator) stop(true);
+        return queue.remove(player);
     }
 
     public void stop(boolean isAbrupt) {
@@ -93,6 +97,18 @@ public class Queue implements Listener {
 
     public boolean isCountdownRunning() {
         return !runnable.isCancelled();
+    }
+
+    public int getMaxPlayers() {
+        return maxPlayers;
+    }
+
+    public Player getCreator() {
+        return creator;
+    }
+
+    public Set<Player> getQueue() {
+        return queue;
     }
 
     @EventHandler

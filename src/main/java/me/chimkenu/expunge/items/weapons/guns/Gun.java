@@ -41,7 +41,7 @@ public interface Gun extends Weapon {
     }
 
     @Override
-    default ItemStack getWeapon() {
+    default ItemStack get() {
         ItemStack gun = new ItemStack(getMaterial(), getClipSize());
         ItemMeta meta = gun.getItemMeta();
         if (meta != null) {

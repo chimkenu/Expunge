@@ -16,6 +16,9 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public class TestCommand implements CommandExecutor {
     private final JavaPlugin plugin;
@@ -24,20 +27,9 @@ public class TestCommand implements CommandExecutor {
         this.plugin = plugin;
     }
 
-
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!(sender instanceof Player player)) {
-            return true;
-        }
-
-        if (args.length == 1) {
-            Component component = Component.text(args[0]);
-            Bukkit.broadcastMessage(PlainTextComponentSerializer.plainText().serialize(component));
-
-            Component test = Component.text("cum lord", NamedTextColor.BLUE);
-            Bukkit.broadcast(test);
-            Bukkit.broadcastMessage(PlainTextComponentSerializer.plainText().serialize(test));
             return true;
         }
 
@@ -45,13 +37,10 @@ public class TestCommand implements CommandExecutor {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (!player.isOnline() || player.getGameMode() != gameMode) this.cancel();
-                ArrayList<Block> blocks = getValidSurroundingBlocks(player.getWorld().getBlockAt(player.getLocation().add(0, -0.1, 0)), 20);
-                blocks.removeIf(block -> canBeSeenByPlayer(block, player));
-
-                final int tooClose = 50;
-                for (Block b : blocks) {
-                    b.getWorld().spawnParticle(Particle.REDSTONE, b.getLocation().add(0.5, 1.1, 0.5), 1, new Particle.DustOptions(b.getLocation().distanceSquared(player.getLocation()) < tooClose ? Color.RED : Color.GREEN, 1));
+                if (player.getGameMode() == gameMode) {
+                    spawnMobNearby(Bukkit.getWorld("world").getPlayers());
+                } else {
+                    this.cancel();
                 }
             }
         }.runTaskTimer(plugin, 1, 1);
@@ -59,32 +48,76 @@ public class TestCommand implements CommandExecutor {
         return true;
     }
 
+    public void spawnMobNearby(Collection<Player> players) {
+        final int SPAWN_RADIUS = 30;
+        final int TOO_CLOSE_RADIUS = 10;
+        final int DEPTH = 2;
+
+        Set<Block> blocks = new HashSet<>();
+        Set<Block> tooClose = new HashSet<>();
+
+        ArrayList<Player> checkedPlayers = new ArrayList<>();
+
+        // Gather all the possible spawn locations
+        for (Player p : players) {
+
+            // Disregard player if they are close to another player
+            boolean isTooClose = false;
+            for (Player q : checkedPlayers) {
+                if (isLocationTooClose(p, q.getLocation(), TOO_CLOSE_RADIUS)) {
+                    isTooClose = true;
+                }
+            }
+            if (isTooClose) continue;
+            checkedPlayers.add(p);
+
+            // Gather nearby valid blocks for entities to spawn
+            for (Block b : getValidSurroundingBlocks(p.getWorld().getBlockAt(p.getLocation().add(0, -0.1, 0)), SPAWN_RADIUS, DEPTH)) {
+                blocks.add(b);
+                if (isLocationTooClose(p, b.getLocation(), TOO_CLOSE_RADIUS)) tooClose.add(b);
+            }
+        }
+
+        blocks.removeAll(tooClose);
+        blocks.removeIf(block -> {
+            for (Player p : players) {
+                if (canBeSeenByPlayer(block, p)) return true;
+            }
+            return false;
+        });
+
+        for (Block b : blocks) {
+            b.getWorld().spawnParticle(Particle.REDSTONE, b.getLocation().add(0.5, 1.1, 0.5), 1, new Particle.DustOptions(Color.GREEN, 0.5f));
+        }
+    }
+
     private boolean canBeSeenByPlayer(Block block, Player player) {
         final Vector playerToBlock = block.getLocation().toVector().subtract(player.getEyeLocation().toVector());
-        final double maxAngle = 60 * Math.PI / 180;
+        final double maxAngle = 60 * (Math.PI / 180);
+        final double accuracy = 0.5;
+
         if (playerToBlock.angle(player.getEyeLocation().getDirection()) > maxAngle)
             return false;
 
         // Ray cast
         Vector target = block.getLocation().toVector().add(new Vector(0.5, 2.5, 0.5));
-        RayTrace ray = new RayTrace(player.getEyeLocation().toVector(), target.subtract(player.getEyeLocation().toVector()).normalize());
-        ArrayList<Vector> positions = ray.traverse(playerToBlock.length(), 1);
-        for (Vector v : positions) {
+        RayTrace ray = new RayTrace(player.getEyeLocation().toVector(), target.clone().subtract(player.getEyeLocation().toVector()).normalize());
+        for (Vector v : ray.traverse(playerToBlock.length(), accuracy)) {
             if (v.distanceSquared(player.getEyeLocation().toVector()) > target.distanceSquared(player.getEyeLocation().toVector()))
                 continue;
-            if (player.getWorld().getBlockAt(v.toLocation(player.getWorld())).getType() != Material.AIR) {
+            if (player.getWorld().getBlockAt(v.toLocation(player.getWorld())).isSolid()) {
                 return false;
             }
         }
         return true;
     }
 
-    private ArrayList<Block> getValidSurroundingBlocks(Block block, int radius) {
-        ArrayList<Block> blocks = new ArrayList<>();
+    private Set<Block> getValidSurroundingBlocks(Block block, int radius, int depth) {
+        Set<Block> blocks = new HashSet<>();
         for (int x = -radius; x <= radius; x++) {
             for (int z = -radius; z <= radius; z++) {
                 Block testBlock = block.getWorld().getBlockAt(block.getLocation().add(x, 0, z));
-                testBlock = searchDepth(testBlock, 3);
+                testBlock = searchDepth(testBlock, depth);
 
                 if (testBlock.getType() == Material.AIR) {
                     continue;
@@ -111,5 +144,9 @@ public class TestCommand implements CommandExecutor {
                 return search;
         }
         return block;
+    }
+
+    private boolean isLocationTooClose(Player p, Location l, int distance) {
+        return p.getLocation().distanceSquared(l) < distance * distance;
     }
 }

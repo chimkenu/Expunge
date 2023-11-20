@@ -33,6 +33,7 @@ public class LocalGameManager implements GameManager {
     private final Queue<GameWorld> gameWorlds;
     private final HashMap<Player, PlayerStats> players;
     private final Director director;
+    private final UUID uuid;
     private final List<Listener> listeners;
 
     private BukkitTask main;
@@ -43,6 +44,7 @@ public class LocalGameManager implements GameManager {
         this.plugin = plugin;
         this.campaign = campaign;
         this.difficulty = difficulty;
+        this.uuid = UUID.randomUUID();
 
         // Load the first map in the campaign
         gameWorlds = new LinkedList<>();
@@ -329,6 +331,11 @@ public class LocalGameManager implements GameManager {
     @Override
     public Director getDirector() {
         return director;
+    }
+
+    @Override
+    public UUID getUUID() {
+        return uuid;
     }
 
     private boolean loadMap(CampaignMap map) {
