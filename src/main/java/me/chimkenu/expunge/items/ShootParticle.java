@@ -102,7 +102,7 @@ public class ShootParticle {
             boolean isHeadshot = HeadshotCalculator.isHeadshot(ray, e, range);
             if (isHeadshot) {
                 e.damage(newDMG + (newDMG * 0.5), shooter);
-                shooter.sendMessage(Component.text("Headshot!", NamedTextColor.GOLD));
+                shooter.sendActionBar(Component.text("Headshot!", NamedTextColor.GOLD));
             } else
                 e.damage(newDMG, shooter);
             hitEntities.put(e, isHeadshot);
