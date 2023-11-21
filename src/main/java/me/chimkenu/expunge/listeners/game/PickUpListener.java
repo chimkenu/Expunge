@@ -151,6 +151,7 @@ public class PickUpListener extends GameListener {
                 Item itemSwapped = player.getWorld().dropItem(player.getLocation(), hotbarItem);
                 itemSwapped.setPickupDelay(20);
                 itemSwapped.addScoreboardTag("ITEM");
+                itemSwapped.setGlowing(true);
             }
         }
 
