@@ -115,7 +115,7 @@ public class ShootListener extends GameListener {
         }
 
         // Play flash effect
-        Location light = player.getLocation();
+        Location light = player.getEyeLocation();
         if (light.getBlock().isEmpty()) {
             player.sendBlockChange(light, Material.LIGHT.createBlockData("[level=" + (int) (10 + Math.random() * 5) + "]"));
             new BukkitRunnable() {
