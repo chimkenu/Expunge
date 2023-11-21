@@ -16,7 +16,7 @@ import org.bukkit.util.Vector;
 import java.util.Objects;
 
 public class Tank extends GameMob {
-    public <T extends Mob> Tank(JavaPlugin plugin, World world, Vector locationToSpawn, Difficulty difficulty) {
+    public Tank(JavaPlugin plugin, World world, Vector locationToSpawn, Difficulty difficulty) {
         super(plugin, world, locationToSpawn, IronGolem.class, mob -> {
             if (mob.getTarget() == null || (!(mob.getTarget() instanceof Player player) || player.getGameMode() != GameMode.ADVENTURE)) mob.setTarget(getRandomPlayer(world));
             int speed = 1;

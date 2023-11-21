@@ -4,7 +4,6 @@ import me.chimkenu.expunge.enums.Difficulty;
 import me.chimkenu.expunge.mobs.GameMob;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.entity.Mob;
 import org.bukkit.entity.Zoglin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
@@ -15,7 +14,7 @@ import org.bukkit.util.Vector;
 import java.util.Objects;
 
 public class Charger extends GameMob {
-    public <T extends Mob> Charger(JavaPlugin plugin, World world, Vector locationToSpawn, Difficulty difficulty) {
+    public Charger(JavaPlugin plugin, World world, Vector locationToSpawn, Difficulty difficulty) {
         super(plugin, world, locationToSpawn, Zoglin.class, mob -> {
             double distance = 0;
             if (mob.getTarget() == null) mob.setTarget(getRandomPlayer(world));

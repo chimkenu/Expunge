@@ -18,7 +18,7 @@ import org.bukkit.util.Vector;
 import java.util.Objects;
 
 public class Horde extends GameMob {
-    public <T extends Mob> Horde(JavaPlugin plugin, World world, Vector locationToSpawn, Difficulty difficulty) {
+    public Horde(JavaPlugin plugin, World world, Vector locationToSpawn, Difficulty difficulty) {
         super(plugin, world, locationToSpawn, Zombie.class, mob -> {
             if (mob.getTarget() != null) {
                 Location mobLoc = mob.getLocation();

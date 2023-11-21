@@ -18,7 +18,7 @@ import org.bukkit.util.Vector;
 import java.util.Objects;
 
 public class Robot extends GameMob {
-    public <T extends Mob> Robot(JavaPlugin plugin, World world, Vector locationToSpawn, Difficulty difficulty) {
+    public Robot(JavaPlugin plugin, World world, Vector locationToSpawn, Difficulty difficulty) {
         super(plugin, world, locationToSpawn, Zombie.class, mob -> {
             if (mob.getTarget() != null) {
                 Location mobLoc = mob.getLocation();

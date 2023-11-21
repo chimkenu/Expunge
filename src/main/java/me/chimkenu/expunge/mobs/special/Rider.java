@@ -12,7 +12,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 public class Rider extends GameMob {
-    public <T extends Mob> Rider(JavaPlugin plugin, World world, Vector locationToSpawn) {
+    public Rider(JavaPlugin plugin, World world, Vector locationToSpawn) {
         super(plugin, world, locationToSpawn, Spider.class, mob -> {
             if (mob.getVehicle() instanceof Player target) {
                 mob.setTarget(target);

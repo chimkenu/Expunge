@@ -15,7 +15,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 public class Pouncer extends GameMob {
-    public <T extends Mob> Pouncer(JavaPlugin plugin, World world, Vector locationToSpawn) {
+    public Pouncer(JavaPlugin plugin, World world, Vector locationToSpawn) {
         super(plugin, world, locationToSpawn, Stray.class, mob -> {
             if (mob.getVehicle() instanceof Player target) {
                 mob.setTarget(target);

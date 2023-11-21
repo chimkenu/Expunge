@@ -13,7 +13,7 @@ import org.bukkit.util.Vector;
 import java.util.Objects;
 
 public class Witch extends GameMob {
-    public <T extends Mob> Witch(JavaPlugin plugin, World world, Vector locationToSpawn) {
+    public Witch(JavaPlugin plugin, World world, Vector locationToSpawn) {
         super(plugin, world, locationToSpawn, Enderman.class, mob -> {
             if (mob.getTarget() != null) {
                 mob.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20, 200, false, false, false));

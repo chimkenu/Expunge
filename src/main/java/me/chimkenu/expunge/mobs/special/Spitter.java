@@ -12,7 +12,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 public class Spitter extends GameMob {
-    public <T extends Mob> Spitter(JavaPlugin plugin, GameManager gameManager, World world, Vector locationToSpawn) {
+    public Spitter(JavaPlugin plugin, GameManager gameManager, World world, Vector locationToSpawn) {
         super(plugin, world, locationToSpawn, ZombieVillager.class, mob -> {
             double distance = 0;
             if (mob.getTarget() == null) mob.setTarget(getRandomPlayer(world));
