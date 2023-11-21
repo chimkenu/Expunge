@@ -13,6 +13,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
+import java.util.Objects;
+
 public class Tank extends GameMob {
     public <T extends Mob> Tank(JavaPlugin plugin, World world, Vector locationToSpawn, Difficulty difficulty) {
         super(plugin, world, locationToSpawn, IronGolem.class, mob -> {
@@ -28,14 +30,10 @@ public class Tank extends GameMob {
             mob.removePotionEffect(PotionEffectType.SLOW);
             mob.removePotionEffect(PotionEffectType.WEAKNESS);
         });
-        try {
-            getMob().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(10 + (difficulty.ordinal() * 3));
-            getMob().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(2000);
-            getMob().setHealth(2000);
-            getMob().setAbsorptionAmount(500 + (difficulty.ordinal() * 1000));
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
+        Objects.requireNonNull(getMob().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)).setBaseValue(10 + (difficulty.ordinal() * 3));
+        Objects.requireNonNull(getMob().getAttribute(Attribute.GENERIC_MAX_HEALTH)).setBaseValue(2000);
+        getMob().setHealth(2000);
+        getMob().setAbsorptionAmount(500 + (difficulty.ordinal() * 1000));
         getMob().addScoreboardTag("TANK");
     }
 }

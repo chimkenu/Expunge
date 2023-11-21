@@ -15,6 +15,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
+import java.util.Objects;
+
 public class Robot extends GameMob {
     public <T extends Mob> Robot(JavaPlugin plugin, World world, Vector locationToSpawn, Difficulty difficulty) {
         super(plugin, world, locationToSpawn, Zombie.class, mob -> {
@@ -34,11 +36,7 @@ public class Robot extends GameMob {
         putOnClothes(getMob());
         getMob().addScoreboardTag("ROBOT");
         ((Ageable) getMob()).setAdult();
-        try {
-            getMob().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(0.25 + (difficulty.ordinal() * 0.25));
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
+        Objects.requireNonNull(getMob().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)).setBaseValue(0.25 + (difficulty.ordinal() * 0.25));
     }
 
     private ItemStack getDyedArmor(Material material, int red, int green, int blue) {

@@ -15,6 +15,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
+import java.util.Objects;
+
 public class Horde extends GameMob {
     public <T extends Mob> Horde(JavaPlugin plugin, World world, Vector locationToSpawn, Difficulty difficulty) {
         super(plugin, world, locationToSpawn, Zombie.class, mob -> {
@@ -33,11 +35,7 @@ public class Horde extends GameMob {
         });
         Utils.putOnRandomClothes(getMob().getEquipment());
         getMob().addScoreboardTag("HORDE");
-        try {
-            getMob().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(0.25 + (difficulty.ordinal() * 0.25));
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
+        Objects.requireNonNull(getMob().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)).setBaseValue(0.25 + (difficulty.ordinal() * 0.25));
         getMob().getEquipment().setItemInMainHand(new ItemStack(Material.AIR));
     }
 }

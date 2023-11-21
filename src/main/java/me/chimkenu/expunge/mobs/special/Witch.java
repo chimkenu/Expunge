@@ -10,6 +10,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
+import java.util.Objects;
+
 public class Witch extends GameMob {
     public <T extends Mob> Witch(JavaPlugin plugin, World world, Vector locationToSpawn) {
         super(plugin, world, locationToSpawn, Enderman.class, mob -> {
@@ -17,12 +19,8 @@ public class Witch extends GameMob {
                 mob.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20, 200, false, false, false));
             }
         });
-        try {
-            getMob().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(39);
-            getMob().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(1000);
-            getMob().setHealth(1000);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
+        Objects.requireNonNull(getMob().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)).setBaseValue(39);
+        Objects.requireNonNull(getMob().getAttribute(Attribute.GENERIC_MAX_HEALTH)).setBaseValue(1000);
+        getMob().setHealth(1000);
     }
 }

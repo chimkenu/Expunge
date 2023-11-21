@@ -12,6 +12,8 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import java.util.Objects;
+
 public class Charger extends GameMob {
     public <T extends Mob> Charger(JavaPlugin plugin, World world, Vector locationToSpawn, Difficulty difficulty) {
         super(plugin, world, locationToSpawn, Zoglin.class, mob -> {
@@ -52,13 +54,9 @@ public class Charger extends GameMob {
             }
             mob.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20, 1, false, false));
         });
-        try {
-            getMob().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(4);
-            getMob().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(400 + ((difficulty.ordinal() * 200)));
-            getMob().setHealth(400 + (difficulty.ordinal() * 200));
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
+        Objects.requireNonNull(getMob().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)).setBaseValue(4);
+        Objects.requireNonNull(getMob().getAttribute(Attribute.GENERIC_MAX_HEALTH)).setBaseValue(400 + ((difficulty.ordinal() * 200)));
+        getMob().setHealth(400 + (difficulty.ordinal() * 200));
         getMob().addScoreboardTag("CHARGER");
     }
 }

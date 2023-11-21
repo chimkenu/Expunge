@@ -15,6 +15,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
+import java.util.Objects;
+
 public class Soldier extends GameMob {
     public <T extends Mob> Soldier(JavaPlugin plugin, World world, Vector locationToSpawn, Difficulty difficulty) {
         super(plugin, world, locationToSpawn, Zombie.class, mob -> {
@@ -34,12 +36,8 @@ public class Soldier extends GameMob {
         putOnClothes(getMob());
         getMob().addScoreboardTag("SOLDIER");
         ((Ageable) getMob()).setAdult();
-        try {
-            getMob().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(0.25 + (difficulty.ordinal() * 0.25));
-            getMob().getEquipment().setItemInMainHand(new ItemStack(Material.STONE_SWORD));
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
+        Objects.requireNonNull(getMob().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)).setBaseValue(0.25 + (difficulty.ordinal() * 0.25));
+        getMob().getEquipment().setItemInMainHand(new ItemStack(Material.STONE_SWORD));
     }
 
     private void putOnClothes(Mob mob) {
