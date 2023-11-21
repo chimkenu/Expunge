@@ -68,7 +68,7 @@ public class ExpungeCommand implements CommandExecutor, TabCompleter {
                     return true;
                 }
                 if (args.length < 3) {
-                    sender.sendMessage(Component.text("Insufficient arguments. ", NamedTextColor.RED).append(Component.text("/expunge start <campaign> <difficulty> [players...] ", NamedTextColor.GRAY)).append(Component.text("Note that if players are specified you have to include yourself!")));
+                    sender.sendMessage(Component.text("Insufficient arguments. ", NamedTextColor.RED).append(Component.text("/expunge start <campaign> <difficulty> [players...] ", NamedTextColor.GRAY)).append(Component.text("Note that if players are specified you have to include yourself!", NamedTextColor.DARK_GRAY)));
                     return true;
                 }
 
@@ -102,7 +102,7 @@ public class ExpungeCommand implements CommandExecutor, TabCompleter {
                 for (int i = 3; i < args.length; i++) {
                     Player player = Bukkit.getPlayer(args[i]);
                     if (player == null || !player.isOnline()) {
-                        sender.sendMessage(Component.text("Player ", NamedTextColor.RED).append(Component.text(args[i], NamedTextColor.YELLOW).append(Component.text(" isn't online.", NamedTextColor.RED))));
+                        sender.sendMessage(Component.text(args[i], NamedTextColor.YELLOW).append(Component.text(" isn't online.", NamedTextColor.RED)));
                         return true;
                     }
                     players.add(player);
