@@ -1,16 +1,12 @@
 package me.chimkenu.expunge.game.director;
 
 import me.chimkenu.expunge.campaigns.CampaignMap;
-import me.chimkenu.expunge.items.ShootEvent;
 import net.kyori.adventure.text.Component;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
 import java.util.HashMap;
-import java.util.Set;
 
 public class StatsHandler {
     private final Director director;

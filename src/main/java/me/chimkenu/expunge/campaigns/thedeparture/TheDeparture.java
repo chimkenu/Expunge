@@ -3,11 +3,8 @@ package me.chimkenu.expunge.campaigns.thedeparture;
 import me.chimkenu.expunge.campaigns.CampaignMap;
 import me.chimkenu.expunge.campaigns.thedeparture.maps.*;
 import me.chimkenu.expunge.campaigns.Campaign;
-import org.bukkit.Bukkit;
-import org.bukkit.World;
 
 import java.awt.*;
-import java.util.ArrayList;
 
 public class TheDeparture extends Campaign {
     public TheDeparture() {

@@ -1,12 +1,11 @@
 package me.chimkenu.expunge.listeners.game;
 
+import me.chimkenu.expunge.campaigns.thedeparture.TheDeparture;
 import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.game.GameManager;
-import me.chimkenu.expunge.game.LocalGameManager;
 import me.chimkenu.expunge.listeners.GameListener;
 import net.kyori.adventure.text.Component;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -50,19 +49,19 @@ public class NextMapListener extends GameListener {
                     Location pLoc = p.getLocation();
                     if (!endRegion.contains(pLoc.getX(), pLoc.getY(), pLoc.getZ())) {
                         // a player is still not in the end zone
-                        e.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§cNot all alive players are in the safe-zone!"));
+                        e.getPlayer().sendActionBar(Component.text("Not all alive players are in the safe-zone!", NamedTextColor.RED));
                         return;
                     }
                 }
             }
 
             // this is reached when all alive players reach the end region
-            Bukkit.broadcastMessage(ChatColor.GREEN + "Safe-zone reached!");
+            gameManager.getWorld().getPlayers().forEach(player -> player.sendMessage(Component.text("Safe-zone reached!", NamedTextColor.GREEN)));
             gameManager.endMap();
 
             // check if it is the last scene then end the game
             if (gameManager.getCampaign().getMaps().length - 1 <= gameManager.getCampaignMapIndex()) {
-                Bukkit.broadcastMessage(ChatColor.GREEN + "END OF GAME");
+                gameManager.getWorld().getPlayers().forEach(player -> player.sendMessage(Component.text("END OF GAME", NamedTextColor.GREEN)));
 
                 // achievements
                 boolean hasMrCookie = false;
@@ -70,7 +69,7 @@ public class NextMapListener extends GameListener {
                     Achievements.SURVIVOR.grant(p);
 
                     // the departure achievements
-                    if (gameManager.getCampaign().getName().equals("The Departure")) {
+                    if (gameManager.getCampaign() instanceof TheDeparture) {
                         Achievements.THE_DEPARTURE.grant(p);
                         for (int i = 0; i < 5; i++) {
                             ItemStack item = p.getInventory().getItem(i);

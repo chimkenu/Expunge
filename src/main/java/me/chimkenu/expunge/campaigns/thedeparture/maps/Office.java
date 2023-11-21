@@ -18,9 +18,8 @@ import me.chimkenu.expunge.listeners.GameListener;
 import me.chimkenu.expunge.listeners.game.*;
 import me.chimkenu.expunge.mobs.common.Horde;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -195,7 +194,7 @@ public class Office extends CampaignMap implements CampaignIntro {
                                     Location pLoc = p.getLocation();
                                     if (!elevator.contains(pLoc.getX(), pLoc.getY(), pLoc.getZ())) {
                                         // a player is still not in the end zone
-                                        e.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§cNot all alive players are in the elevator!"));
+                                        e.getPlayer().sendActionBar(Component.text("Not all alive players are in the elevator!", NamedTextColor.RED));
                                         return;
                                     }
                                 }

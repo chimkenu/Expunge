@@ -46,7 +46,7 @@ public class Medkit implements Healing {
     }
 
     @Override
-    public String getName() {
+    public Component getName() {
         return "&cMedkit";
     }
 }

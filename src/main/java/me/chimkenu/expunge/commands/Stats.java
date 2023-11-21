@@ -1,17 +1,9 @@
 package me.chimkenu.expunge.commands;
 
-import me.chimkenu.expunge.Expunge;
-import me.chimkenu.expunge.game.director.Director;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 
 public class Stats implements CommandExecutor {
     @Override

@@ -26,8 +26,8 @@ import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class MobHandler {
-    JavaPlugin plugin;
-    Director director;
+    private final JavaPlugin plugin;
+    private final Director director;
 
     private final HashSet<GameMob> activeMobs = new HashSet<>();
     private boolean isSpawningEnabled;
@@ -321,7 +321,7 @@ public class MobHandler {
 
             if (loc == null) {
                 // spawn in a valid known location
-                if (savedLocations.size() > 0) loc = savedLocations.get(ThreadLocalRandom.current().nextInt(0, savedLocations.size()));
+                if (!savedLocations.isEmpty()) loc = savedLocations.get(ThreadLocalRandom.current().nextInt(0, savedLocations.size()));
                 else continue;
             } else {
                 loc.add(0.5, 1, 0.5);

@@ -7,8 +7,8 @@ import me.chimkenu.expunge.items.GameItem;
 import me.chimkenu.expunge.items.utilities.Utility;
 import me.chimkenu.expunge.items.weapons.Weapon;
 import me.chimkenu.expunge.items.weapons.guns.Gun;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -102,14 +102,14 @@ public class PickUpListener extends GameListener {
             return;
         }
         if (!player.isSneaking()) {
-            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§eSneak to pick up."));
+            player.sendActionBar(Component.text("Sneak to pick up.", NamedTextColor.YELLOW));
             e.setCancelled(true);
             return;
         }
 
         Item item = e.getItem();
         if (isItemInvalid(item.getItemStack())) {
-            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§cYou can't pick this up."));
+            player.sendActionBar(Component.text("You can't pick this up.", NamedTextColor.RED));
             e.setCancelled(true);
             return;
         }
@@ -131,12 +131,12 @@ public class PickUpListener extends GameListener {
                 ItemStack gunInHotbar = player.getInventory().getItem(hotbarSlot);
                 if (gunInHotbar != null) ShootListener.setAmmo(gunInHotbar, Math.min(ShootListener.getAmmo(gunInHotbar) + ShootListener.getAmmo(item.getItemStack()), gun.getMaxAmmo()));
                 player.playSound(player.getLocation(), Sound.ITEM_ARMOR_EQUIP_LEATHER, SoundCategory.PLAYERS, 1, 1);
-                player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§9+Ammo"));
+                player.sendActionBar(Component.text("+Ammo", NamedTextColor.BLUE));
                 item.setPickupDelay(20);
                 if (!item.isInvulnerable()) item.remove();
                 return;
             }
-            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§cYou cannot carry any more of this item."));
+            player.sendActionBar(Component.text("You cannot carry any more of this item.", NamedTextColor.RED));
             return;
         }
 
@@ -206,7 +206,7 @@ public class PickUpListener extends GameListener {
                     player.updateInventory();
                 }
             }
-            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§cYou can't drop this."));
+            player.sendActionBar(Component.text("You can't drop this.", NamedTextColor.RED));
             cancelDrop(e);
             return;
         }

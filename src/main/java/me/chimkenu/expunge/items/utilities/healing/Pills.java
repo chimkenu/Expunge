@@ -51,7 +51,7 @@ public class Pills implements Healing {
     }
 
     @Override
-    public String getName() {
+    public Component getName() {
         return "&fPills";
     }
 

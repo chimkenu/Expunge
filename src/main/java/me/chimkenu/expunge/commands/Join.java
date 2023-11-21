@@ -1,14 +1,8 @@
 package me.chimkenu.expunge.commands;
 
-import me.chimkenu.expunge.Expunge;
-import me.chimkenu.expunge.Queue;
-import me.chimkenu.expunge.enums.Difficulty;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class Join implements CommandExecutor {

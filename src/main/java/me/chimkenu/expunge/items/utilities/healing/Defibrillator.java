@@ -98,7 +98,7 @@ public class Defibrillator implements Healing {
     }
 
     @Override
-    public String getName() {
+    public Component getName() {
         return "&eDefibrillator";
     }
 }

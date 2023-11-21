@@ -92,9 +92,7 @@ public class Utils {
         Damageable damageable = (Damageable) meta;
         if (damageable.getDamage() > 0) return null;
         for (Gun gun : getGuns()) {
-            ItemMeta gunMeta = gun.get().getItemMeta();
-            if (gunMeta == null) continue;
-            if (item.getType() == gun.get().getType() && meta.hasDisplayName() && gunMeta.hasDisplayName() && meta.getDisplayName().equals(gunMeta.getDisplayName())) {
+            if (item.getType() == gun.get().getType() && meta.hasDisplayName() && gunMeta.hasDisplayName() && meta.displayName().equals(gunMeta.displayName())) {
                 return gun;
             }
         }
@@ -117,9 +115,7 @@ public class Utils {
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return null;
         for (Melee melee : getMelees()) {
-            ItemMeta meleeMeta = melee.get().getItemMeta();
-            if (meleeMeta == null) continue;
-            if (item.getType() == melee.get().getType() && meta.hasDisplayName() && meleeMeta.hasDisplayName() && meta.getDisplayName().equals(meleeMeta.getDisplayName())) {
+            if (item.getType() == melee.getMaterial() && meta.displayName() == melee.getName()) {
                 return melee;
             }
         }

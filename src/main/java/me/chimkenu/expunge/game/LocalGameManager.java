@@ -7,10 +7,8 @@ import me.chimkenu.expunge.campaigns.CampaignMap;
 import me.chimkenu.expunge.enums.Difficulty;
 import me.chimkenu.expunge.game.director.Director;
 import me.chimkenu.expunge.listeners.CleanUp;
-import me.chimkenu.expunge.listeners.game.BreakGlassListener;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -133,7 +131,7 @@ public class LocalGameManager implements GameManager {
         String gameTime = String.format("%01d:%02d:%02d.%02d", hours, minutes, seconds, milliseconds);
 
         for (Player player : gameWorld.getWorld().getPlayers()) {
-            player.sendMessage(ChatColor.BLUE + "Game ended at " + ChatColor.DARK_AQUA + gameTime);
+            player.sendMessage(Component.text("Game ended at ", NamedTextColor.BLUE).append(Component.text(gameTime, NamedTextColor.DARK_AQUA)));
             if (isAbrupt) {
                 plugin.getLobby().teleportToLobby(player);
                 continue;
@@ -153,7 +151,7 @@ public class LocalGameManager implements GameManager {
             @Override
             public void run() {
                 for (Player player : gameWorld.getWorld().getPlayers()) {
-                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§7Returning to lobby in §c" + (i / 20) + "§3..."));
+                    player.sendActionBar(Component.text("Returning to lobby in ", NamedTextColor.GRAY).append(Component.text(i / 20, NamedTextColor.DARK_AQUA)).append(Component.text("...", NamedTextColor.GRAY)));
                 }
 
                 if (gameWorld.getWorld().getPlayers().isEmpty()) {

@@ -53,7 +53,7 @@ public class Adrenaline implements Healing {
     }
 
     @Override
-    public String getName() {
+    public Component getName() {
         return "&eAdrenaline";
     }
 

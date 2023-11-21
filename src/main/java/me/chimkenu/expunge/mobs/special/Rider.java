@@ -1,8 +1,6 @@
 package me.chimkenu.expunge.mobs.special;
 
-import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.mobs.GameMob;
-import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;

@@ -1,13 +1,12 @@
 package me.chimkenu.expunge.listeners.game;
 
 import me.chimkenu.expunge.game.GameManager;
-import me.chimkenu.expunge.game.LocalGameManager;
 import me.chimkenu.expunge.listeners.GameListener;
 import me.chimkenu.expunge.utils.Utils;
 import me.chimkenu.expunge.enums.Tier;
 import me.chimkenu.expunge.items.weapons.guns.Gun;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
@@ -31,7 +30,7 @@ public class AmmoPileListener extends GameListener {
         }
         e.setCancelled(true);
 
-        // player clicked an ammo refill thing
+        // player clicked an ammo pile
         Player player = e.getPlayer();
         // update ammo if holding gun
         ItemStack itemStack = player.getInventory().getItemInMainHand();
@@ -39,13 +38,13 @@ public class AmmoPileListener extends GameListener {
         if (gun == null) {
             return;
         } else if (gun.getTier() == Tier.SPECIAL) {
-            e.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§cThere's no ammo for this weapon..."));
+            player.sendActionBar(Component.text("There's no ammo for this weapon...", NamedTextColor.RED));
             return;
         }
         player.playSound(player.getLocation(), Sound.BLOCK_CHAIN_PLACE, 1, 1);
-        e.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§9+Ammo"));
+        player.sendActionBar(Component.text("+Ammo", NamedTextColor.BLUE));
         ShootListener.setAmmo(itemStack, gun.getMaxAmmo());
         itemStack.setAmount(gun.getClipSize());
-        e.getPlayer().setLevel(ShootListener.getAmmo(itemStack));
+        player.setLevel(ShootListener.getAmmo(itemStack));
     }
 }

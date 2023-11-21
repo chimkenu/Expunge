@@ -2,7 +2,7 @@ package me.chimkenu.expunge.items.weapons.guns;
 
 import me.chimkenu.expunge.enums.Slot;
 import me.chimkenu.expunge.items.weapons.Weapon;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
@@ -33,7 +33,7 @@ public interface Gun extends Weapon {
 
     default double getOffset() {
         return 0;
-    };
+    }
 
     @Override
     default Slot getSlot() {
@@ -51,7 +51,7 @@ public interface Gun extends Weapon {
             meta.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED, modifier);
             meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 
-            meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', getName()));
+            meta.displayName(getName().decoration(TextDecoration.ITALIC, false));
             List<String> lore = new ArrayList<>();
             lore.add(String.valueOf(getMaxAmmo()));
             meta.setLore(lore);

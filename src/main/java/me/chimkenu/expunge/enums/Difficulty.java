@@ -2,7 +2,6 @@ package me.chimkenu.expunge.enums;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 
 public enum Difficulty {

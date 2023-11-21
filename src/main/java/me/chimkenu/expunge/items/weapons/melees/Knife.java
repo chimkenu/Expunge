@@ -1,6 +1,7 @@
 package me.chimkenu.expunge.items.weapons.melees;
 
 import me.chimkenu.expunge.enums.Tier;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 
 public class Knife implements Melee {
@@ -20,7 +21,7 @@ public class Knife implements Melee {
     }
 
     @Override
-    public String getName() {
+    public Component getName() {
         return "&fFire Axe";
     }
 

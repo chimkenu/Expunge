@@ -1,6 +1,7 @@
 package me.chimkenu.expunge.items.utilities.throwable;
 
 import me.chimkenu.expunge.game.GameManager;
+import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -61,7 +62,7 @@ public class Bile implements Throwable {
     }
 
     @Override
-    public String getName() {
+    public Component getName() {
         return "&aBile";
     }
 

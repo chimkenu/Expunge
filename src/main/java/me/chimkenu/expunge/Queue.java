@@ -2,9 +2,8 @@ package me.chimkenu.expunge;
 
 import me.chimkenu.expunge.campaigns.Campaign;
 import me.chimkenu.expunge.enums.Difficulty;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -15,6 +14,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 public class Queue implements Listener {
@@ -47,13 +47,16 @@ public class Queue implements Listener {
                     stop(false);
                 }
 
-                StringBuilder message = new StringBuilder();
-                message.append("§7In queue: ");
-                for (Player player : queue) {
-                    message.append("§c").append(player.getDisplayName()).append("§7, ");
+                Component message = Component.text("In queue: ", NamedTextColor.GRAY);
+                Iterator<Player> iterator = queue.iterator();
+                if (iterator.hasNext()) {
+                    message = message.append(iterator.next().displayName().color(NamedTextColor.RED));
+                }
+                while (iterator.hasNext()) {
+                    message = message.append(iterator.next().displayName().color(NamedTextColor.RED)).append(Component.text(", ", NamedTextColor.GRAY));
                 }
                 for (Player player : queue) {
-                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message.substring(0, message.length() - 2) + " (" + timeLeft / 20 + ")"));
+                    player.sendActionBar(message.append(Component.text("(" + timeLeft / 20 + ")", NamedTextColor.GRAY)));
                 }
 
                 timeLeft--;
@@ -80,14 +83,14 @@ public class Queue implements Listener {
 
         if (isAbrupt) {
             for (Player player : queue) {
-                player.sendMessage(ChatColor.RED + "Queue cancelled.");
+                player.sendMessage(Component.text("Queue cancelled.", NamedTextColor.RED));
             }
             return;
         }
 
         if (queue.size() < minPlayers) {
             for (Player player : queue) {
-                player.sendMessage(ChatColor.RED + "Unable to meet player requirements, please start a new queue.");
+                player.sendMessage(Component.text("Unable to meet player requirements, please start a new queue.", NamedTextColor.RED));
             }
             return;
         }
@@ -95,8 +98,8 @@ public class Queue implements Listener {
         lobby.createGame(plugin, campaign, difficulty, queue);
     }
 
-    public boolean isCountdownRunning() {
-        return !runnable.isCancelled();
+    public boolean isCancelled() {
+        return runnable.isCancelled();
     }
 
     public int getMaxPlayers() {

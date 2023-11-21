@@ -2,8 +2,8 @@ package me.chimkenu.expunge.items;
 
 import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.utils.RayTrace;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
@@ -52,24 +52,24 @@ public class ShootParticle {
                     }
 
                     // achievement
-                    if (livingEntity instanceof ArmorStand armorStand) {
-                        if (!hasSpoken && armorStand.getScoreboardTags().contains("ZOEY")) {
-                            Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "Zoey &8» &fWatch where you're shooting!"));
+                    if (livingEntity instanceof ArmorStand armorStand && !hasSpoken) {
+                        if (armorStand.getScoreboardTags().contains("ZOEY")) {
+                            world.getPlayers().forEach(player -> player.sendMessage(Component.text("Zoey").append(Component.text(" » ", NamedTextColor.DARK_GRAY)).append(Component.text("Watch where you're shooting!"))));
                             hasSpoken = true;
                             Achievements.THE_BIG_LEAGUES.grant(shooter);
                         }
-                        else if (!hasSpoken && armorStand.getScoreboardTags().contains("FRANCIS")) {
-                            Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "Francis &8» &fWill you knock it off!"));
+                        else if (armorStand.getScoreboardTags().contains("FRANCIS")) {
+                            world.getPlayers().forEach(player -> player.sendMessage(Component.text("Francis").append(Component.text(" » ", NamedTextColor.GRAY)).append(Component.text("Will you knock it off!"))));
                             hasSpoken = true;
                             Achievements.THE_BIG_LEAGUES.grant(shooter);
                         }
-                        else if (!hasSpoken && armorStand.getScoreboardTags().contains("BILL")) {
-                            Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "Bill &8» &fI'm getting too old for this horse shit."));
+                        else if (armorStand.getScoreboardTags().contains("BILL")) {
+                            world.getPlayers().forEach(player -> player.sendMessage(Component.text("Bill").append(Component.text(" » ", NamedTextColor.GRAY)).append(Component.text("I'm getting too old for this horse shit."))));
                             hasSpoken = true;
                             Achievements.THE_BIG_LEAGUES.grant(shooter);
                         }
-                        else if (!hasSpoken && armorStand.getScoreboardTags().contains("LOUIS")) {
-                            Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "Louis &8» &fHey man, that hurt!"));
+                        else if (armorStand.getScoreboardTags().contains("LOUIS")) {
+                            world.getPlayers().forEach(player -> player.sendMessage(Component.text("Louis").append(Component.text(" » ", NamedTextColor.GRAY)).append(Component.text("Hey man, that hurt!"))));
                             hasSpoken = true;
                             Achievements.THE_BIG_LEAGUES.grant(shooter);
                         }
@@ -102,7 +102,7 @@ public class ShootParticle {
             boolean isHeadshot = HeadshotCalculator.isHeadshot(ray, e, range);
             if (isHeadshot) {
                 e.damage(newDMG + (newDMG * 0.5), shooter);
-                shooter.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§6Headshot!"));
+                shooter.sendMessage(Component.text("Headshot!", NamedTextColor.GOLD));
             } else
                 e.damage(newDMG, shooter);
             hitEntities.put(e, isHeadshot);

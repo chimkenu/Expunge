@@ -48,7 +48,7 @@ public class QueueGUI extends GUI {
     private void loadQueues(Lobby lobby) {
         int i = 0;
         for (Queue queue : lobby.getQueues()) {
-            if (!queue.isCountdownRunning()) {
+            if (queue.isCancelled()) {
                 continue;
             }
 

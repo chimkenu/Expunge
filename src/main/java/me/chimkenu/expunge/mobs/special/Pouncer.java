@@ -44,6 +44,6 @@ public class Pouncer extends GameMob {
                 } else mob.setTarget(getRandomPlayer(world));
             }
         });
-        if (getMob().getEquipment() != null) getMob().getEquipment().setItemInMainHand(new ItemStack(Material.AIR));
+        getMob().getEquipment().setItemInMainHand(new ItemStack(Material.AIR));
     }
 }

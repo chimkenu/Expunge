@@ -7,8 +7,9 @@ import me.chimkenu.expunge.items.weapons.guns.GrenadeLauncher;
 import me.chimkenu.expunge.items.weapons.guns.Gun;
 import me.chimkenu.expunge.listeners.GameListener;
 import me.chimkenu.expunge.utils.Utils;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -62,7 +63,7 @@ public class ShootListener extends GameListener {
 
         int currentAmmo = getAmmo(item);
         if (currentAmmo < 1) {
-            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§c§lOut of Ammo!"));
+            player.sendActionBar(Component.text("Out of Ammo!", NamedTextColor.RED, TextDecoration.BOLD));
             return;
         }
         if (player.getCooldown(gun.getMaterial()) > 0) {

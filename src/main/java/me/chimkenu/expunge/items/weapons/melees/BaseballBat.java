@@ -1,6 +1,7 @@
 package me.chimkenu.expunge.items.weapons.melees;
 
 import me.chimkenu.expunge.enums.Tier;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 
 public class BaseballBat implements Melee {
@@ -25,7 +26,7 @@ public class BaseballBat implements Melee {
     }
 
     @Override
-    public String getName() {
+    public Component getName() {
         return "&6Baseball Bat";
     }
 

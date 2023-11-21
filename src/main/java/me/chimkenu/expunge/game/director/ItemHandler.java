@@ -10,7 +10,6 @@ import me.chimkenu.expunge.items.weapons.guns.Gun;
 import me.chimkenu.expunge.items.weapons.melees.Melee;
 import me.chimkenu.expunge.utils.Utils;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Item;

@@ -1,6 +1,5 @@
 package me.chimkenu.expunge.mobs.special;
 
-import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.enums.Difficulty;
 import me.chimkenu.expunge.mobs.GameMob;
 import org.bukkit.GameMode;

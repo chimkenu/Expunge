@@ -6,7 +6,10 @@ import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.items.ShootEvent;
 import me.chimkenu.expunge.mobs.GameMob;
 import net.kyori.adventure.text.Component;
-import org.bukkit.*;
+import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -198,7 +201,7 @@ public class Director implements Listener {
 
                     // broadcast if player killed special infected
                     if (!(dead instanceof Zombie))
-                        Bukkit.broadcastMessage(ChatColor.RED + dead.getKiller().getDisplayName() + " killed " + mob.getMob().getName());
+                        gameManager.getWorld().getPlayers().forEach(player -> player.sendMessage(dead.getKiller().name().color(NamedTextColor.RED).append(Component.text(" killed ", NamedTextColor.RED)).append(mob.getMob().name()).color(NamedTextColor.RED)));
                 }
                 mobToRemove = mob;
                 break;

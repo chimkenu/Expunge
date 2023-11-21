@@ -3,15 +3,11 @@ package me.chimkenu.expunge.mobs;
 import org.bukkit.*;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EntityEquipment;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -44,7 +40,7 @@ public abstract class GameMob {
     public static Player getRandomPlayer(World world) {
         List<Player> players = world.getPlayers();
         players.removeIf(player -> player.getGameMode() != GameMode.ADVENTURE);
-        if (players.size() == 0) return null;
+        if (players.isEmpty()) return null;
         int item = ThreadLocalRandom.current().nextInt(players.size());
         int i = 0;
         for (Player p : players) {

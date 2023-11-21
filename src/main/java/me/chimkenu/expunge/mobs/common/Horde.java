@@ -1,6 +1,5 @@
 package me.chimkenu.expunge.mobs.common;
 
-import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.enums.Difficulty;
 import me.chimkenu.expunge.mobs.GameMob;
 import me.chimkenu.expunge.utils.Utils;

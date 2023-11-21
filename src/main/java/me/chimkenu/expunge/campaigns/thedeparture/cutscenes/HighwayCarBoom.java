@@ -1,15 +1,11 @@
 package me.chimkenu.expunge.campaigns.thedeparture.cutscenes;
 
-import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.campaigns.Cutscene;
 import me.chimkenu.expunge.mobs.GameMob;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.List;
 
@@ -22,9 +18,9 @@ public class HighwayCarBoom extends Cutscene {
     public void play() {
         // filter viewers then stop if viewers < 0
         for (Player p : viewers.keySet()) {
-            if (p.getPassengers().size() > 0 || p.getVehicle() != null) viewers.remove(p);
+            if (!p.getPassengers().isEmpty() || p.getVehicle() != null) viewers.remove(p);
         }
-        if (viewers.size() < 1) return;
+        if (viewers.isEmpty()) return;
 
         // filter mobs that target the viewers
         for (Mob m : mobs.keySet()) {

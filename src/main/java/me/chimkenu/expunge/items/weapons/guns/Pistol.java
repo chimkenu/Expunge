@@ -2,6 +2,8 @@ package me.chimkenu.expunge.items.weapons.guns;
 
 import me.chimkenu.expunge.enums.Slot;
 import me.chimkenu.expunge.enums.Tier;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -68,8 +70,8 @@ public class Pistol implements Gun {
     }
 
     @Override
-    public String getName() {
-        return "&6Pistol";
+    public Component getName() {
+        return Component.text("Pistol", NamedTextColor.GOLD);
     }
 
     @Override

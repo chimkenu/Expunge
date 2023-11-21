@@ -14,11 +14,10 @@ import me.chimkenu.expunge.items.utilities.healing.Medkit;
 import me.chimkenu.expunge.items.utilities.healing.Pills;
 import me.chimkenu.expunge.listeners.GameListener;
 import me.chimkenu.expunge.listeners.game.*;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -288,9 +287,7 @@ public class Stadium extends CampaignMap {
 
                                                 // timer
                                                 if (!localGameManager.isRunning() || !localGameManager.getDirector().getMobHandler().isSpawningEnabled()) this.cancel();
-                                                for (Player p : localGameManager.getPlayers()) {
-                                                    p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§7" + i));
-                                                }
+                                                localGameManager.getPlayers().forEach(player -> player.sendActionBar(Component.text(i, NamedTextColor.GRAY)));
                                                 i--;
                                             }
                                         }.runTaskTimer(plugin, 0, 20);

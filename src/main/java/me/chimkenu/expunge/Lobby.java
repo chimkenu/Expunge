@@ -4,6 +4,7 @@ import me.chimkenu.expunge.campaigns.Campaign;
 import me.chimkenu.expunge.enums.Difficulty;
 import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.game.LocalGameManager;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -42,7 +43,7 @@ public class Lobby implements Listener {
                 p.showPlayer(plugin, player);
             player.showPlayer(plugin, p);
         }
-        player.setPlayerListName(ChatColor.GRAY + player.getDisplayName());
+        player.displayName(player.name().color(NamedTextColor.GRAY));
         player.setAllowFlight(true);
         player.setFlying(true);
         player.setHealth(20d);
@@ -67,7 +68,7 @@ public class Lobby implements Listener {
     }
 
     public Set<Queue> getQueues() {
-        queues.removeIf(queue -> !queue.isCountdownRunning());
+        queues.removeIf(queue -> queue.isCancelled());
         return queues;
     }
 

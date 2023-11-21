@@ -53,10 +53,8 @@ public class Robot extends GameMob {
 
     private void putOnClothes(Mob mob) {
         EntityEquipment equipment = mob.getEquipment();
-        if (equipment != null) {
-            equipment.setChestplate(getDyedArmor(Material.LEATHER_CHESTPLATE, 75, 87, 75));
-            equipment.setLeggings(getDyedArmor(Material.LEATHER_LEGGINGS, 32, 152, 139));
-            equipment.setBoots(getDyedArmor(Material.LEATHER_BOOTS, 39, 44, 33));
-        }
+        equipment.setChestplate(getDyedArmor(Material.LEATHER_CHESTPLATE, 75, 87, 75));
+        equipment.setLeggings(getDyedArmor(Material.LEATHER_LEGGINGS, 32, 152, 139));
+        equipment.setBoots(getDyedArmor(Material.LEATHER_BOOTS, 39, 44, 33));
     }
 }

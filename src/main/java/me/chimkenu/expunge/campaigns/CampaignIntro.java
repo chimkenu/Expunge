@@ -4,7 +4,6 @@ import me.chimkenu.expunge.game.GameManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.title.Title;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
@@ -14,7 +13,6 @@ import org.bukkit.util.Vector;
 
 import java.awt.*;
 import java.time.Duration;
-import java.util.logging.Level;
 
 public interface CampaignIntro {
     int play(GameManager gameManager);

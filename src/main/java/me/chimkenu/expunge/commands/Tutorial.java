@@ -1,11 +1,6 @@
 package me.chimkenu.expunge.commands;
 
-import me.chimkenu.expunge.Expunge;
-import me.chimkenu.expunge.Queue;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.Command;
