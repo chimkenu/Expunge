@@ -103,6 +103,7 @@ public class ItemHandler {
         }
         item.addScoreboardTag("ITEM");
         item.setInvulnerable(isInvulnerable);
+        item.setGlowing(true);
     }
 
     public void spawnUtilityAtRandom(Utility utility) {
