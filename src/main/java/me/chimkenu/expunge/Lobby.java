@@ -68,7 +68,7 @@ public class Lobby implements Listener {
     }
 
     public Set<Queue> getQueues() {
-        queues.removeIf(queue -> queue.isCancelled());
+        queues.removeIf(Queue::isCancelled);
         return queues;
     }
 
