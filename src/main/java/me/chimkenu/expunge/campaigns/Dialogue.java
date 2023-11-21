@@ -49,7 +49,7 @@ public class Dialogue {
                         Component speakerComponent;
                         if (speaker.trim().equalsIgnoreCase("a")) speakerComponent = speakerA;
                         else speakerComponent = speakerB;
-                        Component message = speakerComponent.append(Component.text(" » ", NamedTextColor.DARK_GRAY)).append(Component.text(dialogue.get(index)));
+                        Component message = speakerComponent.color(NamedTextColor.WHITE).append(Component.text(" \u00BB", NamedTextColor.DARK_GRAY)).append(Component.text(dialogue.get(index), NamedTextColor.WHITE));
                         p.sendMessage(message);
                     }
                 }

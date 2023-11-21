@@ -7,7 +7,7 @@ import me.chimkenu.expunge.campaigns.Dialogue;
 import me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue;
 import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.enums.Tier;
-import me.chimkenu.expunge.game.LocalGameManager;
+import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.game.director.ItemHandler;
 import me.chimkenu.expunge.items.utilities.healing.Adrenaline;
 import me.chimkenu.expunge.items.utilities.healing.Medkit;
@@ -178,24 +178,24 @@ public class Subway extends CampaignMap {
     }
 
     @Override
-    public Listener[] happenings(JavaPlugin plugin, LocalGameManager localGameManager) {
+    public Listener[] happenings(JavaPlugin plugin, GameManager gameManager) {
         return new Listener[]{
                 new Listener() {
                     @EventHandler
                     public void subwayOpening(PlayerMoveEvent e) {
-                        if (!localGameManager.getPlayers().contains(e.getPlayer()))
+                        if (!gameManager.getPlayers().contains(e.getPlayer()))
                             return;
                         BoundingBox box = new BoundingBox(13, 41, -30, 10, 47, -45);
                         if (!box.contains(e.getPlayer().getLocation().toVector()))
                             return;
-                        Dialogue.display(plugin, localGameManager.getPlayers(), DepartureDialogue.SUBWAY_OPENING.pickRandom(localGameManager.getPlayers().size()));
+                        Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.SUBWAY_OPENING.pickRandom(gameManager.getPlayers().size()));
                         HandlerList.unregisterAll(this);
                     }
                 },
                 new Listener() {
                     @EventHandler
                     public void achievement(PlayerInteractEvent e) {
-                        if (!localGameManager.getPlayers().contains(e.getPlayer())) return;
+                        if (!gameManager.getPlayers().contains(e.getPlayer())) return;
                         if (!e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) return;
                         if (e.getClickedBlock() == null || !(e.getClickedBlock().getType() == Material.STONE_BUTTON)) return;
 
@@ -207,7 +207,7 @@ public class Subway extends CampaignMap {
                 new Listener() {
                     @EventHandler
                     public void subwayPurpleCar(PlayerMoveEvent e) {
-                        if (!localGameManager.getPlayers().contains(e.getPlayer()))
+                        if (!gameManager.getPlayers().contains(e.getPlayer()))
                             return;
                         BoundingBox box = new BoundingBox(-30, 19, 2, -35, 28, 5);
                         if (!box.contains(e.getPlayer().getLocation().toVector()))
@@ -219,13 +219,13 @@ public class Subway extends CampaignMap {
                 new Listener() {
                     @EventHandler
                     public void subwayMrCookie(PlayerInteractEvent e) {
-                        if (!localGameManager.getPlayers().contains(e.getPlayer()))
+                        if (!gameManager.getPlayers().contains(e.getPlayer()))
                             return;
                         if (e.getAction().equals(Action.RIGHT_CLICK_BLOCK) && e.getClickedBlock() != null && e.getClickedBlock().getType().toString().contains("_BUTTON")) {
                             if (!e.getClickedBlock().getLocation().toVector().equals(new Vector(-19, 16, -7)))
                                 return;
-                            localGameManager.getDirector().getItemHandler().spawnWeapon(new Vector(-19, 16, -7), new MrCookie(), false);
-                            Dialogue.display(plugin, localGameManager.getPlayers(), DepartureDialogue.SUBWAY_MR_COOKIE.pickRandom(localGameManager.getPlayers().size()));
+                            gameManager.getDirector().getItemHandler().spawnWeapon(new Vector(-19, 16, -7), new MrCookie(), false);
+                            Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.SUBWAY_MR_COOKIE.pickRandom(gameManager.getPlayers().size()));
                             HandlerList.unregisterAll(this);
                         }
                     }
@@ -233,24 +233,24 @@ public class Subway extends CampaignMap {
                 new Listener() {
                     @EventHandler
                     public void subwayMap(PlayerMoveEvent e) {
-                        if (!localGameManager.getPlayers().contains(e.getPlayer()))
+                        if (!gameManager.getPlayers().contains(e.getPlayer()))
                             return;
                         BoundingBox box = new BoundingBox(-13, 15, 7, -1, 22, -95);
                         if (!box.contains(e.getPlayer().getLocation().toVector()))
                             return;
-                        Dialogue.display(plugin, localGameManager.getPlayers(), DepartureDialogue.SUBWAY_MAP.pickRandom(localGameManager.getPlayers().size()));
+                        Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.SUBWAY_MAP.pickRandom(gameManager.getPlayers().size()));
                         HandlerList.unregisterAll(this);
                     }
                 },
                 new Listener() {
                     @EventHandler
                     public void subwaySafeZone(PlayerMoveEvent e) {
-                        if (!localGameManager.getPlayers().contains(e.getPlayer()))
+                        if (!gameManager.getPlayers().contains(e.getPlayer()))
                             return;
                         BoundingBox box = new BoundingBox(38, 23, 171, 24, 31, 184);
                         if (!box.contains(e.getPlayer().getLocation().toVector()))
                             return;
-                        Dialogue.display(plugin, localGameManager.getPlayers(), DepartureDialogue.SUBWAY_PASSENGER_TRAIN.pickRandom(localGameManager.getPlayers().size()));
+                        Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.SUBWAY_PASSENGER_TRAIN.pickRandom(gameManager.getPlayers().size()));
                         HandlerList.unregisterAll(this);
                     }
                 },
@@ -259,31 +259,31 @@ public class Subway extends CampaignMap {
                 new Listener() {
                     @EventHandler
                     public void highwayManhole(PlayerMoveEvent e) {
-                        if (!localGameManager.getPlayers().contains(e.getPlayer()))
+                        if (!gameManager.getPlayers().contains(e.getPlayer()))
                             return;
                         BoundingBox box = new BoundingBox(11, 24, 178, 3, 31, 184);
                         if (!box.contains(e.getPlayer().getLocation().toVector()))
                             return;
-                        Dialogue.display(plugin, localGameManager.getPlayers(), DepartureDialogue.HIGHWAY_MANHOLE.pickRandom(localGameManager.getPlayers().size()));
+                        Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.HIGHWAY_MANHOLE.pickRandom(gameManager.getPlayers().size()));
                         HandlerList.unregisterAll(this);
                     }
                 },
                 new Listener() {
                     @EventHandler
                     public void highwayOpening(PlayerMoveEvent e) {
-                        if (!localGameManager.getPlayers().contains(e.getPlayer()))
+                        if (!gameManager.getPlayers().contains(e.getPlayer()))
                             return;
                         BoundingBox box = new BoundingBox(-3, 35, 184, -9, 42, 190);
                         if (!box.contains(e.getPlayer().getLocation().toVector()))
                             return;
-                        Dialogue.display(plugin, localGameManager.getPlayers(), DepartureDialogue.HIGHWAY_OPENING.pickRandom(localGameManager.getPlayers().size()));
+                        Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.HIGHWAY_OPENING.pickRandom(gameManager.getPlayers().size()));
                         HandlerList.unregisterAll(this);
                     }
                 },
                 new Listener() {
                     @EventHandler
                     public void highwaySafeHouse(PlayerMoveEvent e) {
-                        if (!localGameManager.getPlayers().contains(e.getPlayer()))
+                        if (!gameManager.getPlayers().contains(e.getPlayer()))
                             return;
                         BoundingBox box = new BoundingBox(-116, 35, 304, -63, 42, 326);
                         if (!box.contains(e.getPlayer().getLocation().toVector()))
@@ -293,16 +293,16 @@ public class Subway extends CampaignMap {
                         new BukkitRunnable() {
                             @Override
                             public void run() {
-                                Dialogue.display(plugin, localGameManager.getPlayers(), DepartureDialogue.HIGHWAY_CAR_BOOM.pickRandom(localGameManager.getPlayers().size()));
+                                Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.HIGHWAY_CAR_BOOM.pickRandom(gameManager.getPlayers().size()));
                             }
                         }.runTaskLater(plugin, 20 * 5);
                         new BukkitRunnable() {
                             @Override
                             public void run() {
-                                Campaign.playCrescendoEventEffect(localGameManager.getPlayers());
-                                Dialogue.display(plugin, localGameManager.getPlayers(), DepartureDialogue.HIGHWAY_SAFE_HOUSE.pickRandom(localGameManager.getPlayers().size()));
-                                localGameManager.getDirector().bile(plugin, e.getPlayer(), 30);
-                                localGameManager.getDirector().getMobHandler().spawnAtRandomLocations(new BoundingBox(997, 35, 1362, 1040, 35, 1343), 30 + (10 * localGameManager.getDifficulty().ordinal()));
+                                Campaign.playCrescendoEventEffect(gameManager.getPlayers());
+                                Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.HIGHWAY_SAFE_HOUSE.pickRandom(gameManager.getPlayers().size()));
+                                gameManager.getDirector().bile(plugin, e.getPlayer(), 30);
+                                gameManager.getDirector().getMobHandler().spawnAtRandomLocations(new BoundingBox(997, 35, 1362, 1040, 35, 1343), 30 + (10 * gameManager.getDifficulty().ordinal()));
                             }
                         }.runTaskLater(plugin, 20 * 6);
                     }
@@ -310,12 +310,12 @@ public class Subway extends CampaignMap {
                 new Listener() {
                     @EventHandler
                     public void highwayPurpleCar(PlayerMoveEvent e) {
-                        if (!localGameManager.getPlayers().contains(e.getPlayer()))
+                        if (!gameManager.getPlayers().contains(e.getPlayer()))
                             return;
                         BoundingBox box = new BoundingBox(-85, 36, 255, -83, 45, 247);
                         if (!box.contains(e.getPlayer().getLocation().toVector()))
                             return;
-                        Dialogue.display(plugin, localGameManager.getPlayers(), DepartureDialogue.HIGHWAY_PURPLE_CAR.pickRandom(localGameManager.getPlayers().size()));
+                        Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.HIGHWAY_PURPLE_CAR.pickRandom(gameManager.getPlayers().size()));
                         HandlerList.unregisterAll(this);
                     }
                 }
@@ -323,22 +323,22 @@ public class Subway extends CampaignMap {
     }
 
     @Override
-    public GameListener[] gameListeners(JavaPlugin plugin, LocalGameManager localGameManager) {
-        BreakGlassListener breakGlassListener = new BreakGlassListener(plugin, localGameManager);
+    public GameListener[] gameListeners(JavaPlugin plugin, GameManager gameManager) {
+        BreakGlassListener breakGlassListener = new BreakGlassListener(plugin, gameManager);
         return new GameListener[]{
-                new AmmoPileListener(plugin, localGameManager),
-                new DeathReviveListener(plugin, localGameManager),
-                new InventoryListener(plugin, localGameManager),
-                new MobListener(plugin, localGameManager),
-                new NextMapListener(plugin, localGameManager),
-                new PickUpListener(plugin, localGameManager),
-                new ShootListener(plugin, localGameManager, breakGlassListener),
-                new ShoveListener(plugin, localGameManager, breakGlassListener),
-                new SwingListener(plugin, localGameManager, breakGlassListener),
-                new JoinLeaveListener(plugin, localGameManager),
-                new UtilityListener(plugin, localGameManager),
+                new AmmoPileListener(plugin, gameManager),
+                new DeathReviveListener(plugin, gameManager),
+                new InventoryListener(plugin, gameManager),
+                new MobListener(plugin, gameManager),
+                new NextMapListener(plugin, gameManager),
+                new PickUpListener(plugin, gameManager),
+                new ShootListener(plugin, gameManager, breakGlassListener),
+                new ShoveListener(plugin, gameManager, breakGlassListener),
+                new SwingListener(plugin, gameManager, breakGlassListener),
+                new JoinLeaveListener(plugin, gameManager),
+                new UtilityListener(plugin, gameManager),
                 breakGlassListener,
-                new BreakDoorListener(plugin, localGameManager)
+                new BreakDoorListener(plugin, gameManager)
         };
     }
 }

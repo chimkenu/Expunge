@@ -7,7 +7,7 @@ import me.chimkenu.expunge.campaigns.Dialogue;
 import me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue;
 import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.enums.Tier;
-import me.chimkenu.expunge.game.LocalGameManager;
+import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.game.director.ItemHandler;
 import me.chimkenu.expunge.items.utilities.healing.Medkit;
 import me.chimkenu.expunge.listeners.GameListener;
@@ -192,29 +192,29 @@ public class Streets extends CampaignMap {
     }
 
     @Override
-    public Listener[] happenings(JavaPlugin plugin, LocalGameManager localGameManager) {
+    public Listener[] happenings(JavaPlugin plugin, GameManager gameManager) {
         return new Listener[]{
                 new Listener() {
                     @EventHandler
                     public void streetsOpeningTrigger(PlayerMoveEvent e) {
-                        if (!localGameManager.getPlayers().contains(e.getPlayer()))
+                        if (!gameManager.getPlayers().contains(e.getPlayer()))
                             return;
                         BoundingBox box = new BoundingBox(-243, 41, -105, -254, 52, -115);
                         if (!box.contains(e.getPlayer().getLocation().toVector()))
                             return;
-                        Dialogue.display(plugin, localGameManager.getPlayers(), DepartureDialogue.STREETS_OPENING.pickRandom(localGameManager.getPlayers().size()));
+                        Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.STREETS_OPENING.pickRandom(gameManager.getPlayers().size()));
                         HandlerList.unregisterAll(this);
                     }
                 },
                 new Listener() {
                     @EventHandler
                     public void streetsApartmentsTrigger(PlayerMoveEvent e) {
-                        if (!localGameManager.getPlayers().contains(e.getPlayer()))
+                        if (!gameManager.getPlayers().contains(e.getPlayer()))
                             return;
                         BoundingBox box = new BoundingBox(-10, 40, -105, -32, 52, -157);
                         if (!box.contains(e.getPlayer().getLocation().toVector()))
                             return;
-                        Dialogue.display(plugin, localGameManager.getPlayers(), DepartureDialogue.STREETS_APARTMENTS.pickRandom(localGameManager.getPlayers().size()));
+                        Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.STREETS_APARTMENTS.pickRandom(gameManager.getPlayers().size()));
                         HandlerList.unregisterAll(this);
                     }
                 },
@@ -222,38 +222,38 @@ public class Streets extends CampaignMap {
                     @EventHandler
                     public void crescendoEventApartments(PlayerInteractEvent e) {
                         Block block = e.getClickedBlock();
-                        if (!localGameManager.getPlayers().contains(e.getPlayer())) {
+                        if (!gameManager.getPlayers().contains(e.getPlayer())) {
                             return;
                         }
                         if (block == null || !(e.getAction().equals(Action.PHYSICAL) && (block.getLocation().toVector().equals(new Vector(16, 43, -110)) || block.getLocation().toVector().equals(new Vector(16, 43, -109))))) {
                             return;
                         }
 
-                        Campaign.playCrescendoEventEffect(localGameManager.getPlayers());
+                        Campaign.playCrescendoEventEffect(gameManager.getPlayers());
                         World world = e.getPlayer().getWorld();
                         new BukkitRunnable() {
                             int i = 0;
 
                             @Override
                             public void run() {
-                                localGameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1121.5, 43, 922.5), localGameManager.getDifficulty()));
-                                localGameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1118.5, 43, 843), localGameManager.getDifficulty()));
-                                localGameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1076.5, 43, 894.5), localGameManager.getDifficulty()));
-                                localGameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1134, 43, 898.5), localGameManager.getDifficulty()));
-                                localGameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1125.5, 50, 899.5), localGameManager.getDifficulty()));
-                                localGameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1131.5, 50, 909.5), localGameManager.getDifficulty()));
-                                localGameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1125.5, 50, 910.5), localGameManager.getDifficulty()));
-                                localGameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1131.5, 50, 920.5), localGameManager.getDifficulty()));
-                                localGameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1131.5, 50, 920.5), localGameManager.getDifficulty()));
-                                localGameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1131.5, 56, 920.5), localGameManager.getDifficulty()));
-                                localGameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1125.5, 56, 910.5), localGameManager.getDifficulty()));
-                                localGameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1131.5, 56, 909.5), localGameManager.getDifficulty()));
-                                localGameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1125.5, 56, 899.5), localGameManager.getDifficulty()));
+                                gameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1121.5, 43, 922.5), gameManager.getDifficulty()));
+                                gameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1118.5, 43, 843), gameManager.getDifficulty()));
+                                gameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1076.5, 43, 894.5), gameManager.getDifficulty()));
+                                gameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1134, 43, 898.5), gameManager.getDifficulty()));
+                                gameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1125.5, 50, 899.5), gameManager.getDifficulty()));
+                                gameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1131.5, 50, 909.5), gameManager.getDifficulty()));
+                                gameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1125.5, 50, 910.5), gameManager.getDifficulty()));
+                                gameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1131.5, 50, 920.5), gameManager.getDifficulty()));
+                                gameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1131.5, 50, 920.5), gameManager.getDifficulty()));
+                                gameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1131.5, 56, 920.5), gameManager.getDifficulty()));
+                                gameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1125.5, 56, 910.5), gameManager.getDifficulty()));
+                                gameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1131.5, 56, 909.5), gameManager.getDifficulty()));
+                                gameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1125.5, 56, 899.5), gameManager.getDifficulty()));
                                 i++;
                                 if (i >= 3) {
                                     this.cancel();
                                 }
-                                if (!localGameManager.isRunning() || !localGameManager.getDirector().getMobHandler().isSpawningEnabled()) {
+                                if (!gameManager.isRunning() || !gameManager.getDirector().getMobHandler().isSpawningEnabled()) {
                                     this.cancel();
                                 }
                             }
@@ -264,12 +264,12 @@ public class Streets extends CampaignMap {
                 new Listener() {
                     @EventHandler
                     public void streetsShedTrigger(PlayerMoveEvent e) {
-                        if (!localGameManager.getPlayers().contains(e.getPlayer()))
+                        if (!gameManager.getPlayers().contains(e.getPlayer()))
                             return;
                         BoundingBox box = new BoundingBox(33, 55, -112, 38, 61, -103);
                         if (!box.contains(e.getPlayer().getLocation().toVector()))
                             return;
-                        Dialogue.display(plugin, localGameManager.getPlayers(), DepartureDialogue.STREETS_SHED.pickRandom(localGameManager.getPlayers().size()));
+                        Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.STREETS_SHED.pickRandom(gameManager.getPlayers().size()));
                         HandlerList.unregisterAll(this);
                     }
                 },
@@ -278,19 +278,19 @@ public class Streets extends CampaignMap {
                 new Listener() {
                     @EventHandler
                     public void alleysOpening(PlayerMoveEvent e) {
-                        if (!localGameManager.getPlayers().contains(e.getPlayer())) return;
+                        if (!gameManager.getPlayers().contains(e.getPlayer())) return;
 
                         BoundingBox box = new BoundingBox(34, 41, -89, 43, 48, -84);
                         if (!box.contains(e.getPlayer().getLocation().toVector())) return;
 
-                        Dialogue.display(plugin, localGameManager.getPlayers(), DepartureDialogue.ALLEYS_OPENING.pickRandom(localGameManager.getPlayers().size()));
+                        Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.ALLEYS_OPENING.pickRandom(gameManager.getPlayers().size()));
                         HandlerList.unregisterAll(this);
                     }
                 },
                 new Listener() {
                     @EventHandler
                     public void alleysPurpleCar(PlayerMoveEvent e) {
-                        if (!localGameManager.getPlayers().contains(e.getPlayer())) return;
+                        if (!gameManager.getPlayers().contains(e.getPlayer())) return;
 
                         BoundingBox box = new BoundingBox(42, 41, -73, 32, 47, -66);
                         if (!box.contains(e.getPlayer().getLocation().toVector())) return;
@@ -302,19 +302,19 @@ public class Streets extends CampaignMap {
                 new Listener() {
                     @EventHandler
                     public void alleysSafeHouse(PlayerMoveEvent e) {
-                        if (!localGameManager.getPlayers().contains(e.getPlayer())) return;
+                        if (!gameManager.getPlayers().contains(e.getPlayer())) return;
 
                         BoundingBox box = new BoundingBox(54, 41, -19, 41, 53, -25);
                         if (!box.contains(e.getPlayer().getLocation().toVector())) return;
 
-                        Dialogue.display(plugin, localGameManager.getPlayers(), DepartureDialogue.ALLEYS_SAFE_HOUSE.pickRandom(localGameManager.getPlayers().size()));
+                        Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.ALLEYS_SAFE_HOUSE.pickRandom(gameManager.getPlayers().size()));
                         HandlerList.unregisterAll(this);
                     }
                 },
                 new Listener() {
                     @EventHandler
                     public void achievement(PlayerInteractEvent e) {
-                        if (!localGameManager.getPlayers().contains(e.getPlayer())) return;
+                        if (!gameManager.getPlayers().contains(e.getPlayer())) return;
                         if (!e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) return;
                         if (e.getClickedBlock() == null || !(e.getClickedBlock().getType() == Material.STONE_BUTTON)) return;
 
@@ -327,22 +327,22 @@ public class Streets extends CampaignMap {
     }
 
     @Override
-    public GameListener[] gameListeners(JavaPlugin plugin, LocalGameManager localGameManager) {
-        BreakGlassListener breakGlassListener = new BreakGlassListener(plugin, localGameManager);
+    public GameListener[] gameListeners(JavaPlugin plugin, GameManager gameManager) {
+        BreakGlassListener breakGlassListener = new BreakGlassListener(plugin, gameManager);
         return new GameListener[]{
-                new AmmoPileListener(plugin, localGameManager),
-                new DeathReviveListener(plugin, localGameManager),
-                new InventoryListener(plugin, localGameManager),
-                new MobListener(plugin, localGameManager),
-                new NextMapListener(plugin, localGameManager),
-                new PickUpListener(plugin, localGameManager),
-                new ShootListener(plugin, localGameManager, breakGlassListener),
-                new ShoveListener(plugin, localGameManager, breakGlassListener),
-                new SwingListener(plugin, localGameManager, breakGlassListener),
-                new JoinLeaveListener(plugin, localGameManager),
-                new UtilityListener(plugin, localGameManager),
+                new AmmoPileListener(plugin, gameManager),
+                new DeathReviveListener(plugin, gameManager),
+                new InventoryListener(plugin, gameManager),
+                new MobListener(plugin, gameManager),
+                new NextMapListener(plugin, gameManager),
+                new PickUpListener(plugin, gameManager),
+                new ShootListener(plugin, gameManager, breakGlassListener),
+                new ShoveListener(plugin, gameManager, breakGlassListener),
+                new SwingListener(plugin, gameManager, breakGlassListener),
+                new JoinLeaveListener(plugin, gameManager),
+                new UtilityListener(plugin, gameManager),
                 breakGlassListener,
-                new BreakDoorListener(plugin, localGameManager)
+                new BreakDoorListener(plugin, gameManager)
         };
     }
 }

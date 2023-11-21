@@ -8,7 +8,6 @@ import me.chimkenu.expunge.campaigns.Dialogue;
 import me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue;
 import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.game.GameManager;
-import me.chimkenu.expunge.game.LocalGameManager;
 import me.chimkenu.expunge.items.utilities.healing.Medkit;
 import me.chimkenu.expunge.items.weapons.melees.Crowbar;
 import me.chimkenu.expunge.items.weapons.melees.FireAxe;
@@ -170,16 +169,16 @@ public class Office extends CampaignMap implements CampaignIntro {
     }
 
     @Override
-    public Listener[] happenings(JavaPlugin plugin, LocalGameManager localGameManager) {
+    public Listener[] happenings(JavaPlugin plugin, GameManager gameManager) {
         return new Listener[]{
                 new Listener() {
                     @EventHandler
                     public void onElevatorPress(PlayerInteractEvent e) {
-                        if (!localGameManager.getPlayers().contains(e.getPlayer())) {
+                        if (!gameManager.getPlayers().contains(e.getPlayer())) {
                             return;
                         }
                         if (e.getAction().equals(Action.RIGHT_CLICK_BLOCK) && e.getClickedBlock() != null && e.getClickedBlock().getType().toString().contains("_BUTTON")) {
-                            if (!localGameManager.isRunning()) {
+                            if (!gameManager.isRunning()) {
                                 return;
                             }
                             Vector buttonLoc = new Vector(-31, 10, 13);
@@ -189,7 +188,7 @@ public class Office extends CampaignMap implements CampaignIntro {
                             }
 
                             BoundingBox elevator = new BoundingBox(-36, 7, 15, -30, 14, 9);
-                            for (Player p : localGameManager.getPlayers()) {
+                            for (Player p : gameManager.getPlayers()) {
                                 if (p.getGameMode().equals(GameMode.ADVENTURE)) {
                                     Location pLoc = p.getLocation();
                                     if (!elevator.contains(pLoc.getX(), pLoc.getY(), pLoc.getZ())) {
@@ -200,36 +199,36 @@ public class Office extends CampaignMap implements CampaignIntro {
                                 }
                             }
 
-                            for (Player p : localGameManager.getPlayers()) {
+                            for (Player p : gameManager.getPlayers()) {
                                 p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 5 * 20, 5, false, true));
-                                p.teleport(new Location(localGameManager.getWorld(), 3, 77, -94, 0, 0));
+                                p.teleport(new Location(gameManager.getWorld(), 3, 77, -94, 0, 0));
                             }
 
-                            Dialogue.display(plugin, localGameManager.getPlayers(), DepartureDialogue.OFFICE_ELEVATOR.pickRandom(localGameManager.getPlayers().size()));
+                            Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.OFFICE_ELEVATOR.pickRandom(gameManager.getPlayers().size()));
                         }
                     }
                 },
                 new Listener() {
                     @EventHandler
                     public void officeRubble(PlayerMoveEvent e) {
-                        if (!localGameManager.getPlayers().contains(e.getPlayer()))
+                        if (!gameManager.getPlayers().contains(e.getPlayer()))
                             return;
                         BoundingBox box = new BoundingBox(14, 75, -75, 24, 82, -85);
                         if (!box.contains(e.getPlayer().getLocation().toVector()))
                             return;
-                        Dialogue.display(plugin, localGameManager.getPlayers(), DepartureDialogue.OFFICE_RUBBLE.pickRandom(localGameManager.getPlayers().size()));
+                        Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.OFFICE_RUBBLE.pickRandom(gameManager.getPlayers().size()));
                         HandlerList.unregisterAll(this);
                     }
                 },
                 new Listener() {
                     @EventHandler
                     public void officeJump(PlayerMoveEvent e) {
-                        if (!localGameManager.getPlayers().contains(e.getPlayer()))
+                        if (!gameManager.getPlayers().contains(e.getPlayer()))
                             return;
                         BoundingBox box = new BoundingBox(-7, 51, -91, -13, 58, -104);
                         if (!box.contains(e.getPlayer().getLocation().toVector()))
                             return;
-                        Dialogue.display(plugin, localGameManager.getPlayers(), DepartureDialogue.OFFICE_JUMP.pickRandom(localGameManager.getPlayers().size()));
+                        Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.OFFICE_JUMP.pickRandom(gameManager.getPlayers().size()));
                         HandlerList.unregisterAll(this);
                     }
                 },
@@ -244,30 +243,30 @@ public class Office extends CampaignMap implements CampaignIntro {
                     @EventHandler
                     public void onEnterVent(PlayerInteractEvent e) {
                         Block block = e.getClickedBlock();
-                        if (!localGameManager.getPlayers().contains(e.getPlayer())) {
+                        if (!gameManager.getPlayers().contains(e.getPlayer())) {
                             return;
                         }
                         if (block == null || !(e.getAction().equals(Action.PHYSICAL) && block.getLocation().toVector().equals(new Vector(-2, 45, -83)))) {
                             return;
                         }
 
-                        Campaign.playCrescendoEventEffect(localGameManager.getPlayers());
-                        World world = localGameManager.getWorld();
+                        Campaign.playCrescendoEventEffect(gameManager.getPlayers());
+                        World world = gameManager.getWorld();
                         new BukkitRunnable() {
                             int i = 0;
 
                             @Override
                             public void run() {
-                                localGameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(-2.5, 49, -79.5), localGameManager.getDifficulty()));
-                                localGameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(5.5, 48, -68.5), localGameManager.getDifficulty()));
-                                localGameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(18.5, 49, -68.5), localGameManager.getDifficulty()));
-                                localGameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(24.5, 49, -76.5), localGameManager.getDifficulty()));
-                                localGameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(28.5, 49, -82.5), localGameManager.getDifficulty()));
+                                gameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(-2.5, 49, -79.5), gameManager.getDifficulty()));
+                                gameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(5.5, 48, -68.5), gameManager.getDifficulty()));
+                                gameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(18.5, 49, -68.5), gameManager.getDifficulty()));
+                                gameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(24.5, 49, -76.5), gameManager.getDifficulty()));
+                                gameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(28.5, 49, -82.5), gameManager.getDifficulty()));
                                 i++;
                                 if (i >= 5) {
                                     this.cancel();
                                 }
-                                if (!localGameManager.isRunning() || !localGameManager.getDirector().getMobHandler().isSpawningEnabled()) {
+                                if (!gameManager.isRunning() || !gameManager.getDirector().getMobHandler().isSpawningEnabled()) {
                                     this.cancel();
                                 }
                             }
@@ -281,24 +280,24 @@ public class Office extends CampaignMap implements CampaignIntro {
                 new Listener() {
                     @EventHandler
                     public void officeVent(PlayerMoveEvent e) {
-                        if (!localGameManager.getPlayers().contains(e.getPlayer()))
+                        if (!gameManager.getPlayers().contains(e.getPlayer()))
                             return;
                         BoundingBox box = new BoundingBox(0, 41, -95, -10, 48, -86);
                         if (!box.contains(e.getPlayer().getLocation().toVector()))
                             return;
-                        Dialogue.display(plugin, localGameManager.getPlayers(), DepartureDialogue.OFFICE_VENTS.pickRandom(localGameManager.getPlayers().size()));
+                        Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.OFFICE_VENTS.pickRandom(gameManager.getPlayers().size()));
                         HandlerList.unregisterAll(this);
                     }
                 },
                 new Listener() {
                     @EventHandler
                     public void officeSafeRoom(PlayerMoveEvent e) {
-                        if (!localGameManager.getPlayers().contains(e.getPlayer()))
+                        if (!gameManager.getPlayers().contains(e.getPlayer()))
                             return;
                         BoundingBox box = new BoundingBox(29, 43, -93, 24, 47, -85);
                         if (!box.contains(e.getPlayer().getLocation().toVector()))
                             return;
-                        Dialogue.display(plugin, localGameManager.getPlayers(), DepartureDialogue.OFFICE_SAFE_ROOM.pickRandom(localGameManager.getPlayers().size()));
+                        Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.OFFICE_SAFE_ROOM.pickRandom(gameManager.getPlayers().size()));
                         HandlerList.unregisterAll(this);
                     }
                 }
@@ -306,22 +305,22 @@ public class Office extends CampaignMap implements CampaignIntro {
     }
 
     @Override
-    public GameListener[] gameListeners(JavaPlugin plugin, LocalGameManager localGameManager) {
-        BreakGlassListener breakGlassListener = new BreakGlassListener(plugin, localGameManager);
+    public GameListener[] gameListeners(JavaPlugin plugin, GameManager gameManager) {
+        BreakGlassListener breakGlassListener = new BreakGlassListener(plugin, gameManager);
         return new GameListener[]{
-                new AmmoPileListener(plugin, localGameManager),
-                new DeathReviveListener(plugin, localGameManager),
-                new InventoryListener(plugin, localGameManager),
-                new MobListener(plugin, localGameManager),
-                new NextMapListener(plugin, localGameManager),
-                new PickUpListener(plugin, localGameManager),
-                new ShootListener(plugin, localGameManager, breakGlassListener),
-                new ShoveListener(plugin, localGameManager, breakGlassListener),
-                new SwingListener(plugin, localGameManager, breakGlassListener),
-                new JoinLeaveListener(plugin, localGameManager),
-                new UtilityListener(plugin, localGameManager),
+                new AmmoPileListener(plugin, gameManager),
+                new DeathReviveListener(plugin, gameManager),
+                new InventoryListener(plugin, gameManager),
+                new MobListener(plugin, gameManager),
+                new NextMapListener(plugin, gameManager),
+                new PickUpListener(plugin, gameManager),
+                new ShootListener(plugin, gameManager, breakGlassListener),
+                new ShoveListener(plugin, gameManager, breakGlassListener),
+                new SwingListener(plugin, gameManager, breakGlassListener),
+                new JoinLeaveListener(plugin, gameManager),
+                new UtilityListener(plugin, gameManager),
                 breakGlassListener,
-                new BreakDoorListener(plugin, localGameManager)
+                new BreakDoorListener(plugin, gameManager)
         };
     }
 

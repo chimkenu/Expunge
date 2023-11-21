@@ -227,13 +227,13 @@ public class LocalGameManager implements GameManager {
             listeners.clear();
         }
 
-        listeners.addAll(List.of(getMap().gameListeners(plugin, this)));
-        listeners.addAll(List.of(getMap().happenings(plugin, this)));
-        listeners.add(director);
-
-        for (Listener listener : listeners) {
-            plugin.getServer().getPluginManager().registerEvents(listener, plugin);
+        for (Listener listener : getMap().gameListeners(plugin, this)) {
+            addListener(listener);
         }
+        for (Listener listener : getMap().happenings(plugin, this)) {
+            addListener(listener);
+        }
+        addListener(director);
 
         director.getItemHandler().generateStartingItems();
         director.getMobHandler().spawnStartingMobs();
@@ -283,6 +283,12 @@ public class LocalGameManager implements GameManager {
         }
         currentWorld.unload();
         startMap();
+    }
+
+    @Override
+    public void addListener(Listener listener) {
+        plugin.getServer().getPluginManager().registerEvents(listener, plugin);
+        listeners.add(listener);
     }
 
     @Override

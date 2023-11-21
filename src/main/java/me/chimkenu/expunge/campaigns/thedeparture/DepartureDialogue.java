@@ -6,20 +6,20 @@ public enum DepartureDialogue {
         public String[] getA() {
             return new String[]{
                     "A » Hey, wake up!",
-                    "B » What’s going on? What time is it?",
-                    "A » It’s lunch… And it looks like we’re the main course.",
-                    "B » We need to get to the elevator…",
-                    "A » There’s weapons outside we can use."
+                    "B » What's going on? What time is it?",
+                    "A » It's lunch... And it looks like we're the main course.",
+                    "B » We need to get to the elevator...",
+                    "A » There's weapons outside we can use."
             };
         }
 
         @Override
         public String[] getB() {
             return new String[]{
-                    "A » What’s happening?",
+                    "A » What's happening?",
                     "B » Looks like Halloween came early.",
-                    "A » I don’t think those are costumes…",
-                    "B » Either way, let’s get to the elevator and get out of here.",
+                    "A » I don't think those are costumes...",
+                    "B » Either way, let's get to the elevator and get out of here.",
                     "A » I can see weapons outside we can use."
             };
         }
@@ -27,8 +27,8 @@ public enum DepartureDialogue {
         @Override
         public String[] getSolo() {
             return new String[]{
-                    "A » The office is infested with the living dead… Well, that’s not new.",
-                    "A » I need to get to the elevator. I think there’s weapons and gear right outside the door."
+                    "A » The office is infested with the living dead... Well, that's not new.",
+                    "A » I need to get to the elevator. I think there's weapons and gear right outside the door."
             };
         }
     },
@@ -36,8 +36,8 @@ public enum DepartureDialogue {
         @Override
         public String[] getA() {
             return new String[]{
-                    "A » We’re stopping.",
-                    "B » The elevator’s shutting down.",
+                    "A » We're stopping.",
+                    "B » The elevator's shutting down.",
                     "A » Come on, we gotta find the stairs."
             };
         }
@@ -47,14 +47,14 @@ public enum DepartureDialogue {
             return new String[]{
                     "A » Uh-oh.",
                     "B » There goes the power.",
-                    "A » Let’s try the fire exit."
+                    "A » Let's try the fire exit."
             };
         }
 
         @Override
         public String[] getSolo() {
             return new String[]{
-                    "A » The power’s down… I need to get to the fire exit."
+                    "A » The power's down... I need to get to the fire exit."
             };
         }
     },
@@ -103,14 +103,14 @@ public enum DepartureDialogue {
         public String[] getA() {
             return new String[]{
                     "A » Into the vents!",
-                    "B » Careful, we don’t know what’s in there."
+                    "B » Careful, we don't know what’s in there."
             };
         }
 
         @Override
         public String[] getB() {
             return new String[]{
-                    "A » The exit’s blocked by this rubble!",
+                    "A » The exit's blocked by this rubble!",
                     "B » Look, the vent! Go now!"
             };
         }
@@ -125,7 +125,7 @@ public enum DepartureDialogue {
         public String[] getA() {
             return new String[]{
                     "A » I think I see another room!",
-                    "B » Give me a second, I’m covered in zombie guts!"
+                    "B » Give me a second, I'm covered in zombie guts!"
             };
         }
 
@@ -168,7 +168,7 @@ public enum DepartureDialogue {
             return new String[]{
                     "A » Where do we go now?",
                     "B » We can get to the football stadium if we go towards the subway.",
-                    "A » For now, let’s just head further down the road."
+                    "A » For now, let's just head further down the road."
             };
         }
 
@@ -177,7 +177,7 @@ public enum DepartureDialogue {
             return new String[]{
                     "A » How do we get to the football stadium?",
                     "B » We need to get to the subway first.",
-                    "A » Alright, let’s go further down the road."
+                    "A » Alright, let's go further down the road."
             };
         }
 
@@ -190,7 +190,7 @@ public enum DepartureDialogue {
         @Override
         public String[] getA() {
             return new String[]{
-                    "A » There’s a radio tower in our way.",
+                    "A » There's a radio tower in our way.",
                     "B » We should try getting around it through the Apartment building!"
             };
         }
@@ -198,8 +198,8 @@ public enum DepartureDialogue {
         @Override
         public String[] getB() {
             return new String[]{
-                    "A » The road’s blocked!",
-                    "B » Let’s try getting to the other side through the Apartment Building."
+                    "A » The road's blocked!",
+                    "B » Let's try getting to the other side through the Apartment Building."
             };
         }
 
@@ -221,7 +221,7 @@ public enum DepartureDialogue {
         public String[] getB() {
             return new String[]{
                     "A » Climb down the ladder!",
-                    "B » Let’s go into the shed!"
+                    "B » Let's go into the shed!"
             };
         }
 
@@ -235,7 +235,7 @@ public enum DepartureDialogue {
         public String[] getA() {
             return new String[]{
                     "A » Seems like the road splits here.",
-                    "B » Stick to a path, maybe we’ll see the other side of the main road."
+                    "B » Stick to a path, maybe we'll see the other side of the main road."
             };
         }
 
@@ -243,17 +243,17 @@ public enum DepartureDialogue {
         public String[] getB() {
             return new String[]{
                     "A » The road forks here, which way do we go?",
-                    "B » Follow a path, and I think we’ll end back up on the main road."
+                    "B » Follow a path, and I think we'll end back up on the main road."
             };
         }
 
         @Override
         public String[] getSolo() {
-            return new String[]{ "A » If I get through here, maybe I’ll end up on the other side of the main road."};
+            return new String[]{ "A » If I get through here, maybe I'll end up on the other side of the main road."};
         }
     },
     PURPLE_CAR {
-        final String[] string = new String[]{ "A » How’d this car get in here?"};
+        final String[] string = new String[]{ "A » How'd this car get in here?"};
 
         @Override
         public String[] getA() {
@@ -275,7 +275,7 @@ public enum DepartureDialogue {
         public String[] getA() {
             return new String[]{
                     "A » Other survivors have definitely been here before us.",
-                    "B » There’s another safe room here!"
+                    "B » There's another safe room here!"
             };
         }
 
@@ -297,14 +297,14 @@ public enum DepartureDialogue {
         public String[] getA() {
             return new String[]{
                     "A » We made it..!",
-                    "B » We’re not home free yet. Let’s enter the subway to get to the evacuation site."
+                    "B » We're not home free yet. Let’s enter the subway to get to the evacuation site."
             };
         }
 
         @Override
         public String[] getB() {
             return new String[]{
-                    "A » There’s the subway station!",
+                    "A » There's the subway station!",
                     "B » If we get across, we can get closer to the evacuation site."
             };
         }
@@ -318,24 +318,24 @@ public enum DepartureDialogue {
         @Override
         public String[] getA() {
             return new String[]{
-                    "A » Hold on, I’ve got a quarter.",
-                    "A » I’m gonna name you \"Mr. Cookie\".",
-                    "B » That’s one stale biscuit."
+                    "A » Hold on, I've got a quarter.",
+                    "A » I'm gonna name you \"Mr. Cookie\".",
+                    "B » That's one stale biscuit."
             };
         }
 
         @Override
         public String[] getB() {
             return new String[]{
-                    "A » I’ll name you \"Mr. Cookie\".",
-                    "B » You’re not going to eat that..?",
-                    "A » It’s too tough, it’d probably shatter my teeth."
+                    "A » I'll name you \"Mr. Cookie\".",
+                    "B » You're not going to eat that..?",
+                    "A » It's too tough, it’d probably shatter my teeth."
             };
         }
 
         @Override
         public String[] getSolo() {
-            return new String[]{ "A » Yeah, I’m gonna name this biscuit \"Mr. Cookie\"."};
+            return new String[]{ "A » Yeah, I'm gonna name this biscuit \"Mr. Cookie\"."};
         }
     },
     SUBWAY_MAP {
@@ -344,14 +344,14 @@ public enum DepartureDialogue {
             return new String[]{
                     "A » According to the map, we should take Station B, then head forwards until the road forks.",
                     "A » From there, we head right.",
-                    "B » … This map is impossible to read."
+                    "B » ... This map is impossible to read."
             };
         }
 
         @Override
         public String[] getB() {
             return new String[]{
-                    "A » Let’s see… Based on the map, we should take Station B, then keep going straight until the rails split.",
+                    "A » Let's see... Based on the map, we should take Station B, then keep going straight until the rails split.",
                     "A » Then, we take the right side.",
                     "B » Looking at this \"map\" makes my head spin."
             };
@@ -382,8 +382,8 @@ public enum DepartureDialogue {
         @Override
         public String[] getA() {
             return new String[]{
-                    "A » Oh great, the line’s blocked!",
-                    "B » Don’t panic, There’s a ladder over there."
+                    "A » Oh great, the line's blocked!",
+                    "B » Don't panic, There’s a ladder over there."
             };
         }
 
@@ -391,23 +391,23 @@ public enum DepartureDialogue {
         public String[] getB() {
             return new String[]{
                     "A » The rest of the subway is blocked.",
-                    "B » Hey, there’s a ladder over there!"
+                    "B » Hey, there's a ladder over there!"
             };
         }
 
         @Override
         public String[] getSolo() {
-            return new String[]{ "A » The subway line is blocked… Maybe I can head up that ladder over there instead."};
+            return new String[]{ "A » The subway line is blocked... Maybe I can head up that ladder over there instead."};
         }
     },
     HIGHWAY_OPENING {
         @Override
         public String[] getA() {
             return new String[]{
-                    "A » We’re in the middle of nowhere.",
-                    "B » Don't worry, we’re still on the right track.",
-                    "A » Look, that billboard over there says we’re close to the stadium!",
-                    "B » Let’s keep going then."
+                    "A » We're in the middle of nowhere.",
+                    "B » Don't worry, we're still on the right track.",
+                    "A » Look, that billboard over there says we're close to the stadium!",
+                    "B » Let's keep going then."
             };
         }
 
@@ -415,8 +415,8 @@ public enum DepartureDialogue {
         public String[] getB() {
             return new String[]{
                     "A » Where are we?",
-                    "B » We’re on the highway, we can still make it.",
-                    "A » Hey, that billboard says we’re nearing the stadium!",
+                    "B » We're on the highway, we can still make it.",
+                    "A » Hey, that billboard says we're nearing the stadium!",
                     "B » Come on, then."
             };
         }
@@ -424,8 +424,8 @@ public enum DepartureDialogue {
         @Override
         public String[] getSolo() {
             return new String[]{
-                    "A » I made it to the highway…",
-                    "A » That billboard says I’m close to the stadium, I should keep going."};
+                    "A » I made it to the highway...",
+                    "A » That billboard says I'm close to the stadium, I should keep going."};
         }
     },
     HIGHWAY_CAR_BOOM {
@@ -436,20 +436,20 @@ public enum DepartureDialogue {
 
         @Override
         public String[] getB() {
-            return new String[]{ "A » I think that just caught the horde’s attention!"};
+            return new String[]{ "A » I think that just caught the horde's attention!"};
         }
 
         @Override
         public String[] getSolo() {
-            return new String[]{ "A » That explosion’s gonna attract a horde, I need to run!"};
+            return new String[]{ "A » That explosion's gonna attract a horde, I need to run!"};
         }
     },
     HIGHWAY_SAFE_HOUSE {
         @Override
         public String[] getA() {
             return new String[]{
-                    "A » Great, the road’s blocked again!",
-                    "B » Let’s get inside the gas station!"
+                    "A » Great, the road's blocked again!",
+                    "B » Let's get inside the gas station!"
             };
         }
 
@@ -463,11 +463,11 @@ public enum DepartureDialogue {
 
         @Override
         public String[] getSolo() {
-            return new String[]{ "A » It’s blocked, I need to get around through the gas station."};
+            return new String[]{ "A » It's blocked, I need to get around through the gas station."};
         }
     },
     HIGHWAY_PURPLE_CAR {
-        final String[] string = new String[]{ "A » How’d that car get up there?"};
+        final String[] string = new String[]{ "A » How'd that car get up there?"};
 
         @Override
         public String[] getA() {
@@ -488,7 +488,7 @@ public enum DepartureDialogue {
         @Override
         public String[] getA() {
             return new String[]{
-                    "A » We’re close to the stadium. We just need to take a left from this road.",
+                    "A » We're close to the stadium. We just need to take a left from this road.",
                     "B » All of this walking better be worth it."
             };
         }
@@ -496,14 +496,14 @@ public enum DepartureDialogue {
         @Override
         public String[] getB() {
             return new String[]{
-                    "A » We just got to take a left down this road, and we’ll be at the evacuation site.",
-                    "B » I never should have skipped leg day…"
+                    "A » We just got to take a left down this road, and we'll be at the evacuation site.",
+                    "B » I never should have skipped leg day..."
             };
         }
 
         @Override
         public String[] getSolo() {
-            return new String[]{ "A » If I take one more left down the highway, I’ll finally be at the stadium."};
+            return new String[]{ "A » If I take one more left down the highway, I'll finally be at the stadium."};
         }
     },
     STADIUM_PARKING_LOT {
@@ -518,45 +518,45 @@ public enum DepartureDialogue {
         @Override
         public String[] getB() {
             return new String[]{
-                    "A » There’s the stadium!",
+                    "A » There's the stadium!",
                     "B » Quickly, get inside!"
             };
         }
 
         @Override
         public String[] getSolo() {
-            return new String[]{ "A » There’s the stadium, I need to get in!"};
+            return new String[]{ "A » There's the stadium, I need to get in!"};
         }
     },
     STADIUM_ENTER {
         @Override
         public String[] getA() {
             return new String[]{
-                    "A » This place is a mess…",
-                    "B » Where’s the helicopter?",
-                    "A » Looks like we’ve been left behind.",
+                    "A » This place is a mess...",
+                    "B » Where's the helicopter?",
+                    "A » Looks like we've been left behind.",
                     "B » Wait, I have an idea.",
                     "B » If we head to the control room and turn on the stadium screens, it could signal the military to rescue us.",
-                    "A » It’s risky, but it might work."
+                    "A » It's risky, but it might work."
             };
         }
 
         @Override
         public String[] getB() {
             return new String[]{
-                    "A » What happened to everyone…?",
-                    "B » There’s no helicopter here.",
-                    "A » They abandoned us…!",
+                    "A » What happened to everyone...?",
+                    "B » There's no helicopter here.",
+                    "A » They abandoned us...!",
                     "B » Calm down, I have an idea.",
                     "B » If we head to the control room and turn on the stadium screens, it could signal the military to rescue us.",
-                    "A » Could be dangerous, but it’s worth a try."
+                    "A » Could be dangerous, but it's worth a try."
             };
         }
 
         @Override
         public String[] getSolo() {
             return new String[]{
-                    "A » What happened to this place…? There’s no helicopter in sight.\n",
+                    "A » What happened to this place...? There's no helicopter in sight.\n",
                     "A » Hmm... If I head to the control room and turn on the stadium screens, it could signal the military to rescue me."
             };
         }
@@ -565,7 +565,7 @@ public enum DepartureDialogue {
         @Override
         public String[] getA() {
             return new String[]{
-                    "A » Look, the helicopter’s here!",
+                    "A » Look, the helicopter's here!",
                     "B » Run for it, go!"
             };
         }
@@ -573,14 +573,14 @@ public enum DepartureDialogue {
         @Override
         public String[] getB() {
             return new String[]{
-                    "A » Hey, the helicopter’s arriving!",
-                    "B » Come on, let’s move!"
+                    "A » Hey, the helicopter's arriving!",
+                    "B » Come on, let's move!"
             };
         }
 
         @Override
         public String[] getSolo() {
-            return new String[]{ "A » There’s the helicopter, I need to run to it!"};
+            return new String[]{ "A » There's the helicopter, I need to run to it!"};
         }
     };
 

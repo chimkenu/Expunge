@@ -1,7 +1,7 @@
 package me.chimkenu.expunge.campaigns;
 
 import me.chimkenu.expunge.GameAction;
-import me.chimkenu.expunge.game.LocalGameManager;
+import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.listeners.GameListener;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -37,7 +37,7 @@ public abstract class CampaignMap {
 
     public abstract GameAction runAtEnd();
 
-    public abstract Listener[] happenings(JavaPlugin plugin, LocalGameManager localGameManager);
+    public abstract Listener[] happenings(JavaPlugin plugin, GameManager gameManager);
 
-    public abstract GameListener[] gameListeners(JavaPlugin plugin, LocalGameManager localGameManager);
+    public abstract GameListener[] gameListeners(JavaPlugin plugin, GameManager gameManager);
 }
