@@ -252,7 +252,7 @@ public class LocalGameManager implements GameManager {
         director.clearEntities();
 
         for (Player p : getPlayers()) {
-            if (!getPlayerStat(p).isAlive()) players.remove(p);
+            if (!getPlayerStat(p).isAlive()) getPlayerStat(p).revive();
             savePlayerStats(p);
         }
     }
