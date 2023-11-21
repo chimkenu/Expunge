@@ -27,6 +27,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
+import java.util.List;
+
 public class Streets extends CampaignMap {
     @Override
     public String directory() {
@@ -281,7 +283,7 @@ public class Streets extends CampaignMap {
                         BoundingBox box = new BoundingBox(34, 41, -89, 43, 48, -84);
                         if (!box.contains(e.getPlayer().getLocation().toVector())) return;
 
-                        // playDialogue(DepartureDialogue.ALLEYS_OPENING);
+                        Dialogue.display(plugin, localGameManager.getPlayers(), DepartureDialogue.ALLEYS_OPENING.pickRandom(localGameManager.getPlayers().size()));
                         HandlerList.unregisterAll(this);
                     }
                 },
@@ -293,7 +295,7 @@ public class Streets extends CampaignMap {
                         BoundingBox box = new BoundingBox(42, 41, -73, 32, 47, -66);
                         if (!box.contains(e.getPlayer().getLocation().toVector())) return;
 
-                        // DepartureDialogue.PURPLE_CAR.getSolo().displayDialogue(plugin, List.of(e.getPlayer()));
+                        Dialogue.display(plugin, List.of(e.getPlayer()), DepartureDialogue.PURPLE_CAR.pickRandom(1));
                         HandlerList.unregisterAll(this);
                     }
                 },
@@ -305,7 +307,7 @@ public class Streets extends CampaignMap {
                         BoundingBox box = new BoundingBox(54, 41, -19, 41, 53, -25);
                         if (!box.contains(e.getPlayer().getLocation().toVector())) return;
 
-                        // playDialogue(DepartureDialogue.ALLEYS_SAFE_HOUSE);
+                        Dialogue.display(plugin, localGameManager.getPlayers(), DepartureDialogue.ALLEYS_SAFE_HOUSE.pickRandom(localGameManager.getPlayers().size()));
                         HandlerList.unregisterAll(this);
                     }
                 },

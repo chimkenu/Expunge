@@ -7,13 +7,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Dialogue {
-    public static void display(JavaPlugin plugin, Set<Player> playerSet, String[] strings) {
-        List<Player> players = new ArrayList<>(playerSet.stream().toList());
+    public static void display(JavaPlugin plugin, Collection<Player> playerCollection, String[] strings) {
+        List<Player> players = new ArrayList<>(playerCollection.stream().toList());
         List<String> dialogue = new ArrayList<>();
         List<String> speakers = new ArrayList<>();
         for (String s : strings) {
