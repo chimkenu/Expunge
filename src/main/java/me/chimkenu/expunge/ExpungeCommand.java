@@ -165,7 +165,7 @@ public class ExpungeCommand implements CommandExecutor, TabCompleter {
                 items.addAll(Utils.getHealings());
 
                 for (GameItem gameItem : items) {
-                    if (gameItem.getName().equalsIgnoreCase(item.toString())) {
+                    if (gameItem.getName().examinableName().equalsIgnoreCase(item.toString())) {
                         player.getInventory().addItem(gameItem.get());
                         return true;
                     }
@@ -221,16 +221,16 @@ public class ExpungeCommand implements CommandExecutor, TabCompleter {
                 }
                 case "get" -> {
                     for (Gun gun : Utils.getGuns()) {
-                        tabComplete.add(gun.getName());
+                        tabComplete.add(gun.getName().examinableName());
                     }
                     for (Melee melee : Utils.getMelees()) {
-                        tabComplete.add(melee.getName());
+                        tabComplete.add(melee.getName().examinableName());
                     }
                     for (Throwable throwable : Utils.getThrowables()) {
-                        tabComplete.add(throwable.getName());
+                        tabComplete.add(throwable.getName().examinableName());
                     }
                     for (Healing healing : Utils.getHealings()) {
-                        tabComplete.add(healing.getName());
+                        tabComplete.add(healing.getName().examinableName());
                     }
                 }
             }

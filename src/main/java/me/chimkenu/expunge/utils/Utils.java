@@ -92,7 +92,7 @@ public class Utils {
         Damageable damageable = (Damageable) meta;
         if (damageable.getDamage() > 0) return null;
         for (Gun gun : getGuns()) {
-            if (item.getType() == gun.get().getType() && meta.hasDisplayName() && gunMeta.hasDisplayName() && meta.displayName().equals(gunMeta.displayName())) {
+            if (item.getType() == gun.getMaterial() && meta.displayName() == gun.getName()) {
                 return gun;
             }
         }
