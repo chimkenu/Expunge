@@ -52,7 +52,7 @@ public class Pills implements Healing {
 
     @Override
     public Component getName() {
-        return "&fPills";
+        return Component.text("Pills");
     }
 
     @Override

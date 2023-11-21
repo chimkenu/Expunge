@@ -99,6 +99,6 @@ public class Defibrillator implements Healing {
 
     @Override
     public Component getName() {
-        return "&eDefibrillator";
+        return Component.text("Defibrillator", NamedTextColor.DARK_RED);
     }
 }

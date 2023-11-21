@@ -47,6 +47,6 @@ public class Medkit implements Healing {
 
     @Override
     public Component getName() {
-        return "&cMedkit";
+        return Component.text("Medkit", NamedTextColor.RED);
     }
 }

@@ -2,6 +2,7 @@ package me.chimkenu.expunge.items.weapons.melees;
 
 import me.chimkenu.expunge.enums.Tier;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 
 public class MrCookie implements Melee {
@@ -27,7 +28,7 @@ public class MrCookie implements Melee {
 
     @Override
     public Component getName() {
-        return "&6Mr. Cookie";
+        return Component.text("Mr. Cookie", NamedTextColor.GOLD);
     }
 
     @Override

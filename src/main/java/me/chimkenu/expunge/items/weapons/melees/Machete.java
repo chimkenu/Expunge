@@ -22,7 +22,7 @@ public class Machete implements Melee {
 
     @Override
     public Component getName() {
-        return "&fMachete";
+        return Component.text("Machete");
     }
 
     @Override

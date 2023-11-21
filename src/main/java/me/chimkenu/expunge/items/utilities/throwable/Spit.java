@@ -2,6 +2,7 @@ package me.chimkenu.expunge.items.utilities.throwable;
 
 import me.chimkenu.expunge.game.GameManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -118,7 +119,7 @@ public class Spit implements Throwable {
 
     @Override
     public Component getName() {
-        return "&2Spit";
+        return Component.text("Spit", NamedTextColor.GREEN);
     }
 
     @Override

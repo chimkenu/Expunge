@@ -2,6 +2,7 @@ package me.chimkenu.expunge.items.weapons.melees;
 
 import me.chimkenu.expunge.enums.Tier;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 
 public class Knife implements Melee {
@@ -22,7 +23,7 @@ public class Knife implements Melee {
 
     @Override
     public Component getName() {
-        return "&fFire Axe";
+        return Component.text("Knife", NamedTextColor.GRAY);
     }
 
     @Override

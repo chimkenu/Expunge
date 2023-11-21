@@ -2,6 +2,7 @@ package me.chimkenu.expunge.items.utilities.throwable;
 
 import me.chimkenu.expunge.game.GameManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -56,7 +57,7 @@ public class Molotov implements Throwable {
 
     @Override
     public Component getName() {
-        return "&6Molotov";
+        return Component.text("Molotov", NamedTextColor.GOLD);
     }
 
     @Override

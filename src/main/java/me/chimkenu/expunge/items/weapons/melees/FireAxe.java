@@ -22,7 +22,7 @@ public class FireAxe implements Melee {
 
     @Override
     public Component getName() {
-        return "&fFire Axe";
+        return Component.text("Fire Axe");
     }
 
     @Override

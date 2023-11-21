@@ -3,6 +3,7 @@ package me.chimkenu.expunge.items.utilities.throwable;
 import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.game.GameManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -52,7 +53,7 @@ public class FreshAir implements Throwable {
 
     @Override
     public Component getName() {
-        return "&3Fresh Air";
+        return Component.text("Fresh Air", NamedTextColor.AQUA);
     }
 
     @Override

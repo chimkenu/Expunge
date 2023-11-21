@@ -5,8 +5,9 @@ import me.chimkenu.expunge.enums.Weapons;
 import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.game.PlayerStats;
 import me.chimkenu.expunge.listeners.GameListener;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
+import me.chimkenu.expunge.utils.Utils;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
@@ -23,6 +24,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 import org.spigotmc.event.entity.EntityDismountEvent;
 
 import java.util.ArrayList;
@@ -35,6 +37,12 @@ public class DeathReviveListener extends GameListener {
     }
 
     private void dead(Player player) {
+        gameManager.getWorld().getPlayers().forEach(player1 -> player1.sendMessage(player.name().color(NamedTextColor.RED).append(Component.text(" died.", NamedTextColor.RED))));
+        PlayerStats playerStats = gameManager.getPlayerStat(player);
+        if (playerStats == null) {
+            return;
+        }
+
         player.setGameMode(GameMode.SPECTATOR);
         // dead people drop their hotbar
         PlayerInventory inventory = player.getInventory();
@@ -49,10 +57,16 @@ public class DeathReviveListener extends GameListener {
             }
         }
         player.getInventory().clear(5); // pistol if they were down
-        if (gameManager.getPlayers().contains(player)) {
-            gameManager.getPlayerStat(player).setAlive(false);
-            gameManager.getPlayerStat(player).setLives(0);
-        }
+        playerStats.setAlive(false);
+        playerStats.setLives(0);
+
+        // spawn in an armor stand which can be revived
+        ArmorStand armorStand = player.getWorld().spawn(player.getLocation(), ArmorStand.class);
+        armorStand.setInvulnerable(true);
+        armorStand.setGravity(false);
+        Utils.putOnRandomClothes(armorStand.getEquipment());
+        armorStand.getEquipment().setHelmet(Utils.getSkull(player));
+        armorStand.setBodyYaw(player.getLocation().getYaw());
     }
 
     @EventHandler
@@ -67,7 +81,6 @@ public class DeathReviveListener extends GameListener {
 
         if (!gameManager.getPlayerStat(player).isAlive()) {
             // player died while down
-            Bukkit.broadcastMessage(ChatColor.RED + player.getName() + " died.");
             player.leaveVehicle();
             dead(player);
         } else {
@@ -76,7 +89,7 @@ public class DeathReviveListener extends GameListener {
 
             // lives check
             if (gameManager.getPlayerStat(player).getLives() > 1) {
-                Bukkit.broadcastMessage(ChatColor.RED + player.getName() + " is down.");
+                gameManager.getWorld().getPlayers().forEach(player1 -> player1.sendMessage(player.name().color(NamedTextColor.RED).append(Component.text(" is down.", NamedTextColor.RED))));
                 Location loc = player.getLocation();
                 while (loc.getBlock().getType().equals(Material.AIR)) {
                     loc.subtract(0, 0.25, 0);
@@ -101,7 +114,6 @@ public class DeathReviveListener extends GameListener {
                 inventory.setItem(5, Weapons.Guns.PISTOL.getGun().get());
 
             } else {
-                Bukkit.broadcastMessage(ChatColor.RED + player.getName() + " died.");
                 dead(player);
             }
         }
@@ -114,7 +126,7 @@ public class DeathReviveListener extends GameListener {
         }
 
         // this is reached if all players are dead
-        Bukkit.broadcastMessage(ChatColor.RED + "All players have died, returning to last checkpoint...");
+        gameManager.getWorld().getPlayers().forEach(player1 -> player1.sendMessage(Component.text("All players have died, returning to last checkpoint...", NamedTextColor.RED)));
         for (Player p : gameManager.getPlayers()) {
             p.setGameMode(GameMode.SPECTATOR);
             p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 3, 4, false, false, false));
@@ -220,7 +232,7 @@ public class DeathReviveListener extends GameListener {
                 continue;
             }
             if (beingRevived.contains(target)) {
-                player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§b" + target.getDisplayName() + " §eis already being revived."));
+                player.sendActionBar(target.name().color(NamedTextColor.AQUA).append(Component.text(" is already being revived.", NamedTextColor.YELLOW)));
                 continue;
             }
             if (gameManager.getPlayerStat(target).isAlive()) {
@@ -239,41 +251,49 @@ public class DeathReviveListener extends GameListener {
                 @Override
                 public void run() {
                     i--;
-                    // display status as action bar
-                    // percentage completion
-                    double percentage = (double) (time - i) / time;
-                    int progress = (int) (percentage * 10);
-                    percentage = (int) (percentage * 100);
-
-                    // create progress bar
-                    String progress_bar_complete = "|".repeat(Math.max(0, progress));
-                    String progress_bar_incomplete = "|".repeat(Math.max(0, 10 - progress));
-                    String progress_bar = "§entity" + "Progress: " + "§7" + "[" + "§a" + progress_bar_complete + "§7" + progress_bar_incomplete + "§7" + "]" + "§8" + " [" + percentage + "%]";
-                    String prefix = "§eReviving " + "§b" + target.getDisplayName() + "§entity...";
-                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(prefix + " " + progress_bar));
-                    prefix = "§eBeing revived by " + "§b" + player.getDisplayName() + "§entity...";
-                    target.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(prefix + " " + progress_bar));
+                    Component progressBar = getProgressBar();
+                    Component prefix = Component.text("Reviving ", NamedTextColor.YELLOW).append(target.name().color(NamedTextColor.AQUA).append(Component.text("...", NamedTextColor.YELLOW)));
+                    player.sendActionBar(prefix.append(Component.space()).append(progressBar));
+                    prefix = Component.text("Being revived by ", NamedTextColor.YELLOW).append(player.name().color(NamedTextColor.AQUA));
+                    target.sendActionBar(prefix.append(Component.space()).append(progressBar));
 
                     if (loc.distanceSquared(player.getLocation().toVector()) > 1) {
-                        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§cStopped. §8(You moved too far)"));
-                        target.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§cStopped."));
+                        player.sendActionBar(Component.text("Stopped.", NamedTextColor.RED).append(Component.text(" (You moved too far)", NamedTextColor.GRAY)));
+                        target.sendActionBar(Component.text("Stopped.", NamedTextColor.RED));
                         beingRevived.remove(target);
                         this.cancel();
                     }
                     if (!player.isSneaking()) {
-                        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§cStopped."));
-                        target.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§cStopped."));
+                        player.sendActionBar(Component.text("Stopped.", NamedTextColor.RED));
+                        target.sendActionBar(Component.text("Stopped.", NamedTextColor.RED));
                         beingRevived.remove(target);
                         this.cancel();
                     }
                     if (i <= 0) {
                         // revived player
-                        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§aSuccessful."));
-                        target.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§aSuccessful."));
+                        player.sendActionBar(Component.text("Successful.", NamedTextColor.GREEN));
+                        target.sendActionBar(Component.text("Successful.", NamedTextColor.GREEN));
                         revive(target, player);
                         beingRevived.remove(target);
                         this.cancel();
                     }
+                }
+
+                @NotNull
+                private Component getProgressBar() {
+                    double percentage = (double) (time - i) / time;
+                    int progress = (int) (percentage * 10);
+                    percentage = (int) (percentage * 100);
+
+                    // create progress bar
+                    Component progressBarComplete = Component.text("|".repeat(Math.max(0, progress)), NamedTextColor.GREEN);
+                    Component progressBarIncomplete = Component.text("|".repeat(Math.max(0, 10 - progress)), NamedTextColor.GRAY);
+                    return Component.text("Progress: ", NamedTextColor.YELLOW)
+                            .append(Component.text("[", NamedTextColor.GRAY))
+                            .append(progressBarComplete)
+                            .append(progressBarIncomplete)
+                            .append(Component.text("]", NamedTextColor.GRAY))
+                            .append(Component.text(" [" + percentage + "%]", NamedTextColor.DARK_GRAY));
                 }
             }.runTaskTimer(plugin, 1, 1);
         }

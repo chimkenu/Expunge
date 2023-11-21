@@ -2,6 +2,7 @@ package me.chimkenu.expunge.items.weapons.guns;
 
 import me.chimkenu.expunge.enums.Tier;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -64,7 +65,7 @@ public class SniperRifle implements Gun {
 
     @Override
     public Component getName() {
-        return "&9Sniper Rifle";
+        return Component.text("Sniper Rifle", NamedTextColor.BLUE);
     }
 
     @Override

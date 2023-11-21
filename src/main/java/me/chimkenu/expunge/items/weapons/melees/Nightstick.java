@@ -2,6 +2,7 @@ package me.chimkenu.expunge.items.weapons.melees;
 
 import me.chimkenu.expunge.enums.Tier;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 
 public class Nightstick implements Melee {
@@ -22,7 +23,7 @@ public class Nightstick implements Melee {
 
     @Override
     public Component getName() {
-        return "&8Nightstick";
+        return Component.text("Nightstick", NamedTextColor.DARK_GRAY);
     }
 
     @Override

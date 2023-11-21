@@ -22,7 +22,7 @@ public class Chainsaw implements Melee {
 
     @Override
     public Component getName() {
-        return "&fChainsaw";
+        return Component.text("Chainsaw");
     }
 
     @Override

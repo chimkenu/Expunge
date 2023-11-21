@@ -54,7 +54,7 @@ public class Adrenaline implements Healing {
 
     @Override
     public Component getName() {
-        return "&eAdrenaline";
+        return Component.text("Adrenaline", NamedTextColor.YELLOW);
     }
 
     @Override
