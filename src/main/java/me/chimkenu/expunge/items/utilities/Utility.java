@@ -2,6 +2,7 @@ package me.chimkenu.expunge.items.utilities;
 
 import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.items.GameItem;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -13,7 +14,7 @@ public interface Utility extends GameItem {
         ItemStack utility = new ItemStack(getMaterial());
         ItemMeta meta = utility.getItemMeta();
         if (meta != null) {
-            meta.displayName(getName());
+            meta.displayName(getName().decoration(TextDecoration.ITALIC, false));
         }
         utility.setItemMeta(meta);
         return utility;

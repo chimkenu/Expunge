@@ -23,6 +23,7 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -92,7 +93,7 @@ public class Utils {
         Damageable damageable = (Damageable) meta;
         if (damageable.getDamage() > 0) return null;
         for (Gun gun : getGuns()) {
-            if (item.getType() == gun.getMaterial() && meta.displayName() == gun.getName()) {
+            if (item.getType() == gun.getMaterial() && meta.hasDisplayName() && Objects.requireNonNull(meta.displayName()).examinableName().equalsIgnoreCase(gun.getName().examinableName())) {
                 return gun;
             }
         }
@@ -115,7 +116,7 @@ public class Utils {
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return null;
         for (Melee melee : getMelees()) {
-            if (item.getType() == melee.getMaterial() && meta.displayName() == melee.getName()) {
+            if (item.getType() == melee.getMaterial() && meta.hasDisplayName() && Objects.requireNonNull(meta.displayName()).examinableName().equalsIgnoreCase(melee.getName().examinableName())) {
                 return melee;
             }
         }

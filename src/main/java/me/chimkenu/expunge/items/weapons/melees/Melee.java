@@ -2,6 +2,7 @@ package me.chimkenu.expunge.items.weapons.melees;
 
 import me.chimkenu.expunge.enums.Slot;
 import me.chimkenu.expunge.items.weapons.Weapon;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.inventory.EquipmentSlot;
@@ -32,7 +33,7 @@ public interface Melee extends Weapon {
             modifier = new AttributeModifier(UUID.fromString("d0538ce4-708b-463b-ac91-cfd57d6adbd2"), "generic.attack_speed", 1, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HAND);
             meta.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED, modifier);
             meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-            meta.displayName(getName());
+            meta.displayName(getName().decoration(TextDecoration.ITALIC, false));
         }
         melee.setItemMeta(meta);
         return melee;
