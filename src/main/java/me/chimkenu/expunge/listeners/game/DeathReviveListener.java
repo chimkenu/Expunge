@@ -9,6 +9,7 @@ import me.chimkenu.expunge.utils.Utils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -28,6 +29,7 @@ import org.jetbrains.annotations.NotNull;
 import org.spigotmc.event.entity.EntityDismountEvent;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class DeathReviveListener extends GameListener {
     public final ArrayList<Player> beingRevived = new ArrayList<>();
@@ -166,6 +168,7 @@ public class DeathReviveListener extends GameListener {
             targetStats.setLives(targetStats.getLives() - 1);
 
             target.setHealth(1d);
+            Objects.requireNonNull(target.getAttribute(Attribute.GENERIC_MAX_ABSORPTION)).setBaseValue(20);
             target.setAbsorptionAmount(5d);
             target.removePotionEffect(PotionEffectType.GLOWING);
 
