@@ -348,7 +348,7 @@ public class Stadium extends CampaignMap {
                 if (i <= 0) this.cancel();
                 if (!gameManager.isRunning() || !gameManager.getDirector().getMobHandler().isSpawningEnabled()) this.cancel();
                 for (int j = 0; j < 5; j++) {
-                    gameManager.getDirector().getMobHandler().spawnAdditionalMob();
+                    gameManager.getDirector().getMobHandler().spawnAdditionalInfected(gameManager.getDifficulty(), 1);
                 }
                 i--;
             }

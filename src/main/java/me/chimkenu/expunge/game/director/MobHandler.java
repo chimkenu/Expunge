@@ -16,13 +16,13 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
+import org.bukkit.entity.ZombieVillager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class MobHandler {
@@ -34,75 +34,105 @@ public class MobHandler {
     private boolean chillOut;
     private int timeSinceLastHorde;
 
+    private List<Block> blocks;
+    private int timeSinceLastBlockCheck;
+
     public MobHandler(JavaPlugin plugin, Director director) {
         this.plugin = plugin;
         this.director = director;
         isSpawningEnabled = false;
         chillOut = false;
-        timeSinceLastHorde = 0;
+        timeSinceLastHorde = -2147483648;
+        timeSinceLastBlockCheck = -2147483648;
     }
 
     public void run(int sceneTime, int sceneAttempts, Difficulty difficulty) {
-        if (sceneTime % (20 * 3) == 0 && isSpawningEnabled) {
-            // spawning based on difficulty
-            if (activeMobs.size() < (difficulty.ordinal() + 1) * 25 || director.calculateRating() < 1) {
-                switch (difficulty) {
-                    case EASY -> { if (sceneTime % (20 * 10) == 0) spawnAdditionalMob(); }
-                    case NORMAL -> { if (sceneTime % (20 * 7) == 0) spawnAdditionalMob(); }
-                    case HARD -> { if (sceneTime % (20 * 5) == 0) spawnAdditionalMob(); }
-                    case SUFFERING -> spawnAdditionalMob();
-                }
-            }
+        if (!isSpawningEnabled) {
+            return;
+        }
 
-            if ((sceneTime % (20 * 15)) == 0) {
-                double r = Math.random();
-                if (r < 0.16)
-                    getActiveMobs().add(new Rider(plugin, director.getWorld(), getRandomSpawnLocation()));
-                else if (r < 0.32)
-                    getActiveMobs().add(new Spewer(plugin, director.getWorld(),getRandomSpawnLocation()));
-                else if (r < 0.48)
-                    getActiveMobs().add(new Charger(plugin, director.getWorld(), getRandomSpawnLocation(), difficulty));
-                else if (r < 0.64)
-                    getActiveMobs().add(new Pouncer(plugin, director.getWorld(), getRandomSpawnLocation()));
-                else if (r < 0.86)
-                    getActiveMobs().add(new Choker(plugin, director.getWorld(), getRandomSpawnLocation()));
-                else
-                    getActiveMobs().add(new Spitter(plugin, director.getGameManager(), director.getWorld(), getRandomSpawnLocation()));
-            }
-
-            // spawn additional mobs if number of mobs are too low
-            if (!chillOut && getActiveMobs().size() < 5 && sceneTime > 20 * 20) {
-                chillOut = true;
-                timeSinceLastHorde = sceneTime;
-                for (int i = 0; i < (20 + (director.getGameManager().getPlayers().size() * 5)); i++) {
-                    spawnAdditionalMob();
-                }
-            } else if (sceneTime - timeSinceLastHorde > 30 * 20) {
-                chillOut = false;
+        if (blocks != null) {
+            for (Block b : blocks) {
+                b.getWorld().spawnParticle(Particle.REDSTONE, b.getLocation().add(0.5, 1.1, 0.5), 1, new Particle.DustOptions(Color.GREEN, 0.5f));
             }
         }
 
-        // look through every mob if its alive && look at its distance from the nearest player
-        if ((sceneTime % (20 * 15)) == 0) {
-            HashSet<GameMob> mobsToRemove = new HashSet<>();
-            for (GameMob mob : activeMobs) {
-                if (mob.getMob().isDead()) {
-                    mobsToRemove.add(mob);
-                    continue;
-                }
-                if (mob instanceof Zombie zombie && zombie.getTarget() != null && zombie.getTarget() instanceof Player target && director.getGameManager().getPlayers().contains(target)) {
+        if (sceneTime % (20 * 5) == 0) {
+            spawnAdditionalInfected(difficulty, 2 * difficulty.ordinal() + 1, sceneTime);
+        }
+
+        if (!chillOut && getActiveMobs().size() < 5) {
+            chillOut = true;
+            timeSinceLastHorde = sceneTime;
+            spawnHorde(difficulty);
+        } else if (sceneTime - timeSinceLastHorde > 40 * 20) {
+            chillOut = false;
+        }
+
+        // despawn stuck mobs
+        if ((sceneTime % (20 * 20)) == 0) {
+            for (GameMob mob : getActiveMobs()) {
+                if (mob instanceof Zombie zombie && !(mob instanceof ZombieVillager) && zombie.getTarget() instanceof Player target) {
                     if (zombie.getLocation().distanceSquared(target.getLocation()) < 20 * 20) continue;
                 }
-                if (playerNearestDistanceFrom(mob.getMob().getLocation().toVector()) > 20 * 20) {
-                    mob.remove();
-                    mobsToRemove.add(mob);
+                Vector loc = mob.getMob().getLocation().toVector();
+                if (playerNearestDistanceFrom(loc) > 30 * 30) {
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            if (!mob.getMob().isDead() && mob.getMob().getLocation().toVector().distanceSquared(loc) < 5 * 5) {
+                                mob.remove();
+                            }
+                        }
+                    }.runTaskLater(plugin, 20);
                 }
             }
-            activeMobs.removeAll(mobsToRemove);
         }
     }
 
-    public void spawnMobNearby() {
+    public void spawnAdditionalInfected(Difficulty difficulty, int count, int sceneTime) {
+        if (blocks == null || sceneTime - timeSinceLastBlockCheck > 20 * 5) {
+            timeSinceLastBlockCheck = sceneTime;
+            blocks = new ArrayList<>(getValidSurroundingBlocks());
+        }
+        spawnAdditionalInfected(difficulty, count);
+    }
+
+    public void spawnAdditionalInfected(Difficulty difficulty, int count) {
+        for (int i = 0; i < count; i++) {
+            double random = Math.random();
+            Vector location = (blocks == null || blocks.isEmpty()) ? getRandomSpawnLocation() : blocks.get(ThreadLocalRandom.current().nextInt(blocks.size())).getLocation().add(0.5, 1, 0.5).toVector();
+            if (random < 0.025) {
+                getActiveMobs().add(new Soldier(plugin, director.getWorld(), location, difficulty));
+            } else if (random < 0.05) {
+                getActiveMobs().add(new Robot(plugin, director.getWorld(), location, difficulty));
+            } else {
+                getActiveMobs().add(new Horde(plugin, director.getWorld(), location, difficulty));
+            }
+        }
+    }
+
+    public void spawnSpecialInfected(Difficulty difficulty) {
+        double r = Math.random();
+        if (r < 0.16)
+            getActiveMobs().add(new Rider(plugin, director.getWorld(), getRandomSpawnLocation()));
+        else if (r < 0.32)
+            getActiveMobs().add(new Spewer(plugin, director.getWorld(),getRandomSpawnLocation()));
+        else if (r < 0.48)
+            getActiveMobs().add(new Charger(plugin, director.getWorld(), getRandomSpawnLocation(), difficulty));
+        else if (r < 0.64)
+            getActiveMobs().add(new Pouncer(plugin, director.getWorld(), getRandomSpawnLocation()));
+        else if (r < 0.86)
+            getActiveMobs().add(new Choker(plugin, director.getWorld(), getRandomSpawnLocation()));
+        else
+            getActiveMobs().add(new Spitter(plugin, director.getGameManager(), director.getWorld(), getRandomSpawnLocation()));
+    }
+
+    public void spawnHorde(Difficulty difficulty) {
+        spawnAdditionalInfected(difficulty, 20 + 5 * difficulty.ordinal());
+    }
+
+    private Set<Block> getValidSurroundingBlocks() {
         final int SPAWN_RADIUS = 30;
         final int TOO_CLOSE_RADIUS = 10;
         final int DEPTH = 2;
@@ -114,6 +144,9 @@ public class MobHandler {
 
         // Gather all the possible spawn locations
         for (Player p : director.getPlayers()) {
+            if (!director.getGameManager().getPlayerStat(p).isAlive()) {
+                continue;
+            }
 
             // Disregard player if they are close to another player
             boolean isTooClose = false;
@@ -126,7 +159,7 @@ public class MobHandler {
             players.add(p);
 
             // Gather nearby valid blocks for entities to spawn
-            for (Block b : getValidSurroundingBlocks(p.getWorld().getBlockAt(p.getLocation().add(0, -0.1, 0)), SPAWN_RADIUS, DEPTH)) {
+            for (Block b : getSurroundingBlocks(p.getWorld().getBlockAt(p.getLocation().add(0, -0.1, 0)), SPAWN_RADIUS, DEPTH)) {
                 blocks.add(b);
                 if (isLocationTooClose(p, b.getLocation(), TOO_CLOSE_RADIUS)) tooClose.add(b);
             }
@@ -134,15 +167,13 @@ public class MobHandler {
 
         blocks.removeAll(tooClose);
         blocks.removeIf(block -> {
-            for (Player p : director.getPlayers()) {
-                return canBeSeenByPlayer(block, p);
+            for (Player p : players) {
+                if (director.getGameManager().getPlayerStat(p).isAlive() && canBeSeenByPlayer(block, p)) return true;
             }
             return false;
         });
 
-        for (Block b : blocks) {
-            b.getWorld().spawnParticle(Particle.REDSTONE, b.getLocation().add(0.5, 1.1, 0.5), 1, new Particle.DustOptions(Color.GREEN, 0.5f));
-        }
+        return blocks;
     }
 
     private boolean canBeSeenByPlayer(Block block, Player player) {
@@ -155,19 +186,18 @@ public class MobHandler {
 
         // Ray cast
         Vector target = block.getLocation().toVector().add(new Vector(0.5, 2.5, 0.5));
-        RayTrace ray = new RayTrace(player.getEyeLocation().toVector(), target.subtract(player.getEyeLocation().toVector()).normalize());
-        ArrayList<Vector> positions = ray.traverse(playerToBlock.length(), accuracy);
-        for (Vector v : positions) {
+        RayTrace ray = new RayTrace(player.getEyeLocation().toVector(), target.clone().subtract(player.getEyeLocation().toVector()).normalize());
+        for (Vector v : ray.traverse(playerToBlock.length(), accuracy)) {
             if (v.distanceSquared(player.getEyeLocation().toVector()) > target.distanceSquared(player.getEyeLocation().toVector()))
                 continue;
-            if (!player.getWorld().getBlockAt(v.toLocation(player.getWorld())).isSolid()) {
+            if (player.getWorld().getBlockAt(v.toLocation(player.getWorld())).isSolid()) {
                 return false;
             }
         }
         return true;
     }
 
-    private Set<Block> getValidSurroundingBlocks(Block block, int radius, int depth) {
+    private Set<Block> getSurroundingBlocks(Block block, int radius, int depth) {
         Set<Block> blocks = new HashSet<>();
         for (int x = -radius; x <= radius; x++) {
             for (int z = -radius; z <= radius; z++) {
@@ -202,7 +232,7 @@ public class MobHandler {
     }
 
     private boolean isLocationTooClose(Player p, Location l, int distance) {
-        return p.getLocation().distanceSquared(l) > distance * distance;
+        return p.getLocation().distanceSquared(l) < distance * distance;
     }
 
     public void spawnStartingMobs() {
@@ -239,6 +269,7 @@ public class MobHandler {
     }
 
     public Set<GameMob> getActiveMobs() {
+        activeMobs.removeIf(gameMob -> gameMob.getMob().isDead());
         return activeMobs;
     }
 
@@ -283,19 +314,6 @@ public class MobHandler {
 
         // Return a random near spawn location
         return spawnLocations[ThreadLocalRandom.current().nextInt(0, Math.min(3, spawnLocations.length))];
-    }
-
-    public void spawnAdditionalMob() {
-        // chance to spawn uncommon zombie (5%)
-        int random = ThreadLocalRandom.current().nextInt(0, 20);
-        LivingEntity spawnedMob;
-        if (random == 0)
-            spawnedMob = spawnMob(new Robot(plugin, director.getWorld(), getRandomSpawnLocation(), director.getDifficulty()));
-        else if (random == 1)
-            spawnedMob = spawnMob(new Soldier(plugin, director.getWorld(), getRandomSpawnLocation(), director.getDifficulty()));
-        else
-            spawnedMob = spawnMob(new Horde(plugin, director.getWorld(), getRandomSpawnLocation(), director.getDifficulty()));
-        spawnedMob.setRemoveWhenFarAway(false);
     }
 
     public void spawnAtRandomLocations(BoundingBox b, int numToSpawn) {
@@ -360,7 +378,7 @@ public class MobHandler {
     private double playerNearestDistanceFrom(Vector vector) {
         double smallest = 2147483647;
         for (Player player : director.getGameManager().getPlayers()) {
-            smallest = Math.min(smallest, player.getLocation().toVector().distanceSquared(vector));
+            if (director.getGameManager().getPlayerStat(player).isAlive()) smallest = Math.min(smallest, player.getLocation().toVector().distanceSquared(vector));
         }
         return smallest;
     }

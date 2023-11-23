@@ -74,7 +74,7 @@ public class Director implements Listener {
                 @Override
                 public void run() {
                     for (int j = 0; j < 5; j++) {
-                        mobHandler.spawnAdditionalMob();
+                        mobHandler.spawnAdditionalInfected(getDifficulty(), 1);
                     }
                     i--;
                     if (i <= 0) this.cancel();
