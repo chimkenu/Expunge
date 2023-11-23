@@ -19,6 +19,7 @@ public abstract class GameMob {
         mob = world.spawn(new Location(world, locationToSpawn.getX(), locationToSpawn.getY(), locationToSpawn.getZ()), mobToSpawn);
         mob.addScoreboardTag("MOB");
         mob.setCanPickupItems(false);
+        mob.setRemoveWhenFarAway(false);
         runnable = behavior == null ? null : new BukkitRunnable() {
             @Override
             public void run() {
