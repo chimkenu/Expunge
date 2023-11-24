@@ -96,6 +96,7 @@ public class LocalGameManager implements GameManager {
         main = new BukkitRunnable() {
             @Override
             public void run() {
+                if (players.isEmpty()) cancel();
                 director.run();
             }
         }.runTaskTimer(plugin, 0, 1);
