@@ -61,7 +61,11 @@ public class MobHandler {
             spawnAdditionalInfected(difficulty, 2 * difficulty.ordinal() + 1, sceneTime);
         }
 
-        if (!chillOut && getActiveMobs().size() < 5) {
+        if (sceneTime % (20 * 20) == 0) {
+            spawnSpecialInfected(difficulty, 1 + difficulty.ordinal());
+        }
+
+        if (sceneTime > 10 * 20 && !chillOut && getActiveMobs().size() < 5) {
             chillOut = true;
             timeSinceLastHorde = sceneTime;
             spawnHorde(difficulty);
@@ -69,7 +73,7 @@ public class MobHandler {
             chillOut = false;
         }
 
-        // despawn stuck mobs
+        // despawn stuck common infected
         if ((sceneTime % (20 * 20)) == 0) {
             for (GameMob mob : getActiveMobs()) {
                 if (mob instanceof Zombie zombie && !(mob instanceof ZombieVillager) && zombie.getTarget() instanceof Player target) {
@@ -112,20 +116,22 @@ public class MobHandler {
         }
     }
 
-    public void spawnSpecialInfected(Difficulty difficulty) {
-        double r = Math.random();
-        if (r < 0.16)
-            getActiveMobs().add(new Rider(plugin, director.getWorld(), getRandomSpawnLocation()));
-        else if (r < 0.32)
-            getActiveMobs().add(new Spewer(plugin, director.getWorld(),getRandomSpawnLocation()));
-        else if (r < 0.48)
-            getActiveMobs().add(new Charger(plugin, director.getWorld(), getRandomSpawnLocation(), difficulty));
-        else if (r < 0.64)
-            getActiveMobs().add(new Pouncer(plugin, director.getWorld(), getRandomSpawnLocation()));
-        else if (r < 0.86)
-            getActiveMobs().add(new Choker(plugin, director.getWorld(), getRandomSpawnLocation()));
-        else
-            getActiveMobs().add(new Spitter(plugin, director.getGameManager(), director.getWorld(), getRandomSpawnLocation()));
+    public void spawnSpecialInfected(Difficulty difficulty, int count) {
+        for (int i = 0; i < count; i++) {
+            double r = Math.random();
+            if (r < 0.16)
+                getActiveMobs().add(new Rider(plugin, director.getWorld(), getRandomSpawnLocation()));
+            else if (r < 0.33)
+                getActiveMobs().add(new Spewer(plugin, director.getWorld(), getRandomSpawnLocation()));
+            else if (r < 0.5)
+                getActiveMobs().add(new Charger(plugin, director.getWorld(), getRandomSpawnLocation(), difficulty));
+            else if (r < 0.66)
+                getActiveMobs().add(new Pouncer(plugin, director.getWorld(), getRandomSpawnLocation()));
+            else if (r < 0.83)
+                getActiveMobs().add(new Choker(plugin, director.getWorld(), getRandomSpawnLocation()));
+            else
+                getActiveMobs().add(new Spitter(plugin, director.getGameManager(), director.getWorld(), getRandomSpawnLocation()));
+        }
     }
 
     public void spawnHorde(Difficulty difficulty) {
@@ -133,8 +139,8 @@ public class MobHandler {
     }
 
     private Set<Block> getValidSurroundingBlocks() {
-        final int SPAWN_RADIUS = 30;
-        final int TOO_CLOSE_RADIUS = 10;
+        final int SPAWN_RADIUS = 40;
+        final int TOO_CLOSE_RADIUS = 15;
         final int DEPTH = 2;
 
         Set<Block> blocks = new HashSet<>();
@@ -261,11 +267,13 @@ public class MobHandler {
 
     public void clearMobs() {
         chillOut = false;
-        timeSinceLastHorde = 0;
+        timeSinceLastHorde = -2147483648;
+        timeSinceLastBlockCheck = -2147483648;
         for (GameMob mob : activeMobs) {
             mob.remove();
         }
         activeMobs.clear();
+        blocks = null;
     }
 
     public Set<GameMob> getActiveMobs() {
