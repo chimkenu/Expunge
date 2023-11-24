@@ -4,7 +4,6 @@ import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.items.utilities.throwable.Spit;
 import me.chimkenu.expunge.mobs.GameMob;
 import org.bukkit.World;
-import org.bukkit.entity.Mob;
 import org.bukkit.entity.ZombieVillager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;

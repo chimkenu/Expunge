@@ -2,7 +2,6 @@ package me.chimkenu.expunge.mobs.special;
 
 import me.chimkenu.expunge.mobs.GameMob;
 import org.bukkit.World;
-import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Spider;
 import org.bukkit.plugin.java.JavaPlugin;

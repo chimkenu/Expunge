@@ -4,10 +4,7 @@ import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import me.chimkenu.expunge.enums.GameItems;
 import me.chimkenu.expunge.items.GameItem;
-import me.chimkenu.expunge.items.utilities.Utility;
 import me.chimkenu.expunge.items.utilities.throwable.Throwable;
-import me.chimkenu.expunge.items.weapons.guns.Gun;
-import me.chimkenu.expunge.items.weapons.melees.Melee;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -15,12 +12,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 

@@ -9,7 +9,6 @@ import me.chimkenu.expunge.items.utilities.throwable.Molotov;
 import me.chimkenu.expunge.items.weapons.guns.*;
 import me.chimkenu.expunge.items.weapons.melees.*;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

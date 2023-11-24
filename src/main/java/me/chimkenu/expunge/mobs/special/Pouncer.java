@@ -4,7 +4,6 @@ import me.chimkenu.expunge.mobs.GameMob;
 import me.chimkenu.expunge.listeners.game.MobListener;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Stray;
 import org.bukkit.inventory.ItemStack;
