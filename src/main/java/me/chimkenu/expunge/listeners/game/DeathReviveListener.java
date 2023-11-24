@@ -1,7 +1,7 @@
 package me.chimkenu.expunge.listeners.game;
 
 import me.chimkenu.expunge.enums.Achievements;
-import me.chimkenu.expunge.enums.Weapons;
+import me.chimkenu.expunge.enums.GameItems;
 import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.game.PlayerStats;
 import me.chimkenu.expunge.listeners.GameListener;
@@ -113,7 +113,7 @@ public class DeathReviveListener extends GameListener {
                     inventory.setItem(i + 9, inventory.getItem(i));
                     inventory.setItem(i, new ItemStack(Material.AIR));
                 }
-                inventory.setItem(5, Weapons.Guns.PISTOL.getGun().get());
+                inventory.setItem(5, GameItems.PISTOL.getGameItem().get());
 
             } else {
                 dead(player);
