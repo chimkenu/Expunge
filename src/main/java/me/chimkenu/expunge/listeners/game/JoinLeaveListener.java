@@ -20,7 +20,7 @@ public class JoinLeaveListener extends GameListener {
             gameManager.getPlayers().remove(e.getPlayer());
 
             if (gameManager.getPlayers().isEmpty()) {
-                Bukkit.getLogger().log(Level.INFO, "All players at " + gameManager.getWorld().getName() + " left. Stopping game...");
+                Bukkit.getLogger().log(Level.INFO, "All players at " + gameManager.getUUID() + " left. Stopping game...");
                 gameManager.stop(true);
             }
         }
