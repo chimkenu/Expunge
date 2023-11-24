@@ -2,11 +2,9 @@ package me.chimkenu.expunge.utils;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
-import me.chimkenu.expunge.enums.Tier;
-import me.chimkenu.expunge.enums.Weapons;
+import me.chimkenu.expunge.enums.GameItems;
+import me.chimkenu.expunge.items.GameItem;
 import me.chimkenu.expunge.items.utilities.Utility;
-import me.chimkenu.expunge.items.utilities.healing.*;
-import me.chimkenu.expunge.items.utilities.throwable.*;
 import me.chimkenu.expunge.items.utilities.throwable.Throwable;
 import me.chimkenu.expunge.items.weapons.guns.Gun;
 import me.chimkenu.expunge.items.weapons.melees.Melee;
@@ -22,109 +20,25 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import java.util.ArrayList;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Utils {
-    public static ArrayList<Gun> getGuns() {
-        ArrayList<Gun> guns = new ArrayList<>();
-        for (Weapons.Guns gun : Weapons.Guns.values()) {
-            guns.add(gun.getGun());
-        }
-        return guns;
-    }
-
-    public static ArrayList<Gun> getTier1Guns() {
-        ArrayList<Gun> guns = new ArrayList<>();
-        for (Weapons.Guns gun : Weapons.Guns.values()) {
-            if (gun.getGun().getTier() == Tier.TIER1) guns.add(gun.getGun());
-        }
-        return guns;
-    }
-
-    public static ArrayList<Gun> getTier2Guns() {
-        ArrayList<Gun> guns = new ArrayList<>();
-        for (Weapons.Guns gun : Weapons.Guns.values()) {
-            if (gun.getGun().getTier() == Tier.TIER2) guns.add(gun.getGun());
-        }
-        return guns;
-    }
-
-    public static ArrayList<Gun> getSpecialGuns() {
-        ArrayList<Gun> guns = new ArrayList<>();
-        for (Weapons.Guns gun : Weapons.Guns.values()) {
-            if (gun.getGun().getTier() == Tier.SPECIAL) guns.add(gun.getGun());
-        }
-        return guns;
-    }
-
-    public static ArrayList<Healing> getHealings() {
-        ArrayList<Healing> healings = new ArrayList<>();
-        healings.add(new Adrenaline());
-        healings.add(new Pills());
-        healings.add(new Medkit());
-        healings.add(new Defibrillator());
-        return healings;
-    }
-
-    public static ArrayList<Melee> getMelees() {
-        ArrayList<Melee> melees = new ArrayList<>();
-        for (Weapons.Melees weapon : Weapons.Melees.values()) {
-            melees.add(weapon.getMelee());
-        }
-        return melees;
-    }
-
-    public static ArrayList<Throwable> getThrowables() {
-        ArrayList<Throwable> throwables = new ArrayList<>();
-        throwables.add(new Grenade());
-        throwables.add(new Molotov());
-        throwables.add(new Spit());
-        throwables.add(new FreshAir());
-        throwables.add(new Bile());
-        return throwables;
-    }
-
-    public static Gun getPlayerHeldGun(ItemStack item) {
-        ItemMeta meta = item.getItemMeta();
+    public static GameItem getGameItemFromItemStack(ItemStack itemStack) {
+        ItemMeta meta = itemStack.getItemMeta();
         if (meta == null) return null;
-        Damageable damageable = (Damageable) meta;
-        if (damageable.getDamage() > 0) return null;
-        for (Gun gun : getGuns()) {
-            if (item.getType() == gun.getMaterial() && meta.hasDisplayName() && Objects.requireNonNull(meta.displayName()).examinableName().equalsIgnoreCase(gun.getName().examinableName())) {
-                return gun;
-            }
-        }
-        return null;
-    }
-
-    public static Utility getPlayerHeldUtility(ItemStack item) {
-        ArrayList<Utility> utilities = new ArrayList<>();
-        utilities.addAll(getHealings());
-        utilities.addAll(getThrowables());
-        for (Utility utility : utilities) {
-            if (item.isSimilar(utility.get())) {
-                return utility;
-            }
-        }
-        return null;
-    }
-
-    public static Melee getPlayerHeldMelee(ItemStack item) {
-        ItemMeta meta = item.getItemMeta();
-        if (meta == null) return null;
-        for (Melee melee : getMelees()) {
-            if (item.getType() == melee.getMaterial() && meta.hasDisplayName() && Objects.requireNonNull(meta.displayName()).examinableName().equalsIgnoreCase(melee.getName().examinableName())) {
-                return melee;
-            }
+        for (GameItems gameItems : GameItems.values()) {
+            GameItem gameItem = gameItems.getGameItem();
+            ItemStack itemForComparison = gameItem.get();
+            if (itemForComparison.getType() == itemStack.getType() && itemForComparison.displayName() == itemStack.displayName()) return gameItem;
         }
         return null;
     }
 
     public static Throwable getThrowableFromProjectile(Projectile projectile) {
-        for (Throwable throwable : getThrowables()) {
+        for (GameItems gameItems : GameItems.getThrowables()) {
+            Throwable throwable = (Throwable) gameItems.getGameItem();
             if (projectile.getScoreboardTags().contains(throwable.getTag())) {
                 return throwable;
             }

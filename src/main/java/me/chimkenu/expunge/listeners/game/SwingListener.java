@@ -95,6 +95,40 @@ public class SwingListener extends GameListener {
         }
     }
 
+    private void handleSwing(Player player, ItemStack mainHand, Melee melee) {
+        if (player.getCooldown(mainHand.getType()) > 1) {
+            return;
+        }
+
+        player.setCooldown(mainHand.getType(), melee.getCooldown());
+        if (!(melee instanceof Chainsaw)) {
+            swing(player, melee);
+            return;
+        }
+
+        if (playersUsingChainsaw.contains(player)) {
+            return;
+        }
+
+        playersUsingChainsaw.add(player);
+        new BukkitRunnable() {
+            int i = 0;
+            @Override
+            public void run() {
+                if (player.getInventory().getItemInMainHand().getType() != melee.getMaterial()) {
+                    playersUsingChainsaw.remove(player);
+                    this.cancel();
+                }
+                if (i % 5 == 0) {
+                    Location loc = player.getEyeLocation().add(player.getLocation().getDirection().multiply(1.5));
+                    player.getWorld().spawnParticle(Particle.SWEEP_ATTACK, loc, 1);
+                    swing(player, melee);
+                }
+                i++;
+            }
+        }.runTaskTimer(plugin, 1, 1);
+    }
+
     @EventHandler
     public void onSwing(PlayerInteractEvent e) {
         Player player = e.getPlayer();
@@ -110,44 +144,12 @@ public class SwingListener extends GameListener {
         }
 
         ItemStack mainHand = player.getInventory().getItemInMainHand();
-
-        Melee weapon = Utils.getPlayerHeldMelee(mainHand);
-        if (weapon == null) {
+        if (!(Utils.getGameItemFromItemStack(mainHand) instanceof Melee melee)) {
             return;
         }
 
         e.setCancelled(true);
-        if (player.getCooldown(mainHand.getType()) > 1) {
-            return;
-        }
-
-        player.setCooldown(mainHand.getType(), weapon.getCooldown());
-        if (!(weapon instanceof Chainsaw)) {
-            swing(player, weapon);
-            return;
-        }
-
-        if (playersUsingChainsaw.contains(player)) {
-            return;
-        }
-
-        playersUsingChainsaw.add(player);
-        new BukkitRunnable() {
-            int i = 0;
-            @Override
-            public void run() {
-                if (player.getInventory().getItemInMainHand().getType() != weapon.getMaterial()) {
-                    playersUsingChainsaw.remove(player);
-                    this.cancel();
-                }
-                if (i % 5 == 0) {
-                    Location loc = player.getEyeLocation().add(player.getLocation().getDirection().multiply(1.5));
-                    player.getWorld().spawnParticle(Particle.SWEEP_ATTACK, loc, 1);
-                    swing(player, weapon);
-                }
-                i++;
-            }
-        }.runTaskTimer(plugin, 1, 1);
+        handleSwing(player, mainHand, melee);
     }
 
     @EventHandler
@@ -163,38 +165,12 @@ public class SwingListener extends GameListener {
         }
 
         ItemStack mainHand = player.getInventory().getItemInMainHand();
-
-        Melee weapon = Utils.getPlayerHeldMelee(mainHand);
-        if (weapon == null) {
+        if (!(Utils.getGameItemFromItemStack(mainHand) instanceof Melee melee)) {
             return;
         }
 
         e.setCancelled(true);
-        if (player.getCooldown(mainHand.getType()) > 1) {
-            return;
-        }
-
-        player.setCooldown(mainHand.getType(), weapon.getCooldown());
-        if (!(weapon instanceof Chainsaw)) {
-            swing(player, weapon);
-            return;
-        }
-        new BukkitRunnable() {
-            int i = 0;
-            @Override
-            public void run() {
-                if (player.getInventory().getItemInMainHand().getType() != weapon.getMaterial()) {
-
-                    this.cancel();
-                }
-                if (i % 5 == 0) {
-                    Location loc = player.getEyeLocation().add(player.getLocation().getDirection().multiply(1.5));
-                    player.getWorld().spawnParticle(Particle.SWEEP_ATTACK, loc, 1);
-                    swing(player, weapon);
-                }
-                i++;
-            }
-        }.runTaskTimer(plugin, 1, 1);
+        handleSwing(player, mainHand, melee);
     }
 
     @EventHandler

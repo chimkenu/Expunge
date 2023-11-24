@@ -34,13 +34,14 @@ public class AmmoPileListener extends GameListener {
         Player player = e.getPlayer();
         // update ammo if holding gun
         ItemStack itemStack = player.getInventory().getItemInMainHand();
-        Gun gun = Utils.getPlayerHeldGun(itemStack);
-        if (gun == null) {
+        if (!(Utils.getGameItemFromItemStack(itemStack) instanceof Gun gun)) {
             return;
-        } else if (gun.getTier() == Tier.SPECIAL) {
+        }
+        if (gun.getTier() == Tier.SPECIAL) {
             player.sendActionBar(Component.text("There's no ammo for this weapon...", NamedTextColor.RED));
             return;
         }
+
         player.playSound(player.getLocation(), Sound.BLOCK_CHAIN_PLACE, 1, 1);
         player.sendActionBar(Component.text("+Ammo", NamedTextColor.BLUE));
         ShootListener.setAmmo(itemStack, gun.getMaxAmmo());

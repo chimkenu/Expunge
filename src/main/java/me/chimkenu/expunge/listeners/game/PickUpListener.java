@@ -1,15 +1,12 @@
 package me.chimkenu.expunge.listeners.game;
 
 import me.chimkenu.expunge.game.GameManager;
+import me.chimkenu.expunge.items.GameItem;
 import me.chimkenu.expunge.listeners.GameListener;
 import me.chimkenu.expunge.utils.Utils;
-import me.chimkenu.expunge.items.GameItem;
-import me.chimkenu.expunge.items.utilities.Utility;
-import me.chimkenu.expunge.items.weapons.Weapon;
 import me.chimkenu.expunge.items.weapons.guns.Gun;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
@@ -33,45 +30,8 @@ public class PickUpListener extends GameListener {
         super(plugin, gameManager);
     }
 
-    private static HashMap<ItemStack, GameItem> getItems() {
-        HashMap<ItemStack, GameItem> items = new HashMap<>();
-        for (Weapon weapon : Utils.getGuns()) {
-            items.put(weapon.get(), weapon);
-        }
-        for (Weapon weapon : Utils.getMelees()) {
-            items.put(weapon.get(), weapon);
-        }
-        for (Utility utility : Utils.getThrowables()) {
-            items.put(utility.get(), utility);
-        }
-        for (Utility utility : Utils.getHealings()) {
-            items.put(utility.get(), utility);
-        }
-        return items;
-    }
-
-    private ItemStack getValidItemStack(ItemStack item) {
-        Gun gun = Utils.getPlayerHeldGun(item);
-        if (gun != null) return gun.get();
-        for (ItemStack itemStack : getItems().keySet()) {
-            if (item.isSimilar(itemStack)) {
-                return itemStack;
-            }
-        }
-        return null;
-    }
-
-    private boolean isItemInvalid(ItemStack item) {
-        ItemMeta meta = item.getItemMeta();
-        if (meta != null && meta.getLore() != null && meta.getLore().contains("invulnerable")) return true;
-        return getValidItemStack(item) == null;
-    }
-
-    private int getHotbarSlot(ItemStack item) {
-        return getItems().get(getValidItemStack(item)).getSlot().ordinal();
-    }
-
     private final HashMap<Player, Long> pickUp = new HashMap<>();
+
     private boolean canPickUp(Player player) {
         pickUp.putIfAbsent(player, System.currentTimeMillis() - 501);
         return ((System.currentTimeMillis() - pickUp.get(player)) > 500);
@@ -82,15 +42,7 @@ public class PickUpListener extends GameListener {
         if (!(e.getEntity() instanceof Player player)) {
             return;
         }
-        if (player.getGameMode().equals(GameMode.CREATIVE)) {
-            return;
-        }
-        if (!gameManager.isRunning()) {
-            e.setCancelled(true);
-            return;
-        }
         if (!gameManager.getPlayers().contains(player)) {
-            e.setCancelled(true);
             return;
         }
         if (!gameManager.getPlayerStat(player).isAlive()) {
@@ -108,7 +60,9 @@ public class PickUpListener extends GameListener {
         }
 
         Item item = e.getItem();
-        if (isItemInvalid(item.getItemStack())) {
+        ItemStack itemStack = item.getItemStack();
+        GameItem gameItem = Utils.getGameItemFromItemStack(itemStack);
+        if (gameItem == null) {
             player.sendActionBar(Component.text("You can't pick this up.", NamedTextColor.RED));
             e.setCancelled(true);
             return;
@@ -120,14 +74,13 @@ public class PickUpListener extends GameListener {
         }
         pickUp.put(player, System.currentTimeMillis());
 
-        int hotbarSlot = getHotbarSlot(item.getItemStack());
-        Gun gun = Utils.getPlayerHeldGun(item.getItemStack());
+        int hotbarSlot = gameItem.getSlot().ordinal();
 
         if (player.getInventory().containsAtLeast(item.getItemStack(), 1)) {
             e.setCancelled(true);
 
             // add to ammo if gun
-            if (gun != null) {
+            if (gameItem instanceof Gun gun) {
                 ItemStack gunInHotbar = player.getInventory().getItem(hotbarSlot);
                 if (gunInHotbar != null) ShootListener.setAmmo(gunInHotbar, Math.min(ShootListener.getAmmo(gunInHotbar) + ShootListener.getAmmo(item.getItemStack()), gun.getMaxAmmo()));
                 player.playSound(player.getLocation(), Sound.ITEM_ARMOR_EQUIP_LEATHER, SoundCategory.PLAYERS, 1, 1);
@@ -178,15 +131,7 @@ public class PickUpListener extends GameListener {
         if (e.isCancelled()) {
             return;
         }
-        if (player.getGameMode().equals(GameMode.CREATIVE)) {
-            return;
-        }
-        if (!gameManager.isRunning()) {
-            cancelDrop(e);
-            return;
-        }
         if (!gameManager.getPlayers().contains(player)) {
-            cancelDrop(e);
             return;
         }
         if (!gameManager.getPlayerStat(player).isAlive()) {
@@ -194,10 +139,11 @@ public class PickUpListener extends GameListener {
             return;
         }
 
-        ItemStack item = e.getItemDrop().getItemStack();
-        if (isItemInvalid(item)) {
+        Item entity = e.getItemDrop();
+        ItemStack item = entity.getItemStack();
+        if (Utils.getGameItemFromItemStack(item) == null) {
             // fix item if broken
-            if (item.getItemMeta() != null && item.getItemMeta() instanceof Damageable damageable) {
+            if (item.getItemMeta() instanceof Damageable damageable) {
                 // this is added to fix reload as it breaks when opening the inventory, however it can be abused
                 // to avoid such, add a cooldown longer than all reload times
                 if (damageable.getDamage() > 0) {
@@ -214,26 +160,27 @@ public class PickUpListener extends GameListener {
 
         item.setAmount(player.getInventory().getItemInMainHand().getAmount() + 1);
         player.getInventory().remove(item.getType());
-        e.getItemDrop().setItemStack(item);
-        e.getItemDrop().addScoreboardTag("ITEM");
-        e.getItemDrop().setGlowing(true);
+        entity.setItemStack(item);
+        gameManager.getDirector().getItemHandler().addEntity(entity);
     }
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent e) {
-        if (!e.getWhoClicked().getGameMode().equals(GameMode.CREATIVE))
-            e.setCancelled(true);
+        if (e.getWhoClicked() instanceof Player player) {
+            if (gameManager.getPlayers().contains(player))
+                e.setCancelled(true);
+        }
     }
 
     @EventHandler
     public void onItemMerge(ItemMergeEvent e) {
-        if (gameManager.isRunning())
+        if (gameManager.isRunning() && gameManager.getWorld() == e.getEntity().getWorld())
             e.setCancelled(true);
     }
 
     @EventHandler
     public void onItemDespawn(ItemDespawnEvent e) {
-        if (gameManager.isRunning())
+        if (gameManager.isRunning() && gameManager.getWorld() == e.getEntity().getWorld())
             e.setCancelled(true);
     }
 }

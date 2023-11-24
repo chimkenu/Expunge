@@ -2,14 +2,11 @@ package me.chimkenu.expunge;
 
 import me.chimkenu.expunge.campaigns.Campaign;
 import me.chimkenu.expunge.enums.Difficulty;
+import me.chimkenu.expunge.enums.GameItems;
 import me.chimkenu.expunge.game.GameManager;
+import me.chimkenu.expunge.game.director.Director;
 import me.chimkenu.expunge.guis.MenuGUI;
 import me.chimkenu.expunge.items.GameItem;
-import me.chimkenu.expunge.items.utilities.healing.Healing;
-import me.chimkenu.expunge.items.utilities.throwable.Throwable;
-import me.chimkenu.expunge.items.weapons.guns.Gun;
-import me.chimkenu.expunge.items.weapons.melees.Melee;
-import me.chimkenu.expunge.utils.Utils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -60,7 +57,19 @@ public class ExpungeCommand implements CommandExecutor, TabCompleter {
 
             }
             case "stats" -> {
-
+                if (lobby.getGames().isEmpty()) {
+                    return true;
+                }
+                for (GameManager gameManager : lobby.getGames()) {
+                    sender.sendMessage("Game: " + gameManager.getUUID());
+                    sender.sendMessage("World: " + gameManager.getWorld().getName());
+                    sender.sendMessage("Difficulty: " + gameManager.getDifficulty());
+                    Director director = gameManager.getDirector();
+                    sender.sendMessage("sceneTime: " + director.getSceneTime());
+                    sender.sendMessage("sceneAttempts: " + director.getSceneAttempts());
+                    sender.sendMessage("isSpawningEnabled: " + director.getMobHandler().isSpawningEnabled());
+                    sender.sendMessage("activeMobsSize" + director.getMobHandler().getActiveMobs().size());
+                }
             }
             case "start" -> {
                 if (!sender.hasPermission("expunge.start")) {
@@ -158,13 +167,9 @@ public class ExpungeCommand implements CommandExecutor, TabCompleter {
                 for (int i = 2; i < args.length; i++) {
                     item.append(args[i]).append(" ");
                 }
-                ArrayList<GameItem> items = new ArrayList<>();
-                items.addAll(Utils.getGuns());
-                items.addAll(Utils.getMelees());
-                items.addAll(Utils.getThrowables());
-                items.addAll(Utils.getHealings());
 
-                for (GameItem gameItem : items) {
+                for (GameItems gameItems : GameItems.values()) {
+                    GameItem gameItem = gameItems.getGameItem();
                     if (gameItem.getName().examinableName().equalsIgnoreCase(item.toString())) {
                         player.getInventory().addItem(gameItem.get());
                         return true;
@@ -220,17 +225,8 @@ public class ExpungeCommand implements CommandExecutor, TabCompleter {
                     }
                 }
                 case "get" -> {
-                    for (Gun gun : Utils.getGuns()) {
-                        tabComplete.add(gun.getName().examinableName());
-                    }
-                    for (Melee melee : Utils.getMelees()) {
-                        tabComplete.add(melee.getName().examinableName());
-                    }
-                    for (Throwable throwable : Utils.getThrowables()) {
-                        tabComplete.add(throwable.getName().examinableName());
-                    }
-                    for (Healing healing : Utils.getHealings()) {
-                        tabComplete.add(healing.getName().examinableName());
+                    for (GameItems gameItems : GameItems.values()) {
+                        tabComplete.add(gameItems.name());
                     }
                 }
             }

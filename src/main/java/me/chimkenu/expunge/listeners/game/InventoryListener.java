@@ -40,11 +40,9 @@ public class InventoryListener extends GameListener {
         }
 
         // display ammo if gun
-        Gun gun = Utils.getPlayerHeldGun(item);
-        if (gun == null) {
-            return;
+        if (Utils.getGameItemFromItemStack(item) instanceof Gun gun) {
+            player.setLevel(ShootListener.getAmmo(item));
         }
-        player.setLevel(ShootListener.getAmmo(item));
     }
 
     @EventHandler

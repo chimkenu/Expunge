@@ -1,30 +1,32 @@
 package me.chimkenu.expunge.game.director;
 
 import me.chimkenu.expunge.campaigns.CampaignMap;
+import me.chimkenu.expunge.enums.GameItems;
 import me.chimkenu.expunge.enums.Tier;
-import me.chimkenu.expunge.enums.Utilities;
-import me.chimkenu.expunge.enums.Weapons;
 import me.chimkenu.expunge.items.utilities.Utility;
+import me.chimkenu.expunge.items.utilities.healing.Adrenaline;
+import me.chimkenu.expunge.items.utilities.healing.Pills;
 import me.chimkenu.expunge.items.weapons.Weapon;
 import me.chimkenu.expunge.items.weapons.guns.Gun;
 import me.chimkenu.expunge.items.weapons.melees.Melee;
-import me.chimkenu.expunge.utils.Utils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class ItemHandler {
     private final Director director;
+    private final Set<Entity> entities;
 
     public ItemHandler(Director director) {
         this.director = director;
+        this.entities = new HashSet<>();
     }
 
     public void generateStartingItems() {
@@ -37,37 +39,25 @@ public class ItemHandler {
 
             // throwable - 50% chance
             if (r < 0.5) {
-                Utilities.Throwables[] throwables = Utilities.Throwables.values();
-                spawnUtilityAtRandom(throwables[ThreadLocalRandom.current().nextInt(0, throwables.length)].getUtility());
+                List<GameItems> throwables = GameItems.getThrowables();
+                spawnUtilityAtRandom((Utility) throwables.get(ThreadLocalRandom.current().nextInt(throwables.size())).getGameItem());
             }
 
             // healing item - 50% chance
             else {
-                Utilities.Healings[] healings = new Utilities.Healings[2];
-                healings[0] = Utilities.Healings.PILLS;
-                healings[1] = Utilities.Healings.ADRENALINE;
-                spawnUtilityAtRandom(healings[ThreadLocalRandom.current().nextInt(0, healings.length)].getUtility());
+                r = Math.random();
+                if (r < 0.5)
+                    spawnUtilityAtRandom(new Pills());
+                else
+                    spawnUtilityAtRandom(new Adrenaline());
             }
         }
 
         itemsToSpawn = 1;
         itemsToSpawn += (int) (2 * (1 - directorRating));
         for (int i = 0; i < itemsToSpawn; i++) {
-            double r = Math.random();
-
-            // primary - 60% chance
-            if (r < 0.6) {
-                Weapons.Guns[] primaries = Weapons.Guns.values();
-                Weapons.Guns primary = primaries[ThreadLocalRandom.current().nextInt(0, primaries.length)];
-                spawnGunAtRandom(primary.getGun());
-            }
-
-            // melee - 40% chance
-            else {
-                Weapons.Melees[] melees = Weapons.Melees.values();
-                Weapons.Melees melee = melees[ThreadLocalRandom.current().nextInt(0, melees.length)];
-                spawnMeleeAtRandom(melee.getMelee());
-            }
+            List<GameItems> weapons = GameItems.getWeapons();
+            spawnWeaponAtRandom((Weapon) weapons.get(ThreadLocalRandom.current().nextInt(weapons.size())).getGameItem());
         }
 
         // Spawn ammo
@@ -76,20 +66,12 @@ public class ItemHandler {
         }
     }
 
-    public void spawnGunAtRandom(Gun gun) {
+    public void spawnWeaponAtRandom(Weapon weapon) {
         CampaignMap map = director.getMap();
         Vector[] weaponLocations = map.weaponLocations();
         if (weaponLocations.length < 1) return;
         int index = weaponLocations.length == 1 ? 0 : ThreadLocalRandom.current().nextInt(0, weaponLocations.length);
-        spawnWeapon(weaponLocations[index], gun, false);
-    }
-
-    public void spawnMeleeAtRandom(Melee melee) {
-        CampaignMap map = director.getMap();
-        Vector[] weaponLocations = map.weaponLocations();
-        if (weaponLocations.length < 1) return;
-        int index = weaponLocations.length == 1 ? 0 : ThreadLocalRandom.current().nextInt(0, weaponLocations.length);
-        spawnWeapon(weaponLocations[index], melee, false);
+        spawnWeapon(weaponLocations[index], weapon, false);
     }
 
     public void spawnWeapon(Vector loc, Weapon weapon, boolean isInvulnerable) {
@@ -101,9 +83,9 @@ public class ItemHandler {
             }
             item.getItemStack().setItemMeta(meta);
         }
-        item.addScoreboardTag("ITEM");
         item.setInvulnerable(isInvulnerable);
-        item.setGlowing(true);
+        setItemProperties(item);
+        addEntity(item);
     }
 
     public void spawnUtilityAtRandom(Utility utility) {
@@ -118,7 +100,7 @@ public class ItemHandler {
         Item item = director.getWorld().spawn(loc.toLocation(director.getWorld()), Item.class);
         item.setItemStack(utility.get());
         item.setInvulnerable(isInvulnerable);
-        item.setGlowing(true);
+        setItemProperties(item);
         item.addScoreboardTag("ITEM");
     }
 
@@ -133,25 +115,37 @@ public class ItemHandler {
         ammoPile.setCustomNameVisible(true);
         ammoPile.setBlockData(Material.GRAY_CANDLE.createBlockData("[candles=4,lit=false,waterlogged=false]"));
         ammoPile.addScoreboardTag("AMMO_PILE");
+        addEntity(ammoPile);
+    }
+
+    private void setItemProperties(Item item) {
+        item.setGlowing(true);
+        item.setCanMobPickup(false);
+        item.setUnlimitedLifetime(true);
+        item.addScoreboardTag("ITEM");
+    }
+
+    public void clear() {
+        entities.forEach(Entity::remove);
+        entities.clear();
+    }
+
+    public void addEntity(Entity e) {
+        if (e instanceof Item item) {
+            setItemProperties(item);
+        }
+        entities.add(e);
     }
 
     public static Melee getRandomMelee(Tier tier) {
-        ArrayList<Weapons.Melees> melees = new ArrayList<>(List.of(Weapons.Melees.values()));
-        melees.removeIf(melee -> melee.getMelee().getTier() != tier);
-        return melees.get(ThreadLocalRandom.current().nextInt(0, melees.size())).getMelee();
+        List<GameItems> melees = GameItems.getMelees();
+        melees.removeIf(gameItems -> ((Melee) gameItems.getGameItem()).getTier() != tier);
+        return (Melee) melees.get(ThreadLocalRandom.current().nextInt(0, melees.size())).getGameItem();
     }
 
     public static Gun getRandomGun(Tier tier) {
-        switch (tier) {
-            case TIER1 -> {
-                return Utils.getTier1Guns().get(ThreadLocalRandom.current().nextInt(0, Utils.getTier1Guns().size()));
-            }
-            case TIER2 -> {
-                return Utils.getTier2Guns().get(ThreadLocalRandom.current().nextInt(0, Utils.getTier2Guns().size()));
-            }
-            default -> {
-                return Utils.getSpecialGuns().get(ThreadLocalRandom.current().nextInt(0, Utils.getSpecialGuns().size()));
-            }
-        }
+        List<GameItems> guns = GameItems.getGuns();
+        guns.removeIf(gameItem -> ((Gun) gameItem.getGameItem()).getTier() != tier);
+        return (Gun) guns.get(ThreadLocalRandom.current().nextInt(guns.size())).getGameItem();
     }
 }

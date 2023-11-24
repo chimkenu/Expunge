@@ -137,11 +137,11 @@ public class ShootListener extends GameListener {
 
     public void reload(Player player) {
         ItemStack item = player.getInventory().getItemInMainHand();
-        Gun gun = Utils.getPlayerHeldGun(item);
+        if (!(Utils.getGameItemFromItemStack(item) instanceof Gun gun)) {
+            return;
+        }
 
-        if (gun == null) return;
         if (item.getAmount() == gun.getClipSize()) return;
-
         if (ShootListener.getAmmo(item) < 1) return;
         if (ShootListener.getAmmo(item) == item.getAmount()) return;
         else if (ShootListener.getAmmo(item) + 1 < item.getAmount()) {
@@ -187,18 +187,18 @@ public class ShootListener extends GameListener {
         if (e.getAction().equals(Action.LEFT_CLICK_AIR) || e.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
 
             Player player = e.getPlayer();
-            Gun gun = Utils.getPlayerHeldGun(player.getInventory().getItemInMainHand());
-
-            if (gun != null) {
-                e.setCancelled(true);
-
-                if (player.getGameMode() != GameMode.ADVENTURE)
-                    return;
-                if (!player.isSneaking())
-                    fireGun(player, gun);
-                else
-                    reload(player);
+            if (!(Utils.getGameItemFromItemStack(player.getInventory().getItemInMainHand()) instanceof Gun gun)) {
+                return;
             }
+
+            e.setCancelled(true);
+
+            if (player.getGameMode() != GameMode.ADVENTURE)
+                return;
+            if (!player.isSneaking())
+                fireGun(player, gun);
+            else
+                reload(player);
         }
     }
 
@@ -214,15 +214,16 @@ public class ShootListener extends GameListener {
             return;
         }
 
-        Gun gun = Utils.getPlayerHeldGun(player.getInventory().getItemInMainHand());
-        if (gun != null) {
-            e.setCancelled(true);
-            if (player.getGameMode() != GameMode.ADVENTURE)
-                return;
-            if (!player.isSneaking())
-                fireGun(player, gun);
-            else
-                reload(player);
+        if (!(Utils.getGameItemFromItemStack(player.getInventory().getItemInMainHand()) instanceof Gun gun)) {
+            return;
         }
+
+        e.setCancelled(true);
+        if (player.getGameMode() != GameMode.ADVENTURE)
+            return;
+        if (!player.isSneaking())
+            fireGun(player, gun);
+        else
+            reload(player);
     }
 }

@@ -42,12 +42,9 @@ public class UtilityListener extends GameListener {
         }
 
         if (e.getAction().equals(Action.LEFT_CLICK_AIR) || e.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
-
-            Utility util = Utils.getPlayerHeldUtility(player.getInventory().getItemInMainHand());
-
-            if (util != null) {
+            if (Utils.getGameItemFromItemStack(player.getInventory().getItemInMainHand()) instanceof Utility utility) {
                 e.setCancelled(true);
-                useUtil(player, util);
+                useUtil(player, utility);
             }
         }
     }

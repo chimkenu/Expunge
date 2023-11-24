@@ -35,7 +35,9 @@ public class TestCommand implements CommandExecutor {
             @Override
             public void run() {
                 if (player.getGameMode() == gameMode) {
-                    spawnMobNearby(Bukkit.getWorld("world").getPlayers());
+                    for (Block b : getValidSurroundingBlocks(Bukkit.getWorld("world").getPlayers())) {
+                        b.getWorld().spawnParticle(Particle.REDSTONE, b.getLocation().add(0.5, 1.1, 0.5), 1, new Particle.DustOptions(Color.GREEN, 0.5f));
+                    }
                 } else {
                     this.cancel();
                 }
@@ -44,7 +46,7 @@ public class TestCommand implements CommandExecutor {
         return true;
     }
 
-    public void spawnMobNearby(Collection<Player> players) {
+    private Set<Block> getValidSurroundingBlocks(Collection<Player> player) {
         final int SPAWN_RADIUS = 30;
         final int TOO_CLOSE_RADIUS = 10;
         final int DEPTH = 2;
@@ -52,23 +54,23 @@ public class TestCommand implements CommandExecutor {
         Set<Block> blocks = new HashSet<>();
         Set<Block> tooClose = new HashSet<>();
 
-        ArrayList<Player> checkedPlayers = new ArrayList<>();
+        ArrayList<Player> players = new ArrayList<>();
 
         // Gather all the possible spawn locations
-        for (Player p : players) {
+        for (Player p : player) {
 
             // Disregard player if they are close to another player
             boolean isTooClose = false;
-            for (Player q : checkedPlayers) {
+            for (Player q : players) {
                 if (isLocationTooClose(p, q.getLocation(), TOO_CLOSE_RADIUS)) {
                     isTooClose = true;
                 }
             }
             if (isTooClose) continue;
-            checkedPlayers.add(p);
+            players.add(p);
 
             // Gather nearby valid blocks for entities to spawn
-            for (Block b : getValidSurroundingBlocks(p.getWorld().getBlockAt(p.getLocation().add(0, -0.1, 0)), SPAWN_RADIUS, DEPTH)) {
+            for (Block b : getSurroundingBlocks(p.getWorld().getBlockAt(p.getLocation().add(0, -0.1, 0)), SPAWN_RADIUS, DEPTH)) {
                 blocks.add(b);
                 if (isLocationTooClose(p, b.getLocation(), TOO_CLOSE_RADIUS)) tooClose.add(b);
             }
@@ -82,14 +84,12 @@ public class TestCommand implements CommandExecutor {
             return false;
         });
 
-        for (Block b : blocks) {
-            b.getWorld().spawnParticle(Particle.REDSTONE, b.getLocation().add(0.5, 1.1, 0.5), 1, new Particle.DustOptions(Color.GREEN, 0.5f));
-        }
+        return blocks;
     }
 
     private boolean canBeSeenByPlayer(Block block, Player player) {
         final Vector playerToBlock = block.getLocation().toVector().subtract(player.getEyeLocation().toVector());
-        final double maxAngle = 60 * (Math.PI / 180);
+        final double maxAngle = 60 * Math.PI / 180;
         final double accuracy = 0.5;
 
         if (playerToBlock.angle(player.getEyeLocation().getDirection()) > maxAngle)
@@ -108,7 +108,7 @@ public class TestCommand implements CommandExecutor {
         return true;
     }
 
-    private Set<Block> getValidSurroundingBlocks(Block block, int radius, int depth) {
+    private Set<Block> getSurroundingBlocks(Block block, int radius, int depth) {
         Set<Block> blocks = new HashSet<>();
         for (int x = -radius; x <= radius; x++) {
             for (int z = -radius; z <= radius; z++) {
