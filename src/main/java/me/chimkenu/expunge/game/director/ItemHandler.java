@@ -22,11 +22,11 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class ItemHandler {
     private final Director director;
-    private final Set<Entity> entities;
+    private final List<Entity> entities;
 
     public ItemHandler(Director director) {
         this.director = director;
-        this.entities = new HashSet<>();
+        this.entities = new ArrayList<>();
     }
 
     public void generateStartingItems() {
