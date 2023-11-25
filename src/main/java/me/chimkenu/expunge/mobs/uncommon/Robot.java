@@ -2,6 +2,7 @@ package me.chimkenu.expunge.mobs.uncommon;
 
 import me.chimkenu.expunge.enums.Difficulty;
 import me.chimkenu.expunge.mobs.GameMob;
+import me.chimkenu.expunge.utils.Utils;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Ageable;
@@ -34,6 +35,7 @@ public class Robot extends GameMob {
                 mob.setTarget(getRandomPlayer(world));
         });
         putOnClothes(getMob());
+        getMob().getEquipment().setHelmet(Utils.getSkull("e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTQ5YzQ3ZTg3YjRmZmUzN2U1OGZmYmJiYjQxYzRkMzYxNGE3NjU3YWFjNGE1YWFjNTRhNDBiNWZkMTc0ZGEzYiJ9fX0="));
         getMob().addScoreboardTag("ROBOT");
         ((Ageable) getMob()).setAdult();
         Objects.requireNonNull(getMob().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)).setBaseValue(0.25 + (difficulty.ordinal() * 0.25));
