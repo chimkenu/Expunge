@@ -7,13 +7,9 @@ import me.chimkenu.expunge.items.ShootEvent;
 import me.chimkenu.expunge.mobs.GameMob;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Zombie;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -98,16 +94,8 @@ public class Director implements Listener {
     }
 
     public void clearEntities() {
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "kill @e[tag=RESPAWN_ARMOR_STAND]");
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "kill @e[tag=KNOCKED]");
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "kill @e[tag=ITEM]");
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "kill @e[tag=AMMO_PILE]");
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "kill @e[tag=THROWN_BILE]");
-        mobHandler.clearMobs();
-    }
-
-    public Component displayStats() {
-        return statsHandler.displayStats();
+        mobHandler.clear();
+        itemHandler.clear();
     }
 
     public void incrementSceneAttempts() {
@@ -196,12 +184,13 @@ public class Director implements Listener {
         for (GameMob mob : mobHandler.getActiveMobs()) {
             if (mob.getMob().equals(dead)) {
                 if (gameManager.getPlayers().contains(dead.getKiller())) {
-                    statsHandler.kills.putIfAbsent(dead.getKiller(), 0);
-                    statsHandler.kills.put(dead.getKiller(), statsHandler.kills.get(dead.getKiller()) + 1);
-
                     // broadcast if player killed special infected
-                    if (!(dead instanceof Zombie))
+                    if (!(dead instanceof Zombie) || (dead instanceof ZombieVillager || dead instanceof Husk)) {
+                        statsHandler.addSpecialKill(dead.getKiller());
                         gameManager.getWorld().getPlayers().forEach(player -> player.sendMessage(dead.getKiller().name().color(NamedTextColor.RED).append(Component.text(" killed ", NamedTextColor.RED)).append(mob.getMob().name()).color(NamedTextColor.RED)));
+                    } else {
+                        statsHandler.addCommonKill(dead.getKiller());
+                    }
                 }
                 mobToRemove = mob;
                 break;
@@ -212,13 +201,17 @@ public class Director implements Listener {
 
     @EventHandler
     public void onShoot(ShootEvent e) {
-        statsHandler.shots.putIfAbsent(e.getShooter(), new Integer[]{0, 0, 0});
-        Set<LivingEntity> hitEntities = e.getHitEntities().keySet();
+        boolean shotHit = false;
+        boolean headshot = false;
+        for (LivingEntity hit : e.getHitEntities().keySet()) {
+            if (!(hit instanceof Player)) {
+                shotHit = true;
+                if (e.getHitEntities().get(hit)) {
+                    headshot = true;
+                }
+            }
+        }
 
-        statsHandler.shots.get(e.getShooter())[0] += 1; // shot
-        hitEntities.removeIf(entity -> entity instanceof Player);
-        statsHandler.shots.get(e.getShooter())[1] += !hitEntities.isEmpty() ? 1 : 0; // hit / miss
-        hitEntities.removeIf(entity -> !e.getHitEntities().get(entity));
-        statsHandler.shots.get(e.getShooter())[2] += !hitEntities.isEmpty() ? 1 : 0; // headshot / not
+        statsHandler.addShot(e.getShooter(), shotHit, headshot);
     }
 }
