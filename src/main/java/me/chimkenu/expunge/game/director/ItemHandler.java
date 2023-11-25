@@ -137,13 +137,13 @@ public class ItemHandler {
     }
 
     public static Melee getRandomMelee(Tier tier) {
-        List<GameItems> melees = GameItems.getMelees();
+        List<GameItems> melees = new ArrayList<>(GameItems.getMelees());
         melees.removeIf(gameItems -> ((Melee) gameItems.getGameItem()).getTier() != tier);
         return (Melee) melees.get(ThreadLocalRandom.current().nextInt(0, melees.size())).getGameItem();
     }
 
     public static Gun getRandomGun(Tier tier) {
-        List<GameItems> guns = GameItems.getGuns();
+        List<GameItems> guns = new ArrayList<>(GameItems.getGuns());
         guns.removeIf(gameItem -> ((Gun) gameItem.getGameItem()).getTier() != tier);
         return (Gun) guns.get(ThreadLocalRandom.current().nextInt(guns.size())).getGameItem();
     }
