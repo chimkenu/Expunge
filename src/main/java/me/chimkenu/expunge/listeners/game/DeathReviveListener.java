@@ -325,6 +325,10 @@ public class DeathReviveListener extends GameListener {
         upper.setBodyPose(new EulerAngle(-1.518, -0.017, 0));
         upper.setArms(true);
 
+        upper.addScoreboardTag(player.getUniqueId().toString());
+        upper.addScoreboardTag(upper.getUniqueId().toString());
+        upper.addScoreboardTag(lower.getUniqueId().toString());
+
         lower.getEquipment().setChestplate(new ItemStack(Material.AIR));
         lower.setLeftLegPose(new EulerAngle(-1.588, -0.524, -0.0175));
         lower.setRightLegPose(new EulerAngle(-1.5533, 0.5236, 0.0175));

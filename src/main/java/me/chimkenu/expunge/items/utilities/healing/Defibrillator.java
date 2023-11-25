@@ -2,16 +2,28 @@ package me.chimkenu.expunge.items.utilities.healing;
 
 import me.chimkenu.expunge.GameAction;
 import me.chimkenu.expunge.game.GameManager;
+import me.chimkenu.expunge.game.PlayerStats;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
+import java.util.UUID;
 
 public class Defibrillator implements Healing {
     @Override
@@ -25,15 +37,63 @@ public class Defibrillator implements Healing {
             return;
         }
 
+        if (!gameManager.getPlayers().contains(player)) {
+            return;
+        }
+        if (!gameManager.getPlayerStat(player).isAlive()) {
+            return;
+        }
 
+        for (Entity e : player.getNearbyEntities(1, 1, 1)) {
+            if (!(e instanceof ArmorStand armorStand)) {
+                continue;
+            }
+            Player target = null;
+            for (String string : armorStand.getScoreboardTags()) {
+                try {
+                    UUID uuid = UUID.fromString(string);
+                    target = Bukkit.getPlayer(uuid);
+                    if (target != null) break;
+                } catch (IllegalArgumentException ignored) {}
+            }
+            if (target == null || !target.isOnline()) {
+                continue;
+            }
+            if (!gameManager.getPlayers().contains(target)) {
+                continue;
+            }
+            if (gameManager.getPlayerStat(target).isAlive()) {
+                continue;
+            }
+            if (gameManager.getPlayerStat(target).getLives() > 1) {
+                continue;
+            }
+            if (!target.hasPotionEffect(PotionEffectType.GLOWING)) {
+                player.sendActionBar(target.name().color(NamedTextColor.AQUA).append(Component.text(" is already being revived.", NamedTextColor.YELLOW)));
+                continue;
+            }
+            target.removePotionEffect(PotionEffectType.GLOWING);
+            Player finalTarget = target;
+            attemptUse(plugin, gameManager, player, target, item, getCooldown(), true, Component.text("Reviving...", NamedTextColor.YELLOW), (plugin1, gameManager1, player1) -> {
+                player1.getInventory().getItemInMainHand().setAmount(player1.getInventory().getItemInMainHand().getAmount() - 1);
+                gameManager.getPlayerStat(finalTarget).revive();
+                finalTarget.teleport(player1);
+                finalTarget.setGameMode(GameMode.ADVENTURE);
+                finalTarget.setHealth(10d);
+                for (String string : armorStand.getScoreboardTags()) {
+                    try {
+                        UUID uuid = UUID.fromString(string);
+                        if (Bukkit.getEntity(uuid) instanceof ArmorStand a) a.remove();
+                    } catch (IllegalArgumentException ignored) {}
+                }
+            });
+            return;
+        }
 
-        attemptUse(plugin, gameManager, player, item, getCooldown(), true, Component.text("Reviving...", NamedTextColor.YELLOW), (plugin1, gameManager1, player1) -> {
-
-        });
+        player.sendActionBar(Component.text("No dead player nearby.", NamedTextColor.RED));
     }
 
-    @Override
-    public void attemptUse(JavaPlugin plugin, GameManager gameManager, Player player, ItemStack itemStack, int useTime, boolean hasToStayStill, Component prefix, GameAction gameActionWhenSuccessful) {
+    public void attemptUse(JavaPlugin plugin, GameManager gameManager, Player player, Player target, ItemStack itemStack, int useTime, boolean hasToStayStill, Component prefix, GameAction gameActionWhenSuccessful) {
         // check for if the revivee is already alive (like he got rescue closeted before the defib works)
         // also check for if the revivee is still in game (keep the body there tho)\
         Vector loc = null;
@@ -52,11 +112,13 @@ public class Defibrillator implements Healing {
 
                 if (finalLoc != null && finalLoc.distanceSquared(player.getLocation().toVector()) > 1) {
                     player.sendActionBar(Component.text("Stopped. ", NamedTextColor.RED).append(Component.text("(You moved)", NamedTextColor.DARK_GRAY)));
+                    target.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 10000000, 0, false, false, false));
                     player.setCooldown(itemStack.getType(), 0);
                     this.cancel();
                 }
                 if (!player.getInventory().getItemInMainHand().equals(itemStack)) {
                     player.sendActionBar(Component.text("Stopped. ", NamedTextColor.RED));
+                    target.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 10000000, 0, false, false, false));
                     player.setCooldown(itemStack.getType(), 0);
                     this.cancel();
                 }
