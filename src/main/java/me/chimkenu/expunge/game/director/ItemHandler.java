@@ -100,8 +100,7 @@ public class ItemHandler {
         Item item = director.getWorld().spawn(loc.toLocation(director.getWorld()), Item.class);
         item.setItemStack(utility.get());
         item.setInvulnerable(isInvulnerable);
-        setItemProperties(item);
-        item.addScoreboardTag("ITEM");
+        addEntity(item);
     }
 
     private void spawnAmmo(Vector loc) {
