@@ -78,7 +78,7 @@ public class MobListener extends GameListener {
         }
         else if (e.getEntity().getScoreboardTags().contains("ROBOT")) {
             Item item = e.getEntity().getWorld().dropItemNaturally(e.getEntity().getLocation(), new FreshAir().get());
-            item.addScoreboardTag("ITEM");
+            gameManager.getDirector().getItemHandler().addEntity(item);
         }
 
         // achievement
