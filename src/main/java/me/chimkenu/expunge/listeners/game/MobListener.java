@@ -2,6 +2,7 @@ package me.chimkenu.expunge.listeners.game;
 
 import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.game.GameManager;
+import me.chimkenu.expunge.game.director.ItemHandler;
 import me.chimkenu.expunge.items.utilities.throwable.FreshAir;
 import me.chimkenu.expunge.listeners.GameListener;
 import org.bukkit.*;
@@ -160,13 +161,13 @@ public class MobListener extends GameListener {
         if (damager.getScoreboardTags().contains("CHARGER")) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 5, 2, false, false, true));
             if (damager.hasPotionEffect(PotionEffectType.CONFUSION) && player.getVehicle() == null) {
-                disable(player);
+                disable(player, gameManager.getDirector().getItemHandler());
                 damager.removePotionEffect(PotionEffectType.CONFUSION);
             }
         }
     }
 
-    public static void disable(Player player) {
+    public static void disable(Player player, ItemHandler itemHandler) {
         Location loc = player.getLocation();
         while (loc.getBlock().getType().equals(Material.AIR)) {
             loc.subtract(0, 0.25, 0);
@@ -180,6 +181,7 @@ public class MobListener extends GameListener {
         armorStand.setSmall(true);
         armorStand.addScoreboardTag("KNOCKED");
         armorStand.addPassenger(player);
+        itemHandler.addEntity(armorStand);
     }
 
     @EventHandler

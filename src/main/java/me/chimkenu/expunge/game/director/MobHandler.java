@@ -126,7 +126,7 @@ public class MobHandler {
             else if (r < 0.5)
                 getActiveMobs().add(new Charger(plugin, director.getWorld(), getRandomSpawnLocation(), difficulty));
             else if (r < 0.66)
-                getActiveMobs().add(new Pouncer(plugin, director.getWorld(), getRandomSpawnLocation()));
+                getActiveMobs().add(new Pouncer(plugin, director.getWorld(), getRandomSpawnLocation(), director.getItemHandler()));
             else if (r < 0.83)
                 getActiveMobs().add(new Choker(plugin, director.getWorld(), getRandomSpawnLocation()));
             else

@@ -1,5 +1,6 @@
 package me.chimkenu.expunge.mobs.special;
 
+import me.chimkenu.expunge.game.director.ItemHandler;
 import me.chimkenu.expunge.mobs.GameMob;
 import me.chimkenu.expunge.listeners.game.MobListener;
 import org.bukkit.Material;
@@ -14,7 +15,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 public class Pouncer extends GameMob {
-    public Pouncer(JavaPlugin plugin, World world, Vector locationToSpawn) {
+    public Pouncer(JavaPlugin plugin, World world, Vector locationToSpawn, ItemHandler itemHandler) {
         super(plugin, world, locationToSpawn, Stray.class, mob -> {
             if (mob.getVehicle() instanceof Player target) {
                 mob.setTarget(target);
@@ -35,7 +36,7 @@ public class Pouncer extends GameMob {
                                 if (mob.getTarget() != null && mob.getLocation().distanceSquared(mob.getTarget().getLocation()) < 3 * 3) {
                                     player.getInventory().setHeldItemSlot(5);
                                     player.addPassenger(mob);
-                                    MobListener.disable(player);
+                                    MobListener.disable(player, itemHandler);
                                 }
                             }
                         }.runTaskLater(plugin, 5);

@@ -104,7 +104,7 @@ public class DeathReviveListener extends GameListener {
                 armorStand.setInvisible(true);
                 armorStand.setSmall(true);
                 armorStand.addPassenger(player);
-                armorStand.addScoreboardTag("RESPAWN_ARMOR_STAND");
+                gameManager.getDirector().getItemHandler().addEntity(armorStand);
                 player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 20 * 6000, 0, false, false, false));
 
                 // save hotbar in inventory and replace with pistol

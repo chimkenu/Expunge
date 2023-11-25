@@ -64,8 +64,10 @@ public class ShoveListener extends GameListener {
                     continue;
                 }
 
-                // is a shove-able creature
-                livingEntity.damage(8, attacker);
+                // is a shove-able creature (but don't damage boomers)
+                if (!livingEntity.getScoreboardTags().contains("BOOMER")) {
+                    livingEntity.damage(8, attacker);
+                }
                 if (livingEntity.getVehicle() != attacker) livingEntity.leaveVehicle();
                 livingEntity.setVelocity(livingEntity.getVelocity().add(attacker.getLocation().getDirection().setY(0).multiply(0.6)));
                 livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 20 * 3, 9, false, false, false));
