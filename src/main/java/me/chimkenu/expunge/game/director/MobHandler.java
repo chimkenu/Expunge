@@ -61,7 +61,7 @@ public class MobHandler {
             spawnAdditionalInfected(difficulty, 2 * difficulty.ordinal() + 1, sceneTime);
         }
 
-        if (sceneTime % (20 * 20) == 0) {
+        if (sceneTime % (20 * 30) == 0) {
             spawnSpecialInfected(difficulty, 1 + difficulty.ordinal());
         }
 
@@ -265,7 +265,7 @@ public class MobHandler {
         }
     }
 
-    public void clearMobs() {
+    public void clear() {
         chillOut = false;
         timeSinceLastHorde = -2147483648;
         timeSinceLastBlockCheck = -2147483648;
