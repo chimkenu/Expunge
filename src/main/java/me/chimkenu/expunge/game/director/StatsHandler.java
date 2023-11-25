@@ -1,93 +1,96 @@
 package me.chimkenu.expunge.game.director;
 
-import me.chimkenu.expunge.campaigns.CampaignMap;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
-import org.bukkit.util.BoundingBox;
-import org.bukkit.util.Vector;
 
 import java.util.HashMap;
 
 public class StatsHandler {
     private final Director director;
-    public final HashMap<Player, Integer> kills = new HashMap<>();
-    public final HashMap<Player, Integer[]> shots = new HashMap<>();
+    private final HashMap<Player, Stats> playerStats;
 
     public StatsHandler(Director director) {
         this.director = director;
+        this.playerStats = new HashMap<>();
     }
 
     public Component displayStats() {
-        return Component.text("lol u suck");
-    }
-
-    private int getPlayerProgress(Player player) {
-        CampaignMap map = director.getMap();
-        Vector v = player.getLocation().toVector();
-        int nearest = 0;
-        double nearestDistance = v.distanceSquared(map.pathRegions()[nearest].getCenter());
-        for (int i = 0; i < map.pathRegions().length; i++) {
-            BoundingBox b = map.pathRegions()[i];
-            double distance = v.distanceSquared(b.getCenter());
-            if (distance < nearestDistance) {
-                nearest = i;
-                nearestDistance = distance;
-            }
+        Component stats = Component.newline();
+        for (Player p : director.getPlayers()) {
+            stats = stats.append(Component.text("    "))
+                    .append(p.displayName())
+                    .append(Component.text(" killed " + getCommonKills(p) + " common infected and " + getSpecialKills(p) + " special infected. ", NamedTextColor.GRAY))
+                    .append(Component.text("        Accuracy: " + getAccuracy(p) + "% (" + getHeadshotAccuracy(p) + "% headshot)", NamedTextColor.GRAY))
+                    .appendNewline();
         }
-        return nearest;
+
+        return Component.text("Game Stats:").append(stats);
     }
 
-    public int getTotalKills() {
-        int total = 0;
-        for (Player player : kills.keySet()) {
-            total += kills.get(player);
-        }
-        return total;
+    public int getCommonKills(Player player) {
+        if (!playerStats.containsKey(player)) return 0;
+        return playerStats.get(player).commonInfectedKills;
     }
 
-    public int getKills(Player player) {
-        if (kills.get(player) == null) return 0;
-        return kills.get(player);
+    public void addCommonKill(Player player) {
+        playerStats.putIfAbsent(player, new Stats());
+        playerStats.get(player).commonInfectedKills += 1;
+
+    }
+
+    public int getSpecialKills(Player player) {
+        if (!playerStats.containsKey(player)) return 0;
+        return playerStats.get(player).specialInfectedKills;
+    }
+
+    public void addSpecialKill(Player player) {
+        playerStats.putIfAbsent(player, new Stats());
+        playerStats.get(player).specialInfectedKills += 1;
     }
 
     public double getAccuracy(Player player) {
-        Integer[] shot = shots.get(player);
-        if (shot == null) return 1;
-        return (double) shot[1] / shot[0];
+        Stats stats = playerStats.get(player);
+        if (stats == null) return 1;
+        return (double) stats.shots / stats.shotsHit;
     }
 
     public double getHeadshotAccuracy(Player player) {
-        Integer[] shot = shots.get(player);
-        if (shot == null) return 1;
-        return (double) shot[2] / shot[1];
+        Stats stats = playerStats.get(player);
+        if (stats == null) return 1;
+        return (double) stats.headshots / stats.shotsHit;
     }
 
-    public double getPace(Player player) {
-        if (director.getPlayers().size() > 1) {
-            double progressAverage = 0;
-            for (Player p : director.getPlayers()) {
-                progressAverage += getPlayerProgress(p);
-            }
-            progressAverage = progressAverage / (director.getPlayers().size());
-            return getPlayerProgress(player) - progressAverage;
-        }
-        return 0;
+    public void addShot(Player player, boolean shotHit, boolean headshot) {
+        playerStats.putIfAbsent(player, new Stats());
+        Stats stats = playerStats.get(player);
+        stats.shots += 1;
+        stats.shotsHit += shotHit ? 1 : 0;
+        stats.headshots += headshot ? 1 : 0;
     }
 
     public double calculateRating(Player player) {
         double rating = 0;
 
-        // accuracy & headshot accuracy
-        rating += getAccuracy(player) * 0.25;
-        rating += getHeadshotAccuracy(player) * 0.25;
-
-        // progress : are you rushing or are you dragging?
-        // double diff = Math.abs(getPace(player));
-        // diff = (1 - (1 / (1 + Math.exp(-diff)))) + 0.5;
-        // rating += diff * 0.5;
+        rating += getAccuracy(player) * 0.60;
+        rating += getHeadshotAccuracy(player) * 0.40;
 
         return rating;
     }
 
+    private static class Stats {
+        int commonInfectedKills;
+        int specialInfectedKills;
+        int shots;
+        int shotsHit;
+        int headshots;
 
+        private Stats() {
+            commonInfectedKills = 0;
+            specialInfectedKills = 0;
+            shots = 0;
+            shotsHit = 0;
+            headshots = 0;
+        }
+    }
 }

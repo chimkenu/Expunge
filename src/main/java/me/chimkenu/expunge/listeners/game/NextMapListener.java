@@ -90,7 +90,7 @@ public class NextMapListener extends GameListener {
 
             for (Player p : gameManager.getPlayers()) {
                 p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 10 * 20, 10 * 20, true, false));
-                p.sendMessage(gameManager.getDirector().displayStats());
+                p.sendMessage(gameManager.getDirector().getStatsHandler().displayStats());
             }
 
             // increment scene index then start
