@@ -1,5 +1,6 @@
 package me.chimkenu.expunge.listeners.game;
 
+import io.papermc.paper.event.player.PlayerArmSwingEvent;
 import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.items.weapons.melees.Chainsaw;
 import me.chimkenu.expunge.items.weapons.melees.Melee;
@@ -130,37 +131,9 @@ public class SwingListener extends GameListener {
     }
 
     @EventHandler
-    public void onSwing(PlayerInteractEvent e) {
+    public void onClick(PlayerArmSwingEvent e) {
         Player player = e.getPlayer();
         if (!gameManager.getPlayers().contains(player)) {
-            return;
-        }
-        if (e.getHand() == null || e.getHand().equals(EquipmentSlot.OFF_HAND)) {
-            return;
-        }
-
-        if (!(e.getAction().equals(Action.LEFT_CLICK_AIR) || e.getAction().equals(Action.LEFT_CLICK_BLOCK))) {
-            return;
-        }
-
-        ItemStack mainHand = player.getInventory().getItemInMainHand();
-        if (!(Utils.getGameItemFromItemStack(mainHand) instanceof Melee melee)) {
-            return;
-        }
-
-        e.setCancelled(true);
-        handleSwing(player, mainHand, melee);
-    }
-
-    @EventHandler
-    public void onClickEntity(EntityDamageByEntityEvent e) {
-        if (!(e.getDamager() instanceof Player player)) {
-            return;
-        }
-        if (!gameManager.getPlayers().contains(player)) {
-            return;
-        }
-        if (e.getDamage() > 2) {
             return;
         }
 

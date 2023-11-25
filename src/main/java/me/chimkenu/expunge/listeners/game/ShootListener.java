@@ -1,5 +1,6 @@
 package me.chimkenu.expunge.listeners.game;
 
+import io.papermc.paper.event.player.PlayerArmSwingEvent;
 import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.items.ShootParticle;
 import me.chimkenu.expunge.items.utilities.throwable.Grenade;
@@ -14,9 +15,6 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -49,6 +47,7 @@ public class ShootListener extends GameListener {
         }
         return ammo;
     }
+
     public static void setAmmo(ItemStack item, int newAmmo) {
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return;
@@ -69,6 +68,9 @@ public class ShootListener extends GameListener {
         if (player.getCooldown(gun.getMaterial()) > 0) {
             return;
         }
+        if (((Damageable) item.getItemMeta()).hasDamage()) {
+            return;
+        }
 
         currentAmmo--;
         setAmmo(item, currentAmmo);
@@ -79,7 +81,8 @@ public class ShootListener extends GameListener {
         Location loc = player.getLocation();
 
         // is on ladder
-        if (loc.subtract(0, 0.1, 0).getBlock().getType() == Material.LADDER) offset += plugin.getConfig().getDouble("gun.ladder-offset");
+        if (loc.subtract(0, 0.1, 0).getBlock().getType() == Material.LADDER)
+            offset += plugin.getConfig().getDouble("gun.ladder-offset");
 
         // is not on solid ground
         if (!(loc.subtract(.31, 0.1, .31).getBlock().getType().isSolid() ||
@@ -87,7 +90,7 @@ public class ShootListener extends GameListener {
                 loc.subtract(.31, 0.1, -.31).getBlock().getType().isSolid() ||
                 loc.subtract(-.31, 0.1, .31).getBlock().getType().isSolid() ||
                 loc.subtract(0, 0.1, 0).getBlock().getType().isSolid()
-                ))
+        ))
             offset += plugin.getConfig().getDouble("gun.jumping-offset");
 
         // is moving a lot
@@ -106,7 +109,7 @@ public class ShootListener extends GameListener {
             }
 
             for (int i = 0; i < gun.getPellets(); i++) {
-                Set<Block> blocks =  ShootParticle.shoot(gun.getParticle(), gun.getRange(), gun.getDamage(), player, gun.getEntitiesToHit(), offset, gun.getPellets() > 1);
+                Set<Block> blocks = ShootParticle.shoot(gun.getParticle(), gun.getRange(), gun.getDamage(), player, gun.getEntitiesToHit(), offset, gun.getPellets() > 1);
                 for (Block b : blocks) {
                     breakGlassListener.breakGlass(b);
                     // if (!b.isEmpty()) player.sendBlockDamage(b.getLocation(), (float) Math.random()); // Visual damage (needs to use BukkitRunnable(), maybe add block particles as well)
@@ -158,7 +161,8 @@ public class ShootListener extends GameListener {
             @Override
             public void run() {
                 if (t >= reloadTime) this.cancel();
-                if (t % 5 == 0) player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, SoundCategory.PLAYERS, 0.1f, 0);
+                if (t % 5 == 0)
+                    player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, SoundCategory.PLAYERS, 0.1f, 0);
 
                 double percentComplete = (double) t / reloadTime;
                 int dmg = (int) Math.ceil(maxDurability - (percentComplete * maxDurability));
@@ -183,34 +187,9 @@ public class ShootListener extends GameListener {
     }
 
     @EventHandler
-    public void onClickBlock(PlayerInteractEvent e) {
-        if (e.getAction().equals(Action.LEFT_CLICK_AIR) || e.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
-
-            Player player = e.getPlayer();
-            if (!(Utils.getGameItemFromItemStack(player.getInventory().getItemInMainHand()) instanceof Gun gun)) {
-                return;
-            }
-
-            e.setCancelled(true);
-
-            if (player.getGameMode() != GameMode.ADVENTURE)
-                return;
-            if (!player.isSneaking())
-                fireGun(player, gun);
-            else
-                reload(player);
-        }
-    }
-
-    @EventHandler
-    public void onClickEntity(EntityDamageByEntityEvent e) {
-        if (!(e.getDamager() instanceof Player player)) {
-            return;
-        }
+    public void onClick(PlayerArmSwingEvent e) {
+        Player player = e.getPlayer();
         if (!gameManager.getPlayers().contains(player)) {
-            return;
-        }
-        if (e.getDamage() > 2) {
             return;
         }
 
