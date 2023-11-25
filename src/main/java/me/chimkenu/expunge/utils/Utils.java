@@ -21,12 +21,10 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Utils {
     public static GameItem getGameItemFromItemStack(ItemStack itemStack) {
-        ItemMeta meta = itemStack.getItemMeta();
-        if (meta == null) return null;
         for (GameItems gameItems : GameItems.values()) {
             GameItem gameItem = gameItems.getGameItem();
             ItemStack itemForComparison = gameItem.get();
-            if (itemForComparison.getType() == itemStack.getType() && itemForComparison.displayName() == itemStack.displayName()) return gameItem;
+            if (itemForComparison.getType() == itemStack.getType() && itemForComparison.displayName().examinableName().equalsIgnoreCase(itemStack.displayName().examinableName())) return gameItem;
         }
         return null;
     }
