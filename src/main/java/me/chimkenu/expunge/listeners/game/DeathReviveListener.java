@@ -10,10 +10,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -24,6 +21,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.spigotmc.event.entity.EntityDismountEvent;
@@ -45,6 +43,11 @@ public class DeathReviveListener extends GameListener {
             return;
         }
 
+        // spawn in an armor stand which can be revived
+        for (ArmorStand armorStand : spawnDeadArmorStand(player)) {
+            gameManager.getDirector().getItemHandler().addEntity(armorStand);
+        }
+
         player.setGameMode(GameMode.SPECTATOR);
         // dead people drop their hotbar
         PlayerInventory inventory = player.getInventory();
@@ -53,7 +56,7 @@ public class DeathReviveListener extends GameListener {
                 ItemStack item = inventory.getItem(i + (j * 9));
                 if (item != null) {
                     Item dropItem = player.getWorld().dropItem(player.getLocation(), item);
-                    dropItem.addScoreboardTag("ITEM");
+                    gameManager.getDirector().getItemHandler().addEntity(dropItem);
                 }
                 inventory.setItem(i + (j * 9), new ItemStack(Material.AIR));
             }
@@ -61,14 +64,6 @@ public class DeathReviveListener extends GameListener {
         player.getInventory().clear(5); // pistol if they were down
         playerStats.setAlive(false);
         playerStats.setLives(0);
-
-        // spawn in an armor stand which can be revived
-        ArmorStand armorStand = player.getWorld().spawn(player.getLocation(), ArmorStand.class);
-        armorStand.setInvulnerable(true);
-        armorStand.setGravity(false);
-        Utils.putOnRandomClothes(armorStand.getEquipment());
-        armorStand.getEquipment().setHelmet(Utils.getSkull(player));
-        armorStand.setBodyYaw(player.getLocation().getYaw());
     }
 
     @EventHandler
@@ -92,7 +87,7 @@ public class DeathReviveListener extends GameListener {
             // lives check
             if (gameManager.getPlayerStat(player).getLives() > 1) {
                 gameManager.getWorld().getPlayers().forEach(player1 -> player1.sendMessage(player.name().color(NamedTextColor.RED).append(Component.text(" is down.", NamedTextColor.RED))));
-                Location loc = player.getLocation();
+                Location loc = player.getEyeLocation();
                 while (loc.getBlock().getType().equals(Material.AIR)) {
                     loc.subtract(0, 0.25, 0);
                 }
@@ -300,5 +295,41 @@ public class DeathReviveListener extends GameListener {
                 }
             }.runTaskTimer(plugin, 1, 1);
         }
+    }
+
+    private ArmorStand[] spawnDeadArmorStand(Player player) {
+        Location loc = player.getEyeLocation();
+        while (loc.getBlock().getType().equals(Material.AIR)) {
+            loc.subtract(0, 0.25, 0);
+        }
+
+        loc.setY(loc.getBlock().getBoundingBox().getMaxY() - 1.2);
+        loc.setPitch(0);
+
+        ArmorStand upper = player.getWorld().spawn(loc, ArmorStand.class);
+        ArmorStand lower = player.getWorld().spawn(loc.add(0, 0.65, 0).add(loc.getDirection().multiply(0.7)), ArmorStand.class);
+        ArmorStand[] armorStand = new ArmorStand[]{upper, lower};
+        for (ArmorStand a : armorStand) {
+            a.setInvulnerable(true);
+            a.setGravity(false);
+            a.setBodyYaw(loc.getYaw());
+            Utils.putOnRandomClothes(a.getEquipment());
+        }
+
+        upper.getEquipment().setHelmet(Utils.getSkull(player));
+        upper.getEquipment().setLeggings(new ItemStack(Material.AIR));
+        upper.getEquipment().setBoots(new ItemStack(Material.AIR));
+        upper.setLeftArmPose(new EulerAngle(-1.22, -0.524, -0.175));
+        upper.setRightArmPose(new EulerAngle(-1.31, 0.524, 0.175));
+        upper.setHeadPose(new EulerAngle(-1.571, -0.07, 0));
+        upper.setBodyPose(new EulerAngle(-1.518, -0.017, 0));
+        upper.setArms(true);
+
+        lower.getEquipment().setChestplate(new ItemStack(Material.AIR));
+        lower.setLeftLegPose(new EulerAngle(-1.588, -0.524, -0.0175));
+        lower.setRightLegPose(new EulerAngle(-1.5533, 0.5236, 0.0175));
+        lower.setInvisible(true);
+
+        return armorStand;
     }
 }
