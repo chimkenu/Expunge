@@ -277,7 +277,6 @@ public class MobHandler {
     }
 
     public Set<GameMob> getActiveMobs() {
-        activeMobs.removeIf(gameMob -> gameMob.getMob().isDead());
         return activeMobs;
     }
 

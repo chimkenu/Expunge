@@ -2,8 +2,10 @@ package me.chimkenu.expunge.game.director;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.entity.Player;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 
 public class StatsHandler {
@@ -16,16 +18,19 @@ public class StatsHandler {
     }
 
     public Component displayStats() {
+        DecimalFormat decimalFormat = new DecimalFormat("#.##");
         Component stats = Component.newline();
         for (Player p : director.getPlayers()) {
             stats = stats.append(Component.text("    "))
                     .append(p.displayName())
-                    .append(Component.text(" killed " + getCommonKills(p) + " common infected and " + getSpecialKills(p) + " special infected. ", NamedTextColor.GRAY))
-                    .append(Component.text("        Accuracy: " + getAccuracy(p) + "% (" + getHeadshotAccuracy(p) + "% headshot)", NamedTextColor.GRAY))
+                    .appendNewline()
+                    .append(Component.text("        Kills: " + getCommonKills(p) + " common, " + getSpecialKills(p) + " special", NamedTextColor.GRAY))
+                    .appendNewline()
+                    .append(Component.text("        Accuracy: " + decimalFormat.format(getAccuracy(p) * 100) + "% (" + decimalFormat.format(getHeadshotAccuracy(p) * 100) + "% headshot)", NamedTextColor.GRAY))
                     .appendNewline();
         }
 
-        return Component.text("Game Stats:").append(stats);
+        return Component.text("Game Stats:", NamedTextColor.GRAY, TextDecoration.BOLD).append(stats);
     }
 
     public int getCommonKills(Player player) {
@@ -36,7 +41,6 @@ public class StatsHandler {
     public void addCommonKill(Player player) {
         playerStats.putIfAbsent(player, new Stats());
         playerStats.get(player).commonInfectedKills += 1;
-
     }
 
     public int getSpecialKills(Player player) {
@@ -51,13 +55,13 @@ public class StatsHandler {
 
     public double getAccuracy(Player player) {
         Stats stats = playerStats.get(player);
-        if (stats == null) return 1;
-        return (double) stats.shots / stats.shotsHit;
+        if (stats == null || stats.shots == 0) return 0;
+        return (double) stats.shotsHit / stats.shots;
     }
 
     public double getHeadshotAccuracy(Player player) {
         Stats stats = playerStats.get(player);
-        if (stats == null) return 1;
+        if (stats == null || stats.shotsHit == 0) return 0;
         return (double) stats.headshots / stats.shotsHit;
     }
 
