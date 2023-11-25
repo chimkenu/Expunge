@@ -163,20 +163,16 @@ public class ExpungeCommand implements CommandExecutor, TabCompleter {
                     return true;
                 }
 
-                StringBuilder item = new StringBuilder(args[1]);
-                for (int i = 2; i < args.length; i++) {
-                    item.append(args[i]).append(" ");
+                GameItem gameItem;
+                try {
+                    gameItem = GameItems.valueOf(args[1]).getGameItem();
+                } catch (IllegalArgumentException e) {
+                    sender.sendMessage(Component.text("Couldn't find that item, did you type it correctly?", NamedTextColor.RED));
+                    return true;
                 }
-
-                for (GameItems gameItems : GameItems.values()) {
-                    GameItem gameItem = gameItems.getGameItem();
-                    if (gameItem.getName().examinableName().equalsIgnoreCase(item.toString())) {
-                        player.getInventory().addItem(gameItem.get());
-                        return true;
-                    }
-                }
-
-                sender.sendMessage(Component.text("Couldn't find that item, did you type it correctly?", NamedTextColor.RED));
+                sender.sendMessage(Component.text("Here you go.", NamedTextColor.GREEN));
+                player.getInventory().addItem(gameItem.get());
+                return true;
             }
             case "reload" -> {
                 plugin.reloadConfig();
