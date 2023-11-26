@@ -2,8 +2,10 @@ package me.chimkenu.expunge.game;
 
 import me.chimkenu.expunge.enums.GameItems;
 import me.chimkenu.expunge.enums.Tier;
+import me.chimkenu.expunge.items.GameItem;
+import me.chimkenu.expunge.items.interactables.Interactable;
 import org.bukkit.Location;
-import org.bukkit.entity.Item;
+import org.bukkit.entity.Entity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,9 +53,15 @@ public class ItemRandomizer {
     public void randomize(GameManager gameManager) {
         for (int i = 0; i < count; i++) {
             if (ThreadLocalRandom.current().nextDouble() < chance) {
-                Item item = gameManager.getWorld().dropItem(new Location(gameManager.getWorld(), x, y, z), possibilities.get((ThreadLocalRandom.current().nextInt(possibilities.size()))).getGameItem().get());
-                item.setInvulnerable(isInvulnerable);
-                gameManager.getDirector().getItemHandler().addEntity(item);
+                GameItem gameItems = possibilities.get((ThreadLocalRandom.current().nextInt(possibilities.size()))).getGameItem();
+                Entity entity;
+                if (gameItems instanceof Interactable interactable) {
+                    entity = interactable.spawn(new Location(gameManager.getWorld(), x, y, z));
+                } else {
+                    entity = gameManager.getWorld().dropItem(new Location(gameManager.getWorld(), x, y, z), possibilities.get((ThreadLocalRandom.current().nextInt(possibilities.size()))).getGameItem().get());
+                    entity.setInvulnerable(isInvulnerable);
+                }
+                gameManager.getDirector().getItemHandler().addEntity(entity);
             }
         }
     }
