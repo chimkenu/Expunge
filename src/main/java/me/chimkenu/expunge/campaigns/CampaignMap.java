@@ -55,7 +55,8 @@ public interface CampaignMap {
                 new JoinLeaveListener(plugin, gameManager),
                 new UtilityListener(plugin, gameManager),
                 breakGlassListener,
-                new BreakDoorListener(plugin, gameManager)
+                new BreakDoorListener(plugin, gameManager),
+                new InteractableListener(plugin, gameManager)
         };
     }
 }

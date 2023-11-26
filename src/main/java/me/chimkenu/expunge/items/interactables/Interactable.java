@@ -1,12 +1,19 @@
 package me.chimkenu.expunge.items.interactables;
 
 import me.chimkenu.expunge.game.GameManager;
-import org.bukkit.entity.LivingEntity;
+import me.chimkenu.expunge.items.GameItem;
+import org.bukkit.Location;
+import org.bukkit.entity.Entity;
+import org.bukkit.plugin.java.JavaPlugin;
 
-public interface Interactable {
-    default boolean canBePickedUp() {
-        return true;
+public interface Interactable extends GameItem {
+    default boolean cannotBePickedUp() {
+        return false;
     }
 
-    void onInteract(GameManager gameManager, LivingEntity actor);
+    String getTag();
+
+    Entity spawn(Location locationToSpawn);
+
+    void onInteract(JavaPlugin plugin, GameManager gameManager, Entity entity, Entity actor);
 }
