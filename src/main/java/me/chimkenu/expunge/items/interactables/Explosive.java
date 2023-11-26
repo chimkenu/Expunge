@@ -33,22 +33,22 @@ public abstract class Explosive implements Interactable {
     @Override
     public int getCooldown() {
         return 10;
-    };
+    }
 
     @Override
     public Material getMaterial() {
         return Material.PLAYER_HEAD;
-    };
+    }
 
     @Override
     public Component getName() {
         return name;
-    };
+    }
 
     @Override
     public Slot getSlot() {
         return Slot.SENARY;
-    };
+    }
 
     @Override
     public ItemStack get() {

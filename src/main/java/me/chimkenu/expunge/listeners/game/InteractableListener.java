@@ -1,12 +1,10 @@
 package me.chimkenu.expunge.listeners.game;
 
-import me.chimkenu.expunge.enums.Slot;
 import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.items.GameItem;
 import me.chimkenu.expunge.items.interactables.Interactable;
 import me.chimkenu.expunge.listeners.GameListener;
 import me.chimkenu.expunge.utils.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
