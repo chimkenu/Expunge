@@ -20,6 +20,10 @@ public class Molotov implements Throwable {
 
     @Override
     public void onLand(JavaPlugin plugin, World world, Location loc, Entity shooter) {
+        fire(plugin, world, loc, shooter, 7 * 20);
+    }
+
+    public void fire(JavaPlugin plugin, World world, Location loc, Entity shooter, int duration) {
         world.playSound(loc, Sound.ITEM_FIRECHARGE_USE, 1, 0);
         new BukkitRunnable() {
             int t = 0;
@@ -27,7 +31,7 @@ public class Molotov implements Throwable {
             public void run() {
                 world.spawnParticle(Particle.FLAME, loc, 20, 0.8, 0.8, 0.8, 0, null, true);
                 t++;
-                if (t > 7 * 20) this.cancel();
+                if (t > duration) this.cancel();
 
                 // damage nearby
                 if (t % 4 == 0) {
