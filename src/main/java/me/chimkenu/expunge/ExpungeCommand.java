@@ -217,10 +217,10 @@ public class ExpungeCommand implements CommandExecutor, TabCompleter {
                 } catch (IllegalArgumentException ignored) {}
 
                 if (infectedType != null) {
-                    infectedType.spawn(plugin, gameManager, player.getLocation().toVector(), gameManager.getDifficulty());
+                    gameManager.getDirector().getMobHandler().addMob(infectedType.spawn(plugin, gameManager, player.getLocation().toVector(), gameManager.getDifficulty()));
                     sender.sendMessage(Component.text("Spawned.", NamedTextColor.GREEN));
                 } else if (interactable != null) {
-                    interactable.get().spawn(player.getLocation());
+                    gameManager.getDirector().getItemHandler().addEntity(interactable.get().spawn(player.getLocation()));
                     sender.sendMessage(Component.text("Spawned.", NamedTextColor.GREEN));
                 } else {
                     sender.sendMessage(Component.text("Couldn't find that entity, did you type it correctly?", NamedTextColor.RED));
