@@ -3,11 +3,14 @@ package me.chimkenu.expunge.utils;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import me.chimkenu.expunge.enums.GameItems;
+import me.chimkenu.expunge.enums.Interactables;
 import me.chimkenu.expunge.items.GameItem;
+import me.chimkenu.expunge.items.interactables.Interactable;
 import me.chimkenu.expunge.items.utilities.throwable.Throwable;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.inventory.EntityEquipment;
@@ -33,6 +36,16 @@ public class Utils {
             Throwable throwable = (Throwable) gameItems.getGameItem();
             if (projectile.getScoreboardTags().contains(throwable.getTag())) {
                 return throwable;
+            }
+        }
+        return null;
+    }
+
+    public static Interactable getInteractableFromEntity(Entity entity) {
+        for (Interactables interactables : Interactables.values()) {
+            Interactable interactable = interactables.get();
+            if (entity.getScoreboardTags().contains(interactable.getTag())) {
+                return interactable;
             }
         }
         return null;
