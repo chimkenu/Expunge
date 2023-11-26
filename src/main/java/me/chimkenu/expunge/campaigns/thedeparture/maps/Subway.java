@@ -13,8 +13,6 @@ import me.chimkenu.expunge.items.utilities.healing.Adrenaline;
 import me.chimkenu.expunge.items.utilities.healing.Medkit;
 import me.chimkenu.expunge.items.utilities.healing.Pills;
 import me.chimkenu.expunge.items.weapons.melees.MrCookie;
-import me.chimkenu.expunge.listeners.GameListener;
-import me.chimkenu.expunge.listeners.game.*;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;

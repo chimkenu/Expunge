@@ -12,8 +12,6 @@ import me.chimkenu.expunge.game.director.ItemHandler;
 import me.chimkenu.expunge.items.utilities.healing.Adrenaline;
 import me.chimkenu.expunge.items.utilities.healing.Medkit;
 import me.chimkenu.expunge.items.utilities.healing.Pills;
-import me.chimkenu.expunge.listeners.GameListener;
-import me.chimkenu.expunge.listeners.game.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
