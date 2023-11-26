@@ -11,7 +11,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class PropaneTank extends Explosive {
     public PropaneTank() {
-        super("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzNmOGE5ZmUzMzM5YzJmMjI3MDRiZjFjMDMzOTRkZjA3MWVlNGVmM2Q3MmVlYmVhYWJhZjMxMDVjZmZlMTQyIn19fQ==", Component.text("Propane Tank", NamedTextColor.WHITE));
+        super("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjZmY2ViYzVjZDM0N2UzMDNlNGUzYTU5NDhkMGIyNDdiMGRiY2M0MTBhYmFmODlkMzY3OTM4ZmYxMTM0Njk1In19fQ==", Component.text("Propane Tank", NamedTextColor.WHITE));
     }
 
     @Override
