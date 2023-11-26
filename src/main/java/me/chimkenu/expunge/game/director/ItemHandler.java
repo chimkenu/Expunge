@@ -3,6 +3,7 @@ package me.chimkenu.expunge.game.director;
 import me.chimkenu.expunge.campaigns.CampaignMap;
 import me.chimkenu.expunge.enums.GameItems;
 import me.chimkenu.expunge.enums.Tier;
+import me.chimkenu.expunge.game.ItemRandomizer;
 import me.chimkenu.expunge.items.utilities.Utility;
 import me.chimkenu.expunge.items.utilities.healing.Adrenaline;
 import me.chimkenu.expunge.items.utilities.healing.Pills;
@@ -31,47 +32,14 @@ public class ItemHandler {
 
     public void generateStartingItems() {
         CampaignMap map = director.getMap();
-        double directorRating = director.calculateRating();
-        int itemsToSpawn = map.baseItemsToSpawn();
-        itemsToSpawn += (int) (4 * (1 - directorRating));
-        for (int i = 0; i < itemsToSpawn; i++) {
-            double r = ThreadLocalRandom.current().nextDouble();
-
-            // throwable - 50% chance
-            if (r < 0.5) {
-                List<GameItems> throwables = GameItems.getThrowables();
-                spawnUtilityAtRandom((Utility) throwables.get(ThreadLocalRandom.current().nextInt(throwables.size())).getGameItem());
-            }
-
-            // healing item - 50% chance
-            else {
-                r = ThreadLocalRandom.current().nextDouble();
-                if (r < 0.5)
-                    spawnUtilityAtRandom(new Pills());
-                else
-                    spawnUtilityAtRandom(new Adrenaline());
-            }
-        }
-
-        itemsToSpawn = 1;
-        itemsToSpawn += (int) (2 * (1 - directorRating));
-        for (int i = 0; i < itemsToSpawn; i++) {
-            List<GameItems> weapons = GameItems.getWeapons();
-            spawnWeaponAtRandom((Weapon) weapons.get(ThreadLocalRandom.current().nextInt(weapons.size())).getGameItem());
+        for (ItemRandomizer randomizer : map.randomizedGameItems()) {
+            randomizer.randomize(director.getGameManager());
         }
 
         // Spawn ammo
         for (Vector v : map.ammoLocations()) {
             spawnAmmo(v);
         }
-    }
-
-    public void spawnWeaponAtRandom(Weapon weapon) {
-        CampaignMap map = director.getMap();
-        Vector[] weaponLocations = map.weaponLocations();
-        if (weaponLocations.length < 1) return;
-        int index = weaponLocations.length == 1 ? 0 : ThreadLocalRandom.current().nextInt(0, weaponLocations.length);
-        spawnWeapon(weaponLocations[index], weapon, false);
     }
 
     public void spawnWeapon(Vector loc, Weapon weapon, boolean isInvulnerable) {
@@ -84,16 +52,7 @@ public class ItemHandler {
             item.getItemStack().setItemMeta(meta);
         }
         item.setInvulnerable(isInvulnerable);
-        setItemProperties(item);
         addEntity(item);
-    }
-
-    public void spawnUtilityAtRandom(Utility utility) {
-        CampaignMap map = director.getMap();
-        Vector[] itemLocations = map.itemLocations();
-        if (itemLocations.length < 1) return;
-        int index = itemLocations.length == 1 ? 0 : ThreadLocalRandom.current().nextInt(0, itemLocations.length);
-        spawnUtility(itemLocations[index], utility, false);
     }
 
     public void spawnUtility(Vector loc, Utility utility, boolean isInvulnerable) {
@@ -134,17 +93,5 @@ public class ItemHandler {
             setItemProperties(item);
         }
         entities.add(e);
-    }
-
-    public static Melee getRandomMelee(Tier tier) {
-        List<GameItems> melees = new ArrayList<>(GameItems.getMelees());
-        melees.removeIf(gameItems -> ((Melee) gameItems.getGameItem()).getTier() != tier);
-        return (Melee) melees.get(ThreadLocalRandom.current().nextInt(0, melees.size())).getGameItem();
-    }
-
-    public static Gun getRandomGun(Tier tier) {
-        List<GameItems> guns = new ArrayList<>(GameItems.getGuns());
-        guns.removeIf(gameItem -> ((Gun) gameItem.getGameItem()).getTier() != tier);
-        return (Gun) guns.get(ThreadLocalRandom.current().nextInt(guns.size())).getGameItem();
     }
 }

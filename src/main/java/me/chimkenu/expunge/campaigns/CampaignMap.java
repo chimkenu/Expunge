@@ -2,6 +2,7 @@ package me.chimkenu.expunge.campaigns;
 
 import me.chimkenu.expunge.GameAction;
 import me.chimkenu.expunge.game.GameManager;
+import me.chimkenu.expunge.game.ItemRandomizer;
 import me.chimkenu.expunge.listeners.GameListener;
 import me.chimkenu.expunge.listeners.game.*;
 import org.bukkit.event.Listener;
@@ -22,11 +23,7 @@ public interface CampaignMap {
 
     Vector[] bossLocations();
 
-    Vector[] itemLocations();
-
-    int baseItemsToSpawn();
-
-    Vector[] weaponLocations();
+    ItemRandomizer[] randomizedGameItems();
 
     Vector[] ammoLocations();
 

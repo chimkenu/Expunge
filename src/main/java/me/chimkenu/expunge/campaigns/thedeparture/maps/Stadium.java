@@ -6,8 +6,10 @@ import me.chimkenu.expunge.campaigns.CampaignMap;
 import me.chimkenu.expunge.campaigns.Dialogue;
 import me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue;
 import me.chimkenu.expunge.enums.Achievements;
+import me.chimkenu.expunge.enums.GameItems;
 import me.chimkenu.expunge.enums.Tier;
 import me.chimkenu.expunge.game.GameManager;
+import me.chimkenu.expunge.game.ItemRandomizer;
 import me.chimkenu.expunge.game.director.ItemHandler;
 import me.chimkenu.expunge.items.utilities.healing.Adrenaline;
 import me.chimkenu.expunge.items.utilities.healing.Medkit;
@@ -27,6 +29,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
+
+import java.util.List;
 
 public class Stadium implements CampaignMap {
     @Override
@@ -90,41 +94,44 @@ public class Stadium implements CampaignMap {
     }
 
     @Override
-    public Vector[] itemLocations() {
-        return new Vector[]{
-                new Vector(7.5, 37.0, 38.5),
-                new Vector(35.5, 37.0, 69.5),
-                new Vector(65.5, 37.0, 66.5),
-                new Vector(48.5, 36.0, 94.5),
-                new Vector(58.5, 37.0, 114.5),
-                new Vector(39.5, 37.0, 154.5),
-                new Vector(42.5, 37.0, 114.5),
-                new Vector(39.5, 37.0, 114.5),
-                new Vector(91.5, 37.0, 168.5),
-                new Vector(97.5, 36.0, 131.5),
-                new Vector(97.5, 37.0, 141.5),
-                new Vector(95.5, 37.0, 100.5),
-                new Vector(8.5, 37.0, 100.5),
-                new Vector(4.5, 37.0, 132.5),
-                new Vector(-15.5, 37.0, 135.5),
-                new Vector(9.5, 37.0, 168.5),
-                new Vector(50.5, 46.0, 180.5)
+    public ItemRandomizer[] randomizedGameItems() {
+        return new ItemRandomizer[]{
+                new ItemRandomizer(-104.5, 37, -146, 1, 4, List.of(GameItems.MEDKIT)),
+                new ItemRandomizer(61.5, 37, 154.5, 1, 4, List.of(GameItems.MEDKIT)),
+
+                new ItemRandomizer(63.5, 37, 64.5, 0.5, 1, ItemRandomizer.Preset.TIER2_UTILITY),
+                new ItemRandomizer(50.5, 46, 180.5, 0.5, 2, ItemRandomizer.Preset.TIER2_UTILITY),
+                new ItemRandomizer(-101.5, 37, -147, 1, 1, ItemRandomizer.Preset.TIER2_GUNS),
+                new ItemRandomizer(-101.5, 37, -145, 1, 1, ItemRandomizer.Preset.MELEE),
+                new ItemRandomizer(-97.5, 36, -151.5, 1, 1, List.of(GameItems.PILLS)),
+                new ItemRandomizer(-97.5, 36, -144.5, 1, 1, List.of(GameItems.ADRENALINE)),
+
+                new ItemRandomizer(7.5, 37.0, 38.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(35.5, 37.0, 69.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(65.5, 37.0, 66.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(48.5, 36.0, 94.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(58.5, 37.0, 114.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(39.5, 37.0, 154.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(42.5, 37.0, 114.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(39.5, 37.0, 114.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(91.5, 37.0, 168.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(97.5, 36.0, 131.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(97.5, 37.0, 141.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(95.5, 37.0, 100.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(8.5, 37.0, 100.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(4.5, 37.0, 132.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(-15.5, 37.0, 135.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(9.5, 37.0, 168.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(50.5, 46.0, 180.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
         };
     }
 
     @Override
-    public int baseItemsToSpawn() {
-        return 0;
-    }
-
-    @Override
-    public Vector[] weaponLocations() {
-        return new Vector[0];
-    }
-
-    @Override
     public Vector[] ammoLocations() {
-        return new Vector[0];
+        return new Vector[]{
+                new Vector(42.5, 37, 154.5),
+                new Vector(-100.5, 37, -151.5)
+        };
     }
 
     @Override
@@ -140,17 +147,6 @@ public class Stadium implements CampaignMap {
     @Override
     public GameAction runAtStart() {
         return (plugin, gameManager, player) -> {
-            for (int i = 0; i < 4; i++) {
-                gameManager.getDirector().getItemHandler().spawnUtility(new Vector(-104.5, 37, -146), new Medkit(), false);
-                gameManager.getDirector().getItemHandler().spawnUtility(new Vector(1196, 36, 1658), new Medkit(), false);
-            }
-            gameManager.getDirector().getItemHandler().spawnUtility(new Vector(63.5, 37, 64.5), new Medkit(), false);
-            gameManager.getDirector().getItemHandler().spawnUtility(new Vector(50.5, 46, 180.5), new Medkit(), false);
-            gameManager.getDirector().getItemHandler().spawnWeapon(new Vector(-101.5, 37, -147), ItemHandler.getRandomGun(Tier.TIER2), true);
-            gameManager.getDirector().getItemHandler().spawnWeapon(new Vector(-101.5, 37, -145), ItemHandler.getRandomMelee(Tier.TIER1), false);
-            gameManager.getDirector().getItemHandler().spawnUtility(new Vector(-97.5, 36, -151.5), new Pills(), false);
-            gameManager.getDirector().getItemHandler().spawnUtility(new Vector(-97.5, 36, -144.5), new Adrenaline(), false);
-
             Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.STADIUM_OPENING.pickRandom(gameManager.getPlayers().size()));
             gameManager.getWorld().getBlockAt(32, 17, 123).setType(Material.REDSTONE_BLOCK);
         };

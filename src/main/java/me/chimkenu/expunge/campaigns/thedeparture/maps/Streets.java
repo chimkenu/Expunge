@@ -6,10 +6,9 @@ import me.chimkenu.expunge.campaigns.CampaignMap;
 import me.chimkenu.expunge.campaigns.Dialogue;
 import me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue;
 import me.chimkenu.expunge.enums.Achievements;
-import me.chimkenu.expunge.enums.Tier;
+import me.chimkenu.expunge.enums.GameItems;
 import me.chimkenu.expunge.game.GameManager;
-import me.chimkenu.expunge.game.director.ItemHandler;
-import me.chimkenu.expunge.items.utilities.healing.Medkit;
+import me.chimkenu.expunge.game.ItemRandomizer;
 import me.chimkenu.expunge.mobs.common.Horde;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -96,59 +95,53 @@ public class Streets implements CampaignMap {
                 new Vector(37.5, 43.0, -12.5),
                 new Vector(26.5, 43.0, -35.5),
                 new Vector(37.5, 43.0, -28.5)
-
-
         };
     }
 
     @Override
     public Vector[] bossLocations() {
         return new Vector[]{
+                new Vector(-8.5, 42, -125.5),
+                new Vector(51.5, 43, -34.5)
         };
     }
 
     @Override
-    public Vector[] itemLocations() {
-        return new Vector[]{
-                new Vector(31.00834111591309, 44.0, -100.994369777641),
-                new Vector(30.985948095776852, 44.0, -91.029574195448),
-                new Vector(16.469980824413817, 50.0, -102.52488851090),
-                new Vector(32.4445397510778, 51.0, -98.51532243998328),
-                new Vector(18.456129545524625, 50.0, -93.499485523880),
-                new Vector(32.524940724847276, 56.0, -93.532509254534),
-                new Vector(13.500104322620455, 56.0, -96.531607514342),
-                new Vector(28.486186448310615, 56.0, -104.45339679608),
-                new Vector(16.568158626096178, 57.0, -107.49615572235),
+    public ItemRandomizer[] randomizedGameItems() {
+        return new ItemRandomizer[]{
+                new ItemRandomizer(-226.5, 44, -97, 1, 4, List.of(GameItems.MEDKIT)),
+                new ItemRandomizer(-230.5, 44, -100.5, 1, 1, true, ItemRandomizer.Preset.TIER2_GUNS),
+                new ItemRandomizer(-226.5, 44, -95, 1, 1, true, ItemRandomizer.Preset.TIER2_GUNS),
+
+                new ItemRandomizer(31, 44, -101, 1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(31, 44, -91, 1, 1, ItemRandomizer.Preset.TIER2_UTILITY),
+                new ItemRandomizer(31, 44, -98, 1, 1, ItemRandomizer.Preset.MELEE),
+                new ItemRandomizer(31, 44, -89, 1, 1, ItemRandomizer.Preset.TIER1_GUNS),
+                new ItemRandomizer(31.5, 51, -85.5, 0.5, 1, ItemRandomizer.Preset.TIER1_GUNS),
+                new ItemRandomizer(27.5, 43, -110.5, 0.7, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+
+                new ItemRandomizer(16.5, 50, -102.5, 0.25, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(32.5, 51, -98.5, 0.25, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(18.5, 50, -93.5, 0.25, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(32.5, 56, -93.5, 0.25, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(13.5, 56, -96.5, 0.25, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(28.5, 56, -104.5, 0.25, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(16.5, 57, -107.5, 0.25, 1, ItemRandomizer.Preset.TIER1_UTILITY),
 
                 // Alleys
-                new Vector(27.5, 44.0, -26.5),
-                new Vector(31.5, 44.0, -14.5),
-                new Vector(19.5, 42.5, -33.5),
-                new Vector(43.5, 44.0, -27.5),
-                new Vector(35.5, 44.0, -52.5),
-                new Vector(52.5, 44.0, -56.5),
-                new Vector(65.5, 44.0, -86.5),
-                new Vector(40.5, 44.0, -82.5),
+                new ItemRandomizer(27.5, 44.0, -26.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(31.5, 44.0, -14.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(19.5, 42.5, -33.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(43.5, 44.0, -27.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(35.5, 44.0, -52.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(52.5, 44.0, -56.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(65.5, 44.0, -86.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(40.5, 44.0, -82.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
 
-                // Shed (put stuff here)
-                new Vector(34, 44.0, -93.5), // weapon
-                new Vector(34, 44.0, -90.5), // weapon
-                new Vector(36.5, 44.0, -93)  // medkit probably
-        };
-    }
-
-    @Override
-    public int baseItemsToSpawn() {
-        return 4;
-    }
-
-    @Override
-    public Vector[] weaponLocations() {
-        return new Vector[]{
-                new Vector(30.99230923775718, 44.0, -98.0190331933698),
-                new Vector(30.949658934244066, 44.0, -89.006112607621),
-                new Vector(31.461896720786562, 51.0, -85.514974223341),
-                new Vector(27.46263912587844, 43.0, -110.508794793466)
+                // Shed
+                new ItemRandomizer(34, 44.0, -93.5, 1, 1, ItemRandomizer.Preset.TIER1_GUNS),
+                new ItemRandomizer(34, 44.0, -90.5, 1, 1, ItemRandomizer.Preset.MELEE),
+                new ItemRandomizer(36.5, 44.0, -93, 1, 1, ItemRandomizer.Preset.TIER2_UTILITY)
         };
     }
 
@@ -172,16 +165,7 @@ public class Streets implements CampaignMap {
 
     @Override
     public GameAction runAtStart() {
-        return (plugin, gameManager, player) -> {
-            for (int i = 0; i < 4; i++) {
-                gameManager.getDirector().getItemHandler().spawnUtility(new Vector(-226.5, 44, -97), new Medkit(), false);
-            }
-
-            gameManager.getDirector().getItemHandler().spawnWeapon(new Vector(-230.5, 44, -100.5), ItemHandler.getRandomGun(Tier.TIER2), true);
-            gameManager.getDirector().getItemHandler().spawnWeapon(new Vector(-226.5, 44, -95), ItemHandler.getRandomGun(Tier.TIER2), true);
-
-            Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.OFFICE_RADIO.pickRandom(gameManager.getPlayers().size()));
-        };
+        return (plugin, gameManager, player) -> Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.OFFICE_RADIO.pickRandom(gameManager.getPlayers().size()));
     }
 
     @Override

@@ -7,7 +7,9 @@ import me.chimkenu.expunge.campaigns.CampaignMap;
 import me.chimkenu.expunge.campaigns.Dialogue;
 import me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue;
 import me.chimkenu.expunge.enums.Achievements;
+import me.chimkenu.expunge.enums.GameItems;
 import me.chimkenu.expunge.game.GameManager;
+import me.chimkenu.expunge.game.ItemRandomizer;
 import me.chimkenu.expunge.items.utilities.healing.Medkit;
 import me.chimkenu.expunge.items.weapons.melees.Crowbar;
 import me.chimkenu.expunge.items.weapons.melees.FireAxe;
@@ -37,6 +39,8 @@ import org.bukkit.util.Vector;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Office implements CampaignMap, CampaignIntro {
@@ -102,33 +106,25 @@ public class Office implements CampaignMap, CampaignIntro {
     }
 
     @Override
-    public Vector[] itemLocations() {
-        return new Vector[]{
-                new Vector(1.5, 10.0, -22.5),
-                new Vector(-18.5, 10.0, -22.5),
-                new Vector(14.5, 10.0, 9.5),
-                new Vector(-12.5, 10.0, 16.5),
-                new Vector(-4.5, 9.0, 0.5),
+    public ItemRandomizer[] randomizedGameItems() {
+        return new ItemRandomizer[]{
+                new ItemRandomizer(-3, 10, -17.5, 1, 4, List.of(GameItems.MEDKIT)),
+                new ItemRandomizer(-12, 10, -17.5, 1, 1, List.of(GameItems.CROWBAR, GameItems.FIRE_AXE, GameItems.NIGHTSTICK)),
 
-                // Part 2
-                new Vector(13.5, 78.0, -55.5),
-                new Vector(28.5, 54.0, -89.5),
-                new Vector(-3.5, 54.0, -65.5),
-                new Vector(-8.5, 52.0, -79.5),
-                new Vector(-2.5, 44.0, -101.5)
-        };
-    }
+                new ItemRandomizer(1.5, 10, -22.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(-18.5, 10, -22.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(14.5, 10, 9.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(-12.5, 10, 16.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(-4.5, 9, 0.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
 
-    @Override
-    public int baseItemsToSpawn() {
-        return 0;
-    }
+                new ItemRandomizer(13.5, 78, -55.5, 0.1, 1, ItemRandomizer.Preset.TIER2_UTILITY),
+                new ItemRandomizer(28.5, 54, -89.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(-3.5, 54, -65.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(-8.5, 52, -79.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(-2.5, 44, -101.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
 
-    @Override
-    public Vector[] weaponLocations() {
-        return new Vector[]{
-                new Vector(-33.5, 10.0, 3.5),
-                new Vector(-3.5, 43, -87.5)
+                new ItemRandomizer(-33.5, 10, 3.5, 0.5, 1, ItemRandomizer.Preset.TIER1_GUNS),
+                new ItemRandomizer(-3.5, 43, -87.5, 0.5, 1, ItemRandomizer.Preset.TIER1_GUNS)
         };
     }
 
@@ -149,16 +145,7 @@ public class Office implements CampaignMap, CampaignIntro {
 
     @Override
     public GameAction runAtStart() {
-        return (plugin, gameManager, player) -> {
-            for (int i = 0; i < 4; i++)
-                gameManager.getDirector().getItemHandler().spawnUtility(new Vector(-3, 10, -17.5), new Medkit(), false);
-            ArrayList<Melee> meleeWeapons = new ArrayList<>();
-            meleeWeapons.add(new FireAxe());
-            meleeWeapons.add(new Crowbar());
-            meleeWeapons.add(new Nightstick());
-            gameManager.getDirector().getItemHandler().spawnWeapon(new Vector(-12, 10, -17.5), meleeWeapons.get(ThreadLocalRandom.current().nextInt(0, meleeWeapons.size())), true);
-            Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.OFFICE_OPENING.pickRandom(gameManager.getPlayers().size()));
-        };
+        return (plugin, gameManager, player) -> Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.OFFICE_OPENING.pickRandom(gameManager.getPlayers().size()));
     }
 
     @Override
