@@ -221,6 +221,9 @@ public class ExpungeCommand implements CommandExecutor, TabCompleter {
                     }
                 }
                 case "get" -> {
+                    if (args.length > 2) {
+                        break;
+                    }
                     for (GameItems gameItems : GameItems.values()) {
                         tabComplete.add(gameItems.name());
                     }
