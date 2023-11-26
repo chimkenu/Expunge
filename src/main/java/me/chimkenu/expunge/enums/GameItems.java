@@ -2,10 +2,7 @@ package me.chimkenu.expunge.enums;
 
 import me.chimkenu.expunge.items.GameItem;
 import me.chimkenu.expunge.items.utilities.healing.*;
-import me.chimkenu.expunge.items.utilities.throwable.Bile;
-import me.chimkenu.expunge.items.utilities.throwable.FreshAir;
-import me.chimkenu.expunge.items.utilities.throwable.Grenade;
-import me.chimkenu.expunge.items.utilities.throwable.Molotov;
+import me.chimkenu.expunge.items.utilities.throwable.*;
 import me.chimkenu.expunge.items.weapons.guns.*;
 import me.chimkenu.expunge.items.weapons.melees.*;
 
@@ -346,6 +343,17 @@ public enum GameItems {
         @Override
         public GameItem getGameItem() {
             return new Bile();
+        }
+
+        @Override
+        public Type getType() {
+            return Type.THROWABLE;
+        }
+    },
+    SPIT {
+        @Override
+        public GameItem getGameItem() {
+            return new Spit();
         }
 
         @Override
