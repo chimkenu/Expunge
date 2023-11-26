@@ -430,10 +430,6 @@ public enum GameItems {
         return Arrays.stream(values()).filter(gameItems -> gameItems.getType() == Type.THROWABLE).toList();
     }
 
-    public static List<GameItems> getHealings() {
-        return Arrays.stream(values()).filter(gameItems -> gameItems.getType() == Type.HEALING).toList();
-    }
-
     public enum Type {
         GUN,
         MELEE,
