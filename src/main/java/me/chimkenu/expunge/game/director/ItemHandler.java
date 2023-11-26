@@ -35,7 +35,7 @@ public class ItemHandler {
         int itemsToSpawn = map.baseItemsToSpawn();
         itemsToSpawn += (int) (4 * (1 - directorRating));
         for (int i = 0; i < itemsToSpawn; i++) {
-            double r = Math.random();
+            double r = ThreadLocalRandom.current().nextDouble();
 
             // throwable - 50% chance
             if (r < 0.5) {
@@ -45,7 +45,7 @@ public class ItemHandler {
 
             // healing item - 50% chance
             else {
-                r = Math.random();
+                r = ThreadLocalRandom.current().nextDouble();
                 if (r < 0.5)
                     spawnUtilityAtRandom(new Pills());
                 else

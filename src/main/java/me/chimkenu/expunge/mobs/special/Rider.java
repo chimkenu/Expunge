@@ -10,6 +10,8 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public class Rider extends GameMob {
     public Rider(JavaPlugin plugin, World world, Vector locationToSpawn) {
         super(plugin, world, locationToSpawn, Spider.class, mob -> {
@@ -24,7 +26,7 @@ public class Rider extends GameMob {
                     int speed = 1;
                     if (distance > 10 * 10) speed += 2;
                     mob.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20, speed, false, false));
-                    if (distance < 3 * 3 && Math.random() < 0.5) {
+                    if (distance < 3 * 3 && ThreadLocalRandom.current().nextDouble() < 0.5) {
                         mob.setVelocity(mob.getVelocity().add(mob.getEyeLocation().getDirection().normalize().multiply(2)).add(new Vector(0, 0.25, 0)));
                         new BukkitRunnable() {
                             @Override

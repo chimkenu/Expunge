@@ -14,6 +14,8 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public class Pouncer extends GameMob {
     public Pouncer(JavaPlugin plugin, World world, Vector locationToSpawn, ItemHandler itemHandler) {
         super(plugin, world, locationToSpawn, Stray.class, mob -> {
@@ -28,7 +30,7 @@ public class Pouncer extends GameMob {
                     int speed = 1;
                     if (distance > 10 * 10) speed += 2;
                     mob.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20, speed, false, false));
-                    if (distance < 5 * 5 && Math.random() < 0.5) {
+                    if (distance < 5 * 5 && ThreadLocalRandom.current().nextDouble() < 0.5) {
                         mob.setVelocity(mob.getVelocity().add(mob.getEyeLocation().getDirection().normalize().multiply(2.5)).add(new Vector(0, 0.2, 0)));
                         new BukkitRunnable() {
                             @Override

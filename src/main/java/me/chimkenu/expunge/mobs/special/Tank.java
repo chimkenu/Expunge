@@ -13,6 +13,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import java.util.Objects;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Tank extends GameMob {
     public Tank(JavaPlugin plugin, World world, Vector locationToSpawn, Difficulty difficulty) {
@@ -21,7 +22,7 @@ public class Tank extends GameMob {
             int speed = 1;
             if (mob.getFireTicks() > 0) speed += 2;
             if (mob.getTarget() != null) {
-                if (mob.getLocation().distanceSquared(mob.getTarget().getLocation()) < 10 * 10 && Math.random() < 0.1) {
+                if (mob.getLocation().distanceSquared(mob.getTarget().getLocation()) < 10 * 10 && ThreadLocalRandom.current().nextDouble() < 0.1) {
                     mob.setVelocity(mob.getVelocity().add(mob.getLocation().getDirection().normalize().multiply(3)).add(new Vector(0, 0.1, 0)));
                 }
             }

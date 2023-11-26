@@ -13,6 +13,7 @@ import org.bukkit.util.Vector;
 
 import java.awt.*;
 import java.time.Duration;
+import java.util.concurrent.ThreadLocalRandom;
 
 public interface CampaignIntro {
     int play(GameManager gameManager);
@@ -47,7 +48,7 @@ public interface CampaignIntro {
                     for (Player p : gameManager.getWorld().getPlayers()) {
                         p.showTitle(Title.title(finalTitlePart, Component.empty(), charTime));
                         if (main.charAt(finalI) != ' ')
-                            p.playSound(p, Sound.UI_BUTTON_CLICK, SoundCategory.PLAYERS, 0.5f, (float) (1.6 + Math.random() * 0.4));
+                            p.playSound(p, Sound.UI_BUTTON_CLICK, SoundCategory.PLAYERS, 0.5f, (float) (1.6 + ThreadLocalRandom.current().nextDouble() * 0.4));
                         else
                             p.playSound(p, Sound.BLOCK_GROWING_PLANT_CROP, SoundCategory.PLAYERS, 0.5f, 0);
                     }

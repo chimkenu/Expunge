@@ -104,7 +104,7 @@ public class MobHandler {
 
     public void spawnAdditionalInfected(Difficulty difficulty, int count) {
         for (int i = 0; i < count; i++) {
-            double random = Math.random();
+            double random = ThreadLocalRandom.current().nextDouble();
             Vector location = (blocks == null || blocks.isEmpty()) ? getRandomSpawnLocation() : blocks.get(ThreadLocalRandom.current().nextInt(blocks.size())).getLocation().add(0.5, 1, 0.5).toVector();
             if (random < 0.025) {
                 getActiveMobs().add(new Soldier(plugin, director.getWorld(), location, difficulty));
@@ -118,7 +118,7 @@ public class MobHandler {
 
     public void spawnSpecialInfected(Difficulty difficulty, int count) {
         for (int i = 0; i < count; i++) {
-            double r = Math.random();
+            double r = ThreadLocalRandom.current().nextDouble();
             if (r < 0.16)
                 getActiveMobs().add(new Rider(plugin, director.getWorld(), getRandomSpawnLocation()));
             else if (r < 0.33)
