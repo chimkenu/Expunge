@@ -265,6 +265,10 @@ public class MobHandler {
         }
     }
 
+    public void addMob(GameMob gameMob) {
+        activeMobs.add(gameMob);
+    }
+
     public void clear() {
         chillOut = false;
         timeSinceLastHorde = -2147483648;
