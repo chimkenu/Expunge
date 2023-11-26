@@ -1,6 +1,9 @@
 package me.chimkenu.expunge.enums;
 
 import me.chimkenu.expunge.items.GameItem;
+import me.chimkenu.expunge.items.interactables.FuelCan;
+import me.chimkenu.expunge.items.interactables.OxygenTank;
+import me.chimkenu.expunge.items.interactables.PropaneTank;
 import me.chimkenu.expunge.items.utilities.healing.*;
 import me.chimkenu.expunge.items.utilities.throwable.*;
 import me.chimkenu.expunge.items.weapons.guns.*;
@@ -383,7 +386,6 @@ public enum GameItems {
             return Type.HEALING;
         }
     },
-
     PILLS {
         @Override
         public GameItem getGameItem() {
@@ -404,6 +406,39 @@ public enum GameItems {
         @Override
         public Type getType() {
             return Type.HEALING;
+        }
+    },
+    FUEL_CAN {
+        @Override
+        public GameItem getGameItem() {
+            return new FuelCan();
+        }
+
+        @Override
+        public Type getType() {
+            return Type.INTERACTABLE;
+        }
+    },
+    PROPANE_TANK {
+        @Override
+        public GameItem getGameItem() {
+            return new PropaneTank();
+        }
+
+        @Override
+        public Type getType() {
+            return Type.INTERACTABLE;
+        }
+    },
+    OXYGEN_TANK {
+        @Override
+        public GameItem getGameItem() {
+            return new OxygenTank();
+        }
+
+        @Override
+        public Type getType() {
+            return Type.INTERACTABLE;
         }
     };
 
@@ -430,10 +465,15 @@ public enum GameItems {
         return Arrays.stream(values()).filter(gameItems -> gameItems.getType() == Type.THROWABLE).toList();
     }
 
+    public static List<GameItems> getInteractables() {
+        return Arrays.stream(values()).filter(gameItems -> gameItems.getType() == Type.INTERACTABLE).toList();
+    }
+
     public enum Type {
         GUN,
         MELEE,
         THROWABLE,
-        HEALING
+        HEALING,
+        INTERACTABLE
     }
 }

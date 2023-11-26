@@ -3,7 +3,6 @@ package me.chimkenu.expunge.utils;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import me.chimkenu.expunge.enums.GameItems;
-import me.chimkenu.expunge.enums.Interactables;
 import me.chimkenu.expunge.items.GameItem;
 import me.chimkenu.expunge.items.interactables.Interactable;
 import me.chimkenu.expunge.items.utilities.throwable.Throwable;
@@ -42,8 +41,8 @@ public class Utils {
     }
 
     public static Interactable getInteractableFromEntity(Entity entity) {
-        for (Interactables interactables : Interactables.values()) {
-            Interactable interactable = interactables.get();
+        for (GameItems interactables : GameItems.getInteractables()){
+            Interactable interactable = (Interactable) interactables.getGameItem();
             if (entity.getScoreboardTags().contains(interactable.getTag())) {
                 return interactable;
             }

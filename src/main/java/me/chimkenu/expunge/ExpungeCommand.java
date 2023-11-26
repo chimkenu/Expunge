@@ -4,11 +4,11 @@ import me.chimkenu.expunge.campaigns.Campaign;
 import me.chimkenu.expunge.enums.Difficulty;
 import me.chimkenu.expunge.enums.GameItems;
 import me.chimkenu.expunge.enums.InfectedTypes;
-import me.chimkenu.expunge.enums.Interactables;
 import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.game.director.Director;
 import me.chimkenu.expunge.guis.MenuGUI;
 import me.chimkenu.expunge.items.GameItem;
+import me.chimkenu.expunge.items.interactables.Interactable;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -208,19 +208,19 @@ public class ExpungeCommand implements CommandExecutor, TabCompleter {
                 }
 
                 InfectedTypes infectedType = null;
-                Interactables interactable = null;
+                Interactable interactable = null;
                 try {
                     infectedType = InfectedTypes.valueOf(args[1]);
                 } catch (IllegalArgumentException ignored) {}
                 try {
-                    interactable = Interactables.valueOf(args[1]);
-                } catch (IllegalArgumentException ignored) {}
+                    interactable = (Interactable) GameItems.valueOf(args[1]).getGameItem();
+                } catch (Exception ignored) {}
 
                 if (infectedType != null) {
                     gameManager.getDirector().getMobHandler().addMob(infectedType.spawn(plugin, gameManager, player.getLocation().toVector(), gameManager.getDifficulty()));
                     sender.sendMessage(Component.text("Spawned.", NamedTextColor.GREEN));
                 } else if (interactable != null) {
-                    gameManager.getDirector().getItemHandler().addEntity(interactable.get().spawn(player.getLocation()));
+                    gameManager.getDirector().getItemHandler().addEntity(interactable.spawn(player.getLocation()));
                     sender.sendMessage(Component.text("Spawned.", NamedTextColor.GREEN));
                 } else {
                     sender.sendMessage(Component.text("Couldn't find that entity, did you type it correctly?", NamedTextColor.RED));
@@ -286,8 +286,8 @@ public class ExpungeCommand implements CommandExecutor, TabCompleter {
                         for (InfectedTypes infectedTypes : InfectedTypes.values()) {
                             tabComplete.add(infectedTypes.name());
                         }
-                        for (Interactables interactables : Interactables.values()) {
-                            tabComplete.add(interactables.name());
+                        for (GameItems interactable : GameItems.getInteractables()) {
+                            tabComplete.add(interactable.name());
                         }
                     } else if (args.length == 3) {
                         for (GameManager gameManager : lobby.getGames()) {
