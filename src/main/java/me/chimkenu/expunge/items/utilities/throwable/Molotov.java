@@ -37,7 +37,7 @@ public class Molotov implements Throwable {
                             livingEntity.setVelocity(vec);
                             livingEntity.setNoDamageTicks(0);
                             if (livingEntity instanceof Player) {
-                                livingEntity.damage(1);
+                                livingEntity.damage(0.25d);
                                 livingEntity.setFireTicks(40);
                             } else {
                                 livingEntity.damage(10, shooter);
