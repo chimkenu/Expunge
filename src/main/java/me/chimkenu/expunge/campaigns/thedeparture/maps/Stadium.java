@@ -30,7 +30,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
-public class Stadium extends CampaignMap {
+public class Stadium implements CampaignMap {
     @Override
     public String directory() {
         return "Stadium";
@@ -317,26 +317,6 @@ public class Stadium extends CampaignMap {
                         }
                     }
                 }
-        };
-    }
-
-    @Override
-    public GameListener[] gameListeners(JavaPlugin plugin, GameManager gameManager) {
-        BreakGlassListener breakGlassListener = new BreakGlassListener(plugin, gameManager);
-        return new GameListener[]{
-                new AmmoPileListener(plugin, gameManager),
-                new DeathReviveListener(plugin, gameManager),
-                new InventoryListener(plugin, gameManager),
-                new MobListener(plugin, gameManager),
-                new NextMapListener(plugin, gameManager),
-                new PickUpListener(plugin, gameManager),
-                new ShootListener(plugin, gameManager, breakGlassListener),
-                new ShoveListener(plugin, gameManager, breakGlassListener),
-                new SwingListener(plugin, gameManager, breakGlassListener),
-                new JoinLeaveListener(plugin, gameManager),
-                new UtilityListener(plugin, gameManager),
-                breakGlassListener,
-                new BreakDoorListener(plugin, gameManager)
         };
     }
 

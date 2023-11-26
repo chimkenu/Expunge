@@ -29,7 +29,7 @@ import org.bukkit.util.Vector;
 
 import java.util.Set;
 
-public class Subway extends CampaignMap {
+public class Subway implements CampaignMap {
     @Override
     public String directory() {
         return "Subway";
@@ -322,23 +322,4 @@ public class Subway extends CampaignMap {
         };
     }
 
-    @Override
-    public GameListener[] gameListeners(JavaPlugin plugin, GameManager gameManager) {
-        BreakGlassListener breakGlassListener = new BreakGlassListener(plugin, gameManager);
-        return new GameListener[]{
-                new AmmoPileListener(plugin, gameManager),
-                new DeathReviveListener(plugin, gameManager),
-                new InventoryListener(plugin, gameManager),
-                new MobListener(plugin, gameManager),
-                new NextMapListener(plugin, gameManager),
-                new PickUpListener(plugin, gameManager),
-                new ShootListener(plugin, gameManager, breakGlassListener),
-                new ShoveListener(plugin, gameManager, breakGlassListener),
-                new SwingListener(plugin, gameManager, breakGlassListener),
-                new JoinLeaveListener(plugin, gameManager),
-                new UtilityListener(plugin, gameManager),
-                breakGlassListener,
-                new BreakDoorListener(plugin, gameManager)
-        };
-    }
 }

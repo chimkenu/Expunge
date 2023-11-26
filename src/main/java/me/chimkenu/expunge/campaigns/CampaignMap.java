@@ -3,41 +3,59 @@ package me.chimkenu.expunge.campaigns;
 import me.chimkenu.expunge.GameAction;
 import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.listeners.GameListener;
+import me.chimkenu.expunge.listeners.game.*;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
-public abstract class CampaignMap {
-    public abstract String directory();
+public interface CampaignMap {
+    String directory();
 
-    public abstract Vector startLocation();
+    Vector startLocation();
 
-    public abstract BoundingBox endRegion();
+    BoundingBox endRegion();
 
-    public abstract BoundingBox[] pathRegions();
+    BoundingBox[] pathRegions();
 
-    public abstract Vector[] spawnLocations();
+    Vector[] spawnLocations();
 
-    public abstract Vector[] bossLocations();
+    Vector[] bossLocations();
 
-    public abstract Vector[] itemLocations();
+    Vector[] itemLocations();
 
-    public abstract int baseItemsToSpawn();
+    int baseItemsToSpawn();
 
-    public abstract Vector[] weaponLocations();
+    Vector[] weaponLocations();
 
-    public abstract Vector[] ammoLocations();
+    Vector[] ammoLocations();
 
-    public abstract Vector buttonLocation();
+    Vector buttonLocation();
 
-    public abstract Vector[] rescueClosetLocations();
+    Vector[] rescueClosetLocations();
 
-    public abstract GameAction runAtStart();
+    GameAction runAtStart();
 
-    public abstract GameAction runAtEnd();
+    GameAction runAtEnd();
 
-    public abstract Listener[] happenings(JavaPlugin plugin, GameManager gameManager);
+    Listener[] happenings(JavaPlugin plugin, GameManager gameManager);
 
-    public abstract GameListener[] gameListeners(JavaPlugin plugin, GameManager gameManager);
+    default GameListener[] gameListeners(JavaPlugin plugin, GameManager gameManager) {
+        BreakGlassListener breakGlassListener = new BreakGlassListener(plugin, gameManager);
+        return new GameListener[]{
+                new AmmoPileListener(plugin, gameManager),
+                new DeathReviveListener(plugin, gameManager),
+                new InventoryListener(plugin, gameManager),
+                new MobListener(plugin, gameManager),
+                new NextMapListener(plugin, gameManager),
+                new PickUpListener(plugin, gameManager),
+                new ShootListener(plugin, gameManager, breakGlassListener),
+                new ShoveListener(plugin, gameManager, breakGlassListener),
+                new SwingListener(plugin, gameManager, breakGlassListener),
+                new JoinLeaveListener(plugin, gameManager),
+                new UtilityListener(plugin, gameManager),
+                breakGlassListener,
+                new BreakDoorListener(plugin, gameManager)
+        };
+    }
 }

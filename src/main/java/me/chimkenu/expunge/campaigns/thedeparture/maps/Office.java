@@ -41,7 +41,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Office extends CampaignMap implements CampaignIntro {
+public class Office implements CampaignMap, CampaignIntro {
     @Override
     public String directory() {
         return "Office";
@@ -301,26 +301,6 @@ public class Office extends CampaignMap implements CampaignIntro {
                         HandlerList.unregisterAll(this);
                     }
                 }
-        };
-    }
-
-    @Override
-    public GameListener[] gameListeners(JavaPlugin plugin, GameManager gameManager) {
-        BreakGlassListener breakGlassListener = new BreakGlassListener(plugin, gameManager);
-        return new GameListener[]{
-                new AmmoPileListener(plugin, gameManager),
-                new DeathReviveListener(plugin, gameManager),
-                new InventoryListener(plugin, gameManager),
-                new MobListener(plugin, gameManager),
-                new NextMapListener(plugin, gameManager),
-                new PickUpListener(plugin, gameManager),
-                new ShootListener(plugin, gameManager, breakGlassListener),
-                new ShoveListener(plugin, gameManager, breakGlassListener),
-                new SwingListener(plugin, gameManager, breakGlassListener),
-                new JoinLeaveListener(plugin, gameManager),
-                new UtilityListener(plugin, gameManager),
-                breakGlassListener,
-                new BreakDoorListener(plugin, gameManager)
         };
     }
 
