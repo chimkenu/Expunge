@@ -6,6 +6,7 @@ import me.chimkenu.expunge.enums.GameItems;
 import me.chimkenu.expunge.items.GameItem;
 import me.chimkenu.expunge.items.interactables.Interactable;
 import me.chimkenu.expunge.items.utilities.throwable.Throwable;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -25,7 +26,8 @@ public class Utils {
         for (GameItems gameItems : GameItems.values()) {
             GameItem gameItem = gameItems.getGameItem();
             ItemStack itemForComparison = gameItem.get();
-            if (itemForComparison.getType() == itemStack.getType() && itemForComparison.displayName().examinableName().equalsIgnoreCase(itemStack.displayName().examinableName())) return gameItem;
+            PlainTextComponentSerializer serializer = PlainTextComponentSerializer.plainText();
+            if (itemForComparison.getType() == itemStack.getType() && serializer.serialize(itemForComparison.displayName()).equalsIgnoreCase(serializer.serialize(itemStack.displayName()))) return gameItem;
         }
         return null;
     }
