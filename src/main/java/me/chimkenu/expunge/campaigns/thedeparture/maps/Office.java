@@ -10,11 +10,6 @@ import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.enums.GameItems;
 import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.game.ItemRandomizer;
-import me.chimkenu.expunge.items.utilities.healing.Medkit;
-import me.chimkenu.expunge.items.weapons.melees.Crowbar;
-import me.chimkenu.expunge.items.weapons.melees.FireAxe;
-import me.chimkenu.expunge.items.weapons.melees.Melee;
-import me.chimkenu.expunge.items.weapons.melees.Nightstick;
 import me.chimkenu.expunge.mobs.common.Horde;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -38,10 +33,7 @@ import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class Office implements CampaignMap, CampaignIntro {
     @Override
