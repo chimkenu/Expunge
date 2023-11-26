@@ -2,6 +2,7 @@ package me.chimkenu.expunge.items.utilities.healing;
 
 import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.enums.Slot;
+import me.chimkenu.expunge.enums.Tier;
 import me.chimkenu.expunge.game.GameManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -60,5 +61,10 @@ public class Adrenaline implements Healing {
     @Override
     public Slot getSlot() {
         return Slot.QUINARY;
+    }
+
+    @Override
+    public Tier getTier() {
+        return Tier.TIER1;
     }
 }

@@ -1,5 +1,6 @@
 package me.chimkenu.expunge.items.interactables;
 
+import me.chimkenu.expunge.enums.Tier;
 import me.chimkenu.expunge.game.GameManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -49,5 +50,10 @@ public class OxygenTank extends Explosive {
     @Override
     public String getTag() {
         return "INTERACTABLE_OXYGEN_TANK";
+    }
+
+    @Override
+    public Tier getTier() {
+        return Tier.TIER2;
     }
 }

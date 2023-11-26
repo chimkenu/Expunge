@@ -1,6 +1,7 @@
 package me.chimkenu.expunge.items.utilities.throwable;
 
 import me.chimkenu.expunge.enums.Achievements;
+import me.chimkenu.expunge.enums.Tier;
 import me.chimkenu.expunge.game.GameManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -59,5 +60,10 @@ public class FreshAir implements Throwable {
     @Override
     public String getTag() {
         return "THROWABLE_FRESH_AIR";
+    }
+
+    @Override
+    public Tier getTier() {
+        return Tier.TIER1;
     }
 }

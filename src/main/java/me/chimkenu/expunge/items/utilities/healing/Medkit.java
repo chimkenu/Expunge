@@ -1,5 +1,6 @@
 package me.chimkenu.expunge.items.utilities.healing;
 
+import me.chimkenu.expunge.enums.Tier;
 import me.chimkenu.expunge.game.GameManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -43,6 +44,11 @@ public class Medkit implements Healing {
     @Override
     public Material getMaterial() {
         return Material.BRICK;
+    }
+
+    @Override
+    public Tier getTier() {
+        return Tier.TIER2;
     }
 
     @Override

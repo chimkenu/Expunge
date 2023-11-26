@@ -1,5 +1,6 @@
 package me.chimkenu.expunge.items.interactables;
 
+import me.chimkenu.expunge.enums.Tier;
 import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.items.utilities.throwable.Grenade;
 import net.kyori.adventure.text.Component;
@@ -25,5 +26,10 @@ public class PropaneTank extends Explosive {
     @Override
     public String getTag() {
         return "INTERACTABLE_PROPANE_TANK";
+    }
+
+    @Override
+    public Tier getTier() {
+        return Tier.TIER1;
     }
 }

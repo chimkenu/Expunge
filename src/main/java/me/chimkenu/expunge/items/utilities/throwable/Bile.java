@@ -1,5 +1,6 @@
 package me.chimkenu.expunge.items.utilities.throwable;
 
+import me.chimkenu.expunge.enums.Tier;
 import me.chimkenu.expunge.game.GameManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -70,5 +71,10 @@ public class Bile implements Throwable {
     @Override
     public String getTag() {
         return "THROWABLE_BILE";
+    }
+
+    @Override
+    public Tier getTier() {
+        return Tier.TIER2;
     }
 }
