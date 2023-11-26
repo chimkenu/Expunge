@@ -1,15 +1,9 @@
 package me.chimkenu.expunge.game.director;
 
 import me.chimkenu.expunge.campaigns.CampaignMap;
-import me.chimkenu.expunge.enums.GameItems;
-import me.chimkenu.expunge.enums.Tier;
 import me.chimkenu.expunge.game.ItemRandomizer;
 import me.chimkenu.expunge.items.utilities.Utility;
-import me.chimkenu.expunge.items.utilities.healing.Adrenaline;
-import me.chimkenu.expunge.items.utilities.healing.Pills;
 import me.chimkenu.expunge.items.weapons.Weapon;
-import me.chimkenu.expunge.items.weapons.guns.Gun;
-import me.chimkenu.expunge.items.weapons.melees.Melee;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -19,7 +13,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
 
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class ItemHandler {
     private final Director director;
