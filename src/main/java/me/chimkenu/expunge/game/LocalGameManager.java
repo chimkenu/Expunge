@@ -70,28 +70,23 @@ public class LocalGameManager implements GameManager {
 
         if (campaign.getMaps()[this.campaignMapIndex] instanceof CampaignIntro intro) {
             startWithIntro();
-            new BukkitRunnable() {
+            main = new BukkitRunnable() {
                 @Override
                 public void run() {
-                    new BukkitRunnable() {
+                    main = new BukkitRunnable() {
                         @Override
                         public void run() {
-                            if (players.isEmpty()) this.cancel();
+                            if (getPlayers().isEmpty()) this.cancel();
                             start();
                         }
                     }.runTaskLater(plugin, intro.play(director.getGameManager()));
                 }
             }.runTaskLater(plugin, 40); // Wait for players to load map
-
         } else start();
     }
 
     @Override
     public void start() {
-        if (isRunning()) {
-            return;
-        }
-
         gameTimeStart = System.currentTimeMillis();
         main = new BukkitRunnable() {
             @Override
