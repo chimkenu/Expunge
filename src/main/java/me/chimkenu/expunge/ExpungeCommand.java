@@ -3,6 +3,8 @@ package me.chimkenu.expunge;
 import me.chimkenu.expunge.campaigns.Campaign;
 import me.chimkenu.expunge.enums.Difficulty;
 import me.chimkenu.expunge.enums.GameItems;
+import me.chimkenu.expunge.enums.InfectedTypes;
+import me.chimkenu.expunge.enums.Interactables;
 import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.game.director.Director;
 import me.chimkenu.expunge.guis.MenuGUI;
@@ -135,7 +137,7 @@ public class ExpungeCommand implements CommandExecutor, TabCompleter {
                 try {
                     id = UUID.fromString(args[1]);
                     for (GameManager gm : lobby.getGames()) {
-                        if (gm.getUUID() == id) {
+                        if (gm.getUUID().equals(id)) {
                             gameManager = gm;
                         }
                     }
@@ -172,6 +174,57 @@ public class ExpungeCommand implements CommandExecutor, TabCompleter {
                 }
                 sender.sendMessage(Component.text("Here you go.", NamedTextColor.GREEN));
                 player.getInventory().addItem(gameItem.get());
+                return true;
+            }
+            case "spawn" -> {
+                if (!sender.hasPermission("expunge.spawn")) {
+                    sender.sendMessage(Component.text("Insufficient permissions.", NamedTextColor.RED));
+                    return true;
+                }
+
+                if (!(sender instanceof Player player)) {
+                    sender.sendMessage(Component.text("Only players can execute this command.", NamedTextColor.RED));
+                    return true;
+                }
+
+                if (args.length < 3) {
+                    sender.sendMessage(Component.text("Insufficient arguments. ", NamedTextColor.RED).append(Component.text("/expunge spawn <entity> <uuid>", NamedTextColor.GRAY)));
+                    return true;
+                }
+
+                UUID id;
+                GameManager gameManager = null;
+                try {
+                    id = UUID.fromString(args[2]);
+                    for (GameManager gm : lobby.getGames()) {
+                        if (gm.getUUID().equals(id)) {
+                            gameManager = gm;
+                        }
+                    }
+                    if (gameManager == null) throw new IllegalArgumentException();
+                } catch (IllegalArgumentException e) {
+                    sender.sendMessage(Component.text("No game with that ID exists.", NamedTextColor.RED));
+                    return true;
+                }
+
+                InfectedTypes infectedType = null;
+                Interactables interactable = null;
+                try {
+                    infectedType = InfectedTypes.valueOf(args[1]);
+                } catch (IllegalArgumentException ignored) {}
+                try {
+                    interactable = Interactables.valueOf(args[1]);
+                } catch (IllegalArgumentException ignored) {}
+
+                if (infectedType != null) {
+                    infectedType.spawn(plugin, gameManager, player.getLocation().toVector(), gameManager.getDifficulty());
+                    sender.sendMessage(Component.text("Spawned.", NamedTextColor.GREEN));
+                } else if (interactable != null) {
+                    interactable.get().spawn(player.getLocation());
+                    sender.sendMessage(Component.text("Spawned.", NamedTextColor.GREEN));
+                } else {
+                    sender.sendMessage(Component.text("Couldn't find that entity, did you type it correctly?", NamedTextColor.RED));
+                }
                 return true;
             }
             case "reload" -> {
@@ -226,6 +279,20 @@ public class ExpungeCommand implements CommandExecutor, TabCompleter {
                     }
                     for (GameItems gameItems : GameItems.values()) {
                         tabComplete.add(gameItems.name());
+                    }
+                }
+                case "spawn" -> {
+                    if (args.length == 2) {
+                        for (InfectedTypes infectedTypes : InfectedTypes.values()) {
+                            tabComplete.add(infectedTypes.name());
+                        }
+                        for (Interactables interactables : Interactables.values()) {
+                            tabComplete.add(interactables.name());
+                        }
+                    } else if (args.length == 3) {
+                        for (GameManager gameManager : lobby.getGames()) {
+                            tabComplete.add(gameManager.getUUID().toString());
+                        }
                     }
                 }
             }
