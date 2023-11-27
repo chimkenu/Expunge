@@ -36,6 +36,7 @@ public class InteractableListener extends GameListener {
 
         e.setCancelled(true);
         if (interactable.cannotBePickedUp()) {
+            e.getRightClicked().getWorld().playSound(e.getRightClicked().getLocation(), Sound.BLOCK_GRINDSTONE_USE, 0.2f, 0);
             return;
         }
 
@@ -134,10 +135,37 @@ public class InteractableListener extends GameListener {
         }
 
         playerInventory.setItem(e.getPreviousSlot(), null);
-        Location loc = player.getEyeLocation();
-        while (loc.getBlock().getType().equals(Material.AIR)) {
-            loc.subtract(0, 0.05, 0);
-        }
-        interactable.spawn(loc);
+        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.25f, 0);
+
+        ArmorStand physicsArmorStand = player.getWorld().spawn(player.getEyeLocation().add(player.getLocation().getDirection()), ArmorStand.class);
+        Entity interactableEntity = interactable.spawn(player.getEyeLocation());
+        gameManager.getDirector().getItemHandler().addEntity(physicsArmorStand);
+        gameManager.getDirector().getItemHandler().addEntity(interactableEntity);
+        physicsArmorStand.setSmall(true);
+        physicsArmorStand.setInvisible(true);
+
+        new BukkitRunnable() {
+            int t = 20;
+            final double dy = interactable.getYOffset();
+            @Override
+            public void run() {
+                if (interactableEntity.isDead() || physicsArmorStand.isDead()) {
+                    end();
+                    return;
+                }
+                if (t <= 0) {
+                    end();
+                    return;
+                }
+
+                t--;
+                interactableEntity.teleport(physicsArmorStand.getLocation().clone().add(0, dy, 0));
+            }
+
+            private void end() {
+                physicsArmorStand.remove();
+                this.cancel();
+            }
+        }.runTaskTimer(plugin, 0, 1);
     }
 }
