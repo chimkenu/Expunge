@@ -13,6 +13,10 @@ public interface Interactable extends GameItem {
 
     String getTag();
 
+    default double getYOffset() {
+        return -1.4;
+    }
+
     Entity spawn(Location locationToSpawn);
 
     void onInteract(JavaPlugin plugin, GameManager gameManager, Entity entity, Entity actor);

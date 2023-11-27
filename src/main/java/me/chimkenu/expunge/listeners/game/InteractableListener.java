@@ -1,12 +1,14 @@
 package me.chimkenu.expunge.listeners.game;
 
+import io.papermc.paper.event.player.PlayerArmSwingEvent;
 import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.items.GameItem;
 import me.chimkenu.expunge.items.interactables.Interactable;
 import me.chimkenu.expunge.listeners.GameListener;
 import me.chimkenu.expunge.utils.Utils;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -15,6 +17,7 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class InteractableListener extends GameListener {
     public InteractableListener(JavaPlugin plugin, GameManager gameManager) {
@@ -42,6 +45,7 @@ public class InteractableListener extends GameListener {
             return;
         }
 
+        player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.5f, 1f);
         e.getRightClicked().remove();
         player.getInventory().setItem(interactable.getSlot().ordinal(), interactable.get());
         player.getInventory().setHeldItemSlot(interactable.getSlot().ordinal());
@@ -60,6 +64,55 @@ public class InteractableListener extends GameListener {
         e.getEntity().removeScoreboardTag(interactable.getTag());
 
         interactable.onInteract(plugin, gameManager, e.getEntity(), e.getEntity());
+    }
+
+    @EventHandler
+    public void onThrow(PlayerArmSwingEvent e) {
+        Player player = e.getPlayer();
+        if (!gameManager.getPlayers().contains(player)) {
+            return;
+        }
+
+        PlayerInventory playerInventory = player.getInventory();
+        GameItem gameItem = Utils.getGameItemFromItemStack(playerInventory.getItemInMainHand());
+        if (!(gameItem instanceof  Interactable interactable)) {
+            return;
+        }
+
+        playerInventory.getItemInMainHand().setAmount(playerInventory.getItemInMainHand().getAmount() - 1);
+        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 0.5f, 0);
+
+        ArmorStand physicsArmorStand = player.getWorld().spawn(player.getEyeLocation().add(player.getLocation().getDirection()), ArmorStand.class);
+        Entity interactableEntity = interactable.spawn(player.getEyeLocation());
+        gameManager.getDirector().getItemHandler().addEntity(physicsArmorStand);
+        gameManager.getDirector().getItemHandler().addEntity(interactableEntity);
+        physicsArmorStand.setSmall(true);
+        physicsArmorStand.setInvisible(true);
+        physicsArmorStand.setVelocity(player.getLocation().getDirection());
+
+        new BukkitRunnable() {
+            Location previousLocation = null;
+            final double dy = interactable.getYOffset();
+            @Override
+            public void run() {
+                if (interactableEntity.isDead() || physicsArmorStand.isDead()) {
+                    end();
+                    return;
+                }
+                if (previousLocation != null && previousLocation.equals(physicsArmorStand.getLocation())) {
+                    end();
+                    return;
+                }
+
+                previousLocation = physicsArmorStand.getLocation();
+                interactableEntity.teleport(previousLocation.clone().add(0, dy, 0));
+            }
+
+            private void end() {
+                physicsArmorStand.remove();
+                this.cancel();
+            }
+        }.runTaskTimer(plugin, 0, 1);
     }
 
     @EventHandler
