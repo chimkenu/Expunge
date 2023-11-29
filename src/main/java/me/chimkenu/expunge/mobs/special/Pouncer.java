@@ -58,15 +58,15 @@ public class Pouncer extends Special {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    getMob().getWorld().playSound(getMob(), Sound.BLOCK_NOTE_BLOCK_BELL, SoundCategory.HOSTILE, 1, pitches[2 * finalI]);
+                    getMob().getWorld().playSound(getMob(), Sound.BLOCK_NOTE_BLOCK_BELL, SoundCategory.HOSTILE, 2, pitches[2 * finalI]);
                 }
-            }.runTaskLater(plugin, i * 8);
+            }.runTaskLater(plugin, i * 10);
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    getMob().getWorld().playSound(getMob(), Sound.BLOCK_NOTE_BLOCK_BELL, SoundCategory.HOSTILE, 1, pitches[2 * finalI + 1]);
+                    getMob().getWorld().playSound(getMob(), Sound.BLOCK_NOTE_BLOCK_BELL, SoundCategory.HOSTILE, 2, pitches[2 * finalI + 1]);
                 }
-            }.runTaskLater(plugin, i * 8 + 1);
+            }.runTaskLater(plugin, i * 10 + 2);
         }
     }
 }

@@ -34,9 +34,9 @@ public class Witch extends Special {
                 new BukkitRunnable() {
                     @Override
                     public void run() {
-                        getMob().getWorld().playSound(getMob(), Sound.BLOCK_NOTE_BLOCK_HARP, SoundCategory.HOSTILE, 1, pitches[finalI]);
+                        getMob().getWorld().playSound(getMob(), Sound.BLOCK_NOTE_BLOCK_HARP, SoundCategory.HOSTILE, 2, pitches[finalI]);
                     }
-                }.runTaskLater(plugin, t * pitches.length * 2 + i * 2);
+                }.runTaskLater(plugin, t * pitches.length * 3 + i * 3);
             }
         }
     }

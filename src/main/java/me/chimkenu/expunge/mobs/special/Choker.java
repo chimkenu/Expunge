@@ -20,13 +20,13 @@ public class Choker extends Special {
 
     @Override
     protected void playJingle() {
-        getMob().getWorld().playSound(getMob(), Sound.BLOCK_NOTE_BLOCK_DIDGERIDOO, 1, 0.561231f);
-        getMob().getWorld().playSound(getMob(), Sound.BLOCK_NOTE_BLOCK_DIDGERIDOO, 1, 0.594604f);
+        getMob().getWorld().playSound(getMob(), Sound.BLOCK_NOTE_BLOCK_DIDGERIDOO, 2, 0.561231f);
+        getMob().getWorld().playSound(getMob(), Sound.BLOCK_NOTE_BLOCK_DIDGERIDOO, 2, 0.594604f);
         new BukkitRunnable() {
             @Override
             public void run() {
-                getMob().getWorld().playSound(getMob(), Sound.BLOCK_NOTE_BLOCK_DIDGERIDOO, 1, 0.5f);
+                getMob().getWorld().playSound(getMob(), Sound.BLOCK_NOTE_BLOCK_DIDGERIDOO, 2, 0.5f);
             }
-        }.runTaskLater(plugin, 11);
+        }.runTaskLater(plugin, 15);
     }
 }

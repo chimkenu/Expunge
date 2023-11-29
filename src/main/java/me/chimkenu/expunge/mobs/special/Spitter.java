@@ -40,9 +40,9 @@ public class Spitter extends Special {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    getMob().getWorld().playSound(getMob(), Sound.BLOCK_NOTE_BLOCK_BELL, SoundCategory.HOSTILE, 1, pitches[finalI]);
+                    getMob().getWorld().playSound(getMob(), Sound.BLOCK_NOTE_BLOCK_BELL, SoundCategory.HOSTILE, 2, pitches[finalI]);
                 }
-            }.runTaskLater(plugin, i * 5);
+            }.runTaskLater(plugin, i * 7);
         }
     }
 }

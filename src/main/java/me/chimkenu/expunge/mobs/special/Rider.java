@@ -53,10 +53,10 @@ public class Rider extends Special {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    getMob().getWorld().playSound(getMob(), Sound.BLOCK_NOTE_BLOCK_HARP, 1, pitches[finalI * 2]);
-                    getMob().getWorld().playSound(getMob(), Sound.BLOCK_NOTE_BLOCK_HARP, 1, pitches[finalI * 2 + 1]);
+                    getMob().getWorld().playSound(getMob(), Sound.BLOCK_NOTE_BLOCK_HARP, 2, pitches[finalI * 2]);
+                    getMob().getWorld().playSound(getMob(), Sound.BLOCK_NOTE_BLOCK_HARP, 2, pitches[finalI * 2 + 1]);
                 }
-            }.runTaskLater(plugin, i * 2);
+            }.runTaskLater(plugin, i * 4);
         }
     }
 }

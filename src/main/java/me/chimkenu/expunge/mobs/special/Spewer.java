@@ -33,9 +33,9 @@ public class Spewer extends Special {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    getMob().getWorld().playSound(getMob(), Sound.BLOCK_NOTE_BLOCK_DIDGERIDOO, SoundCategory.HOSTILE, 1, pitches[finalI]);
+                    getMob().getWorld().playSound(getMob(), Sound.BLOCK_NOTE_BLOCK_DIDGERIDOO, SoundCategory.HOSTILE, 2, pitches[finalI]);
                 }
-            }.runTaskLater(plugin, 4 * i);
+            }.runTaskLater(plugin, 6 * i);
         }
     }
 }

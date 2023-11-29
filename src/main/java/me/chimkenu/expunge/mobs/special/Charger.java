@@ -68,9 +68,9 @@ public class Charger extends Special {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    getMob().getWorld().playSound(getMob(), Sound.BLOCK_NOTE_BLOCK_DIDGERIDOO, SoundCategory.HOSTILE, 1, pitches[finalI]);
+                    getMob().getWorld().playSound(getMob(), Sound.BLOCK_NOTE_BLOCK_DIDGERIDOO, SoundCategory.HOSTILE, 2, pitches[finalI]);
                 }
-            }.runTaskLater(plugin, 2 * i);
+            }.runTaskLater(plugin, 3 * i);
         }
     }
 }
