@@ -20,7 +20,7 @@ public class Spitter extends Special {
             else distance = mob.getLocation().distanceSquared(mob.getTarget().getLocation());
             if (!mob.hasPotionEffect(PotionEffectType.CONFUSION) && distance < 10 * 10) {
                 // spit at player direction
-                mob.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 20 * 20, 0, true, true, false));
+                mob.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 200, 0, true, true, false));
                 new Spit().use(plugin, gameManager, mob);
 
                 // TODO: run away
