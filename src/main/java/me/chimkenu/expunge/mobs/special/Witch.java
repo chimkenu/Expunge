@@ -16,7 +16,7 @@ import java.util.Objects;
 public class Witch extends Special {
     public Witch(JavaPlugin plugin, World world, Vector locationToSpawn) {
         super(plugin, world, locationToSpawn, Enderman.class, mob -> {
-            if (mob.getTarget() != null) {
+            if (mob.getTarget() == null) {
                 mob.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20, 200, false, false, false));
             }
         });
