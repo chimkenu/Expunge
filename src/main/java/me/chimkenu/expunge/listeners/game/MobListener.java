@@ -166,15 +166,16 @@ public class MobListener extends GameListener {
         // charger knocks down player
         if (damager.getScoreboardTags().contains("CHARGER")) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 5, 2, false, false, true));
-            if (damager.hasPotionEffect(PotionEffectType.CONFUSION) && player.getVehicle() == null) {
+            if (damager.hasPotionEffect(PotionEffectType.CONFUSION) && player.getVehicle() == null && damager.getVehicle() == null) {
                 disable(player, gameManager.getDirector().getItemHandler());
-                damager.removePotionEffect(PotionEffectType.CONFUSION);
+                player.addPassenger(damager);
             }
         }
     }
 
     public static void disable(Player player, ItemHandler itemHandler) {
         Location loc = player.getLocation();
+        player.getInventory().setHeldItemSlot(6);
         while (loc.getBlock().getType().equals(Material.AIR)) {
             loc.subtract(0, 0.25, 0);
         }

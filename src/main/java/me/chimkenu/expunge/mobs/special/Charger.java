@@ -5,6 +5,7 @@ import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Zoglin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
@@ -20,37 +21,54 @@ public class Charger extends Special {
             double distance = 0;
             if (mob.getTarget() == null) mob.setTarget(getRandomPlayer(world));
             else distance = mob.getLocation().distanceSquared(mob.getTarget().getLocation());
+            if (mob.getVehicle() != null) {
+                ((LivingEntity) mob.getVehicle()).damage(2, mob);
+                return;
+            }
             if (!mob.hasPotionEffect(PotionEffectType.CONFUSION) && distance > 5 * 5 && distance < 10 * 10) {
                 // charge at player
-                mob.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 200, 0, true, true, false));
+                mob.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 150, 0, true, true, false));
                 new BukkitRunnable() {
+                    final LivingEntity target = mob.getTarget();
                     int time = 0;
                     final Vector direction = mob.getLocation().getDirection().setY(0).normalize().multiply(1.5);
                     @Override
                     public void run() {
-                        if (mob.isDead())
+                        if (mob.isDead()) {
                             this.cancel();
-                        mob.setVelocity(mob.getVelocity().add(direction));
+                            return;
+                        }
+                        if (target == null) {
+                            this.cancel();
+                            return;
+                        }
+                        if (mob.getLocation().distanceSquared(target.getLocation()) < 2 * 2) {
+                            this.cancel();
+                            return;
+                        }
+                        if (time >= 60) {
+                            this.cancel();
+                            return;
+                        } else if (!mob.hasPotionEffect(PotionEffectType.CONFUSION)) {
+                            this.cancel();
+                            return;
+                        }
 
-                        if (time >= 5)
-                            this.cancel();
-                        else if (!mob.hasPotionEffect(PotionEffectType.CONFUSION))
-                            this.cancel();
+                        mob.setVelocity(mob.getVelocity().add(direction));
                         time++;
                     }
-                }.runTaskTimer(plugin, 0, 10);
+                }.runTaskTimer(plugin, 0, 1);
 
                 // stun
                 new BukkitRunnable() {
                     @Override
                     public void run() {
-                        if (!mob.isDead()) {
+                        if (!mob.isDead() && mob.getVehicle() == null) {
                             mob.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 5, 200, false, false, false));
                             mob.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 20 * 5, 200, false, false, false));
                         }
                     }
-                }.runTaskLater(plugin, 10);
-                mob.setVelocity(mob.getVelocity().add(mob.getLocation().getDirection().normalize().multiply(3)).add(new Vector(0, 0.1, 0)));
+                }.runTaskLater(plugin, 61);
             }
             mob.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20, 1, false, false));
         });
