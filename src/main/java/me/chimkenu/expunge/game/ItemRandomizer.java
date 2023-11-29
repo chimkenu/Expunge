@@ -50,6 +50,16 @@ public class ItemRandomizer {
         this.possibilities = preset.gameItems();
     }
 
+    public ItemRandomizer(double x, double y, double z, double chance, int count, boolean isInvulnerable, List<GameItems> possibilities) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.chance = chance;
+        this.count = count;
+        this.isInvulnerable = isInvulnerable;
+        this.possibilities = possibilities;
+    }
+
     public void randomize(GameManager gameManager) {
         for (int i = 0; i < count; i++) {
             if (ThreadLocalRandom.current().nextDouble() < chance) {

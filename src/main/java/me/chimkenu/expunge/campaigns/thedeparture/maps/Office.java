@@ -101,7 +101,7 @@ public class Office implements CampaignMap, CampaignIntro {
     public ItemRandomizer[] randomizedGameItems() {
         return new ItemRandomizer[]{
                 new ItemRandomizer(-3, 10, -17.5, 1, 4, List.of(GameItems.MEDKIT)),
-                new ItemRandomizer(-12, 10, -17.5, 1, 1, List.of(GameItems.CROWBAR, GameItems.FIRE_AXE, GameItems.NIGHTSTICK)),
+                new ItemRandomizer(-12, 10, -17.5, 1, 1, true, List.of(GameItems.CROWBAR, GameItems.FIRE_AXE, GameItems.NIGHTSTICK)),
 
                 new ItemRandomizer(1.5, 10, -22.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
                 new ItemRandomizer(-18.5, 10, -22.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
