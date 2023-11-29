@@ -2,7 +2,6 @@ package me.chimkenu.expunge.mobs.special;
 
 import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.items.utilities.throwable.Spit;
-import me.chimkenu.expunge.mobs.GameMob;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.World;
