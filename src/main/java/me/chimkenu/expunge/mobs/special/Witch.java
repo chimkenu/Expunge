@@ -18,11 +18,14 @@ public class Witch extends Special {
         super(plugin, world, locationToSpawn, Enderman.class, mob -> {
             if (mob.getTarget() == null) {
                 mob.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20, 200, false, false, false));
+            } else {
+                mob.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20, 2, false, false, false));
             }
         });
         Objects.requireNonNull(getMob().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)).setBaseValue(39);
         Objects.requireNonNull(getMob().getAttribute(Attribute.GENERIC_MAX_HEALTH)).setBaseValue(1000);
         getMob().setHealth(1000);
+        getMob().addScoreboardTag("WITCH");
     }
 
     @Override

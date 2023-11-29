@@ -21,7 +21,6 @@ public class Spewer extends Special {
         creeper.setMaxFuseTicks(20 * 60);
         creeper.setExplosionRadius(1);
         creeper.setHealth(1);
-        getMob().addScoreboardTag("SPECIAL");
         getMob().addScoreboardTag("BOOMER");
     }
 

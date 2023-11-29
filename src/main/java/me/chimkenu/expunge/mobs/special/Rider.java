@@ -41,7 +41,6 @@ public class Rider extends Special {
                 } else mob.setTarget(getRandomPlayer(world));
             }
         });
-        getMob().addScoreboardTag("SPECIAL");
         getMob().addScoreboardTag("JOCKEY");
     }
 

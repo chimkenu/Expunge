@@ -64,14 +64,25 @@ public class ShoveListener extends GameListener {
                     continue;
                 }
 
-                // is a shove-able creature (but don't damage boomers)
-                if (!livingEntity.getScoreboardTags().contains("BOOMER")) {
-                    livingEntity.damage(8, attacker);
+                boolean knockBack = true;
+                double damage = 8;
+
+                // is a shove-able creature (with a few exceptions)
+                if (livingEntity.getScoreboardTags().contains("BOOMER")) {
+                    damage = 0;
                 }
+                if (livingEntity.getScoreboardTags().contains("TANK") || livingEntity.getScoreboardTags().contains("CHARGER") || livingEntity.getScoreboardTags().contains("WITCH")) {
+                    damage = 0;
+                    knockBack = false;
+                }
+
+                if (damage > 0) livingEntity.damage(damage, attacker);
                 if (livingEntity.getVehicle() != attacker) livingEntity.leaveVehicle();
-                livingEntity.setVelocity(livingEntity.getVelocity().add(attacker.getLocation().getDirection().setY(0).multiply(0.6)));
-                livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 20 * 3, 9, false, false, false));
-                livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 3, 9, false, false, false));
+                if (knockBack) {
+                    livingEntity.setVelocity(livingEntity.getVelocity().add(attacker.getLocation().getDirection().setY(0).multiply(0.6)));
+                    livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 20 * 3, 9, false, false, false));
+                    livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 3, 9, false, false, false));
+                }
             }
         }
         return true;

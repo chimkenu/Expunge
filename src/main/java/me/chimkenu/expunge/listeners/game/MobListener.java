@@ -15,6 +15,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 import org.spigotmc.event.entity.EntityDismountEvent;
 
 public class MobListener extends GameListener {
@@ -90,11 +91,16 @@ public class MobListener extends GameListener {
     // Tank takes more damage on fire
     @EventHandler
     public void onDamage(EntityDamageEvent e) {
-        if (e.getEntity().getWorld() != gameManager.getWorld()) {
+        Entity entity = e.getEntity();
+        if (entity.getWorld() != gameManager.getWorld()) {
             return;
         }
-        if (e.getEntity().getScoreboardTags().contains("TANK") && e.getEntity().getFireTicks() > 0) {
-            e.setDamage(e.getDamage() * 5);
+        if (entity.getScoreboardTags().contains("TANK") && entity.getFireTicks() > 0) {
+            e.setDamage(e.getDamage() * 1.5);
+            entity.setVelocity(new Vector());
+        }
+        if (entity.getScoreboardTags().contains("WITCH")) {
+            entity.setVelocity(new Vector());
         }
     }
 
