@@ -57,7 +57,10 @@ public class ShoveListener extends GameListener {
 
         for (Entity entity : attacker.getWorld().getNearbyEntities(loc, 1.5, 1.5, 1.5)) {
             if (entity instanceof LivingEntity livingEntity) {
-                if (livingEntity instanceof Player) {
+                if (livingEntity instanceof Player player) {
+                    for (Entity e : player.getPassengers()) {
+                        if (e.getVehicle() != attacker) e.leaveVehicle();
+                    }
                     continue;
                 }
                 if (livingEntity instanceof ArmorStand) {
@@ -77,7 +80,6 @@ public class ShoveListener extends GameListener {
                 }
 
                 if (damage > 0) livingEntity.damage(damage, attacker);
-                if (livingEntity.getVehicle() != attacker) livingEntity.leaveVehicle();
                 if (knockBack) {
                     livingEntity.setVelocity(livingEntity.getVelocity().add(attacker.getLocation().getDirection().setY(0).multiply(0.6)));
                     livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 20 * 3, 9, false, false, false));
