@@ -1,6 +1,6 @@
 package me.chimkenu.expunge.mobs.special;
 
-import me.chimkenu.expunge.mobs.GameMob;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Spider;
@@ -12,7 +12,7 @@ import org.bukkit.util.Vector;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Rider extends GameMob {
+public class Rider extends Special {
     public Rider(JavaPlugin plugin, World world, Vector locationToSpawn) {
         super(plugin, world, locationToSpawn, Spider.class, mob -> {
             if (mob.getVehicle() instanceof Player target) {
@@ -43,5 +43,20 @@ public class Rider extends GameMob {
         });
         getMob().addScoreboardTag("SPECIAL");
         getMob().addScoreboardTag("JOCKEY");
+    }
+
+    @Override
+    protected void playJingle() {
+        final float[] pitches = new float[]{0.529732f, 0.561231f, 0.529732f, 0.561231f, 0.529732f, 0.561231f, 0.529732f, 0.561231f, 0.529732f, 0.594604f, 0.529732f, 0.594604f, 0.529732f, 0.561231f, 0.529732f, 0.561231f};
+        for (int i = 0; i < pitches.length / 2; i++) {
+            final int finalI = i;
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    getMob().getWorld().playSound(getMob(), Sound.BLOCK_NOTE_BLOCK_HARP, 1, pitches[finalI * 2]);
+                    getMob().getWorld().playSound(getMob(), Sound.BLOCK_NOTE_BLOCK_HARP, 1, pitches[finalI * 2 + 1]);
+                }
+            }.runTaskLater(plugin, i * 2);
+        }
     }
 }

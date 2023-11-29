@@ -364,6 +364,17 @@ public enum GameItems {
             return Type.THROWABLE;
         }
     },
+    PIPE_BOMB {
+        @Override
+        public GameItem getGameItem() {
+            return new PipeBomb();
+        }
+
+        @Override
+        public Type getType() {
+            return Type.THROWABLE;
+        }
+    },
     DEFIBRILLATOR {
         @Override
         public GameItem getGameItem() {

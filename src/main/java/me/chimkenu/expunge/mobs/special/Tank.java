@@ -1,7 +1,6 @@
 package me.chimkenu.expunge.mobs.special;
 
 import me.chimkenu.expunge.enums.Difficulty;
-import me.chimkenu.expunge.mobs.GameMob;
 import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
@@ -15,7 +14,7 @@ import org.bukkit.util.Vector;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Tank extends GameMob {
+public class Tank extends Special {
     public Tank(JavaPlugin plugin, World world, Vector locationToSpawn, Difficulty difficulty) {
         super(plugin, world, locationToSpawn, IronGolem.class, mob -> {
             if (mob.getTarget() == null || (!(mob.getTarget() instanceof Player player) || player.getGameMode() != GameMode.ADVENTURE)) mob.setTarget(getRandomPlayer(world));
@@ -35,5 +34,10 @@ public class Tank extends GameMob {
         getMob().setHealth(2000);
         getMob().setAbsorptionAmount(500 + (difficulty.ordinal() * 1000));
         getMob().addScoreboardTag("TANK");
+    }
+
+    @Override
+    protected void playJingle() {
+
     }
 }

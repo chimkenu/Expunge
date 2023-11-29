@@ -1,7 +1,8 @@
 package me.chimkenu.expunge.mobs.special;
 
 import me.chimkenu.expunge.enums.Difficulty;
-import me.chimkenu.expunge.mobs.GameMob;
+import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Zoglin;
@@ -13,7 +14,7 @@ import org.bukkit.util.Vector;
 
 import java.util.Objects;
 
-public class Charger extends GameMob {
+public class Charger extends Special {
     public Charger(JavaPlugin plugin, World world, Vector locationToSpawn, Difficulty difficulty) {
         super(plugin, world, locationToSpawn, Zoglin.class, mob -> {
             double distance = 0;
@@ -57,5 +58,19 @@ public class Charger extends GameMob {
         Objects.requireNonNull(getMob().getAttribute(Attribute.GENERIC_MAX_HEALTH)).setBaseValue(400 + ((difficulty.ordinal() * 200)));
         getMob().setHealth(400 + (difficulty.ordinal() * 200));
         getMob().addScoreboardTag("CHARGER");
+    }
+
+    @Override
+    protected void playJingle() {
+        final float[] pitches = new float[]{0.594604f, 0.561231f, 0.594604f, 0.629961f, 0.529732f, 0.561231f};
+        for (int i = 0; i < pitches.length; i++) {
+            final int finalI = i;
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    getMob().getWorld().playSound(getMob(), Sound.BLOCK_NOTE_BLOCK_DIDGERIDOO, SoundCategory.HOSTILE, 1, pitches[finalI]);
+                }
+            }.runTaskLater(plugin, 2 * i);
+        }
     }
 }

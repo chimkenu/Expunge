@@ -3,14 +3,17 @@ package me.chimkenu.expunge.mobs.special;
 import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.items.utilities.throwable.Spit;
 import me.chimkenu.expunge.mobs.GameMob;
+import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.World;
 import org.bukkit.entity.ZombieVillager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-public class Spitter extends GameMob {
+public class Spitter extends Special {
     public Spitter(JavaPlugin plugin, GameManager gameManager, World world, Vector locationToSpawn) {
         super(plugin, world, locationToSpawn, ZombieVillager.class, mob -> {
             double distance = 0;
@@ -27,5 +30,19 @@ public class Spitter extends GameMob {
         });
 
         getMob().addScoreboardTag("SPITTER");
+    }
+
+    @Override
+    protected void playJingle() {
+        final float[] pitches = new float[]{0.594604f, 0.629961f, 0.561231f, 0.594604f};
+        for (int i = 0; i < pitches.length; i++) {
+            final int finalI = i;
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    getMob().getWorld().playSound(getMob(), Sound.BLOCK_NOTE_BLOCK_BELL, SoundCategory.HOSTILE, 1, pitches[finalI]);
+                }
+            }.runTaskLater(plugin, i * 5);
+        }
     }
 }

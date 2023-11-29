@@ -1,9 +1,10 @@
 package me.chimkenu.expunge.mobs.special;
 
 import me.chimkenu.expunge.game.director.ItemHandler;
-import me.chimkenu.expunge.mobs.GameMob;
 import me.chimkenu.expunge.listeners.game.MobListener;
 import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Stray;
@@ -16,7 +17,7 @@ import org.bukkit.util.Vector;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Pouncer extends GameMob {
+public class Pouncer extends Special {
     public Pouncer(JavaPlugin plugin, World world, Vector locationToSpawn, ItemHandler itemHandler) {
         super(plugin, world, locationToSpawn, Stray.class, mob -> {
             if (mob.getVehicle() instanceof Player target) {
@@ -47,5 +48,25 @@ public class Pouncer extends GameMob {
             }
         });
         getMob().getEquipment().setItemInMainHand(new ItemStack(Material.AIR));
+    }
+
+    @Override
+    protected void playJingle() {
+        final float[] pitches = new float[]{1.781797f, 1.887749f, 1.414214f, 1.587401f, 1.498307f, 1.587401f};
+        for (int i = 0; i < pitches.length / 2; i++) {
+            final int finalI = i;
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    getMob().getWorld().playSound(getMob(), Sound.BLOCK_NOTE_BLOCK_BELL, SoundCategory.HOSTILE, 1, pitches[2 * finalI]);
+                }
+            }.runTaskLater(plugin, i * 8);
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    getMob().getWorld().playSound(getMob(), Sound.BLOCK_NOTE_BLOCK_BELL, SoundCategory.HOSTILE, 1, pitches[2 * finalI + 1]);
+                }
+            }.runTaskLater(plugin, i * 8 + 1);
+        }
     }
 }
