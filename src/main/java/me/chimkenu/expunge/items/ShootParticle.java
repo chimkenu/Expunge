@@ -91,7 +91,7 @@ public class ShootParticle {
             if (entities.size() >= entitiesToHit) break;
             if (ray.intersects(world.getBlockAt(v.toLocation(world)).getBoundingBox(), range, ACCURACY_TRUE)) {
                 wallsThrough--;
-                if (wallsThrough <= 0) break;
+                if (wallsThrough < 0) break;
             }
         }
 
