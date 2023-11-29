@@ -39,7 +39,7 @@ public class Director implements Listener {
 
     public void run() {
         sceneTime++;
-        mobHandler.run(sceneTime, sceneAttempts, gameManager.getDifficulty());
+        mobHandler.run(sceneTime, gameManager.getDifficulty());
 
         // players
         for (Player p : gameManager.getPlayers()) {

@@ -46,7 +46,7 @@ public class MobHandler {
         timeSinceLastBlockCheck = -2147483648;
     }
 
-    public void run(int sceneTime, int sceneAttempts, Difficulty difficulty) {
+    public void run(int sceneTime, Difficulty difficulty) {
         if (!isSpawningEnabled) {
             return;
         }
@@ -105,32 +105,38 @@ public class MobHandler {
     public void spawnAdditionalInfected(Difficulty difficulty, int count) {
         for (int i = 0; i < count; i++) {
             double random = ThreadLocalRandom.current().nextDouble();
-            Vector location = (blocks == null || blocks.isEmpty()) ? getRandomSpawnLocation() : blocks.get(ThreadLocalRandom.current().nextInt(blocks.size())).getLocation().add(0.5, 1, 0.5).toVector();
             if (random < 0.025) {
-                getActiveMobs().add(new Soldier(plugin, director.getWorld(), location, difficulty));
+                getActiveMobs().add(new Soldier(plugin, director.getWorld(), getRandomSpawnLocation(), difficulty));
             } else if (random < 0.05) {
-                getActiveMobs().add(new Robot(plugin, director.getWorld(), location, difficulty));
+                getActiveMobs().add(new Robot(plugin, director.getWorld(), getRandomSpawnLocation(), difficulty));
             } else {
-                getActiveMobs().add(new Horde(plugin, director.getWorld(), location, difficulty));
+                getActiveMobs().add(new Horde(plugin, director.getWorld(), getRandomSpawnLocation(), difficulty));
             }
         }
     }
 
     public void spawnSpecialInfected(Difficulty difficulty, int count) {
         for (int i = 0; i < count; i++) {
-            double r = ThreadLocalRandom.current().nextDouble();
-            if (r < 0.16)
-                getActiveMobs().add(new Rider(plugin, director.getWorld(), getRandomSpawnLocation()));
-            else if (r < 0.33)
-                getActiveMobs().add(new Spewer(plugin, director.getWorld(), getRandomSpawnLocation()));
-            else if (r < 0.5)
-                getActiveMobs().add(new Charger(plugin, director.getWorld(), getRandomSpawnLocation(), difficulty));
-            else if (r < 0.66)
-                getActiveMobs().add(new Pouncer(plugin, director.getWorld(), getRandomSpawnLocation(), director.getItemHandler()));
-            else if (r < 0.83)
-                getActiveMobs().add(new Choker(plugin, director.getWorld(), getRandomSpawnLocation()));
-            else
-                getActiveMobs().add(new Spitter(plugin, director.getGameManager(), director.getWorld(), getRandomSpawnLocation()));
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    if (isSpawningEnabled) {
+                        double r = ThreadLocalRandom.current().nextDouble();
+                        if (r < 0.16)
+                            getActiveMobs().add(new Rider(plugin, director.getWorld(), getRandomSpawnLocation()));
+                        else if (r < 0.33)
+                            getActiveMobs().add(new Spewer(plugin, director.getWorld(), getRandomSpawnLocation()));
+                        else if (r < 0.5)
+                            getActiveMobs().add(new Charger(plugin, director.getWorld(), getRandomSpawnLocation(), difficulty));
+                        else if (r < 0.66)
+                            getActiveMobs().add(new Pouncer(plugin, director.getWorld(), getRandomSpawnLocation(), director.getItemHandler()));
+                        else if (r < 0.83)
+                            getActiveMobs().add(new Choker(plugin, director.getWorld(), getRandomSpawnLocation()));
+                        else
+                            getActiveMobs().add(new Spitter(plugin, director.getGameManager(), director.getWorld(), getRandomSpawnLocation()));
+                    }
+                }
+            }.runTaskLater(plugin, (long) i * ThreadLocalRandom.current().nextInt(60));
         }
     }
 
@@ -139,9 +145,9 @@ public class MobHandler {
     }
 
     private Set<Block> getValidSurroundingBlocks() {
-        final int SPAWN_RADIUS = 40;
-        final int TOO_CLOSE_RADIUS = 15;
-        final int DEPTH = 2;
+        final int SPAWN_RADIUS = plugin.getConfig().getInt("director.spawn-radius");
+        final int TOO_CLOSE_RADIUS = plugin.getConfig().getInt("director.too-close-radius");
+        final int DEPTH = plugin.getConfig().getInt("director.depth");
 
         Set<Block> blocks = new HashSet<>();
         Set<Block> tooClose = new HashSet<>();
@@ -242,16 +248,7 @@ public class MobHandler {
     }
 
     public void spawnStartingMobs() {
-        int sceneIndex = director.getGameManager().getCampaignMapIndex();
-        int sceneAttempts = director.getSceneAttempts();
-        Difficulty difficulty = director.getDifficulty();
-        int numberOfPlayers = director.getPlayers().size();
-        
-        // MOB CALCULATION: STARTING HORDE IS DEFINED BY THE FOLLOWING EQUATION:
-        // 6 + sd + 2p - (a - (a / 5) % 5)
-        // WHEREIN 's' IS THE SCENE INDEX, 'd' IS THE DIFFICULTY (0-2),
-        // 'p' IS THE NUMBER OF PLAYERS, AND 'a' IS THE NUMBER OF SCENE ATTEMPTS
-        int totalMobs = 6 + (sceneIndex * difficulty.ordinal()) + (2 * numberOfPlayers) - ((sceneAttempts - (sceneAttempts % 5)) / 5);
+        int totalMobs = getTotalMobs(director.getGameManager().getCampaignMapIndex(), director.getSceneAttempts(), director.getDifficulty(), director.getPlayers().size());
         if (totalMobs <= 0) {
             totalMobs = 1;
         }
@@ -263,6 +260,14 @@ public class MobHandler {
         for (int i = 0; i < Math.min(path.length, 3); i++) {
             spawnAtRandomLocations(path[i], totalMobs);
         }
+    }
+
+    private int getTotalMobs(int sceneIndex, int sceneAttempts, Difficulty difficulty, int numberOfPlayers) {
+        // MOB CALCULATION: STARTING HORDE IS DEFINED BY THE FOLLOWING EQUATION:
+        // 6 + sd + 2p - (a - (a / 5) % 5)
+        // WHEREIN 's' IS THE SCENE INDEX, 'd' IS THE DIFFICULTY (0-2),
+        // 'p' IS THE NUMBER OF PLAYERS, AND 'a' IS THE NUMBER OF SCENE ATTEMPTS
+        return 6 + (sceneIndex * difficulty.ordinal()) + (2 * numberOfPlayers) - ((sceneAttempts - (sceneAttempts % 5)) / 5);
     }
 
     public void addMob(GameMob gameMob) {
@@ -290,6 +295,10 @@ public class MobHandler {
     }
 
     public Vector getRandomSpawnLocation() {
+        if (blocks != null && !blocks.isEmpty()) {
+            return blocks.get(ThreadLocalRandom.current().nextInt(blocks.size())).getLocation().add(0.5, 1, 0.5).toVector();
+        }
+        
         // Get a random player
         Player player = null;
         int item = ThreadLocalRandom.current().nextInt(director.getPlayers().size());
