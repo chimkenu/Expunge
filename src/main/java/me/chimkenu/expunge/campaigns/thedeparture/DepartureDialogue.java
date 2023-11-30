@@ -145,7 +145,7 @@ public enum DepartureDialogue {
         }
     },
     OFFICE_RADIO {
-        final String[] string = new String[]{ "&7[Radio] » Attention all citizens, there will be an evacuation site situated at the Takahashi Football Stadium. Avoid contact with all infected individuals and head towards the Takahashi Football Stadium and wait for rescue."};
+        final String[] string = new String[]{ "[Radio] » Attention all citizens, there will be an evacuation site situated at the Takahashi Football Stadium. Avoid contact with all infected individuals and head towards the Takahashi Football Stadium and wait for rescue."};
 
         @Override
         public String[] getA() {
