@@ -556,7 +556,7 @@ public enum DepartureDialogue {
         @Override
         public String[] getSolo() {
             return new String[]{
-                    "A » What happened to this place...? There's no helicopter in sight.\n",
+                    "A » What happened to this place...? There's no helicopter in sight.",
                     "A » Hmm... If I head to the control room and turn on the stadium screens, it could signal the military to rescue me."
             };
         }
