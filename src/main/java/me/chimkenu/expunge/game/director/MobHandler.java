@@ -131,7 +131,7 @@ public class MobHandler {
                         else if (r < 0.66)
                             getActiveMobs().add(new Pouncer(plugin, director.getWorld(), getRandomSpawnLocation(), director.getItemHandler()));
                         else if (r < 0.83)
-                            getActiveMobs().add(new Choker(plugin, director.getWorld(), getRandomSpawnLocation()));
+                            getActiveMobs().add(new Choker(plugin, director.getWorld(), director.getGameManager(), getRandomSpawnLocation()));
                         else
                             getActiveMobs().add(new Spitter(plugin, director.getGameManager(), director.getWorld(), getRandomSpawnLocation()));
                     }

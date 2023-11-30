@@ -88,7 +88,6 @@ public class MobListener extends GameListener {
         }
     }
 
-    // Tank takes more damage on fire
     @EventHandler
     public void onDamage(EntityDamageEvent e) {
         Entity entity = e.getEntity();
@@ -128,6 +127,10 @@ public class MobListener extends GameListener {
 
         // Can't deal damage to mobs that are disabling you
         if ((e.getDamager() instanceof Player) && e.getEntity().getPassengers().contains(e.getDamager()) || e.getDamager().getPassengers().contains(e.getEntity())) {
+            e.setCancelled(true);
+            return;
+        }
+        if (e.getDamager().getVehicle() != null && e.getDamager().getVehicle().getScoreboardTags().contains("SMOKER_KNOCKED") && e.getEntity().getScoreboardTags().contains("SMOKER")) {
             e.setCancelled(true);
             return;
         }
@@ -209,6 +212,13 @@ public class MobListener extends GameListener {
             armorStand.remove();
             player.teleport(player.getLocation().add(0, 1, 0));
         } else {
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onEntityTeleport(EntityTeleportEvent e) {
+        if (e.getEntity().getWorld().equals(gameManager.getWorld()) && e.getEntity() instanceof Enderman) {
             e.setCancelled(true);
         }
     }

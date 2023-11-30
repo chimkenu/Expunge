@@ -14,19 +14,29 @@ import java.util.concurrent.ThreadLocalRandom;
 public abstract class GameMob {
     private final Mob mob;
     private final BukkitTask runnable;
+    private MobBehavior behavior;
 
     public <T extends Mob> GameMob(JavaPlugin plugin, World world, Vector locationToSpawn, Class<T> mobToSpawn, MobBehavior behavior) {
         mob = world.spawn(new Location(world, locationToSpawn.getX(), locationToSpawn.getY(), locationToSpawn.getZ()), mobToSpawn);
         mob.addScoreboardTag("MOB");
         mob.setCanPickupItems(false);
         mob.setRemoveWhenFarAway(false);
-        runnable = behavior == null ? null : new BukkitRunnable() {
+        this.behavior = behavior;
+        runnable = this.behavior == null ? null : new BukkitRunnable() {
             @Override
             public void run() {
-                behavior.run(mob);
+                getBehavior().run(mob);
                 if (mob.isDead()) this.cancel();
             }
         }.runTaskTimer(plugin, 1, 20);
+    }
+
+    private MobBehavior getBehavior() {
+        return behavior;
+    }
+
+    protected void setBehavior(MobBehavior behavior) {
+        this.behavior = behavior;
     }
 
     public Mob getMob() {

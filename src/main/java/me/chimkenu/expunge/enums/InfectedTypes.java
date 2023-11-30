@@ -44,7 +44,7 @@ public enum InfectedTypes {
     CHOKER {
         @Override
         public GameMob spawn(JavaPlugin plugin, GameManager gameManager, Vector locationToSpawn, Difficulty difficulty) {
-            return new Choker(plugin, gameManager.getWorld(), locationToSpawn);
+            return new Choker(plugin, gameManager.getWorld(), gameManager, locationToSpawn);
         }
     },
     POUNCER {
