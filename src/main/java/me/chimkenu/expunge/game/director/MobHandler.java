@@ -32,6 +32,7 @@ public class MobHandler {
     private final HashSet<GameMob> activeMobs = new HashSet<>();
     private boolean isSpawningEnabled;
     private boolean chillOut;
+    private boolean goHam; // This is a special boolean which is set during finales/crescendos
     private int timeSinceLastHorde;
 
     private List<Block> blocks;
@@ -42,6 +43,7 @@ public class MobHandler {
         this.director = director;
         isSpawningEnabled = false;
         chillOut = false;
+        goHam = false;
         timeSinceLastHorde = -2147483648;
         timeSinceLastBlockCheck = -2147483648;
     }
@@ -71,6 +73,10 @@ public class MobHandler {
             spawnHorde(difficulty);
         } else if (sceneTime - timeSinceLastHorde > 40 * 20) {
             chillOut = false;
+        }
+
+        if (goHam && getActiveMobs().size() < 15) {
+            spawnHorde(difficulty);
         }
 
         // despawn stuck common infected
@@ -276,6 +282,7 @@ public class MobHandler {
 
     public void clear() {
         chillOut = false;
+        goHam = false;
         timeSinceLastHorde = -2147483648;
         timeSinceLastBlockCheck = -2147483648;
         for (GameMob mob : activeMobs) {
@@ -409,5 +416,9 @@ public class MobHandler {
 
     public void setSpawningEnabled(boolean spawningEnabled) {
         isSpawningEnabled = spawningEnabled;
+    }
+
+    public void setGoHam(boolean value) {
+        goHam = value;
     }
 }
