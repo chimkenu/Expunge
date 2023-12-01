@@ -65,18 +65,7 @@ public class Director implements Listener {
 
     public void bile(JavaPlugin plugin, LivingEntity target, double radius) {
         if (mobHandler.isSpawningEnabled() && mobHandler.getActiveMobs().size() < 15) {
-            new BukkitRunnable() {
-                int i = 6;
-                @Override
-                public void run() {
-                    for (int j = 0; j < 5; j++) {
-                        mobHandler.spawnAdditionalInfected(getDifficulty(), 1);
-                    }
-                    i--;
-                    if (i <= 0) this.cancel();
-                    else if (!mobHandler.isSpawningEnabled()) this.cancel();
-                }
-            }.runTaskTimer(plugin, 0, 20 * 5);
+            mobHandler.spawnHorde(getDifficulty());
         }
         new BukkitRunnable() {
             int i = 15;
