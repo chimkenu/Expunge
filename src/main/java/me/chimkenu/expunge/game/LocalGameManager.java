@@ -339,7 +339,7 @@ public class LocalGameManager implements GameManager {
     }
 
     private boolean loadMap(CampaignMap map) {
-        LocalGameWorld localGameWorld = new LocalGameWorld(new File(plugin.getDataFolder(), campaign.getMainDirectory() + "/" + map.directory()));
+        LocalGameWorld localGameWorld = new LocalGameWorld(new File(plugin.getDataFolder(), campaign.getMainDirectory() + File.separator + map.directory()));
         gameWorlds.add(localGameWorld);
         return localGameWorld.load();
     }
