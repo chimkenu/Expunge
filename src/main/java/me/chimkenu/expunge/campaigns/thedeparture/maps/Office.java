@@ -1,10 +1,7 @@
 package me.chimkenu.expunge.campaigns.thedeparture.maps;
 
 import me.chimkenu.expunge.GameAction;
-import me.chimkenu.expunge.campaigns.Campaign;
-import me.chimkenu.expunge.campaigns.CampaignIntro;
-import me.chimkenu.expunge.campaigns.CampaignMap;
-import me.chimkenu.expunge.campaigns.Dialogue;
+import me.chimkenu.expunge.campaigns.*;
 import me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue;
 import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.enums.GameItems;
@@ -283,6 +280,7 @@ public class Office implements CampaignMap, CampaignIntro {
 
     @Override
     public int play(GameManager gameManager) {
+        CampaignIntro.super.play(gameManager);
         final Location[] points = new Location[]{
                 new Location(gameManager.getWorld(), -6.25, 10.5, -1.7, -45, 28),
                 new Location(gameManager.getWorld(), -6.25, 10.5, -1.7, -45, 28),
@@ -294,6 +292,13 @@ public class Office implements CampaignMap, CampaignIntro {
         final String main = "The Departure";
         final Component sub = Component.text("Built by SirSunlight & Pagkain").color(TextColor.color(134, 0, 179));
 
-        return play(gameManager, points, main, sub, new Color(255, 92, 51), new Color(102, 0, 0), 3, 0.1, 10);
+        int time = play(gameManager, points, main, sub, new Color(255, 92, 51), new Color(102, 0, 0), 3, 0.1, 10);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                end(gameManager);
+            }
+        }.runTaskLater(gameManager.getPlugin(), time);
+        return time;
     }
 }
