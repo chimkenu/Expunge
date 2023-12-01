@@ -9,18 +9,15 @@ import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
 
 import java.awt.*;
 import java.time.Duration;
 import java.util.concurrent.ThreadLocalRandom;
 
-public interface CampaignIntro {
-    int play(GameManager gameManager);
-
+public interface CampaignIntro extends Cutscene {
     default int play(GameManager gameManager, Location[] points, String main, Component sub, Color mainColorStart, Color mainColorEnd, int delay, double blocksPerSecond, int stayTime) {
         displayTitle(gameManager, main, sub, mainColorStart, mainColorEnd, delay);
-        return displayLocation(gameManager, points, blocksPerSecond, stayTime);
+        return Cutscene.displayLocation(gameManager, points, blocksPerSecond, stayTime);
     }
 
     private void displayTitle(GameManager gameManager, String main, Component sub, Color mainColorStart, Color mainColorEnd, int delay) {
@@ -67,52 +64,5 @@ public interface CampaignIntro {
                 }
             }
         }.runTaskLater(gameManager.getPlugin(), time + delay);
-    }
-
-    private int displayLocation(GameManager gameManager, Location[] points, double blocksPerSecond, int stayTime) {
-        int time = 0;
-        for (int i = 0; i < points.length - 1; i++) {
-            Location l0 = points[i];
-            Location l1 = points[i + 1];
-
-            if (l0.toVector().equals(l1.toVector())) {
-                for (Player p : gameManager.getWorld().getPlayers()) {
-                    p.teleport(l0);
-                }
-                time += stayTime;
-                continue;
-            }
-
-            double distance = l0.toVector().distance(l1.toVector());
-            double duration = distance / blocksPerSecond;
-
-            int t = 0;
-            while (t < duration) {
-                int finalT = t;
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        for (Player p : gameManager.getWorld().getPlayers()) {
-                            p.teleport(lerpLocation(l0, l1, finalT / duration));
-                        }
-                    }
-                }.runTaskLater(gameManager.getPlugin(), time + t);
-                t++;
-            }
-            time += t;
-        }
-        return time;
-    }
-
-    private Location lerpLocation(Location v0, Location v1, double t) {
-        Location direction = new Location(v0.getWorld(), 0, 0, 0);
-        Vector d0 = v0.getDirection();
-        Vector d1 = v1.getDirection();
-        direction.setDirection(new Vector(lerp(d0.getX(), d1.getX(), t), lerp(d0.getY(), d1.getY(), t), lerp(d0.getZ(), d1.getZ(), t)));
-        return new Location(v0.getWorld(), lerp(v0.getX(), v1.getX(), t), lerp(v0.getY(), v1.getY(), t), lerp(v0.getZ(), v1.getZ(), t), direction.getYaw(), direction.getPitch());
-    }
-
-    private double lerp(double v0, double v1, double t) {
-        return v0 + t * (v1 - v0);
     }
 }
