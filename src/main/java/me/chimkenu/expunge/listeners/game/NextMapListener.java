@@ -39,9 +39,6 @@ public class NextMapListener extends GameListener {
             if (!gameManager.getPlayers().contains(e.getPlayer())) {
                 return;
             }
-            if (!gameManager.getDirector().getMobHandler().isSpawningEnabled()) {
-                return;
-            }
 
             BoundingBox endRegion = gameManager.getMap().endRegion();
             for (Player p : gameManager.getPlayers()) {
