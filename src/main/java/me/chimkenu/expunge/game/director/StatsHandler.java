@@ -24,13 +24,22 @@ public class StatsHandler {
             stats = stats.append(Component.text("    "))
                     .append(p.displayName())
                     .appendNewline()
-                    .append(Component.text("        Kills: " + getCommonKills(p) + " common, " + getSpecialKills(p) + " special", NamedTextColor.GRAY))
+                    .append(Component.text("        Kills: " + getCommonKills(p) + " common, " + getSpecialKills(p) + " special", NamedTextColor.GRAY).decoration(TextDecoration.BOLD, false))
                     .appendNewline()
-                    .append(Component.text("        Accuracy: " + decimalFormat.format(getAccuracy(p) * 100) + "% (" + decimalFormat.format(getHeadshotAccuracy(p) * 100) + "% headshot)", NamedTextColor.GRAY))
+                    .append(Component.text("        Accuracy: " + decimalFormat.format(getAccuracy(p) * 100) + "% (" + decimalFormat.format(getHeadshotAccuracy(p) * 100) + "% headshot)", NamedTextColor.GRAY).decoration(TextDecoration.BOLD, false))
                     .appendNewline();
         }
 
         return Component.text("Game Stats:", NamedTextColor.GRAY, TextDecoration.BOLD).append(stats);
+    }
+
+    public int getTotalKills() {
+        int total = 0;
+        for (Player p : director.getPlayers()) {
+            total += getCommonKills(p);
+            total += getSpecialKills(p);
+        }
+        return total;
     }
 
     public int getCommonKills(Player player) {
