@@ -15,8 +15,6 @@ public class Choker extends Special {
     private Player victim = null;
     private ArmorStand topArmorStand = null;
     private ArmorStand bottomArmorStand = null;
-    private Chicken topPlayer = null;
-    private Chicken topMob = null;
 
     public Choker(JavaPlugin plugin, World world, GameManager gameManager, Vector locationToSpawn) {
         super(plugin, gameManager.getWorld(), locationToSpawn, Husk.class, mob -> {});
@@ -28,10 +26,6 @@ public class Choker extends Special {
                     topArmorStand = null;
                     if (bottomArmorStand != null) bottomArmorStand.remove();
                     bottomArmorStand = null;
-                    if (topPlayer != null) topPlayer.remove();
-                    topPlayer = null;
-                    if (topMob != null) topMob.remove();
-                    topMob = null;
                     return;
                 }
 
@@ -85,32 +79,6 @@ public class Choker extends Special {
                     gameManager.getDirector().getItemHandler().addEntity(topArmorStand);
                     victim.addPassenger(topArmorStand);
 
-                    topPlayer = world.spawn(victim.getLocation(), Chicken.class);
-                    topMob = world.spawn(mob.getLocation(), Chicken.class);
-                    topPlayer.setAI(false);
-                    topPlayer.setSilent(true);
-                    topPlayer.setInvisible(true);
-                    topPlayer.setInvulnerable(true);
-                    topMob.setAI(false);
-                    topMob.setSilent(true);
-                    topMob.setInvisible(true);
-                    topMob.setInvulnerable(true);
-                    gameManager.getDirector().getItemHandler().addEntity(topPlayer);
-                    gameManager.getDirector().getItemHandler().addEntity(topMob);
-
-                    new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            if (mob.isDead() || victim == null || topMob == null || topPlayer == null) {
-                                this.cancel();
-                                return;
-                            }
-
-                            topPlayer.setLeashHolder(topMob);
-                            topMob.teleport(mob.getEyeLocation());
-                            topPlayer.teleport(victim.getEyeLocation());
-                        }
-                    }.runTaskTimer(plugin, 0, 1);
                     return;
                 }
             }
