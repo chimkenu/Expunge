@@ -103,8 +103,7 @@ public class PickUpListener extends GameListener {
             if (!(meta != null && meta.getLore() != null && meta.getLore().contains("invulnerable"))) {
                 Item itemSwapped = player.getWorld().dropItem(player.getLocation(), hotbarItem);
                 itemSwapped.setPickupDelay(20);
-                itemSwapped.addScoreboardTag("ITEM");
-                itemSwapped.setGlowing(true);
+                gameManager.getDirector().getItemHandler().addEntity(itemSwapped);
             }
         }
 
