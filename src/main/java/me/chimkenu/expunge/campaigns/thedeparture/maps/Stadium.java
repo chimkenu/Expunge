@@ -1,27 +1,22 @@
 package me.chimkenu.expunge.campaigns.thedeparture.maps;
 
 import me.chimkenu.expunge.GameAction;
-import me.chimkenu.expunge.campaigns.Campaign;
 import me.chimkenu.expunge.campaigns.CampaignMap;
 import me.chimkenu.expunge.campaigns.Dialogue;
 import me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue;
+import me.chimkenu.expunge.campaigns.thedeparture.extras.StadiumFinale;
 import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.enums.GameItems;
 import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.game.ItemRandomizer;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
-import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
@@ -184,112 +179,6 @@ public class Stadium implements CampaignMap {
                 },
                 new Listener() {
                     @EventHandler
-                    public void finaleBegin(PlayerInteractEvent e) {
-                        if (!gameManager.getPlayers().contains(e.getPlayer())) {
-                            return;
-                        }
-                        if (!e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
-                            return;
-                        }
-                        if (e.getClickedBlock() == null || !(e.getClickedBlock().getType() == Material.LEVER)) {
-                            return;
-                        }
-                        Vector clickedLoc = e.getClickedBlock().getLocation().toVector();
-                        if (clickedLoc.equals(new Vector(49, 46, 180)) || clickedLoc.equals(new Vector(51, 46, 180))) {
-                            Campaign.playCrescendoEventEffect(gameManager.getPlayers());
-                            summonHorde(plugin, gameManager);
-                            new BukkitRunnable() {
-                                int i = 20 * 40;
-                                @Override
-                                public void run() {
-                                    i--;
-                                    if (!gameManager.isRunning() || !gameManager.getDirector().getMobHandler().isSpawningEnabled()) this.cancel();
-                                    if (i <= 0) {
-                                        summonHorde(plugin, gameManager);
-                                        this.cancel();
-                                    }
-                                }
-                            }.runTaskTimer(plugin, 0, 1);
-
-                            // spawn in tank after horde is dead
-                            gameManager.addListener(new Listener() {
-                                @EventHandler
-                                public void afterHorde(EntityDeathEvent e) {
-                                    if (gameManager.getDirector().getMobHandler().getActiveMobs().size() <= 5) {
-                                        gameManager.getDirector().getMobHandler().spawnTank();
-                                        HandlerList.unregisterAll(this);
-                                    }
-                                }
-                            });
-                            // after tank dies
-                            gameManager.addListener(new Listener() {
-                                @EventHandler
-                                public void afterTank(EntityDeathEvent e) {
-                                    if (e.getEntityType().equals(EntityType.IRON_GOLEM)) {
-                                        // 30-second timer
-                                        new BukkitRunnable() {
-                                            int i = 30;
-                                            @Override
-                                            public void run() {
-
-
-                                                if (i <= 0) {
-                                                    // do the same thing
-                                                    summonHorde(plugin, gameManager);
-                                                    Campaign.playCrescendoEventEffect(gameManager.getPlayers());
-                                                    new BukkitRunnable() {
-                                                        int i = 20 * 40;
-                                                        @Override
-                                                        public void run() {
-                                                            i--;
-                                                            if (!gameManager.isRunning() || !gameManager.getDirector().getMobHandler().isSpawningEnabled()) this.cancel();
-                                                            if (i <= 0) {
-                                                                summonHorde(plugin, gameManager);
-                                                                this.cancel();
-                                                            }
-                                                        }
-                                                    }.runTaskTimer(plugin, 0, 1);
-                                                    // spawn in tank after horde is dead
-                                                    plugin.getServer().getPluginManager().registerEvents(new Listener() {
-                                                        @EventHandler
-                                                        public void afterHorde(EntityDeathEvent e) {
-                                                            if (gameManager.getDirector().getMobHandler().getActiveMobs().size() <= 5) {
-                                                                gameManager.getDirector().getMobHandler().spawnTank();
-                                                                HandlerList.unregisterAll(this);
-                                                            }
-                                                        }
-                                                    }, plugin);
-                                                    // after tank dies stadium ending
-                                                    plugin.getServer().getPluginManager().registerEvents(new Listener() {
-                                                        @EventHandler
-                                                        public void afterTank(EntityDeathEvent e) {
-                                                            if (e.getEntityType().equals(EntityType.IRON_GOLEM)) {
-                                                                Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.STADIUM_ENDING.pickRandom(gameManager.getPlayers().size()));
-                                                                gameManager.getWorld().getBlockAt(32, 17, 122).setType(Material.REDSTONE_BLOCK);
-                                                            }
-                                                        }
-                                                    }, plugin);
-
-                                                    this.cancel();
-                                                }
-
-
-                                                // timer
-                                                if (!gameManager.isRunning() || !gameManager.getDirector().getMobHandler().isSpawningEnabled()) this.cancel();
-                                                gameManager.getPlayers().forEach(player -> player.sendActionBar(Component.text(i, NamedTextColor.GRAY)));
-                                                i--;
-                                            }
-                                        }.runTaskTimer(plugin, 0, 20);
-                                        HandlerList.unregisterAll(this);
-                                    }
-                                }
-                            });
-                            HandlerList.unregisterAll(this);
-                        }
-                    }
-                },
-                new Listener() {
-                    @EventHandler
                     public void achievement(PlayerInteractEvent e) {
                         if (!gameManager.getPlayers().contains(e.getPlayer())) {
                             return;
@@ -305,22 +194,9 @@ public class Stadium implements CampaignMap {
                             Achievements.HEY_DONT_TOUCH_THAT.grant(e.getPlayer());
                         }
                     }
-                }
+                },
+                new StadiumFinale(gameManager)
         };
     }
 
-    private void summonHorde(JavaPlugin plugin, GameManager gameManager) {
-        new BukkitRunnable() {
-            int i = 6 + (gameManager.getDifficulty().ordinal() * 4);
-            @Override
-            public void run() {
-                if (i <= 0) this.cancel();
-                if (!gameManager.isRunning() || !gameManager.getDirector().getMobHandler().isSpawningEnabled()) this.cancel();
-                for (int j = 0; j < 5; j++) {
-                    gameManager.getDirector().getMobHandler().spawnAdditionalInfected(gameManager.getDifficulty(), 1);
-                }
-                i--;
-            }
-        }.runTaskTimer(plugin, 0, 20 * 5);
-    }
 }
