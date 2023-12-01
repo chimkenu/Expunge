@@ -20,7 +20,7 @@ public class Choker extends Special {
         super(plugin, gameManager.getWorld(), locationToSpawn, Husk.class, mob -> {});
         setBehavior(mob -> {
             if (victim != null) {
-                if (victim.getVehicle() == null || !victim.getPassengers().contains(topArmorStand) || victim.getVehicle() != bottomArmorStand) {
+                if (victim.getVehicle() == null || !victim.getPassengers().contains(topArmorStand) || victim.getVehicle() != bottomArmorStand || mob.isDead()) {
                     victim = null;
                     if (topArmorStand != null) topArmorStand.remove();
                     topArmorStand = null;
