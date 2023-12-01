@@ -19,9 +19,9 @@ public class Common extends GameMob {
                 Location mobLoc = mob.getLocation();
                 Location targetLoc = mob.getTarget().getLocation();
                 double distance = mobLoc.distanceSquared(targetLoc);
-                int speed = difficulty.ordinal();
+                int speed = 2 + Math.min(1, difficulty.ordinal());
                 if (distance > 30 * 30) speed += 1;
-                if (Math.abs(mobLoc.getYaw() - targetLoc.getYaw()) < 25) speed += 2;
+                if (Math.abs(mobLoc.getYaw() - targetLoc.getYaw()) < 25) speed += 1;
                 mob.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20, Math.max(speed - 1, 0), false, false));
             }
             behavior.run(mob);
