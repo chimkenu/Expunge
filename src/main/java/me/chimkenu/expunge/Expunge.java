@@ -17,13 +17,16 @@ public final class Expunge extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        saveDefaultConfig();
-        try {
-            ResourceCopy.copyFromJar(this.getClass(), "Maps", getDataFolder().toPath());
-        } catch (URISyntaxException | IOException e) {
-            Bukkit.getLogger().log(Level.SEVERE, "Couldn't copy the maps to the plugin directory!");
-            throw new RuntimeException(e);
+        if (!getDataFolder().exists()) {
+            try {
+                ResourceCopy.copyFromJar(this.getClass(), "Maps", getDataFolder().toPath());
+            } catch (URISyntaxException | IOException e) {
+                Bukkit.getLogger().log(Level.SEVERE, "Couldn't copy the maps to the plugin directory!");
+                throw new RuntimeException(e);
+            }
         }
+
+        saveDefaultConfig();
 
         Objects.requireNonNull(getCommand("expunge")).setExecutor(new ExpungeCommand(this, getLobby()));
         getServer().getPluginManager().registerEvents(getLobby(), this);
