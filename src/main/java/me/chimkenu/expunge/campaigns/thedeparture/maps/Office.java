@@ -148,9 +148,8 @@ public class Office implements CampaignMap, CampaignIntro {
                 new Listener() {
                     @EventHandler
                     public void onElevatorPress(PlayerInteractEvent e) {
-                        if (!gameManager.getPlayers().contains(e.getPlayer())) {
-                            return;
-                        }
+                        if (!gameManager.getPlayers().contains(e.getPlayer())) return;
+                        if (!gameManager.getPlayerStat(e.getPlayer()).isAlive()) return;
                         if (e.getAction().equals(Action.RIGHT_CLICK_BLOCK) && e.getClickedBlock() != null && e.getClickedBlock().getType().toString().contains("_BUTTON")) {
                             if (!gameManager.isRunning()) {
                                 return;
@@ -185,8 +184,8 @@ public class Office implements CampaignMap, CampaignIntro {
                 new Listener() {
                     @EventHandler
                     public void officeRubble(PlayerMoveEvent e) {
-                        if (!gameManager.getPlayers().contains(e.getPlayer()))
-                            return;
+                        if (!gameManager.getPlayers().contains(e.getPlayer())) return;
+                        if (!gameManager.getPlayerStat(e.getPlayer()).isAlive()) return;
                         BoundingBox box = new BoundingBox(14, 75, -75, 24, 82, -85);
                         if (!box.contains(e.getPlayer().getLocation().toVector()))
                             return;
@@ -197,11 +196,11 @@ public class Office implements CampaignMap, CampaignIntro {
                 new Listener() {
                     @EventHandler
                     public void officeJump(PlayerMoveEvent e) {
-                        if (!gameManager.getPlayers().contains(e.getPlayer()))
-                            return;
+                        if (!gameManager.getPlayers().contains(e.getPlayer())) return;
+                        if (!gameManager.getPlayerStat(e.getPlayer()).isAlive()) return;
                         BoundingBox box = new BoundingBox(-7, 51, -91, -13, 58, -104);
-                        if (!box.contains(e.getPlayer().getLocation().toVector()))
-                            return;
+                        if (!box.contains(e.getPlayer().getLocation().toVector())) return;
+
                         Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.OFFICE_JUMP.pickRandom(gameManager.getPlayers().size()));
                         HandlerList.unregisterAll(this);
                     }
@@ -209,6 +208,8 @@ public class Office implements CampaignMap, CampaignIntro {
                 new Listener() {
                     @EventHandler
                     public void onEnterDevelopersRoom(PlayerMoveEvent e) {
+                        if (!gameManager.getPlayers().contains(e.getPlayer())) return;
+                        if (!gameManager.getPlayerStat(e.getPlayer()).isAlive()) return;
                         if (new BoundingBox(-10, 41, -84, -7, 48, -80).contains(e.getPlayer().getLocation().toVector()))
                             Achievements.THE_DEVELOPERS_ROOM.grant(e.getPlayer());
                     }
@@ -217,9 +218,8 @@ public class Office implements CampaignMap, CampaignIntro {
                     @EventHandler
                     public void onEnterVent(PlayerInteractEvent e) {
                         Block block = e.getClickedBlock();
-                        if (!gameManager.getPlayers().contains(e.getPlayer())) {
-                            return;
-                        }
+                        if (!gameManager.getPlayers().contains(e.getPlayer())) return;
+                        if (!gameManager.getPlayerStat(e.getPlayer()).isAlive()) return;
                         if (block == null || !(e.getAction().equals(Action.PHYSICAL) && block.getLocation().toVector().equals(new Vector(-2, 45, -83)))) {
                             return;
                         }
@@ -254,11 +254,11 @@ public class Office implements CampaignMap, CampaignIntro {
                 new Listener() {
                     @EventHandler
                     public void officeVent(PlayerMoveEvent e) {
-                        if (!gameManager.getPlayers().contains(e.getPlayer()))
-                            return;
+                        if (!gameManager.getPlayers().contains(e.getPlayer())) return;
+                        if (!gameManager.getPlayerStat(e.getPlayer()).isAlive()) return;
                         BoundingBox box = new BoundingBox(0, 41, -95, -10, 48, -86);
-                        if (!box.contains(e.getPlayer().getLocation().toVector()))
-                            return;
+                        if (!box.contains(e.getPlayer().getLocation().toVector())) return;
+
                         Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.OFFICE_VENTS.pickRandom(gameManager.getPlayers().size()));
                         HandlerList.unregisterAll(this);
                     }
@@ -266,11 +266,11 @@ public class Office implements CampaignMap, CampaignIntro {
                 new Listener() {
                     @EventHandler
                     public void officeSafeRoom(PlayerMoveEvent e) {
-                        if (!gameManager.getPlayers().contains(e.getPlayer()))
-                            return;
+                        if (!gameManager.getPlayers().contains(e.getPlayer())) return;
+                        if (!gameManager.getPlayerStat(e.getPlayer()).isAlive()) return;
                         BoundingBox box = new BoundingBox(29, 43, -93, 24, 47, -85);
-                        if (!box.contains(e.getPlayer().getLocation().toVector()))
-                            return;
+                        if (!box.contains(e.getPlayer().getLocation().toVector())) return;
+
                         Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.OFFICE_SAFE_ROOM.pickRandom(gameManager.getPlayers().size()));
                         HandlerList.unregisterAll(this);
                     }
