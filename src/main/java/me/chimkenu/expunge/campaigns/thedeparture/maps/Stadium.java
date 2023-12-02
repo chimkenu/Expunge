@@ -153,11 +153,11 @@ public class Stadium implements CampaignMap {
                 new Listener() {
                     @EventHandler
                     public void stadiumParkingLotB(PlayerMoveEvent e) {
-                        if (!gameManager.getPlayers().contains(e.getPlayer()))
-                            return;
+                        if (!gameManager.getPlayers().contains(e.getPlayer())) return;
+                        if (!gameManager.getPlayerStat(e.getPlayer()).isAlive()) return;
                         BoundingBox box = new BoundingBox(-32, 34, -17, 7, 52, -47);
-                        if (!box.contains(e.getPlayer().getLocation().toVector()))
-                            return;
+                        if (!box.contains(e.getPlayer().getLocation().toVector())) return;
+
                         gameManager.getDirector().bile(plugin, e.getPlayer(), 5);
                         gameManager.getDirector().getMobHandler().spawnAtRandomLocations(new BoundingBox(1179, 35, 1466, 1239, 35, 1569), 20 + (gameManager.getDifficulty().ordinal() * 10));
                         Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.STADIUM_PARKING_LOT.pickRandom(gameManager.getPlayers().size()));
@@ -167,11 +167,11 @@ public class Stadium implements CampaignMap {
                 new Listener() {
                     @EventHandler
                     public void stadiumEnter(PlayerMoveEvent e) {
-                        if (!gameManager.getPlayers().contains(e.getPlayer()))
-                            return;
+                        if (!gameManager.getPlayers().contains(e.getPlayer())) return;
+                        if (!gameManager.getPlayerStat(e.getPlayer()).isAlive()) return;
                         BoundingBox box = new BoundingBox(45, 35, 75, 55, 39, 82);
-                        if (!box.contains(e.getPlayer().getLocation().toVector()))
-                            return;
+                        if (!box.contains(e.getPlayer().getLocation().toVector())) return;
+
                         Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.STADIUM_ENTER.pickRandom(gameManager.getPlayers().size()));
                         gameManager.getDirector().bile(plugin, e.getPlayer(), 5);
                         HandlerList.unregisterAll(this);
@@ -180,15 +180,12 @@ public class Stadium implements CampaignMap {
                 new Listener() {
                     @EventHandler
                     public void achievement(PlayerInteractEvent e) {
-                        if (!gameManager.getPlayers().contains(e.getPlayer())) {
-                            return;
-                        }
-                        if (!e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
-                            return;
-                        }
-                        if (e.getClickedBlock() == null || !(e.getClickedBlock().getType() == Material.STONE_BUTTON)) {
-                            return;
-                        }
+                        if (!gameManager.getPlayers().contains(e.getPlayer())) return;
+                        if (!gameManager.getPlayerStat(e.getPlayer()).isAlive()) return;
+
+                        if (!e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) return;
+                        if (e.getClickedBlock() == null || !(e.getClickedBlock().getType() == Material.STONE_BUTTON)) return;
+
                         Vector clickedLoc = e.getClickedBlock().getLocation().toVector();
                         if (clickedLoc.equals(new Vector(49, 39, 130)) || clickedLoc.equals(new Vector(49, 39, 138))) {
                             Achievements.HEY_DONT_TOUCH_THAT.grant(e.getPlayer());
