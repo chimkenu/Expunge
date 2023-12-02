@@ -59,6 +59,7 @@ public class StadiumFinale implements Listener {
                 }
 
                 mobHandler.setSpawningEnabled(false);
+                final int attempts = gameManager.getDirector().getSceneAttempts();
 
                 // 30-second timer
                 new BukkitRunnable() {
@@ -89,7 +90,7 @@ public class StadiumFinale implements Listener {
                         }
 
                         // timer
-                        if (!gameManager.isRunning() || !mobHandler.isSpawningEnabled()) this.cancel();
+                        if (!gameManager.isRunning() || gameManager.getDirector().getSceneAttempts() != attempts) this.cancel();
                         gameManager.getPlayers().forEach(player -> player.sendActionBar(Component.text(i, NamedTextColor.GRAY)));
                         i--;
                     }
