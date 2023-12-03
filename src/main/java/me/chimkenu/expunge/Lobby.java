@@ -7,9 +7,6 @@ import me.chimkenu.expunge.game.LocalGameManager;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -18,7 +15,7 @@ import org.bukkit.util.Vector;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Lobby implements Listener {
+public class Lobby {
     private final JavaPlugin plugin;
     private final World world;
     private final Location lobbySpawn;
@@ -79,12 +76,5 @@ public class Lobby implements Listener {
     public Set<GameManager> getGames() {
         games.removeIf(game -> !game.isRunning());
         return games;
-    }
-
-    @EventHandler
-    public void onJoin(PlayerJoinEvent e) {
-        Player player = e.getPlayer();
-        setSpectator(player);
-        teleportToLobby(player);
     }
 }

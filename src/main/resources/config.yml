@@ -1,3 +1,7 @@
+lobby-spawn:
+  x: 0
+  y: 0
+  z: 0
 gun:
   ladder-offset: 0.005
   jumping-offset: 0.05
