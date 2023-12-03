@@ -75,7 +75,7 @@ public class MobHandler {
             chillOut = false;
         }
 
-        if (goHam && getActiveMobs().size() < 15) {
+        if (goHam && sceneTime % (15 * 20) == 0) {
             spawnHorde(difficulty);
         }
 
@@ -112,11 +112,11 @@ public class MobHandler {
         for (int i = 0; i < count; i++) {
             double random = ThreadLocalRandom.current().nextDouble();
             if (random < 0.025) {
-                getActiveMobs().add(new Soldier(plugin, director.getWorld(), getRandomSpawnLocation(), difficulty));
+                addMob(new Soldier(plugin, director.getWorld(), getRandomSpawnLocation(), difficulty));
             } else if (random < 0.05) {
-                getActiveMobs().add(new Robot(plugin, director.getWorld(), getRandomSpawnLocation(), difficulty));
+                addMob(new Robot(plugin, director.getWorld(), getRandomSpawnLocation(), difficulty));
             } else {
-                getActiveMobs().add(new Horde(plugin, director.getWorld(), getRandomSpawnLocation(), difficulty));
+                addMob(new Horde(plugin, director.getWorld(), getRandomSpawnLocation(), difficulty));
             }
         }
     }
@@ -129,17 +129,17 @@ public class MobHandler {
                     if (isSpawningEnabled) {
                         double r = ThreadLocalRandom.current().nextDouble();
                         if (r < 0.16)
-                            getActiveMobs().add(new Rider(plugin, director.getWorld(), getRandomSpawnLocation()));
+                            addMob(new Rider(plugin, director.getWorld(), getRandomSpawnLocation()));
                         else if (r < 0.33)
-                            getActiveMobs().add(new Spewer(plugin, director.getWorld(), getRandomSpawnLocation()));
+                            addMob(new Spewer(plugin, director.getWorld(), getRandomSpawnLocation()));
                         else if (r < 0.5)
-                            getActiveMobs().add(new Charger(plugin, director.getWorld(), getRandomSpawnLocation(), difficulty));
+                            addMob(new Charger(plugin, director.getWorld(), getRandomSpawnLocation(), difficulty));
                         else if (r < 0.66)
-                            getActiveMobs().add(new Pouncer(plugin, director.getWorld(), getRandomSpawnLocation(), director.getItemHandler()));
+                            addMob(new Pouncer(plugin, director.getWorld(), getRandomSpawnLocation(), director.getItemHandler()));
                         else if (r < 0.83)
-                            getActiveMobs().add(new Choker(plugin, director.getWorld(), director.getGameManager(), getRandomSpawnLocation()));
+                            addMob(new Choker(plugin, director.getWorld(), director.getGameManager(), getRandomSpawnLocation()));
                         else
-                            getActiveMobs().add(new Spitter(plugin, director.getGameManager(), director.getWorld(), getRandomSpawnLocation()));
+                            addMob(new Spitter(plugin, director.getGameManager(), director.getWorld(), getRandomSpawnLocation()));
                     }
                 }
             }.runTaskLater(plugin, (long) i * ThreadLocalRandom.current().nextInt(60));
