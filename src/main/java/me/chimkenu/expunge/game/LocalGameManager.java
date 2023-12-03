@@ -76,7 +76,10 @@ public class LocalGameManager implements GameManager {
                     main = new BukkitRunnable() {
                         @Override
                         public void run() {
-                            if (getPlayers().isEmpty()) this.cancel();
+                            if (getPlayers().isEmpty()) {
+                                stop(true);
+                                this.cancel();
+                            }
                             start();
                         }
                     }.runTaskLater(plugin, intro.play(director.getGameManager()));
@@ -191,16 +194,6 @@ public class LocalGameManager implements GameManager {
         for (Player p : getPlayers()) {
             p.leaveVehicle();
             p.teleport(getMap().startLocation().toLocation(getWorld()));
-            /*
-            TODO: Apparently, the old code had a bug where players that were riding a
-             vehicle didn't get teleported back to the start location. Please test this!
-             * new BukkitRunnable() {
-             *     @Override
-             *     public void run() {
-             *         p.teleport(scene.startLocation());
-             *     }
-             * }.runTaskLater(instance, 1);
-             */
 
             p.removePotionEffect(PotionEffectType.GLOWING);
             p.removePotionEffect(PotionEffectType.NIGHT_VISION);
