@@ -1,4 +1,4 @@
-package me.chimkenu.expunge.items;
+package me.chimkenu.expunge.events;
 
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;

@@ -3,7 +3,7 @@ package me.chimkenu.expunge.game.director;
 import me.chimkenu.expunge.campaigns.CampaignMap;
 import me.chimkenu.expunge.enums.Difficulty;
 import me.chimkenu.expunge.game.GameManager;
-import me.chimkenu.expunge.items.ShootEvent;
+import me.chimkenu.expunge.events.ShootEvent;
 import me.chimkenu.expunge.mobs.GameMob;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;

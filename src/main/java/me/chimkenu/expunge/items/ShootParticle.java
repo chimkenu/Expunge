@@ -1,6 +1,7 @@
 package me.chimkenu.expunge.items;
 
 import me.chimkenu.expunge.enums.Achievements;
+import me.chimkenu.expunge.events.ShootEvent;
 import me.chimkenu.expunge.utils.RayTrace;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
