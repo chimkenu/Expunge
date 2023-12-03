@@ -1,11 +1,6 @@
 package me.chimkenu.expunge.commands;
 
-import me.chimkenu.expunge.Expunge;
-import me.chimkenu.expunge.Queue;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -93,77 +88,78 @@ public class Tutorial implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (!(sender instanceof Player player)) {
-            sender.sendMessage(ChatColor.RED + "Only players can execute this command.");
-            return true;
-        }
-        if (Expunge.playing.getKeys().contains(player) || Queue.contains(player)) {
-            sender.sendMessage(ChatColor.RED + "You should've done this before joining!");
-            return true;
-        }
-        if (!inTutorial.contains(player)) {
-            inTutorial.add(player);
-        }
-
-        int index = 0;
-        int part = 0;
-        if (args.length > 0) {
-            try {
-                index = Integer.parseInt(args[0]);
-            } catch (NumberFormatException ignored) {}
-            try {
-                part = Integer.parseInt(args[1]);
-            } catch (NumberFormatException ignored) {}
-        }
-
-        if (index < 0 || part < 0) {
-            inTutorial.remove(player);
-            player.teleport(Expunge.currentMap.getScenes().get(Expunge.currentSceneIndex).startLocation());
-            player.sendMessage(ChatColor.GREEN + "Finished tutorial! Sending you back...");
-            return true;
-        }
-
-        if (index > getLocations().size() - 1) index = 0;
-        if (part > getTutorialLines().get(index).length - 1) part = 0;
-
-        if (part == 0) {
-            // clear chat
-            for (int i = 0; i < 100; i++) {
-                player.sendMessage("");
-            }
-            // teleport
-            player.teleport(getLocations().get(index));
-        }
-
-        player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&b[Tutorial] &8»&f " + getTutorialLines().get(index)[part]));
-        TextComponent component = new TextComponent("");
-        if (part == 0 && index - 1 >= 0) {
-            TextComponent back = new TextComponent("[Back] ");
-            back.setColor(net.md_5.bungee.api.ChatColor.GOLD);
-            back.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tutorial " + (index - 1) + " 0"));
-            component.addExtra(back);
-        }
-        if (part + 1 < getTutorialLines().get(index).length) {
-            TextComponent next = new TextComponent("[Next] ");
-            next.setColor(net.md_5.bungee.api.ChatColor.GREEN);
-            next.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tutorial " + index + " " + (part + 1)));
-            component.addExtra(next);
-        }
-        else if (index + 1 < getLocations().size()) {
-            TextComponent proceed = new TextComponent("[Next] ");
-            proceed.setColor(net.md_5.bungee.api.ChatColor.GREEN);
-            proceed.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tutorial " + (index + 1) + " 0"));
-            component.addExtra(proceed);
-        } else {
-            TextComponent finish = new TextComponent("[Finish]");
-            finish.setColor(net.md_5.bungee.api.ChatColor.GREEN);
-            finish.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tutorial " + "-1 " + "-1"));
-            component.addExtra(finish);
-        }
-
-        player.spigot().sendMessage(component);
-        player.setAllowFlight(true);
-        player.setFlying(true);
+//        if (!(sender instanceof Player player)) {
+//            sender.sendMessage(ChatColor.RED + "Only players can execute this command.");
+//            return true;
+//        }
+//        if (Expunge.playing.getKeys().contains(player) || Queue.contains(player)) {
+//            sender.sendMessage(ChatColor.RED + "You should've done this before joining!");
+//            return true;
+//        }
+//        if (!inTutorial.contains(player)) {
+//            inTutorial.add(player);
+//        }
+//
+//        int index = 0;
+//        int part = 0;
+//        if (args.length > 0) {
+//            try {
+//                index = Integer.parseInt(args[0]);
+//            } catch (NumberFormatException ignored) {}
+//            try {
+//                part = Integer.parseInt(args[1]);
+//            } catch (NumberFormatException ignored) {}
+//        }
+//
+//        if (index < 0 || part < 0) {
+//            inTutorial.remove(player);
+//            player.teleport(Expunge.currentMap.getMaps().get(Expunge.currentSceneIndex).startLocation());
+//            player.sendMessage(ChatColor.GREEN + "Finished tutorial! Sending you back...");
+//            return true;
+//        }
+//
+//        if (index > getLocations().size() - 1) index = 0;
+//        if (part > getTutorialLines().get(index).length - 1) part = 0;
+//
+//        if (part == 0) {
+//            // clear chat
+//            for (int i = 0; i < 100; i++) {
+//                player.sendMessage("");
+//            }
+//            // teleport
+//            player.teleport(getLocations().get(index));
+//        }
+//
+//        player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&b[Tutorial] &8»&f " + getTutorialLines().get(index)[part]));
+//        TextComponent component = new TextComponent("");
+//        if (part == 0 && index - 1 >= 0) {
+//            TextComponent back = new TextComponent("[Back] ");
+//            back.setColor(net.md_5.bungee.api.ChatColor.GOLD);
+//            back.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tutorial " + (index - 1) + " 0"));
+//            component.addExtra(back);
+//        }
+//        if (part + 1 < getTutorialLines().get(index).length) {
+//            TextComponent next = new TextComponent("[Next] ");
+//            next.setColor(net.md_5.bungee.api.ChatColor.GREEN);
+//            next.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tutorial " + index + " " + (part + 1)));
+//            component.addExtra(next);
+//        }
+//        else if (index + 1 < getLocations().size()) {
+//            TextComponent proceed = new TextComponent("[Next] ");
+//            proceed.setColor(net.md_5.bungee.api.ChatColor.GREEN);
+//            proceed.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tutorial " + (index + 1) + " 0"));
+//            component.addExtra(proceed);
+//        } else {
+//            TextComponent finish = new TextComponent("[Finish]");
+//            finish.setColor(net.md_5.bungee.api.ChatColor.GREEN);
+//            finish.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tutorial " + "-1 " + "-1"));
+//            component.addExtra(finish);
+//        }
+//
+//        player.spigot().sendMessage(component);
+//        player.setAllowFlight(true);
+//        player.setFlying(true);
+//        return true;
         return true;
     }
 }

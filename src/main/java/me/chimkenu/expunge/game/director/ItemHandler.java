@@ -1,40 +1,42 @@
 package me.chimkenu.expunge.game.director;
 
-import me.chimkenu.expunge.Utils;
-import me.chimkenu.expunge.enums.Tier;
-import me.chimkenu.expunge.enums.Weapons;
-import me.chimkenu.expunge.game.maps.Map;
-import me.chimkenu.expunge.game.maps.Scene;
-import me.chimkenu.expunge.guns.utilities.Utility;
-import me.chimkenu.expunge.guns.weapons.Weapon;
-import me.chimkenu.expunge.guns.weapons.guns.Gun;
-import me.chimkenu.expunge.guns.weapons.melees.Melee;
-import org.bukkit.Location;
-import org.bukkit.World;
+import me.chimkenu.expunge.campaigns.CampaignMap;
+import me.chimkenu.expunge.game.ItemRandomizer;
+import me.chimkenu.expunge.items.utilities.Utility;
+import me.chimkenu.expunge.items.weapons.Weapon;
+import net.kyori.adventure.text.Component;
+import org.bukkit.Material;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.*;
 
 public class ItemHandler {
-    private final Map map;
-    private int sceneIndex;
-    private final World world;
+    private final Director director;
+    private final List<Entity> entities;
 
-    public ItemHandler(Map map) {
-        this.map = map;
-        sceneIndex = 0;
-        world = map.getWorld();
+    public ItemHandler(Director director) {
+        this.director = director;
+        this.entities = new ArrayList<>();
     }
 
-    public void updateSceneIndex() {
-        sceneIndex++;
+    public void generateStartingItems() {
+        CampaignMap map = director.getMap();
+        for (ItemRandomizer randomizer : map.randomizedGameItems()) {
+            randomizer.randomize(director.getGameManager());
+        }
+
+        // Spawn ammo
+        for (Vector v : map.ammoLocations()) {
+            spawnAmmo(v);
+        }
     }
 
-    public void spawnWeapon(Location loc, Weapon weapon, boolean isInvulnerable) {
-        Item item = world.dropItem(loc, weapon.getWeapon());
+    public void spawnWeapon(Vector loc, Weapon weapon, boolean isInvulnerable) {
+        Item item = director.getWorld().dropItem(loc.toLocation(director.getWorld()), weapon.get());
         if (isInvulnerable) {
             ItemMeta meta = item.getItemStack().getItemMeta();
             if (meta != null && meta.getLore() != null) {
@@ -42,57 +44,47 @@ public class ItemHandler {
             }
             item.getItemStack().setItemMeta(meta);
         }
-        item.addScoreboardTag("ITEM");
         item.setInvulnerable(isInvulnerable);
+        addEntity(item);
     }
 
-    public void spawnGunAtRandom(Gun gun) {
-        Scene scene = map.getScenes().get(sceneIndex);
-        ArrayList<Location> weaponLocations = scene.weaponLocations();
-        if (weaponLocations.size() < 1) return;
-        int index = weaponLocations.size() == 1 ? 0 : ThreadLocalRandom.current().nextInt(0, weaponLocations.size());
-        spawnWeapon(weaponLocations.get(index), gun, false);
+    public void spawnUtility(Vector loc, Utility utility, boolean isInvulnerable) {
+        Item item = director.getWorld().spawn(loc.toLocation(director.getWorld()), Item.class);
+        item.setItemStack(utility.get());
+        item.setInvulnerable(isInvulnerable);
+        addEntity(item);
     }
 
-    public void spawnMeleeAtRandom(Melee melee) {
-        Scene scene = map.getScenes().get(sceneIndex);
-        ArrayList<Location> weaponLocations = scene.weaponLocations();
-        if (weaponLocations.size() < 1) return;
-        int index = weaponLocations.size() == 1 ? 0 : ThreadLocalRandom.current().nextInt(0, weaponLocations.size());
-        spawnWeapon(weaponLocations.get(index), melee, false);
+    private void spawnAmmo(Vector loc) {
+        FallingBlock ammoPile = director.getWorld().spawn(loc.toLocation(director.getWorld()), FallingBlock.class);
+        ammoPile.setGravity(false);
+        ammoPile.setGlowing(true);
+        ammoPile.setDropItem(false);
+        ammoPile.setCancelDrop(true);
+        ammoPile.setInvulnerable(true);
+        ammoPile.customName(Component.text("Ammo Pile (Right Click)"));
+        ammoPile.setCustomNameVisible(true);
+        ammoPile.setBlockData(Material.GRAY_CANDLE.createBlockData("[candles=4,lit=false,waterlogged=false]"));
+        ammoPile.addScoreboardTag("AMMO_PILE");
+        addEntity(ammoPile);
     }
 
-    public void spawnUtility(Location loc, Utility utility) {
-        Item item = world.spawn(loc, Item.class);
-        item.setItemStack(utility.getUtility());
+    private void setItemProperties(Item item) {
+        item.setGlowing(true);
+        item.setCanMobPickup(false);
+        item.setUnlimitedLifetime(true);
         item.addScoreboardTag("ITEM");
     }
 
-    public void spawnUtilityAtRandom(Utility utility) {
-        Scene scene = map.getScenes().get(sceneIndex);
-        ArrayList<Location> itemLocations = scene.itemLocations();
-        if (itemLocations.size() < 1) return;
-        int index = itemLocations.size() == 1 ? 0 : ThreadLocalRandom.current().nextInt(0, itemLocations.size());
-        spawnUtility(itemLocations.get(index), utility);
+    public void clear() {
+        entities.forEach(Entity::remove);
+        entities.clear();
     }
 
-    public static Melee getRandomMelee(Tier tier) {
-        ArrayList<Weapons.Melees> melees = new ArrayList<>(List.of(Weapons.Melees.values()));
-        melees.removeIf(melee -> melee.getMelee().getTier() != tier);
-        return melees.get(ThreadLocalRandom.current().nextInt(0, melees.size())).getMelee();
-    }
-
-    public static Gun getRandomGun(Tier tier) {
-        switch (tier) {
-            case TIER1 -> {
-                return Utils.getTier1Guns().get(ThreadLocalRandom.current().nextInt(0, Utils.getTier1Guns().size()));
-            }
-            case TIER2 -> {
-                return Utils.getTier2Guns().get(ThreadLocalRandom.current().nextInt(0, Utils.getTier2Guns().size()));
-            }
-            default -> {
-                return Utils.getSpecialGuns().get(ThreadLocalRandom.current().nextInt(0, Utils.getSpecialGuns().size()));
-            }
+    public void addEntity(Entity e) {
+        if (e instanceof Item item) {
+            setItemProperties(item);
         }
+        entities.add(e);
     }
 }

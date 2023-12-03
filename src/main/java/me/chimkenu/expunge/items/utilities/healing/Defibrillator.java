@@ -1,0 +1,169 @@
+package me.chimkenu.expunge.items.utilities.healing;
+
+import me.chimkenu.expunge.GameAction;
+import me.chimkenu.expunge.enums.Tier;
+import me.chimkenu.expunge.game.GameManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Material;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.UUID;
+
+public class Defibrillator implements Healing {
+    @Override
+    public void use(JavaPlugin plugin, GameManager gameManager, LivingEntity entity) {
+        if (!(entity instanceof Player player)) {
+            return;
+        }
+
+        ItemStack item = player.getInventory().getItemInMainHand();
+        if (!get().getType().equals(item.getType()) || player.getCooldown(get().getType()) > 0) {
+            return;
+        }
+
+        if (!gameManager.getPlayers().contains(player)) {
+            return;
+        }
+        if (!gameManager.getPlayerStat(player).isAlive()) {
+            return;
+        }
+
+        for (Entity e : player.getNearbyEntities(1, 1, 1)) {
+            if (!(e instanceof ArmorStand armorStand)) {
+                continue;
+            }
+            Player target = null;
+            for (String string : armorStand.getScoreboardTags()) {
+                try {
+                    UUID uuid = UUID.fromString(string);
+                    target = Bukkit.getPlayer(uuid);
+                    if (target != null) break;
+                } catch (IllegalArgumentException ignored) {}
+            }
+            if (target == null || !target.isOnline()) {
+                continue;
+            }
+            if (!gameManager.getPlayers().contains(target)) {
+                continue;
+            }
+            if (gameManager.getPlayerStat(target).isAlive()) {
+                continue;
+            }
+            if (gameManager.getPlayerStat(target).getLives() > 1) {
+                continue;
+            }
+            if (!target.hasPotionEffect(PotionEffectType.GLOWING)) {
+                player.sendActionBar(target.name().color(NamedTextColor.AQUA).append(Component.text(" is already being revived.", NamedTextColor.YELLOW)));
+                continue;
+            }
+            target.removePotionEffect(PotionEffectType.GLOWING);
+            Player finalTarget = target;
+            attemptUse(plugin, gameManager, player, target, item, getCooldown(), true, Component.text("Reviving...", NamedTextColor.YELLOW), (plugin1, gameManager1, player1) -> {
+                player1.getInventory().getItemInMainHand().setAmount(player1.getInventory().getItemInMainHand().getAmount() - 1);
+                gameManager.getPlayerStat(finalTarget).revive();
+                finalTarget.teleport(player1);
+                finalTarget.setGameMode(GameMode.ADVENTURE);
+                finalTarget.setHealth(10d);
+                for (String string : armorStand.getScoreboardTags()) {
+                    try {
+                        UUID uuid = UUID.fromString(string);
+                        if (Bukkit.getEntity(uuid) instanceof ArmorStand a) a.remove();
+                    } catch (IllegalArgumentException ignored) {}
+                }
+            });
+            return;
+        }
+
+        player.sendActionBar(Component.text("No dead player nearby.", NamedTextColor.RED));
+    }
+
+    public void attemptUse(JavaPlugin plugin, GameManager gameManager, Player player, Player target, ItemStack itemStack, int useTime, boolean hasToStayStill, Component prefix, GameAction gameActionWhenSuccessful) {
+        // check for if the revivee is already alive (like he got rescue closeted before the defib works)
+        // also check for if the revivee is still in game (keep the body there tho)\
+        Vector loc = null;
+        if (hasToStayStill) {
+            loc = player.getLocation().toVector();
+        }
+
+        Vector finalLoc = loc;
+        new BukkitRunnable() {
+            int i = useTime;
+
+            @Override
+            public void run() {
+                i--;
+                player.sendActionBar(prefix.append(Component.space()).append(getProgressBar()));
+
+                if (finalLoc != null && finalLoc.distanceSquared(player.getLocation().toVector()) > 1) {
+                    player.sendActionBar(Component.text("Stopped. ", NamedTextColor.RED).append(Component.text("(You moved)", NamedTextColor.DARK_GRAY)));
+                    target.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 10000000, 0, false, false, false));
+                    player.setCooldown(itemStack.getType(), 0);
+                    this.cancel();
+                }
+                if (!player.getInventory().getItemInMainHand().equals(itemStack)) {
+                    player.sendActionBar(Component.text("Stopped. ", NamedTextColor.RED));
+                    target.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 10000000, 0, false, false, false));
+                    player.setCooldown(itemStack.getType(), 0);
+                    this.cancel();
+                }
+                if (i <= 0) {
+                    player.sendActionBar(Component.text("Successful.", NamedTextColor.GREEN));
+                    gameActionWhenSuccessful.run(plugin, gameManager, player);
+                    player.setCooldown(itemStack.getType(), 0);
+                    this.cancel();
+                }
+            }
+
+            @NotNull
+            private Component getProgressBar() {
+                double percentage = (double) (useTime - i) / useTime;
+                int progress = (int) (percentage * 10);
+                percentage = (int) (percentage * 100);
+
+                // create progress bar
+                Component progressBarComplete = Component.text("|".repeat(Math.max(0, progress)), NamedTextColor.GREEN);
+                Component progressBarIncomplete = Component.text("|".repeat(Math.max(0, 10 - progress)), NamedTextColor.GRAY);
+                return Component.text("Progress: ", NamedTextColor.YELLOW)
+                        .append(Component.text("[", NamedTextColor.GRAY))
+                        .append(progressBarComplete)
+                        .append(progressBarIncomplete)
+                        .append(Component.text("]", NamedTextColor.GRAY))
+                        .append(Component.text(" [" + percentage + "%]", NamedTextColor.DARK_GRAY));
+            }
+        }.runTaskTimer(plugin, 1, 1);
+    }
+
+    @Override
+    public int getCooldown() {
+        return 60;
+    }
+
+    @Override
+    public Material getMaterial() {
+        return Material.NETHERITE_SCRAP;
+    }
+
+
+    @Override
+    public Tier getTier() {
+        return Tier.TIER2;
+    }
+
+    @Override
+    public Component getName() {
+        return Component.text("Defibrillator", NamedTextColor.DARK_RED);
+    }
+}

@@ -1,20 +1,20 @@
 package me.chimkenu.expunge.mobs.special;
 
-import me.chimkenu.expunge.Expunge;
-import me.chimkenu.expunge.mobs.GameMob;
-import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.World;
-import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Spider;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-public class Rider extends GameMob {
-    public <T extends Mob> Rider(World world, Location locationToSpawn) {
-        super(world, locationToSpawn, Spider.class, mob -> {
+import java.util.concurrent.ThreadLocalRandom;
+
+public class Rider extends Special {
+    public Rider(JavaPlugin plugin, World world, Vector locationToSpawn) {
+        super(plugin, world, locationToSpawn, Spider.class, mob -> {
             if (mob.getVehicle() instanceof Player target) {
                 mob.setTarget(target);
                 target.getInventory().setHeldItemSlot(5);
@@ -26,7 +26,7 @@ public class Rider extends GameMob {
                     int speed = 1;
                     if (distance > 10 * 10) speed += 2;
                     mob.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20, speed, false, false));
-                    if (distance < 3 * 3 && Math.random() < 0.5) {
+                    if (distance < 3 * 3 && ThreadLocalRandom.current().nextDouble() < 0.5) {
                         mob.setVelocity(mob.getVelocity().add(mob.getEyeLocation().getDirection().normalize().multiply(2)).add(new Vector(0, 0.25, 0)));
                         new BukkitRunnable() {
                             @Override
@@ -36,12 +36,26 @@ public class Rider extends GameMob {
                                     player.addPassenger(mob);
                                 }
                             }
-                        }.runTaskLater(Expunge.instance, 3);
+                        }.runTaskLater(plugin, 3);
                     }
-                } else mob.setTarget(getRandomPlayer());
+                } else mob.setTarget(getRandomPlayer(world));
             }
         });
-        getMob().addScoreboardTag("SPECIAL");
         getMob().addScoreboardTag("JOCKEY");
+    }
+
+    @Override
+    protected void playJingle() {
+        final float[] pitches = new float[]{0.529732f, 0.561231f, 0.529732f, 0.561231f, 0.529732f, 0.561231f, 0.529732f, 0.561231f, 0.529732f, 0.594604f, 0.529732f, 0.594604f, 0.529732f, 0.561231f, 0.529732f, 0.561231f};
+        for (int i = 0; i < pitches.length / 2; i++) {
+            final int finalI = i;
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    getMob().getWorld().playSound(getMob(), Sound.BLOCK_NOTE_BLOCK_HARP, 2, pitches[finalI * 2]);
+                    getMob().getWorld().playSound(getMob(), Sound.BLOCK_NOTE_BLOCK_HARP, 2, pitches[finalI * 2 + 1]);
+                }
+            }.runTaskLater(plugin, i * 4);
+        }
     }
 }

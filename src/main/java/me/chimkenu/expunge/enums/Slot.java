@@ -5,5 +5,6 @@ public enum Slot {
     SECONDARY,
     TERTIARY,
     QUATERNARY,
-    QUINARY
+    QUINARY,
+    SENARY
 }
