@@ -149,7 +149,8 @@ public class Streets implements CampaignMap {
     public Vector[] ammoLocations() {
         return new Vector[]{
                 new Vector(-230.5, 44, -100.5),
-                new Vector(36.5, 44.0, -90.5)
+                new Vector(36.5, 44.0, -90.5),
+                new Vector(16.5, 26, 182.5)
         };
     }
 
@@ -179,11 +180,11 @@ public class Streets implements CampaignMap {
                 new Listener() {
                     @EventHandler
                     public void streetsOpeningTrigger(PlayerMoveEvent e) {
-                        if (!gameManager.getPlayers().contains(e.getPlayer()))
-                            return;
+                        if (!gameManager.getPlayers().contains(e.getPlayer())) return;
+                        if (!gameManager.getPlayerStat(e.getPlayer()).isAlive()) return;
                         BoundingBox box = new BoundingBox(-243, 41, -105, -254, 52, -115);
-                        if (!box.contains(e.getPlayer().getLocation().toVector()))
-                            return;
+                        if (!box.contains(e.getPlayer().getLocation().toVector())) return;
+
                         Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.STREETS_OPENING.pickRandom(gameManager.getPlayers().size()));
                         HandlerList.unregisterAll(this);
                     }
@@ -191,11 +192,11 @@ public class Streets implements CampaignMap {
                 new Listener() {
                     @EventHandler
                     public void streetsApartmentsTrigger(PlayerMoveEvent e) {
-                        if (!gameManager.getPlayers().contains(e.getPlayer()))
-                            return;
+                        if (!gameManager.getPlayers().contains(e.getPlayer())) return;
+                        if (!gameManager.getPlayerStat(e.getPlayer()).isAlive()) return;
                         BoundingBox box = new BoundingBox(-10, 40, -105, -32, 52, -157);
-                        if (!box.contains(e.getPlayer().getLocation().toVector()))
-                            return;
+                        if (!box.contains(e.getPlayer().getLocation().toVector())) return;
+
                         Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.STREETS_APARTMENTS.pickRandom(gameManager.getPlayers().size()));
                         HandlerList.unregisterAll(this);
                     }
@@ -204,53 +205,26 @@ public class Streets implements CampaignMap {
                     @EventHandler
                     public void crescendoEventApartments(PlayerInteractEvent e) {
                         Block block = e.getClickedBlock();
-                        if (!gameManager.getPlayers().contains(e.getPlayer())) {
-                            return;
-                        }
+                        if (!gameManager.getPlayers().contains(e.getPlayer())) return;
+                        if (!gameManager.getPlayerStat(e.getPlayer()).isAlive()) return;
                         if (block == null || !(e.getAction().equals(Action.PHYSICAL) && (block.getLocation().toVector().equals(new Vector(16, 43, -110)) || block.getLocation().toVector().equals(new Vector(16, 43, -109))))) {
                             return;
                         }
 
                         Campaign.playCrescendoEventEffect(gameManager.getPlayers());
-                        World world = e.getPlayer().getWorld();
-                        new BukkitRunnable() {
-                            int i = 0;
-
-                            @Override
-                            public void run() {
-                                gameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1121.5, 43, 922.5), gameManager.getDifficulty()));
-                                gameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1118.5, 43, 843), gameManager.getDifficulty()));
-                                gameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1076.5, 43, 894.5), gameManager.getDifficulty()));
-                                gameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1134, 43, 898.5), gameManager.getDifficulty()));
-                                gameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1125.5, 50, 899.5), gameManager.getDifficulty()));
-                                gameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1131.5, 50, 909.5), gameManager.getDifficulty()));
-                                gameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1125.5, 50, 910.5), gameManager.getDifficulty()));
-                                gameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1131.5, 50, 920.5), gameManager.getDifficulty()));
-                                gameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1131.5, 50, 920.5), gameManager.getDifficulty()));
-                                gameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1131.5, 56, 920.5), gameManager.getDifficulty()));
-                                gameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1125.5, 56, 910.5), gameManager.getDifficulty()));
-                                gameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1131.5, 56, 909.5), gameManager.getDifficulty()));
-                                gameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(1125.5, 56, 899.5), gameManager.getDifficulty()));
-                                i++;
-                                if (i >= 3) {
-                                    this.cancel();
-                                }
-                                if (!gameManager.isRunning() || !gameManager.getDirector().getMobHandler().isSpawningEnabled()) {
-                                    this.cancel();
-                                }
-                            }
-                        }.runTaskTimer(plugin, 1, 20 * 4);
+                        spawnHordeAtApartments(gameManager);
+                        gameManager.getDirector().getMobHandler().setGoHam(true);
                         HandlerList.unregisterAll(this);
                     }
                 },
                 new Listener() {
                     @EventHandler
                     public void streetsShedTrigger(PlayerMoveEvent e) {
-                        if (!gameManager.getPlayers().contains(e.getPlayer()))
-                            return;
+                        if (!gameManager.getPlayers().contains(e.getPlayer())) return;
+                        if (!gameManager.getPlayerStat(e.getPlayer()).isAlive()) return;
                         BoundingBox box = new BoundingBox(33, 55, -112, 38, 61, -103);
-                        if (!box.contains(e.getPlayer().getLocation().toVector()))
-                            return;
+                        if (!box.contains(e.getPlayer().getLocation().toVector())) return;
+
                         Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.STREETS_SHED.pickRandom(gameManager.getPlayers().size()));
                         HandlerList.unregisterAll(this);
                     }
@@ -261,6 +235,7 @@ public class Streets implements CampaignMap {
                     @EventHandler
                     public void alleysOpening(PlayerMoveEvent e) {
                         if (!gameManager.getPlayers().contains(e.getPlayer())) return;
+                        if (!gameManager.getPlayerStat(e.getPlayer()).isAlive()) return;
 
                         BoundingBox box = new BoundingBox(34, 41, -89, 43, 48, -84);
                         if (!box.contains(e.getPlayer().getLocation().toVector())) return;
@@ -273,6 +248,7 @@ public class Streets implements CampaignMap {
                     @EventHandler
                     public void alleysPurpleCar(PlayerMoveEvent e) {
                         if (!gameManager.getPlayers().contains(e.getPlayer())) return;
+                        if (!gameManager.getPlayerStat(e.getPlayer()).isAlive()) return;
 
                         BoundingBox box = new BoundingBox(42, 41, -73, 32, 47, -66);
                         if (!box.contains(e.getPlayer().getLocation().toVector())) return;
@@ -285,6 +261,7 @@ public class Streets implements CampaignMap {
                     @EventHandler
                     public void alleysSafeHouse(PlayerMoveEvent e) {
                         if (!gameManager.getPlayers().contains(e.getPlayer())) return;
+                        if (!gameManager.getPlayerStat(e.getPlayer()).isAlive()) return;
 
                         BoundingBox box = new BoundingBox(54, 41, -19, 41, 53, -25);
                         if (!box.contains(e.getPlayer().getLocation().toVector())) return;
@@ -297,6 +274,7 @@ public class Streets implements CampaignMap {
                     @EventHandler
                     public void achievement(PlayerInteractEvent e) {
                         if (!gameManager.getPlayers().contains(e.getPlayer())) return;
+                        if (!gameManager.getPlayerStat(e.getPlayer()).isAlive()) return;
                         if (!e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) return;
                         if (e.getClickedBlock() == null || !(e.getClickedBlock().getType() == Material.STONE_BUTTON)) return;
 
@@ -308,4 +286,37 @@ public class Streets implements CampaignMap {
         };
     }
 
+    private void spawnHordeAtApartments(GameManager gameManager) {
+        final Vector[] spawnLocations = new Vector[]{
+                new Vector(21.5, 50, -108.5),
+                new Vector(27.5, 50, -98.5),
+                new Vector(21.5, 50, -97.5),
+                new Vector(27.5, 50, -87.5),
+                new Vector(27.5, 56, -87.5),
+                new Vector(21.5, 56, -97.5),
+                new Vector(27.5, 56, -98.5),
+                new Vector(21.5, 56, -108.5)
+        };
+
+        new BukkitRunnable() {
+            final World world = gameManager.getWorld();
+            int t = 4;
+            @Override
+            public void run() {
+                if (!gameManager.isRunning() || !gameManager.getDirector().getMobHandler().isSpawningEnabled()) {
+                    this.cancel();
+                    return;
+                }
+                if (t < 0) {
+                    this.cancel();
+                    return;
+                }
+
+                t--;
+                for (Vector v : spawnLocations) {
+                    gameManager.getDirector().getMobHandler().addMob(new Horde(gameManager.getPlugin(), world, v, gameManager.getDifficulty()));
+                }
+            }
+        }.runTaskTimer(gameManager.getPlugin(), 1, 10);
+    }
 }
