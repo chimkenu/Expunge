@@ -2,6 +2,7 @@ package me.chimkenu.expunge.listeners.game;
 
 import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.enums.GameItems;
+import me.chimkenu.expunge.events.DeathEvent;
 import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.game.PlayerStats;
 import me.chimkenu.expunge.listeners.GameListener;
@@ -37,6 +38,8 @@ public class DeathReviveListener extends GameListener {
     }
 
     private void dead(Player player) {
+        new DeathEvent(player).callEvent();
+
         gameManager.getWorld().getPlayers().forEach(player1 -> player1.sendMessage(player.name().color(NamedTextColor.RED).append(Component.text(" died.", NamedTextColor.RED))));
         PlayerStats playerStats = gameManager.getPlayerStat(player);
         if (playerStats == null) {
