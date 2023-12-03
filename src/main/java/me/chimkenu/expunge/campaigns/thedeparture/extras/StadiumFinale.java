@@ -103,7 +103,7 @@ public class StadiumFinale implements Listener {
     }
 
     private Listener afterHordeRequirement() {
-        int requirement = gameManager.getDirector().getStatsHandler().getTotalKills() + 100 + 25 * gameManager.getDifficulty().ordinal();
+        int requirement = gameManager.getDirector().getStatsHandler().getTotalKills() + 30 + 25 * gameManager.getDifficulty().ordinal();
         return new Listener() {
             @EventHandler
             public void afterHorde(EntityDeathEvent e) {
