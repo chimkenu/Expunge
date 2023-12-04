@@ -1,6 +1,7 @@
 package me.chimkenu.expunge.guis;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -95,7 +96,7 @@ public abstract class GUI {
         item.setAmount(amount);
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
-            meta.displayName(displayName);
+            meta.displayName(displayName.decoration(TextDecoration.ITALIC, false));
             if (isGlowing) {
                 meta.addEnchant(Enchantment.DURABILITY, 1, true);
                 meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
