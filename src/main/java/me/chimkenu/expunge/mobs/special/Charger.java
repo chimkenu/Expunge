@@ -18,8 +18,12 @@ import java.util.Objects;
 public class Charger extends Special {
     public Charger(JavaPlugin plugin, World world, Vector locationToSpawn, Difficulty difficulty) {
         super(plugin, world, locationToSpawn, Zoglin.class, mob -> {
-            double distance = 0;
+            double distance;
             if (mob.getTarget() == null) mob.setTarget(getRandomPlayer(world));
+            if (!mob.getTarget().getPassengers().isEmpty()) {
+                mob.setTarget(getRandomPlayer(world));
+                return;
+            }
             else distance = mob.getLocation().distanceSquared(mob.getTarget().getLocation());
             if (mob.getVehicle() != null) {
                 ((LivingEntity) mob.getVehicle()).damage(2, mob);

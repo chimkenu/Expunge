@@ -44,6 +44,10 @@ public class Choker extends Special {
                 mob.setTarget(getRandomPlayer(gameManager.getWorld()));
                 return;
             }
+            if (!mob.getTarget().getPassengers().isEmpty()) {
+                mob.setTarget(getRandomPlayer(world));
+                return;
+            }
             if (!(mob.getTarget() instanceof Player player)) {
                 return;
             }

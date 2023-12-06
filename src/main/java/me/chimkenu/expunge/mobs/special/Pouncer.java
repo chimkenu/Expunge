@@ -27,6 +27,11 @@ public class Pouncer extends Special {
                 target.damage(0.5, mob);
             } else {
                 if (mob.getTarget() instanceof Player player) {
+                    if (!player.getPassengers().isEmpty()) {
+                        mob.setTarget(getRandomPlayer(world));
+                        return;
+                    }
+
                     double distance = mob.getLocation().distanceSquared(mob.getTarget().getLocation());
                     int speed = 1;
                     if (distance > 10 * 10) speed += 2;
