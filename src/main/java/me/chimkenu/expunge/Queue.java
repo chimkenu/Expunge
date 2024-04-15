@@ -10,11 +10,8 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 public class Queue implements Listener {
@@ -22,13 +19,13 @@ public class Queue implements Listener {
     private final Lobby lobby;
     private final int minPlayers;
     private final int maxPlayers;
-    private final Campaign campaign;
-    private final Difficulty difficulty;
+    private Campaign.List campaign;
+    private Difficulty difficulty;
     private final Player creator;
     private final Set<Player> queue;
-    private final BukkitTask runnable;
+    private boolean isDone;
 
-    public Queue(JavaPlugin plugin, Lobby lobby, int minPlayers, int maxPlayers, int countdown, Campaign campaign, Difficulty difficulty, Player creator) {
+    public Queue(JavaPlugin plugin, Lobby lobby, int minPlayers, int maxPlayers, Campaign.List campaign, Difficulty difficulty, Player creator) {
         this.plugin = plugin;
         this.lobby = lobby;
         this.minPlayers = minPlayers;
@@ -36,32 +33,9 @@ public class Queue implements Listener {
         this.campaign = campaign;
         this.difficulty = difficulty;
         this.creator = creator;
+        isDone = false;
         queue = new HashSet<>();
         queue.add(creator);
-
-        runnable = new BukkitRunnable() {
-            int timeLeft = countdown * 20; // seconds to ticks
-            @Override
-            public void run() {
-                if (timeLeft <= 0) {
-                    stop(false);
-                }
-
-                Component message = Component.text("In queue: ", NamedTextColor.GRAY);
-                Iterator<Player> iterator = queue.iterator();
-                if (iterator.hasNext()) {
-                    message = message.append(iterator.next().displayName().color(NamedTextColor.RED));
-                }
-                while (iterator.hasNext()) {
-                    message = message.append(iterator.next().displayName().color(NamedTextColor.RED)).append(Component.text(", ", NamedTextColor.GRAY));
-                }
-                for (Player player : queue) {
-                    player.sendActionBar(message.append(Component.text("(" + timeLeft / 20 + ")", NamedTextColor.GRAY)));
-                }
-
-                timeLeft--;
-            }
-        }.runTaskTimer(plugin, 1, 1);
 
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
@@ -78,8 +52,8 @@ public class Queue implements Listener {
     }
 
     public void stop(boolean isAbrupt) {
+        isDone = true;
         HandlerList.unregisterAll(this);
-        runnable.cancel();
 
         if (isAbrupt) {
             for (Player player : queue) {
@@ -95,15 +69,27 @@ public class Queue implements Listener {
             return;
         }
 
-        lobby.createGame(plugin, campaign, difficulty, queue);
-    }
-
-    public boolean isCancelled() {
-        return runnable.isCancelled();
+        lobby.createGame(plugin, campaign.get(), difficulty, queue);
     }
 
     public int getMaxPlayers() {
         return maxPlayers;
+    }
+
+    public Campaign.List getCampaign() {
+        return campaign;
+    }
+
+    public void setCampaign(Campaign.List campaign) {
+        this.campaign = campaign;
+    }
+
+    public Difficulty getDifficulty() {
+        return difficulty;
+    }
+
+    public void setDifficulty(Difficulty difficulty) {
+        this.difficulty = difficulty;
     }
 
     public Player getCreator() {
@@ -112,6 +98,10 @@ public class Queue implements Listener {
 
     public Set<Player> getQueue() {
         return queue;
+    }
+
+    public boolean isDone() {
+        return isDone;
     }
 
     @EventHandler

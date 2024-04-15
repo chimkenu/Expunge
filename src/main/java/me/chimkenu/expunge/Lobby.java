@@ -55,17 +55,17 @@ public class Lobby {
         return world;
     }
 
-    public Queue createQueue(int countdown, Campaign campaign, Difficulty difficulty, Player creator) {
+    public Queue createQueue(Campaign.List campaign, Difficulty difficulty, Player creator) {
         final int MIN_PLAYERS = 1;
         final int MAX_PLAYERS = 4;
 
-        Queue queue = new Queue(plugin, this, MIN_PLAYERS, MAX_PLAYERS, countdown, campaign, difficulty, creator);
+        Queue queue = new Queue(plugin, this, MIN_PLAYERS, MAX_PLAYERS, campaign, difficulty, creator);
         queues.add(queue);
         return queue;
     }
 
     public Set<Queue> getQueues() {
-        queues.removeIf(Queue::isCancelled);
+        queues.removeIf(Queue::isDone);
         return queues;
     }
 
