@@ -21,7 +21,7 @@ public final class Expunge extends JavaPlugin {
             try {
                 ResourceCopy.copyFromJar(this.getClass(), "Maps", getDataFolder().toPath());
             } catch (URISyntaxException | IOException e) {
-                Bukkit.getLogger().log(Level.SEVERE, "Couldn't copy the maps to the plugin directory!");
+                getLogger().log(Level.SEVERE, "Couldn't copy the maps to the plugin directory!");
                 throw new RuntimeException(e);
             }
         }
