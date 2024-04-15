@@ -112,7 +112,7 @@ public class NextMapListener extends GameListener {
                             for (Player p : gameManager.getPlayers()) {
                                 p.sendMessage(Component.text("Something went wrong! Sending you back..."));
                             }
-                            Bukkit.getLogger().log(Level.SEVERE, e.toString());
+                            plugin.getLogger().log(Level.SEVERE, e.toString());
                             gameManager.stop(true);
                         }
                         this.cancel();
