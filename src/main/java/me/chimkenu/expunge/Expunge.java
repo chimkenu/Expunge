@@ -50,7 +50,15 @@ public final class Expunge extends JavaPlugin {
 
     public Lobby getLobby() {
         if (lobby == null) {
-            lobby = new Lobby(this, Bukkit.getWorld("world"), new Vector(getConfig().getDouble("lobby-spawn.x"), getConfig().getDouble("lobby-spawn.y"), getConfig().getDouble("lobby-spawn.z")));
+            lobby = new Lobby(
+                    this,
+                    Bukkit.getWorld("world"),
+                    new Vector(
+                            getConfig().getDouble("lobby-spawn.x"),
+                            getConfig().getDouble("lobby-spawn.y"),
+                            getConfig().getDouble("lobby-spawn.z")
+                    )
+            );
         }
         return lobby;
     }
