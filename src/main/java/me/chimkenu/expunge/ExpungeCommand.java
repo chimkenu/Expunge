@@ -9,8 +9,8 @@ import me.chimkenu.expunge.game.director.Director;
 import me.chimkenu.expunge.guis.MenuGUI;
 import me.chimkenu.expunge.items.GameItem;
 import me.chimkenu.expunge.items.interactables.Interactable;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -38,7 +38,7 @@ public class ExpungeCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!sender.hasPermission("expunge")) {
-            sender.sendMessage(Component.text("Insufficient permissions."));
+            sendNoPermission(sender);
             return true;
         }
 
@@ -48,192 +48,23 @@ public class ExpungeCommand implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            sender.sendMessage(Component.text("Insufficient arguments. ", NamedTextColor.RED).append(Component.text("/expunge [tutorial|stats|start|stop|get|spawn|reload]")));
+            sendUsage(sender, "Insufficient arguments.", "/expunge [tutorial|stats|start|stop|get|spawn|reload]");
             return true;
         }
 
-        String arg = args[0].toLowerCase();
+        String subcommand = args[0].toLowerCase();
 
-        switch (arg) {
-            case "tutorial" -> {
-
-            }
-            case "stats" -> {
-                if (lobby.getGames().isEmpty()) {
-                    return true;
-                }
-                for (GameManager gameManager : lobby.getGames()) {
-                    sender.sendMessage("Game: " + gameManager.getUUID());
-                    sender.sendMessage("World: " + gameManager.getWorld().getName());
-                    sender.sendMessage("Difficulty: " + gameManager.getDifficulty());
-                    Director director = gameManager.getDirector();
-                    sender.sendMessage("sceneTime: " + director.getSceneTime());
-                    sender.sendMessage("sceneAttempts: " + director.getSceneAttempts());
-                    sender.sendMessage("isSpawningEnabled: " + director.getMobHandler().isSpawningEnabled());
-                    sender.sendMessage("activeMobsSize: " + director.getMobHandler().getActiveMobs().size());
-                    sender.sendMessage("totalKills: " + director.getStatsHandler().getTotalKills());
-                }
-            }
-            case "start" -> {
-                if (!sender.hasPermission("expunge.start")) {
-                    sender.sendMessage(Component.text("Insufficient permissions.", NamedTextColor.RED));
-                    return true;
-                }
-                if (args.length < 3) {
-                    sender.sendMessage(Component.text("Insufficient arguments. ", NamedTextColor.RED).append(Component.text("/expunge start <campaign> <difficulty> [players...] ", NamedTextColor.GRAY)).append(Component.text("Note that if players are specified you have to include yourself!", NamedTextColor.DARK_GRAY)));
-                    return true;
-                }
-
-                Campaign.List campaign;
-                Difficulty difficulty;
-                try {
-                    campaign = Campaign.List.valueOf(args[1]);
-                } catch (IllegalArgumentException e) {
-                    sender.sendMessage(Component.text("No such campaign exists, did you type it correctly?", NamedTextColor.RED));
-                    return true;
-                }
-                try {
-                    difficulty = Difficulty.valueOf(args[2]);
-                } catch (IllegalArgumentException e) {
-                    sender.sendMessage(Component.text("No such difficulty exists, did you type it correctly?", NamedTextColor.RED));
-                    return true;
-                }
-
-                if (args.length == 3) {
-                    if (!(sender instanceof Player player)) {
-                        sender.sendMessage(Component.text("Please include a list of players!", NamedTextColor.RED));
-                        return true;
-                    }
-
-                    sender.sendMessage(Component.text("Starting a game...", NamedTextColor.YELLOW));
-                    lobby.createGame(plugin, campaign.get(), difficulty, new HashSet<>(List.of(player)));
-                    return true;
-                }
-
-                HashSet<Player> players = new HashSet<>();
-                for (int i = 3; i < args.length; i++) {
-                    Player player = Bukkit.getPlayer(args[i]);
-                    if (player == null || !player.isOnline()) {
-                        sender.sendMessage(Component.text(args[i], NamedTextColor.YELLOW).append(Component.text(" isn't online.", NamedTextColor.RED)));
-                        return true;
-                    }
-                    players.add(player);
-                }
-
-                sender.sendMessage(Component.text("Starting a game...", NamedTextColor.YELLOW));
-                lobby.createGame(plugin, campaign.get(), difficulty, players);
-            }
-            case "stop" -> {
-                if (!sender.hasPermission("expunge.stop")) {
-                    sender.sendMessage(Component.text("Insufficient permissions.", NamedTextColor.RED));
-                    return true;
-                }
-                if (args.length < 2) {
-                    sender.sendMessage(Component.text("Insufficient arguments.", NamedTextColor.RED));
-                    return true;
-                }
-
-                UUID id;
-                GameManager gameManager = null;
-                try {
-                    id = UUID.fromString(args[1]);
-                    for (GameManager gm : lobby.getGames()) {
-                        if (gm.getUUID().equals(id)) {
-                            gameManager = gm;
-                        }
-                    }
-                    if (gameManager == null) throw new IllegalArgumentException();
-                } catch (IllegalArgumentException e) {
-                    sender.sendMessage(Component.text("No game with that ID exists.", NamedTextColor.RED));
-                    return true;
-                }
-
-                gameManager.stop(true);
-            }
-            case "get" -> {
-                if (!sender.hasPermission("expunge.get")) {
-                    sender.sendMessage(Component.text("Insufficient permissions.", NamedTextColor.RED));
-                    return true;
-                }
-
-                if (!(sender instanceof Player player)) {
-                    sender.sendMessage(Component.text("Only players can execute this command.", NamedTextColor.RED));
-                    return true;
-                }
-
-                if (args.length < 2) {
-                    sender.sendMessage(Component.text("Insufficient arguments. ", NamedTextColor.RED).append(Component.text("/expunge get <item>", NamedTextColor.GRAY)));
-                    return true;
-                }
-
-                GameItem gameItem;
-                try {
-                    gameItem = GameItems.valueOf(args[1]).getGameItem();
-                } catch (IllegalArgumentException e) {
-                    sender.sendMessage(Component.text("Couldn't find that item, did you type it correctly?", NamedTextColor.RED));
-                    return true;
-                }
-                sender.sendMessage(Component.text("Here you go.", NamedTextColor.GREEN));
-                player.getInventory().addItem(gameItem.get());
-                return true;
-            }
-            case "spawn" -> {
-                if (!sender.hasPermission("expunge.spawn")) {
-                    sender.sendMessage(Component.text("Insufficient permissions.", NamedTextColor.RED));
-                    return true;
-                }
-
-                if (!(sender instanceof Player player)) {
-                    sender.sendMessage(Component.text("Only players can execute this command.", NamedTextColor.RED));
-                    return true;
-                }
-
-                if (args.length < 3) {
-                    sender.sendMessage(Component.text("Insufficient arguments. ", NamedTextColor.RED).append(Component.text("/expunge spawn <entity> <uuid>", NamedTextColor.GRAY)));
-                    return true;
-                }
-
-                UUID id;
-                GameManager gameManager = null;
-                try {
-                    id = UUID.fromString(args[2]);
-                    for (GameManager gm : lobby.getGames()) {
-                        if (gm.getUUID().equals(id)) {
-                            gameManager = gm;
-                        }
-                    }
-                    if (gameManager == null) throw new IllegalArgumentException();
-                } catch (IllegalArgumentException e) {
-                    sender.sendMessage(Component.text("No game with that ID exists.", NamedTextColor.RED));
-                    return true;
-                }
-
-                InfectedTypes infectedType = null;
-                Interactable interactable = null;
-                try {
-                    infectedType = InfectedTypes.valueOf(args[1]);
-                } catch (IllegalArgumentException ignored) {}
-                try {
-                    interactable = (Interactable) GameItems.valueOf(args[1]).getGameItem();
-                } catch (Exception ignored) {}
-
-                if (infectedType != null) {
-                    gameManager.getDirector().getMobHandler().addMob(infectedType.spawn(plugin, gameManager, player.getLocation().toVector(), gameManager.getDifficulty()));
-                    sender.sendMessage(Component.text("Spawned.", NamedTextColor.GREEN));
-                } else if (interactable != null) {
-                    gameManager.getDirector().getItemHandler().addEntity(interactable.spawn(player.getLocation()));
-                    sender.sendMessage(Component.text("Spawned.", NamedTextColor.GREEN));
-                } else {
-                    sender.sendMessage(Component.text("Couldn't find that entity, did you type it correctly?", NamedTextColor.RED));
-                }
-                return true;
-            }
-            case "reload" -> {
-                plugin.reloadConfig();
-                sender.sendMessage(Component.text("Reloaded config.", NamedTextColor.GREEN));
-            }
-            default -> sender.sendMessage(Component.text("Unknown argument. ", NamedTextColor.RED).append(Component.text("/expunge [tutorial|stats|start|stop|get|spawn|reload]", NamedTextColor.GRAY)));
+        switch (subcommand) {
+            case "tutorial" -> handleTutorial(sender);
+            case "stats" -> handleStats(sender);
+            case "start" -> handleStart(sender, args);
+            case "stop" -> handleStop(sender, args);
+            case "get" -> handleGet(sender, args);
+            case "spawn" -> handleSpawn(sender, args);
+            case "reload" -> handleReload(sender);
+            default -> sendUsage(sender, "Insufficient arguments.", "/expunge [tutorial|stats|start|stop|get|spawn|reload]");
         }
+
         return true;
     }
 
@@ -300,5 +131,222 @@ public class ExpungeCommand implements CommandExecutor, TabCompleter {
         }
 
         return tabComplete;
+    }
+
+    private void sendInfo(CommandSender sender, String info) {
+        sender.spigot().sendMessage(new ComponentBuilder(info).color(ChatColor.YELLOW).create());
+    }
+
+    private void sendError(CommandSender sender, String error) {
+        sender.spigot().sendMessage(new ComponentBuilder(error).color(ChatColor.RED).create());
+    }
+
+    private void sendNoPermission(CommandSender sender) {
+        sendError(sender, "Insufficient permissions.");
+    }
+
+    private void sendUsage(CommandSender sender, String error, String usage) {
+        var message = new ComponentBuilder(error + " ").color(ChatColor.RED)
+                .append(usage).color(ChatColor.GRAY)
+                .create();
+        sender.spigot().sendMessage(message);
+    }
+
+    private void sendPlayerOnly(CommandSender sender) {
+        sender.spigot().sendMessage(new ComponentBuilder("Only players can execute this command.").color(ChatColor.RED).create());
+    }
+
+    private void handleTutorial(CommandSender sender) {
+        sender.sendMessage("not implemented yet");
+    }
+
+    private void handleStats(CommandSender sender) {
+        for (GameManager gameManager : lobby.getGames()) {
+            sender.sendMessage("Game: " + gameManager.getUUID());
+            sender.sendMessage("World: " + gameManager.getWorld().getName());
+            sender.sendMessage("Difficulty: " + gameManager.getDifficulty());
+            Director director = gameManager.getDirector();
+            sender.sendMessage("sceneTime: " + director.getSceneTime());
+            sender.sendMessage("sceneAttempts: " + director.getSceneAttempts());
+            sender.sendMessage("isSpawningEnabled: " + director.getMobHandler().isSpawningEnabled());
+            sender.sendMessage("activeMobsSize: " + director.getMobHandler().getActiveMobs().size());
+            sender.sendMessage("totalKills: " + director.getStatsHandler().getTotalKills());
+        }
+    }
+
+    private void handleStart(CommandSender sender, String[] args) {
+        if (!sender.hasPermission("expunge.start")) {
+            sendNoPermission(sender);
+            return;
+        }
+        if (args.length < 3) {
+            sendUsage(sender, "Insufficient arguments.", "/expunge start <campaign> <difficulty> [players...]");
+            sender.spigot().sendMessage(
+                    new ComponentBuilder("Note that if players are specified you have to include yourself!")
+                            .color(ChatColor.DARK_GRAY).create()
+            );
+            return;
+        }
+
+        Campaign.List campaign;
+        try {
+            campaign = Campaign.List.valueOf(args[1]);
+        } catch (IllegalArgumentException e) {
+            var error = new ComponentBuilder("Unknown campaign ").color(ChatColor.RED)
+                    .append("'" + args[1] + "'").color(ChatColor.GRAY)
+                    .create();
+            sender.spigot().sendMessage(error);
+            return;
+        }
+        Difficulty difficulty;
+        try {
+            difficulty = Difficulty.valueOf(args[2]);
+        } catch (IllegalArgumentException e) {
+            var error = new ComponentBuilder("Unknown difficulty").color(ChatColor.RED)
+                    .append("'" + args[2] + "'").color(ChatColor.GRAY)
+                    .create();
+            sender.spigot().sendMessage(error);
+            return;
+        }
+
+        if (args.length == 3) {
+            if (!(sender instanceof Player player)) {
+                sendError(sender, "Please include a list of players!");
+                return;
+            }
+
+            sendInfo(sender, "Starting a game...");
+            lobby.createGame(plugin, campaign.get(), difficulty, new HashSet<>(List.of(player)));
+            return;
+        }
+
+        HashSet<Player> players = new HashSet<>();
+        for (int i = 3; i < args.length; i++) {
+            Player player = Bukkit.getPlayer(args[i]);
+            if (player == null || !player.isOnline()) {
+                var error = new ComponentBuilder(args[i]).color(ChatColor.YELLOW)
+                        .append(" isn't online.").color(ChatColor.RED)
+                        .create();
+                sender.spigot().sendMessage(error);
+                return;
+            }
+            players.add(player);
+        }
+
+        sender.spigot().sendMessage(new ComponentBuilder("Starting a game...").color(ChatColor.YELLOW).create());
+        lobby.createGame(plugin, campaign.get(), difficulty, players);
+    }
+
+    private void handleStop(CommandSender sender, String[] args) {
+        if (!sender.hasPermission("expunge.stop")) {
+            sendNoPermission(sender);
+            return;
+        }
+        if (args.length < 2) {
+            sendUsage(sender, "Provide a game ID.", "/expunge stop <game-id>");
+            return;
+        }
+
+        UUID id;
+        GameManager gameManager = null;
+        try {
+            id = UUID.fromString(args[1]);
+            for (GameManager gm : lobby.getGames()) {
+                if (gm.getUUID().equals(id)) {
+                    gameManager = gm;
+                }
+            }
+            if (gameManager == null) throw new IllegalArgumentException();
+        } catch (IllegalArgumentException e) {
+            sender.spigot().sendMessage(new ComponentBuilder("No game with that ID exists.").color(ChatColor.RED).create());
+            return;
+        }
+
+        gameManager.stop(true);
+    }
+
+    private void handleGet(CommandSender sender, String[] args) {
+        if (!sender.hasPermission("expunge.get")) {
+            sendNoPermission(sender);
+            return;
+        }
+        if (!(sender instanceof Player player)) {
+            sendPlayerOnly(sender);
+            return;
+        }
+        if (args.length < 2) {
+            sendUsage(sender, "Insufficient arguments.", "/expunge get <item>");
+            return;
+        }
+
+        GameItem gameItem;
+        try {
+            gameItem = GameItems.valueOf(args[1]).getGameItem();
+        } catch (IllegalArgumentException e) {
+            var error = new ComponentBuilder("Unknown item ").color(ChatColor.RED)
+                    .append("'" + args[1] + "'").color(ChatColor.GRAY)
+                    .create();
+            sender.spigot().sendMessage(error);
+            return;
+        }
+
+        sender.spigot().sendMessage(new ComponentBuilder("Here you go.").color(ChatColor.GREEN).create());
+        player.getInventory().addItem(gameItem.get());
+    }
+
+    private void handleSpawn(CommandSender sender, String[] args) {
+        if (!sender.hasPermission("expunge.spawn")) {
+            sendNoPermission(sender);
+            return;
+        }
+        if (!(sender instanceof Player player)) {
+            sendPlayerOnly(sender);
+            return;
+        }
+        if (args.length < 3) {
+            sendUsage(sender, "Insufficient arguments.", "/expunge spawn <entity> <game-id>");
+            return;
+        }
+
+        UUID id;
+        GameManager gameManager = null;
+        try {
+            id = UUID.fromString(args[2]);
+            for (GameManager gm : lobby.getGames()) {
+                if (gm.getUUID().equals(id)) {
+                    gameManager = gm;
+                }
+            }
+            if (gameManager == null) throw new IllegalArgumentException();
+        } catch (IllegalArgumentException e) {
+            sendError(sender, "No game with that ID exists.");
+            return;
+        }
+
+        InfectedTypes infectedType = null;
+        Interactable interactable = null;
+        try {
+            infectedType = InfectedTypes.valueOf(args[1]);
+        } catch (IllegalArgumentException ignored) {
+        }
+        try {
+            interactable = (Interactable) GameItems.valueOf(args[1]).getGameItem();
+        } catch (Exception ignored) {
+        }
+
+        if (infectedType != null) {
+            gameManager.getDirector().getMobHandler().addMob(infectedType.spawn(plugin, gameManager, player.getLocation().toVector(), gameManager.getDifficulty()));
+            sendInfo(sender, "Spawned.");
+        } else if (interactable != null) {
+            gameManager.getDirector().getItemHandler().addEntity(interactable.spawn(player.getLocation()));
+            sendInfo(sender, "Spawned.");
+        } else {
+            sendError(sender, "Unknown entity.");
+        }
+    }
+
+    private void handleReload(CommandSender sender) {
+        plugin.reloadConfig();
+        sender.spigot().sendMessage(new ComponentBuilder("Reloaded config.").color(ChatColor.GREEN).create());
     }
 }
