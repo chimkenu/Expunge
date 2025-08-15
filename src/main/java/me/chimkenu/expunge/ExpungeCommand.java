@@ -70,7 +70,8 @@ public class ExpungeCommand implements CommandExecutor, TabCompleter {
                     sender.sendMessage("sceneTime: " + director.getSceneTime());
                     sender.sendMessage("sceneAttempts: " + director.getSceneAttempts());
                     sender.sendMessage("isSpawningEnabled: " + director.getMobHandler().isSpawningEnabled());
-                    sender.sendMessage("activeMobsSize" + director.getMobHandler().getActiveMobs().size());
+                    sender.sendMessage("activeMobsSize: " + director.getMobHandler().getActiveMobs().size());
+                    sender.sendMessage("totalKills: " + director.getStatsHandler().getTotalKills());
                 }
             }
             case "start" -> {
