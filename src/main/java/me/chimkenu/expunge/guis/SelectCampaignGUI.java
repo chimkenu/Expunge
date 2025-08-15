@@ -3,13 +3,11 @@ package me.chimkenu.expunge.guis;
 import me.chimkenu.expunge.Lobby;
 import me.chimkenu.expunge.Queue;
 import me.chimkenu.expunge.campaigns.Campaign;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
+import me.chimkenu.expunge.utils.ChatUtil;
 
 public class SelectCampaignGUI extends GUI {
     public SelectCampaignGUI(Lobby lobby, Queue queue) {
-        super(9, Component.text("Select campaign...", NamedTextColor.BLACK, TextDecoration.BOLD), true);
+        super(9, ChatUtil.format("&0&bSelect campaign..."), true);
         int i = 0;
         for (Campaign.List campaign : Campaign.List.values()) {
             setItem(i, newGUIItem(campaign.getGUIMaterial(), campaign.get().getName(), queue.getCampaign() == campaign), player -> {

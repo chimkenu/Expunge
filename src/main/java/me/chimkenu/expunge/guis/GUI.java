@@ -1,7 +1,6 @@
 package me.chimkenu.expunge.guis;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextDecoration;
+import me.chimkenu.expunge.utils.ChatUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -24,7 +23,7 @@ public abstract class GUI {
     public static final Map<UUID, GUI> inventoriesByUUID = new HashMap<>();
     public static final Map<UUID, UUID> openInventories = new HashMap<>();
 
-    public GUI(int size, Component name, boolean isFixed) {
+    public GUI(int size, String name, boolean isFixed) {
         uuid = UUID.randomUUID();
         inventory = Bukkit.createInventory(null, size, name);
         actions = new HashMap<>();
@@ -91,14 +90,14 @@ public abstract class GUI {
         void click(Player player);
     }
 
-    public ItemStack newGUIItem(Material material, Component displayName, boolean isGlowing, int amount) {
+    public ItemStack newGUIItem(Material material, String displayName, boolean isGlowing, int amount) {
         ItemStack item = new ItemStack(material);
         item.setAmount(amount);
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
-            meta.displayName(displayName.decoration(TextDecoration.ITALIC, false));
+            meta.setDisplayName(ChatUtil.format(displayName));
             if (isGlowing) {
-                meta.addEnchant(Enchantment.DURABILITY, 1, true);
+                meta.addEnchant(Enchantment.UNBREAKING, 1, true);
                 meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             }
             item.setItemMeta(meta);
@@ -106,22 +105,26 @@ public abstract class GUI {
         return item;
     }
 
-    public ItemStack newGUIItem(Material material, Component displayName, boolean isGlowing) {
+    public ItemStack newGUIItem(Material material, String displayName, boolean isGlowing) {
         return newGUIItem(material, displayName, isGlowing, 1);
     }
 
-    public ItemStack newGUIItem(Material material, Component displayName) {
+    public ItemStack newGUIItem(Material material, String displayName) {
         return newGUIItem(material, displayName, false);
     }
 
-    public static ItemStack newItem(Material material, Component displayName, boolean isGlowing, int amount) {
+    public ItemStack newGUIItem(Material material) {
+        return newGUIItem(material, "");
+    }
+
+    public static ItemStack newItem(Material material, String displayName, boolean isGlowing, int amount) {
         ItemStack item = new ItemStack(material);
         item.setAmount(amount);
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
-            meta.displayName(displayName);
+            meta.setDisplayName(ChatUtil.format(displayName));
             if (isGlowing) {
-                meta.addEnchant(Enchantment.DURABILITY, 1, true);
+                meta.addEnchant(Enchantment.UNBREAKING, 1, true);
                 meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             }
             item.setItemMeta(meta);

@@ -4,10 +4,8 @@ import me.chimkenu.expunge.Lobby;
 import me.chimkenu.expunge.Queue;
 import me.chimkenu.expunge.campaigns.Campaign;
 import me.chimkenu.expunge.enums.Difficulty;
+import me.chimkenu.expunge.utils.ChatUtil;
 import me.chimkenu.expunge.utils.Utils;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -15,20 +13,20 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class LobbyGUI extends GUI {
     public LobbyGUI(Lobby lobby) {
-        super(27, Component.text("Queues...", NamedTextColor.BLACK, TextDecoration.BOLD), true);
+        super(27, ChatUtil.format("&0&bQueues..."), true);
 
-        setItem(26, newGUIItem(Material.PAINTING, Component.text("Start a Queue", NamedTextColor.GRAY)), player -> {
+        setItem(26, newGUIItem(Material.PAINTING, ChatUtil.format("&7Start a Queue")), player -> {
             player.closeInventory();
 
             if (!player.getWorld().equals(lobby.getWorld())) {
-                player.sendMessage(Component.text("You have to be in the lobby to do this.", NamedTextColor.RED));
+                ChatUtil.sendError(player, "You have to be in the lobby to do this.");
                 return;
             }
 
             for (Queue q : lobby.getQueues()) {
                 for (Player p : q.getQueue()) {
                     if (player == p) {
-                        player.sendMessage(Component.text("You're already in a queue.", NamedTextColor.RED));
+                        ChatUtil.sendError(player, "You're already in a queue.");
                         return;
                     }
                 }
@@ -38,7 +36,7 @@ public class LobbyGUI extends GUI {
             new QueueGUI(lobby, lobby.createQueue(Campaign.List.THE_DEPARTURE, Difficulty.EASY, player)).open(player);
         });
 
-        setItem(25, newGUIItem(Material.GRAY_STAINED_GLASS_PANE, Component.text("Reload")), player -> loadQueues(lobby));
+        setItem(25, newGUIItem(Material.GRAY_STAINED_GLASS_PANE, ChatUtil.format("Reload")), player -> loadQueues(lobby));
 
         loadQueues(lobby);
     }
@@ -48,43 +46,47 @@ public class LobbyGUI extends GUI {
         for (Queue queue : lobby.getQueues()) {
             ItemStack skull = Utils.getSkull(queue.getCreator());
             ItemMeta meta = skull.getItemMeta();
-            meta.displayName(queue.getCreator().displayName().color(NamedTextColor.RED)
-                    .append(Component.text("'s queue", NamedTextColor.GRAY))
-                    .append(Component.text(" (" + queue.getQueue().size() + "/" + queue.getMaxPlayers() + ")", NamedTextColor.DARK_GRAY)));
-            skull.setItemMeta(meta);
+            if (meta != null) {
+                String name = "&4" + queue.getCreator().getDisplayName() + "&7's queue &8(" +
+                        queue.getQueue().size() + "/" + queue.getMaxPlayers() + ")";
+                meta.setDisplayName(ChatUtil.format(name));
+                skull.setItemMeta(meta);
+            }
+
             setItem(i, skull, player -> {
                 player.closeInventory();
 
                 if (!player.getWorld().equals(lobby.getWorld())) {
-                    player.sendMessage(Component.text("You have to be in the lobby to do this.", NamedTextColor.RED));
+                    ChatUtil.sendError(player, "You have to be in the lobby to do this.");
                     return;
                 }
 
                 for (Queue q : lobby.getQueues()) {
                     for (Player p : q.getQueue()) {
                         if (player == p && queue != q) {
-                            player.sendMessage(Component.text("You're already in another queue.", NamedTextColor.RED));
+                            ChatUtil.sendError(player, "You're already in another queue.");
                             return;
                         }
                     }
                 }
 
                 if (queue.join(player)) {
-                    for (Player playersInQueue : queue.getQueue()) {
-                        playersInQueue.sendMessage(player.displayName().color(NamedTextColor.RED).append(Component.text(" joined the queue.", NamedTextColor.GRAY)));
-                    }
+                    queue.getQueue().forEach(p -> ChatUtil.sendFormatted(p, "&a" + player.getDisplayName() + " &7joined the queue."));
                 } else if (queue.quit(player)) {
-                    for (Player playersInQueue : queue.getQueue()) {
-                        playersInQueue.sendMessage(player.displayName().color(NamedTextColor.RED).append(Component.text(" left the queue.", NamedTextColor.GRAY)));
-                    }
-                    player.sendMessage(Component.text("Left the queue.", NamedTextColor.GRAY));
+                    queue.getQueue().forEach(p -> ChatUtil.sendFormatted(p, "&a" + player.getDisplayName() + " &7left the queue."));
+                    ChatUtil.sendInfo(player, "Left the queue.");
                 } else {
-                    player.sendMessage(Component.text("Queue is full.", NamedTextColor.RED));
+                    ChatUtil.sendError(player, "Queue is full.");
                 }
             });
 
             i++;
             if (i >= 24) break;
+        }
+
+        // clear out the rest
+        for (; i < 24; i++) {
+            setItem(i, new ItemStack(Material.AIR));
         }
     }
 }
