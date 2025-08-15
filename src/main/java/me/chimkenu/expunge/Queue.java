@@ -2,8 +2,8 @@ package me.chimkenu.expunge;
 
 import me.chimkenu.expunge.campaigns.Campaign;
 import me.chimkenu.expunge.enums.Difficulty;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -46,8 +46,9 @@ public class Queue implements Listener {
     }
 
     public boolean quit(Player player) {
-        if (queue.contains(player) && queue.size() - 1 <= 0) stop(true);
-        if (player == creator) stop(true);
+        if ((queue.contains(player) && queue.size() == 1) || player == creator) {
+            stop(true);
+        }
         return queue.remove(player);
     }
 
@@ -57,14 +58,14 @@ public class Queue implements Listener {
 
         if (isAbrupt) {
             for (Player player : queue) {
-                player.sendMessage(Component.text("Queue cancelled.", NamedTextColor.RED));
+                player.spigot().sendMessage(new ComponentBuilder("Queue cancelled.").color(ChatColor.RED).create());
             }
             return;
         }
 
         if (queue.size() < minPlayers) {
             for (Player player : queue) {
-                player.sendMessage(Component.text("Unable to meet player requirements, please start a new queue.", NamedTextColor.RED));
+                player.spigot().sendMessage(new ComponentBuilder("Unable to meet player requirements, please start a new queue.").color(ChatColor.RED).create());
             }
             return;
         }

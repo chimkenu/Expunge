@@ -4,7 +4,6 @@ import me.chimkenu.expunge.campaigns.Campaign;
 import me.chimkenu.expunge.enums.Difficulty;
 import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.game.LocalGameManager;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -40,7 +39,7 @@ public class Lobby {
                 p.showPlayer(plugin, player);
             player.showPlayer(plugin, p);
         }
-        player.displayName(player.name().color(NamedTextColor.GRAY));
+        player.setDisplayName(ChatColor.GRAY + player.getName());
         player.setAllowFlight(true);
         player.setFlying(true);
         player.setHealth(20d);
