@@ -9,6 +9,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -107,6 +108,8 @@ public class StadiumFinale implements Listener {
         return new Listener() {
             @EventHandler
             public void afterHorde(EntityDeathEvent e) {
+                Component text = Component.text(gameManager.getDirector().getStatsHandler().getTotalKills() + " / " + requirement, NamedTextColor.GRAY);
+                gameManager.getPlayers().forEach(player -> player.sendActionBar(text));
                 if (gameManager.getDirector().getStatsHandler().getTotalKills() >= requirement) {
                     mobHandler.spawnTank();
                     HandlerList.unregisterAll(this);
