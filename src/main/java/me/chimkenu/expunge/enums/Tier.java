@@ -1,7 +1,7 @@
 package me.chimkenu.expunge.enums;
 
 public enum Tier {
-    TIER1,
-    TIER2,
+    COMMON,
+    RARE,
     SPECIAL
 }

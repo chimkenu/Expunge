@@ -1,12 +1,12 @@
 package me.chimkenu.expunge.listeners.game;
 
+import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.items.GameItem;
 import me.chimkenu.expunge.listeners.GameListener;
-import me.chimkenu.expunge.utils.Utils;
-import me.chimkenu.expunge.items.weapons.guns.Gun;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
+import me.chimkenu.expunge.utils.ChatUtil;
+import me.chimkenu.expunge.utils.ItemUtils;
+import me.chimkenu.expunge.items.Gun;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
@@ -21,12 +21,11 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
 
 public class PickUpListener extends GameListener {
-    public PickUpListener(JavaPlugin plugin, GameManager gameManager) {
+    public PickUpListener(Expunge plugin, GameManager gameManager) {
         super(plugin, gameManager);
     }
 
@@ -54,16 +53,16 @@ public class PickUpListener extends GameListener {
             return;
         }
         if (!player.isSneaking()) {
-            player.sendActionBar(Component.text("Sneak to pick up.", NamedTextColor.YELLOW));
+            ChatUtil.sendActionBar(player, "&eSneak to pick up.");
             e.setCancelled(true);
             return;
         }
 
         Item item = e.getItem();
         ItemStack itemStack = item.getItemStack();
-        GameItem gameItem = Utils.getGameItemFromItemStack(itemStack);
+        GameItem gameItem = plugin.getItems().toGameItem(itemStack);
         if (gameItem == null) {
-            player.sendActionBar(Component.text("You can't pick this up.", NamedTextColor.RED));
+            ChatUtil.sendActionBar(player, "&cYou can't pick this up.");
             e.setCancelled(true);
             return;
         }
@@ -74,7 +73,7 @@ public class PickUpListener extends GameListener {
         }
         pickUp.put(player, System.currentTimeMillis());
 
-        int hotbarSlot = gameItem.getSlot().ordinal();
+        int hotbarSlot = gameItem.slot().ordinal();
 
         if (player.getInventory().containsAtLeast(item.getItemStack(), 1)) {
             e.setCancelled(true);
@@ -82,14 +81,17 @@ public class PickUpListener extends GameListener {
             // add to ammo if gun
             if (gameItem instanceof Gun gun) {
                 ItemStack gunInHotbar = player.getInventory().getItem(hotbarSlot);
-                if (gunInHotbar != null) ShootListener.setAmmo(gunInHotbar, Math.min(ShootListener.getAmmo(gunInHotbar) + ShootListener.getAmmo(item.getItemStack()), gun.getMaxAmmo()));
+                if (gunInHotbar != null) {
+                    gun.setAmmo(gunInHotbar, Math.min(gun.getAmmo(gunInHotbar) + gun.getAmmo(item.getItemStack()), gun.maxAmmo()));
+                }
+
                 player.playSound(player.getLocation(), Sound.ITEM_ARMOR_EQUIP_LEATHER, SoundCategory.PLAYERS, 1, 1);
-                player.sendActionBar(Component.text("+Ammo", NamedTextColor.BLUE));
+                ChatUtil.sendActionBar(player, "&9+Ammo");
                 item.setPickupDelay(20);
                 if (!item.isInvulnerable()) item.remove();
                 return;
             }
-            player.sendActionBar(Component.text("You cannot carry any more of this item.", NamedTextColor.RED));
+            ChatUtil.sendActionBar(player, "&cYou cannot carry any more of this item.");
             return;
         }
 
@@ -140,7 +142,7 @@ public class PickUpListener extends GameListener {
 
         Item entity = e.getItemDrop();
         ItemStack item = entity.getItemStack();
-        if (Utils.getGameItemFromItemStack(item) == null) {
+        if (plugin.getItems().toGameItem(item) == null) {
             // fix item if broken
             if (item.getItemMeta() instanceof Damageable damageable) {
                 // this is added to fix reload as it breaks when opening the inventory, however it can be abused
@@ -152,7 +154,7 @@ public class PickUpListener extends GameListener {
                     player.updateInventory();
                 }
             }
-            player.sendActionBar(Component.text("You can't drop this.", NamedTextColor.RED));
+            ChatUtil.sendActionBar(player, "&cYou can't drop this.");
             cancelDrop(e);
             return;
         }

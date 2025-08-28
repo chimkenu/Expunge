@@ -1,13 +1,10 @@
 package me.chimkenu.expunge.game;
 
-import me.chimkenu.expunge.enums.GameItems;
 import me.chimkenu.expunge.enums.Tier;
-import me.chimkenu.expunge.items.GameItem;
-import me.chimkenu.expunge.items.interactables.Interactable;
+import me.chimkenu.expunge.items.*;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -18,9 +15,11 @@ public class ItemRandomizer {
     private final double chance;
     private final int count;
     private final boolean isInvulnerable;
-    private final List<GameItems> possibilities;
 
-    public ItemRandomizer(double x, double y, double z, double chance, int count, List<GameItems> possibilities) {
+    private final List<String> possibilities;
+    private final Preset preset;
+
+    public ItemRandomizer(double x, double y, double z, double chance, int count, List<String> possibilities) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -28,6 +27,7 @@ public class ItemRandomizer {
         this.count = count;
         this.isInvulnerable = false;
         this.possibilities = possibilities;
+        this.preset = null;
     }
 
     public ItemRandomizer(double x, double y, double z, double chance, int count, Preset preset) {
@@ -37,7 +37,8 @@ public class ItemRandomizer {
         this.chance = chance;
         this.count = count;
         this.isInvulnerable = false;
-        this.possibilities = preset.gameItems();
+        this.possibilities = null;
+        this.preset = preset;
     }
 
     public ItemRandomizer(double x, double y, double z, double chance, int count, boolean isInvulnerable, Preset preset) {
@@ -47,10 +48,11 @@ public class ItemRandomizer {
         this.chance = chance;
         this.count = count;
         this.isInvulnerable = isInvulnerable;
-        this.possibilities = preset.gameItems();
+        this.possibilities = null;
+        this.preset = preset;
     }
 
-    public ItemRandomizer(double x, double y, double z, double chance, int count, boolean isInvulnerable, List<GameItems> possibilities) {
+    public ItemRandomizer(double x, double y, double z, double chance, int count, boolean isInvulnerable, List<String> possibilities) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -58,66 +60,71 @@ public class ItemRandomizer {
         this.count = count;
         this.isInvulnerable = isInvulnerable;
         this.possibilities = possibilities;
+        this.preset = null;
     }
 
-    public void randomize(GameManager gameManager) {
+    public void randomize(GameManager manager, Items items) {
         for (int i = 0; i < count; i++) {
             if (ThreadLocalRandom.current().nextDouble() < chance) {
-                GameItem gameItems = possibilities.get((ThreadLocalRandom.current().nextInt(possibilities.size()))).getGameItem();
+                var choices = resolve(items);
+                if (choices == null) {
+                    assert(preset != null);
+                    choices = preset.gameItems(items);
+                }
+
+                var item = choices.get((ThreadLocalRandom.current().nextInt(choices.size())));
                 Entity entity;
-                if (gameItems instanceof Interactable interactable) {
-                    entity = interactable.spawn(new Location(gameManager.getWorld(), x, y, z));
+                if (item instanceof Interactable interactable) {
+                    entity = interactable.spawn(new Location(manager.getWorld(), x, y, z));
                 } else {
-                    entity = gameManager.getWorld().dropItem(new Location(gameManager.getWorld(), x, y, z), possibilities.get((ThreadLocalRandom.current().nextInt(possibilities.size()))).getGameItem().get());
+                    entity = manager.getWorld().dropItem(new Location(manager.getWorld(), x, y, z), item.toItem());
                     entity.setInvulnerable(isInvulnerable);
                 }
-                gameManager.getDirector().getItemHandler().addEntity(entity);
+                manager.getDirector().getItemHandler().addEntity(entity);
             }
         }
+    }
+
+    private List<GameItem> resolve(Items items) {
+        if (possibilities == null) {
+            return null;
+        }
+
+        return items.list(item -> possibilities.contains(item.id()));
     }
 
     public enum Preset {
         TIER1_GUNS {
             @Override
-            public List<GameItems> gameItems() {
-                List<GameItems> gameItems = new ArrayList<>(GameItems.getGuns());
-                gameItems.removeIf(gameItem -> gameItem.getGameItem().getTier() != Tier.TIER1);
-                return gameItems;
+            public List<GameItem> gameItems(Items items) {
+                return items.list(item -> item instanceof Gun && item.tier() == Tier.COMMON);
             }
         },
         TIER2_GUNS {
             @Override
-            public List<GameItems> gameItems() {
-                List<GameItems> gameItems = new ArrayList<>(GameItems.getGuns());
-                gameItems.removeIf(gameItem -> gameItem.getGameItem().getTier() != Tier.TIER2);
-                return gameItems;
+            public List<GameItem> gameItems(Items items) {
+                return items.list(item -> item instanceof Gun && item.tier() == Tier.RARE);
             }
         },
         MELEE {
             @Override
-            public List<GameItems> gameItems() {
-                List<GameItems> gameItems = new ArrayList<>(GameItems.getMelees());
-                gameItems.removeIf(gameItem -> gameItem.getGameItem().getTier() == Tier.SPECIAL);
-                return gameItems;
+            public List<GameItem> gameItems(Items items) {
+                return items.list(item -> item instanceof Melee && item.tier() != Tier.SPECIAL);
             }
         },
         TIER1_UTILITY {
             @Override
-            public List<GameItems> gameItems() {
-                List<GameItems> gameItems = new ArrayList<>(GameItems.getUtilities());
-                gameItems.removeIf(gameItem -> gameItem.getGameItem().getTier() != Tier.TIER1);
-                return gameItems;
+            public List<GameItem> gameItems(Items items) {
+                return items.list(item -> item instanceof Utility && item.tier() == Tier.COMMON);
             }
         },
         TIER2_UTILITY {
             @Override
-            public List<GameItems> gameItems() {
-                List<GameItems> gameItems = new ArrayList<>(GameItems.getUtilities());
-                gameItems.removeIf(gameItem -> gameItem.getGameItem().getTier() != Tier.TIER2);
-                return gameItems;
+            public List<GameItem> gameItems(Items items) {
+                return items.list(item -> item instanceof Utility && item.tier() == Tier.RARE);
             }
         };
 
-        public abstract List<GameItems> gameItems();
+        public abstract List<GameItem> gameItems(Items items);
     }
 }
