@@ -1,12 +1,12 @@
 package me.chimkenu.expunge.listeners.game;
 
+import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.listeners.GameListener;
-import me.chimkenu.expunge.utils.Utils;
+import me.chimkenu.expunge.utils.ChatUtil;
+import me.chimkenu.expunge.utils.ItemUtils;
 import me.chimkenu.expunge.enums.Tier;
-import me.chimkenu.expunge.items.weapons.guns.Gun;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
+import me.chimkenu.expunge.items.Gun;
 import org.bukkit.Sound;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
@@ -16,7 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class AmmoPileListener extends GameListener {
-    public AmmoPileListener(JavaPlugin plugin, GameManager gameManager) {
+    public AmmoPileListener(Expunge plugin, GameManager gameManager) {
         super(plugin, gameManager);
     }
 
@@ -34,18 +34,20 @@ public class AmmoPileListener extends GameListener {
         Player player = e.getPlayer();
         // update ammo if holding gun
         ItemStack itemStack = player.getInventory().getItemInMainHand();
-        if (!(Utils.getGameItemFromItemStack(itemStack) instanceof Gun gun)) {
+        var gameItem = plugin.getItems().toGameItem(itemStack);
+        if (!(gameItem instanceof Gun gun)) {
             return;
         }
-        if (gun.getTier() == Tier.SPECIAL) {
-            player.sendActionBar(Component.text("There's no ammo for this weapon...", NamedTextColor.RED));
+
+        if (gun.tier() == Tier.SPECIAL) {
+            ChatUtil.sendActionBar(player, "&cThere's no ammo for this weapon...");
             return;
         }
 
         player.playSound(player.getLocation(), Sound.BLOCK_CHAIN_PLACE, 1, 1);
-        player.sendActionBar(Component.text("+Ammo", NamedTextColor.BLUE));
-        ShootListener.setAmmo(itemStack, gun.getMaxAmmo());
-        itemStack.setAmount(gun.getClipSize());
-        player.setLevel(ShootListener.getAmmo(itemStack));
+        ChatUtil.sendActionBar(player, "&9+Ammo");
+        gun.setAmmo(itemStack, gun.maxAmmo());
+        // itemStack.setAmount(gun.clipSize()); auto reload??
+        player.setLevel(gun.maxAmmo());
     }
 }
