@@ -1,5 +1,6 @@
 package me.chimkenu.expunge.listeners.game;
 
+import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.listeners.CleanUp;
 import me.chimkenu.expunge.listeners.GameListener;
@@ -12,14 +13,13 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityBreakDoorEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
 
 public class BreakDoorListener extends GameListener implements CleanUp {
     private final HashMap<Block, DoorData> doorLocations;
 
-    public BreakDoorListener(JavaPlugin plugin, GameManager gameManager) {
+    public BreakDoorListener(Expunge plugin, GameManager gameManager) {
         super(plugin, gameManager);
         this.doorLocations = new HashMap<>();
     }
@@ -56,6 +56,11 @@ public class BreakDoorListener extends GameListener implements CleanUp {
     @EventHandler
     public void onBreakDoor(EntityBreakDoorEvent e) {
         if (gameManager.getWorld() != e.getBlock().getWorld()) {
+            return;
+        }
+        if (e.getBlock().getBlockData().getMaterial().toString().contains("SPRUCE")) {
+            // spruce doors are safe doors
+            e.setCancelled(true);
             return;
         }
         updateDoor(e.getBlock());
