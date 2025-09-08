@@ -1,5 +1,6 @@
 package me.chimkenu.expunge.listeners.game;
 
+import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.listeners.CleanUp;
 import me.chimkenu.expunge.listeners.GameListener;
@@ -8,14 +9,13 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
 
 public class BreakGlassListener extends GameListener implements CleanUp {
     private final HashMap<Block, GlassData> glassLocations;
 
-    public BreakGlassListener(JavaPlugin plugin, GameManager gameManager) {
+    public BreakGlassListener(Expunge plugin, GameManager gameManager) {
         super(plugin, gameManager);
         glassLocations = new HashMap<>();
     }
@@ -31,7 +31,7 @@ public class BreakGlassListener extends GameListener implements CleanUp {
 
     public void breakGlass(Block block) {
         if (block.getType() == Material.GLASS || block.getType() == Material.GLASS_PANE) {
-            block.getWorld().spawnParticle(Particle.BLOCK_CRACK, block.getLocation().add(0, .5, 0), 15, 0.2, 0.2, 0.2, block.getType().createBlockData());
+            block.getWorld().spawnParticle(Particle.BLOCK, block.getLocation().add(0, .5, 0), 15, 0.2, 0.2, 0.2, block.getType().createBlockData());
             block.getWorld().playSound(block.getLocation(), Sound.BLOCK_GLASS_BREAK, 1, 1);
             glassLocations.put(block, new GlassData(block.getType(), block.getBlockData()));
             block.setType(Material.AIR, false);
