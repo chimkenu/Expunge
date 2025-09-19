@@ -319,7 +319,7 @@ public enum DepartureDialogue {
         public String[] getA() {
             return new String[]{
                     "A » Hold on, I've got a quarter.",
-                    "A » I'm gonna name you \"Mr. Cookie\".",
+                    "A » I'm gonna id you \"Mr. Cookie\".",
                     "B » That's one stale biscuit."
             };
         }
@@ -327,7 +327,7 @@ public enum DepartureDialogue {
         @Override
         public String[] getB() {
             return new String[]{
-                    "A » I'll name you \"Mr. Cookie\".",
+                    "A » I'll id you \"Mr. Cookie\".",
                     "B » You're not going to eat that..?",
                     "A » It's too tough, it’d probably shatter my teeth."
             };
@@ -335,7 +335,7 @@ public enum DepartureDialogue {
 
         @Override
         public String[] getSolo() {
-            return new String[]{ "A » Yeah, I'm gonna name this biscuit \"Mr. Cookie\"."};
+            return new String[]{ "A » Yeah, I'm gonna id this biscuit \"Mr. Cookie\"."};
         }
     },
     SUBWAY_MAP {

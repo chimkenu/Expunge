@@ -1,16 +1,18 @@
 package me.chimkenu.expunge.campaigns.thedeparture.extras;
 
-import me.chimkenu.expunge.campaigns.Campaign;
 import me.chimkenu.expunge.campaigns.Dialogue;
 import me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue;
+import me.chimkenu.expunge.game.Director;
 import me.chimkenu.expunge.game.GameManager;
-import me.chimkenu.expunge.game.director.MobHandler;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
+import me.chimkenu.expunge.game.campaign.CampaignDirector;
+import me.chimkenu.expunge.game.campaign.CampaignGameState;
+import me.chimkenu.expunge.mobs.MobType;
+import me.chimkenu.expunge.utils.ChatUtil;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.Mob;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -21,11 +23,11 @@ import org.bukkit.util.Vector;
 
 public class StadiumFinale implements Listener {
     private final GameManager gameManager;
-    private final MobHandler mobHandler;
+    private final CampaignDirector director;
 
     public StadiumFinale(GameManager gameManager) {
         this.gameManager = gameManager;
-        mobHandler = gameManager.getDirector().getMobHandler();
+        director = (CampaignDirector) gameManager.getDirector();
     }
 
     @EventHandler
@@ -45,8 +47,8 @@ public class StadiumFinale implements Listener {
             return;
         }
 
-        Campaign.playCrescendoEventEffect(gameManager.getPlayers());
-        mobHandler.setGoHam(true);
+        CampaignDirector.playCrescendoEventEffect(gameManager.getPlayers());
+        director.setPhase(Director.Phase.DISABLED);
 
         // spawn in tank after specific number of kills
         gameManager.addListener(afterHordeRequirement());
@@ -59,8 +61,8 @@ public class StadiumFinale implements Listener {
                     return;
                 }
 
-                mobHandler.setSpawningEnabled(false);
-                final int attempts = gameManager.getDirector().getSceneAttempts();
+                director.setPhase(Director.Phase.DISABLED);
+                final int attempts = ((CampaignGameState) gameManager.getState()).getAttempts();
 
                 // 30-second timer
                 new BukkitRunnable() {
@@ -69,9 +71,8 @@ public class StadiumFinale implements Listener {
                     public void run() {
                         if (i <= 0) {
                             // do the same thing
-                            mobHandler.setSpawningEnabled(true);
-                            mobHandler.spawnHorde(gameManager.getDifficulty());
-                            Campaign.playCrescendoEventEffect(gameManager.getPlayers());
+                            director.setPhase(Director.Phase.BUILD);
+                            CampaignDirector.playCrescendoEventEffect(gameManager.getPlayers());
 
                             gameManager.addListener(afterHordeRequirement());
 
@@ -91,8 +92,8 @@ public class StadiumFinale implements Listener {
                         }
 
                         // timer
-                        if (!gameManager.isRunning() || gameManager.getDirector().getSceneAttempts() != attempts) this.cancel();
-                        gameManager.getPlayers().forEach(player -> player.sendActionBar(Component.text(i, NamedTextColor.GRAY)));
+                        if (!gameManager.isRunning() || ((CampaignGameState) gameManager.getState()).getAttempts() != attempts) this.cancel();
+                        gameManager.getPlayers().forEach(player -> ChatUtil.sendActionBar(player, "&7" + i));
                         i--;
                     }
                 }.runTaskTimer(gameManager.getPlugin(), 0, 20);
@@ -104,14 +105,19 @@ public class StadiumFinale implements Listener {
     }
 
     private Listener afterHordeRequirement() {
-        int requirement = gameManager.getDirector().getStatsHandler().getTotalKills() + 30 + 25 * gameManager.getDifficulty().ordinal();
+        int requirement = 30 + 25 * ((CampaignGameState) gameManager.getState()).getDifficulty().ordinal();
         return new Listener() {
-            @EventHandler
+            int kills = 0;
+            @EventHandler(priority = EventPriority.LOWEST)
             public void afterHorde(EntityDeathEvent e) {
-                Component text = Component.text(gameManager.getDirector().getStatsHandler().getTotalKills() + " / " + requirement, NamedTextColor.GRAY);
-                gameManager.getPlayers().forEach(player -> player.sendActionBar(text));
-                if (gameManager.getDirector().getStatsHandler().getTotalKills() >= requirement) {
-                    mobHandler.spawnTank();
+                if (!(e.getEntity() instanceof Mob mob) || !gameManager.getEntities().contains(mob)) {
+                    return;
+                }
+
+                String text = "&7" + kills + " / " + requirement;
+                gameManager.getPlayers().forEach(player -> ChatUtil.sendActionBar(player, text));
+                if (kills >= requirement) {
+                    director.spawnMob(MobType.TANK, 1, mob.getLocation().toVector(), true);
                     HandlerList.unregisterAll(this);
                 }
             }

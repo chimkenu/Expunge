@@ -1,18 +1,19 @@
 package me.chimkenu.expunge.campaigns.thedeparture.maps;
 
+import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.GameAction;
 import me.chimkenu.expunge.campaigns.*;
 import me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue;
 import me.chimkenu.expunge.enums.Achievements;
-import me.chimkenu.expunge.enums.GameItems;
+import me.chimkenu.expunge.game.Director;
 import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.game.ItemRandomizer;
-import me.chimkenu.expunge.mobs.common.Horde;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
+import me.chimkenu.expunge.game.campaign.CampaignDirector;
+import me.chimkenu.expunge.mobs.MobType;
+import me.chimkenu.expunge.utils.ChatUtil;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -22,7 +23,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -32,119 +32,145 @@ import org.bukkit.util.Vector;
 import java.awt.*;
 import java.util.List;
 
-public class Office implements CampaignMap, CampaignIntro {
-    @Override
-    public String directory() {
-        return "Office";
-    }
+public record Office(
+        String name,
+        String displayName,
 
-    @Override
-    public Vector startLocation() {
-        return new Vector(-7.5, 9, -23.5);
-    }
+        Vector startLocation,
+        BoundingBox endRegion,
 
-    @Override
-    public BoundingBox endRegion() {
-        return new BoundingBox(24, 42, -102, 30, 47, -94);
-    }
+        List<Vector> escapePath,
 
-    @Override
-    public BoundingBox[] pathRegions() {
-        return new BoundingBox[0];
-    }
+        List<Vector> spawnLocations,
+        List<Vector> bossLocations,
+        List<Vector> rescueClosetLocations,
+        List<Barrier> barrierLocations,
 
-    @Override
-    public Vector[] spawnLocations() {
-        return new Vector[]{
-                new Vector(12, 9, -18),
-                new Vector(-20.5, 9.0, -18.5),
-                new Vector(-31, 10.0, -7),
-                new Vector(4.5, 9.0, 6.5),
-                new Vector(-31.0, 10.0, 2),
-                new Vector(16.5, 9.0, 5.5),
-                new Vector(-3, 9.0, 24),
-                new Vector(-13.5, 9.0, 19.5),
-                new Vector(-13.5, 9.0, 7.5),
+        List<ItemRandomizer> startItems,
+        List<ItemRandomizer> mapItems,
+        List<Vector> ammoLocations,
+
+        GameAction runAtStart,
+        GameAction runAtEnd
+) implements CampaignMap, CampaignIntro {
+    // stupid workaround
+    public Office() { this(null, null, null, null, null, null, null, null, null, null, null, null, null, null); }
+
+    public Office {
+        name = "Office";
+        displayName = ChatUtil.getColor(160, 75, 0) + name;
+        startLocation = new Vector(-103.5, 9, -327.5);
+        endRegion = new BoundingBox(-178, 42, -286, -184, 48, -294);
+        escapePath = List.of(
+                new Vector(-103.5, 9, -316.5),
+                new Vector(-103.5, 9, -309.5),
+                new Vector(-99.5, 9, -304.5),
+                new Vector(-96.5, 9, -297.5),
+                new Vector( -97.5, 9, -290.5),
+                new Vector(-104.5, 9, -290.5),
+                new Vector(-112.5, 9, -290.5),
+                new Vector(-120.5, 9, -291.5),
+                new Vector(-128, 9, -292),
+                new Vector(-205, 77, -287),
+                new Vector(-205, 77, -274),
+                new Vector(-205.5, 77, -263.5),
+                new Vector(-191.5, 77, -263.5),
+                new Vector(-185.5, 77, -273.5),
+                new Vector(-180.5, 78.17, -277.5),
+                new Vector(-187.5, 77, -282.5),
+                new Vector(-189, 77, -296),
+                new Vector(-188, 73, -302.5),
+                new Vector(-188, 69, -297.5),
+                new Vector(-188, 65, -302.5),
+                new Vector(-188, 61, -297.5),
+                new Vector(-188, 57, -302.5),
+                new Vector(-189, 53, -297),
+                new Vector(-188.5, 53, -285.5),
+                new Vector(-189.5, 53, -272.5),
+                new Vector(-192.5, 53, -268.5),
+                new Vector(-198.5, 54, -275.5),
+                new Vector(-204.5, 53, -281.5),
+                new Vector(-213.5, 53, -285.5),
+                new Vector(-221.5, 45, -287.5),
+                new Vector(-219, 44, -294),
+                new Vector(-212.5, 43.06, -286.5),
+                new Vector(-209.5, 46, -277.5)
+        );
+        spawnLocations = List.of(
+                new Vector(-84, 9, -321),
+                new Vector(-82, 9, -299),
+                new Vector(-91.5, 9, -297.5),
+                new Vector(-118.5, 9, -301.5),
+                new Vector(-116.5, 9, -322.5),
+                new Vector(-98, 9, -280),
+                new Vector(-118.5, 9, -284.5),
+                new Vector(-109.5, 9, -296.5),
 
                 // Part 2
-                new Vector(-5.5, 77.0, -84.5),
-                new Vector(-3.5, 77.0, -78.5),
-                new Vector(-9.5, 77.0, -73.5),
-                new Vector(10.5, 77.0, -67.5),
-                new Vector(15.5, 77.0, -53.5),
-                new Vector(27, 77.0, -62),
-                new Vector(28.5, 77.0, -72.5),
-                new Vector(11.5, 77.0, -78.5),
-                new Vector(7.5, 77.0, -86.5),
-                new Vector(11, 77.0, -100),
-                new Vector(32, 78.0, -99),
-                new Vector(23.5, 53.0, -91.5),
-                new Vector(27, 53.0, -76),
-                new Vector(2.5, 53.0, -65.5),
-                new Vector(-8.5, 52.0, -81.5),
-                new Vector(1.5, 43.0, -95.5)
+                // elevator: new Vector(-213.5, 77, -276.5),
+                new Vector(-211.5, 77, -270.5),
+                new Vector(-197.5, 77, -259.5),
+                new Vector(-181, 77, -253.5),
+                new Vector(-194.5, 77, -249),
+                new Vector(-197.5, 77.38, -274.5),
+                new Vector(-197, 77, -292),
+                new Vector(-181, 53, -268),
+                new Vector(-205, 53, -257),
+                new Vector(-195.5, 53, -286.5),
+                new Vector(-206.5, 53, -278.5),
+                new Vector(-212, 53.5, -270.5),
+                new Vector(-206.5, 43, -287.5),
+                new Vector(-217.5, 43, -275.5),
+                new Vector(-214, 61, -287),
+                new Vector(-189.5, 49, -302.5),
+                new Vector(-186.5, 81, -302.5)
+        );
+        bossLocations = List.of(
+                new Vector(-101.5, 9, -290.5),
+                new Vector(-212.5, 43.06, -286.5)
+        );
+        rescueClosetLocations = List.of();
+        barrierLocations = List.of(
+                new Barrier(new Vector(-184, 43, -290), Material.BEEHIVE, true),
+                new Barrier(new Vector(-184, 44, -290), Material.BARRIER, true),
+                new Barrier(new Vector(-182, 43, -287), Material.BEEHIVE, false)
+        );
+        startItems = List.of(
+                new ItemRandomizer(-99, 10, -321.5, 1, ItemRandomizer.MATCH_PLAYER_COUNT, List.of("MEDKIT")),
+                new ItemRandomizer(-108, 10, -321.5, 1, 1, true, List.of("CROWBAR", "FIRE_AXE", "NIGHTSTICK")),
+                new ItemRandomizer(-191.5, 54.19, -291.5, 1, 1, List.of("FRYING_PAN"))
+        );
+        mapItems = List.of(
+                new ItemRandomizer(-99.5, 9, -304.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(-96.5, 10, -327.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(-112.5, 10, -326.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(-123.5, 10, -311, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(-81.5, 10, -296.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(-108.5, 10, -287.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+
+                new ItemRandomizer(-196.5, 78, -245.5, 1, 1, ItemRandomizer.Preset.TIER2_UTILITY),
+                new ItemRandomizer(-213, 77, -276, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(-205.5, 78.44, -254.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(-173.5, 78, -292, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(-179.5, 53.25, -283.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+                new ItemRandomizer(-210.5, 44, -293.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
+
+                new ItemRandomizer(-210.5, 43, -281.5, 0.5, 1, ItemRandomizer.Preset.TIER1_GUNS),
+                new ItemRandomizer(-216.5, 52, -271.5, 0.5, 1, ItemRandomizer.Preset.TIER1_GUNS),
+                new ItemRandomizer(-201.5, 53, -259.5, 0.5, 1, ItemRandomizer.Preset.TIER1_GUNS)
+        );
+        ammoLocations = List.of();
+        runAtStart = (gameManager, player) -> {
+            gameManager.getWorld().setBlockData(new Location(gameManager.getWorld(), -132, 16, -296), Material.REDSTONE_BLOCK.createBlockData());
+            gameManager.getWorld().setBlockData(new Location(gameManager.getWorld(), -208, 85, -285), Material.REDSTONE_BLOCK.createBlockData());
+            Dialogue.display(gameManager.getPlugin(), gameManager.getPlayers(), DepartureDialogue.OFFICE_OPENING.pickRandom(gameManager.getPlayers().size()));
         };
+        runAtEnd = null;
     }
 
     @Override
-    public Vector[] bossLocations() {
-        return new Vector[]{
-                new Vector(-5.5, 9.0, 13.5),
-                new Vector(-36.5, 42, -131.5) // Part 2
-        };
-    }
-
-    @Override
-    public ItemRandomizer[] randomizedGameItems() {
-        return new ItemRandomizer[]{
-                new ItemRandomizer(-3, 10, -17.5, 1, 4, List.of(GameItems.MEDKIT)),
-                new ItemRandomizer(-12, 10, -17.5, 1, 1, true, List.of(GameItems.CROWBAR, GameItems.FIRE_AXE, GameItems.NIGHTSTICK)),
-
-                new ItemRandomizer(1.5, 10, -22.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
-                new ItemRandomizer(-18.5, 10, -22.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
-                new ItemRandomizer(14.5, 10, 9.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
-                new ItemRandomizer(-12.5, 10, 16.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
-                new ItemRandomizer(-4.5, 9, 0.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
-
-                new ItemRandomizer(13.5, 78, -55.5, 0.1, 1, ItemRandomizer.Preset.TIER2_UTILITY),
-                new ItemRandomizer(28.5, 54, -89.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
-                new ItemRandomizer(-3.5, 54, -65.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
-                new ItemRandomizer(-8.5, 52, -79.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
-                new ItemRandomizer(-2.5, 44, -101.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
-
-                new ItemRandomizer(-33.5, 10, 3.5, 0.5, 1, ItemRandomizer.Preset.TIER1_GUNS),
-                new ItemRandomizer(-3.5, 43, -87.5, 0.5, 1, ItemRandomizer.Preset.TIER1_GUNS)
-        };
-    }
-
-    @Override
-    public Vector[] ammoLocations() {
-        return new Vector[0];
-    }
-
-    @Override
-    public Vector buttonLocation() {
-        return new Vector(28, 44, -101);
-    }
-
-    @Override
-    public Vector[] rescueClosetLocations() {
-        return new Vector[0];
-    }
-
-    @Override
-    public GameAction runAtStart() {
-        return (plugin, gameManager, player) -> Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.OFFICE_OPENING.pickRandom(gameManager.getPlayers().size()));
-    }
-
-    @Override
-    public GameAction runAtEnd() {
-        return null;
-    }
-
-    @Override
-    public Listener[] happenings(JavaPlugin plugin, GameManager gameManager) {
-        return new Listener[]{
+    public List<Listener> happenings(Expunge plugin, GameManager gameManager) {
+        return List.of(
                 new Listener() {
                     @EventHandler
                     public void onElevatorPress(PlayerInteractEvent e) {
@@ -154,30 +180,27 @@ public class Office implements CampaignMap, CampaignIntro {
                             if (!gameManager.isRunning()) {
                                 return;
                             }
-                            Vector buttonLoc = new Vector(-31, 10, 13);
+                            Vector buttonLoc = new Vector(-127, 10, -291);
                             Vector clickedLoc = e.getClickedBlock().getLocation().toVector();
                             if (!buttonLoc.equals(clickedLoc)) {
                                 return;
                             }
 
-                            BoundingBox elevator = new BoundingBox(-36, 7, 15, -30, 14, 9);
+                            BoundingBox elevator = new BoundingBox(-131, 7, -295, -126, 13, -289);
                             for (Player p : gameManager.getPlayers()) {
                                 if (p.getGameMode().equals(GameMode.ADVENTURE)) {
                                     Location pLoc = p.getLocation();
                                     if (!elevator.contains(pLoc.getX(), pLoc.getY(), pLoc.getZ())) {
                                         // a player is still not in the end zone
-                                        e.getPlayer().sendActionBar(Component.text("Not all alive players are in the elevator!", NamedTextColor.RED));
+                                        ChatUtil.sendActionBar(e.getPlayer(), "&aNot all alive players are in the elevator!");
                                         return;
                                     }
                                 }
                             }
 
-                            for (Player p : gameManager.getPlayers()) {
-                                p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 5 * 20, 5, false, true));
-                                p.teleport(new Location(gameManager.getWorld(), 3, 77, -94, 0, 0));
-                            }
-
+                            gameManager.getWorld().setBlockData(new Location(gameManager.getWorld(), -132, 19, -296), Material.REDSTONE_BLOCK.createBlockData());
                             Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.OFFICE_ELEVATOR.pickRandom(gameManager.getPlayers().size()));
+                            HandlerList.unregisterAll(this);
                         }
                     }
                 },
@@ -186,7 +209,7 @@ public class Office implements CampaignMap, CampaignIntro {
                     public void officeRubble(PlayerMoveEvent e) {
                         if (!gameManager.getPlayers().contains(e.getPlayer())) return;
                         if (!gameManager.getPlayerStat(e.getPlayer()).isAlive()) return;
-                        BoundingBox box = new BoundingBox(14, 75, -75, 24, 82, -85);
+                        BoundingBox box = new BoundingBox(-194, 76, -268, -185, 81, -260);
                         if (!box.contains(e.getPlayer().getLocation().toVector()))
                             return;
                         Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.OFFICE_RUBBLE.pickRandom(gameManager.getPlayers().size()));
@@ -198,7 +221,7 @@ public class Office implements CampaignMap, CampaignIntro {
                     public void officeJump(PlayerMoveEvent e) {
                         if (!gameManager.getPlayers().contains(e.getPlayer())) return;
                         if (!gameManager.getPlayerStat(e.getPlayer()).isAlive()) return;
-                        BoundingBox box = new BoundingBox(-7, 51, -91, -13, 58, -104);
+                        BoundingBox box = new BoundingBox(-208, 52, -285, -209, 57, -279);
                         if (!box.contains(e.getPlayer().getLocation().toVector())) return;
 
                         Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.OFFICE_JUMP.pickRandom(gameManager.getPlayers().size()));
@@ -210,8 +233,20 @@ public class Office implements CampaignMap, CampaignIntro {
                     public void onEnterDevelopersRoom(PlayerMoveEvent e) {
                         if (!gameManager.getPlayers().contains(e.getPlayer())) return;
                         if (!gameManager.getPlayerStat(e.getPlayer()).isAlive()) return;
-                        if (new BoundingBox(-10, 41, -84, -7, 48, -80).contains(e.getPlayer().getLocation().toVector()))
+                        if (new BoundingBox(-218, 42, -276, -214, 47, -272).contains(e.getPlayer().getLocation().toVector()))
                             Achievements.THE_DEVELOPERS_ROOM.grant(e.getPlayer());
+                    }
+                },
+                new Listener() {
+                    @EventHandler
+                    public void officeVent(PlayerMoveEvent e) {
+                        if (!gameManager.getPlayers().contains(e.getPlayer())) return;
+                        if (!gameManager.getPlayerStat(e.getPlayer()).isAlive()) return;
+                        BoundingBox box = new BoundingBox(-218, 42, -278, -207, 47, -297);
+                        if (!box.contains(e.getPlayer().getLocation().toVector())) return;
+
+                        Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.OFFICE_VENTS.pickRandom(gameManager.getPlayers().size()));
+                        HandlerList.unregisterAll(this);
                     }
                 },
                 new Listener() {
@@ -220,27 +255,27 @@ public class Office implements CampaignMap, CampaignIntro {
                         Block block = e.getClickedBlock();
                         if (!gameManager.getPlayers().contains(e.getPlayer())) return;
                         if (!gameManager.getPlayerStat(e.getPlayer()).isAlive()) return;
-                        if (block == null || !(e.getAction().equals(Action.PHYSICAL) && block.getLocation().toVector().equals(new Vector(-2, 45, -83)))) {
+                        if (block == null || !(e.getAction().equals(Action.PHYSICAL) && block.getLocation().toVector().equals(new Vector(-210, 45, -275)))) {
                             return;
                         }
 
-                        Campaign.playCrescendoEventEffect(gameManager.getPlayers());
+                        CampaignDirector.playCrescendoEventEffect(gameManager.getPlayers());
                         World world = gameManager.getWorld();
                         new BukkitRunnable() {
                             int i = 0;
 
                             @Override
                             public void run() {
-                                gameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(-2.5, 49, -79.5), gameManager.getDifficulty()));
-                                gameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(5.5, 48, -68.5), gameManager.getDifficulty()));
-                                gameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(18.5, 49, -68.5), gameManager.getDifficulty()));
-                                gameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(24.5, 49, -76.5), gameManager.getDifficulty()));
-                                gameManager.getDirector().getMobHandler().spawnMob(new Horde(plugin, world, new Vector(28.5, 49, -82.5), gameManager.getDifficulty()));
+                                gameManager.getDirector().spawnMob(MobType.COMMON, 1, new Vector(-210.5, 49, -271.5), true);
+                                gameManager.getDirector().spawnMob(MobType.COMMON, 1, new Vector(-202.5, 48, -260.5), true);
+                                gameManager.getDirector().spawnMob(MobType.COMMON, 1, new Vector(-189.5, 49, -260.5), true);
+                                gameManager.getDirector().spawnMob(MobType.COMMON, 1, new Vector(-183.5, 49, -268.5), true);
+                                gameManager.getDirector().spawnMob(MobType.COMMON, 1, new Vector(-179.5, 49, -274.5), true);
                                 i++;
                                 if (i >= 5) {
                                     this.cancel();
                                 }
-                                if (!gameManager.isRunning() || !gameManager.getDirector().getMobHandler().isSpawningEnabled()) {
+                                if (!gameManager.isRunning() || gameManager.getDirector().getPhase() == Director.Phase.DISABLED) {
                                     this.cancel();
                                 }
                             }
@@ -253,44 +288,32 @@ public class Office implements CampaignMap, CampaignIntro {
                 },
                 new Listener() {
                     @EventHandler
-                    public void officeVent(PlayerMoveEvent e) {
-                        if (!gameManager.getPlayers().contains(e.getPlayer())) return;
-                        if (!gameManager.getPlayerStat(e.getPlayer()).isAlive()) return;
-                        BoundingBox box = new BoundingBox(0, 41, -95, -10, 48, -86);
-                        if (!box.contains(e.getPlayer().getLocation().toVector())) return;
-
-                        Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.OFFICE_VENTS.pickRandom(gameManager.getPlayers().size()));
-                        HandlerList.unregisterAll(this);
-                    }
-                },
-                new Listener() {
-                    @EventHandler
                     public void officeSafeRoom(PlayerMoveEvent e) {
                         if (!gameManager.getPlayers().contains(e.getPlayer())) return;
                         if (!gameManager.getPlayerStat(e.getPlayer()).isAlive()) return;
-                        BoundingBox box = new BoundingBox(29, 43, -93, 24, 47, -85);
+                        BoundingBox box = new BoundingBox(-183, 42, -282, -179, 48, -275);
                         if (!box.contains(e.getPlayer().getLocation().toVector())) return;
 
                         Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.OFFICE_SAFE_ROOM.pickRandom(gameManager.getPlayers().size()));
                         HandlerList.unregisterAll(this);
                     }
                 }
-        };
+        );
     }
 
     @Override
     public int play(GameManager gameManager) {
         CampaignIntro.super.play(gameManager);
         final Location[] points = new Location[]{
-                new Location(gameManager.getWorld(), -6.25, 10.5, -1.7, -45, 28),
-                new Location(gameManager.getWorld(), -6.25, 10.5, -1.7, -45, 28),
-                new Location(gameManager.getWorld(), -7.6, 9.75, -5.85, -30.5f, 9.5f),
-                new Location(gameManager.getWorld(), -7.5, 9.4, -9.5, 0, 0),
-                new Location(gameManager.getWorld(), -7.5, 9, -16.5, 0, 0),
-                new Location(gameManager.getWorld(), -7.5, 9, -21.5, 0, 0)
+                new Location(gameManager.getWorld(), -102.25, 10.5, -305.7, -45, 28),
+                new Location(gameManager.getWorld(), -102.25, 10.5, -305.7, -45, 28),
+                new Location(gameManager.getWorld(), -103.6, 9.75, -313.85, -30.5f, 9.5f),
+                new Location(gameManager.getWorld(), -103.5, 9.4, -315.5, 0, 0),
+                new Location(gameManager.getWorld(), -103.5, 9, -322.5, 0, 0),
+                new Location(gameManager.getWorld(), -103.5, 9, -327.5, 0, 0)
         };
         final String main = "The Departure";
-        final Component sub = Component.text("Built by SirSunlight & Pagkain").color(TextColor.color(134, 0, 179));
+        final String sub = ChatUtil.getColor(134, 0, 179) + "Built by SirSunlight & Pagkain";
 
         int time = play(gameManager, points, main, sub, new Color(255, 92, 51), new Color(102, 0, 0), 3, 0.1, 10);
         new BukkitRunnable() {

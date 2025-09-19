@@ -1,15 +1,16 @@
 package me.chimkenu.expunge.campaigns.thedeparture.maps;
 
+import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.GameAction;
+import me.chimkenu.expunge.campaigns.Barrier;
 import me.chimkenu.expunge.campaigns.CampaignMap;
 import me.chimkenu.expunge.campaigns.Dialogue;
 import me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue;
 import me.chimkenu.expunge.campaigns.thedeparture.extras.HighwayCarBoom;
 import me.chimkenu.expunge.enums.Achievements;
-import me.chimkenu.expunge.enums.GameItems;
 import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.game.ItemRandomizer;
-import me.chimkenu.expunge.items.weapons.melees.MrCookie;
+import me.chimkenu.expunge.utils.ChatUtil;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -17,7 +18,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
@@ -27,8 +27,13 @@ import java.util.Set;
 
 public class Subway implements CampaignMap {
     @Override
-    public String directory() {
+    public String name() {
         return "Subway";
+    }
+
+    @Override
+    public String displayName() {
+        return ChatUtil.getColor(46, 39, 32) + name();
     }
 
     @Override
@@ -42,13 +47,13 @@ public class Subway implements CampaignMap {
     }
 
     @Override
-    public BoundingBox[] pathRegions() {
-        return new BoundingBox[0];
+    public List<Vector> escapePath() {
+        return List.of();
     }
 
     @Override
-    public Vector[] spawnLocations() {
-        return new Vector[]{
+    public List<Vector> spawnLocations() {
+        return List.of(
                 new Vector(15.5, 43.5, -20.5),
                 new Vector(-23.5, 43.0, -3.5),
                 new Vector(-24, 43.0, -81),
@@ -82,24 +87,38 @@ public class Subway implements CampaignMap {
                 new Vector(-113.5, 37.0, 296.5),
                 new Vector(-115.5, 37.0, 323.5),
                 new Vector(-75.5, 42.0, 312.5),
-                new Vector(-66.5, 36.0, 326.5),
-        };
+                new Vector(-66.5, 36.0, 326.5));
     }
 
     @Override
-    public Vector[] bossLocations() {
-        return new Vector[0];
+    public List<Vector> bossLocations() {
+        return List.of();
     }
 
     @Override
-    public ItemRandomizer[] randomizedGameItems() {
-        return new ItemRandomizer[]{
-                new ItemRandomizer(19.5, 44, -27.5, 1, 4, List.of(GameItems.MEDKIT)),
+    public List<Vector> rescueClosetLocations() {
+        return List.of();
+    }
+
+    @Override
+    public List<Barrier> barrierLocations() {
+        return List.of();
+    }
+
+    @Override
+    public List<ItemRandomizer> startItems() {
+        return List.of();
+    }
+
+    @Override
+    public List<ItemRandomizer> mapItems() {
+        return List.of(
+                new ItemRandomizer(19.5, 44, -27.5, 1, 4, List.of("MEDKIT")),
                 new ItemRandomizer(18.5, 44, -42, 1, 1, true, ItemRandomizer.Preset.TIER2_GUNS),
                 new ItemRandomizer(15.5, 44, -41, 1, 1, true, ItemRandomizer.Preset.TIER2_GUNS),
                 new ItemRandomizer(15.5, 44.5, -30.5, 1, 1, ItemRandomizer.Preset.MELEE),
-                new ItemRandomizer(22, 50.2, -40.5, 1, 1, List.of(GameItems.PILLS)),
-                new ItemRandomizer(17, 50.2, -40.5, 1, 1, List.of(GameItems.ADRENALINE)),
+                new ItemRandomizer(22, 50.2, -40.5, 1, 1, List.of("PILLS")),
+                new ItemRandomizer(17, 50.2, -40.5, 1, 1, List.of("ADRENALINE")),
 
                 new ItemRandomizer(25.5, 36.0, 215.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
                 new ItemRandomizer(-0.5, 36.0, 215.5, 0.1, 1, ItemRandomizer.Preset.TIER1_UTILITY),
@@ -129,31 +148,20 @@ public class Subway implements CampaignMap {
                 new ItemRandomizer(3.5, 25.0, 175.5, 0.2, 1, ItemRandomizer.Preset.TIER1_GUNS),
                 new ItemRandomizer(-113.5, 37.0, 296.5, 0.2, 1, ItemRandomizer.Preset.TIER1_GUNS),
                 new ItemRandomizer(-79.5, 37.0, 224.5, 0.2, 1, ItemRandomizer.Preset.TIER1_GUNS),
-                new ItemRandomizer(88.5, 26.0, 68.5, 0.2, 1, ItemRandomizer.Preset.MELEE),
-        };
+                new ItemRandomizer(88.5, 26.0, 68.5, 0.2, 1, ItemRandomizer.Preset.MELEE));
     }
 
     @Override
-    public Vector[] ammoLocations() {
-        return new Vector[]{
+    public List<Vector> ammoLocations() {
+        return List.of(
                 new Vector(21.5, 26, 182.5),
                 new Vector(19.5, 44, -32.5)
-        };
-    }
-
-    @Override
-    public Vector buttonLocation() {
-        return new Vector(-71, 37, 330);
-    }
-
-    @Override
-    public Vector[] rescueClosetLocations() {
-        return new Vector[0];
+        );
     }
 
     @Override
     public GameAction runAtStart() {
-        return (plugin, gameManager, player) -> gameManager.getWorld().getBlockAt(-95, 31, 223).setType(Material.REDSTONE_BLOCK);
+        return (gameManager, player) -> gameManager.getWorld().getBlockAt(-95, 31, 223).setType(Material.REDSTONE_BLOCK);
     }
 
     @Override
@@ -162,8 +170,8 @@ public class Subway implements CampaignMap {
     }
 
     @Override
-    public Listener[] happenings(JavaPlugin plugin, GameManager gameManager) {
-        return new Listener[]{
+    public List<Listener> happenings(Expunge plugin, GameManager gameManager) {
+        return List.of(
                 new Listener() {
                     @EventHandler
                     public void subwayOpening(PlayerMoveEvent e) {
@@ -182,7 +190,8 @@ public class Subway implements CampaignMap {
                         if (!gameManager.getPlayers().contains(e.getPlayer())) return;
                         if (!gameManager.getPlayerStat(e.getPlayer()).isAlive()) return;
                         if (!e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) return;
-                        if (e.getClickedBlock() == null || !(e.getClickedBlock().getType() == Material.STONE_BUTTON)) return;
+                        if (e.getClickedBlock() == null || !(e.getClickedBlock().getType() == Material.STONE_BUTTON))
+                            return;
 
                         if (e.getClickedBlock().getLocation().toVector().equals(new Vector(22, 44, -11))) {
                             Achievements.A_BITE_TO_EAT.grant(e.getPlayer());
@@ -207,9 +216,11 @@ public class Subway implements CampaignMap {
                         if (!gameManager.getPlayers().contains(e.getPlayer())) return;
                         if (!gameManager.getPlayerStat(e.getPlayer()).isAlive()) return;
                         if (e.getAction().equals(Action.RIGHT_CLICK_BLOCK) && e.getClickedBlock() != null && e.getClickedBlock().getType().toString().contains("_BUTTON")) {
-                            if (!e.getClickedBlock().getLocation().toVector().equals(new Vector(-19, 16, -7)))
+                            var pos = new Vector(-19, 16, -7);
+                            if (!e.getClickedBlock().getLocation().toVector().equals(pos))
                                 return;
-                            gameManager.getDirector().getItemHandler().spawnWeapon(new Vector(-19, 16, -7), new MrCookie(), false);
+                            var cookie = plugin.getItems().toGameItem("MR_COOKIE");
+                            gameManager.getDirector().spawnItem(cookie, pos, false);
                             Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.SUBWAY_MR_COOKIE.pickRandom(gameManager.getPlayers().size()));
                             HandlerList.unregisterAll(this);
                         }
@@ -306,7 +317,6 @@ public class Subway implements CampaignMap {
                         Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.HIGHWAY_PURPLE_CAR.pickRandom(gameManager.getPlayers().size()));
                         HandlerList.unregisterAll(this);
                     }
-                }
-        };
+                });
     }
 }
