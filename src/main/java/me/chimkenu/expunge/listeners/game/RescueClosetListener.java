@@ -1,10 +1,12 @@
 package me.chimkenu.expunge.listeners.game;
 
+import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.events.DeathEvent;
+import me.chimkenu.expunge.game.campaign.CampaignGameManager;
 import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.game.PlayerStats;
 import me.chimkenu.expunge.listeners.GameListener;
-import me.chimkenu.expunge.utils.Utils;
+import me.chimkenu.expunge.utils.ItemUtil;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -17,20 +19,20 @@ import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class RescueClosetListener extends GameListener {
     private final BreakDoorListener breakDoorListener;
     private final Set<ArmorStand> armorStands;
 
-    public RescueClosetListener(JavaPlugin plugin, GameManager gameManager, BreakDoorListener breakDoorListener) {
+    public RescueClosetListener(Expunge plugin, GameManager gameManager, BreakDoorListener breakDoorListener) {
         super(plugin, gameManager);
         this.breakDoorListener = breakDoorListener;
         armorStands = new HashSet<>();
@@ -62,7 +64,7 @@ public class RescueClosetListener extends GameListener {
         if (block.getRelative(0, 1, 0).getType() == block.getType()) {
             block = block.getRelative(0, 1, 0);
         }
-        if (!doesMapContainRescueCloset(gameManager.getMap().rescueClosetLocations(), block.getLocation().toVector())) {
+        if (!doesMapContainRescueCloset(((CampaignGameManager) gameManager).getMap().rescueClosetLocations(), block.getLocation().toVector())) {
             return;
         }
         if (breakDoorListener.hasBeenInteractedWith(block)) {
@@ -96,7 +98,7 @@ public class RescueClosetListener extends GameListener {
         }
 
         World world = gameManager.getWorld();
-        for (Vector v : gameManager.getMap().rescueClosetLocations()) {
+        for (Vector v : ((CampaignGameManager) gameManager).getMap().rescueClosetLocations()) {
             Location loc = v.toLocation(world);
             if (loc.getBlock().getState() instanceof Door door) {
                 ArmorStand armorStand = world.spawn(loc, ArmorStand.class);
@@ -114,10 +116,10 @@ public class RescueClosetListener extends GameListener {
                 armorStand.setRightLegPose(new EulerAngle(6.17847f,0,0.10472f));
 
                 armorStands.add(armorStand);
-                gameManager.getDirector().getItemHandler().addEntity(armorStand);
+                gameManager.addEntity(armorStand);
 
-                Utils.putOnRandomClothes(armorStand.getEquipment());
-                armorStand.getEquipment().setHelmet(Utils.getSkull(e.getPlayer()));
+                ItemUtil.putOnRandomClothes(armorStand.getEquipment());
+                armorStand.getEquipment().setHelmet(ItemUtil.getSkull(e.getPlayer()));
 
                 new BukkitRunnable() {
                     final float headXMin = 0.174533f;
@@ -157,7 +159,7 @@ public class RescueClosetListener extends GameListener {
         }
     }
 
-    private boolean doesMapContainRescueCloset(Vector[] rescueClosetLocations, Vector rescueClosetInQuestion) {
+    private boolean doesMapContainRescueCloset(List<Vector> rescueClosetLocations, Vector rescueClosetInQuestion) {
         for (Vector v : rescueClosetLocations) {
             if (v == rescueClosetInQuestion) return true;
         }

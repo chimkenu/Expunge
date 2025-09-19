@@ -5,7 +5,6 @@ import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.items.GameItem;
 import me.chimkenu.expunge.listeners.GameListener;
 import me.chimkenu.expunge.utils.ChatUtil;
-import me.chimkenu.expunge.utils.ItemUtils;
 import me.chimkenu.expunge.items.Gun;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -105,7 +104,7 @@ public class PickUpListener extends GameListener {
             if (!(meta != null && meta.getLore() != null && meta.getLore().contains("invulnerable"))) {
                 Item itemSwapped = player.getWorld().dropItem(player.getLocation(), hotbarItem);
                 itemSwapped.setPickupDelay(20);
-                gameManager.getDirector().getItemHandler().addEntity(itemSwapped);
+                gameManager.addEntity(itemSwapped);
             }
         }
 
@@ -162,7 +161,7 @@ public class PickUpListener extends GameListener {
         item.setAmount(player.getInventory().getItemInMainHand().getAmount() + 1);
         player.getInventory().remove(item.getType());
         entity.setItemStack(item);
-        gameManager.getDirector().getItemHandler().addEntity(entity);
+        gameManager.addEntity(entity);
     }
 
     @EventHandler

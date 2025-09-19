@@ -4,7 +4,6 @@ import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.listeners.GameListener;
 import me.chimkenu.expunge.utils.ChatUtil;
-import me.chimkenu.expunge.utils.ItemUtils;
 import me.chimkenu.expunge.enums.Tier;
 import me.chimkenu.expunge.items.Gun;
 import org.bukkit.Sound;
@@ -13,7 +12,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class AmmoPileListener extends GameListener {
     public AmmoPileListener(Expunge plugin, GameManager gameManager) {

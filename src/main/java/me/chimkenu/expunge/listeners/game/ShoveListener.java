@@ -1,7 +1,7 @@
 package me.chimkenu.expunge.listeners.game;
 
+import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.game.GameManager;
-import me.chimkenu.expunge.game.PlayerStats;
 import me.chimkenu.expunge.listeners.GameListener;
 import org.bukkit.*;
 import org.bukkit.entity.*;
@@ -9,21 +9,32 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class ShoveListener extends GameListener {
-    private final BreakGlassListener breakGlassListener;
+import java.util.HashMap;
+import java.util.Map;
 
-    public ShoveListener(JavaPlugin plugin, GameManager gameManager, BreakGlassListener breakGlassListener) {
+public class ShoveListener extends GameListener {
+    private final int MAX_SHOVES = 7;
+    private final int SHOVE_COOLDOWN_SHORT = 1000;
+    private final int SHOVE_COOLDOWN_LONG = 3000;
+    private final int SHOVE_RESET_TIME = 6000;
+
+    private final BreakGlassListener breakGlassListener;
+    private final Map<Player, ShoveData> shoveData;
+
+    public ShoveListener(Expunge plugin, GameManager gameManager, BreakGlassListener breakGlassListener) {
         super(plugin, gameManager);
         this.breakGlassListener = breakGlassListener;
+        this.shoveData = new HashMap<>();
     }
 
     private boolean canShove(Player player) {
-        int cooldown = gameManager.getPlayerStat(player).getNumberOfRecentShoves() > 7 ? 3 : 1;
-        return ((System.currentTimeMillis() - gameManager.getPlayerStat(player).getTimeSinceLastShove()) > (cooldown * 1000));
+        shoveData.putIfAbsent(player, new ShoveData());
+        var data = shoveData.get(player);
+        int cooldown = data.numberOfRecentShoves > MAX_SHOVES ? SHOVE_COOLDOWN_LONG : SHOVE_COOLDOWN_SHORT;
+        return (System.currentTimeMillis() - data.timeSinceLastShove) > cooldown;
     }
 
     private boolean onShove(Player attacker) {
@@ -34,26 +45,29 @@ public class ShoveListener extends GameListener {
             return false;
         }
 
-        PlayerStats playerStats = gameManager.getPlayerStat(attacker);
-
-        playerStats.setNumberOfRecentShoves(playerStats.getNumberOfRecentShoves() + 1);
-        if (System.currentTimeMillis() - playerStats.getTimeSinceLastShove() > 6000) {
-            playerStats.setNumberOfRecentShoves(0);
+        var data = shoveData.getOrDefault(attacker, new ShoveData());
+        data.numberOfRecentShoves++;
+        if (System.currentTimeMillis() - data.timeSinceLastShove > SHOVE_RESET_TIME) {
+            data.numberOfRecentShoves = 0;
         }
-        playerStats.setTimeSinceLastShove(System.currentTimeMillis());
+        data.timeSinceLastShove = System.currentTimeMillis();
+        shoveData.put(attacker, data);
 
+        int cooldown = data.numberOfRecentShoves > MAX_SHOVES ? SHOVE_COOLDOWN_LONG : SHOVE_COOLDOWN_SHORT;
         attacker.setCooldown(attacker.getInventory().getItemInMainHand().getType(), 1);
-        int cooldown = playerStats.getNumberOfRecentShoves() > 7 ? 3 : 1;
         attacker.playSound(attacker.getLocation(), Sound.ITEM_ARMOR_EQUIP_IRON, SoundCategory.PLAYERS, 1f, 1f);
         attacker.playSound(attacker.getLocation(), Sound.ENTITY_PLAYER_ATTACK_KNOCKBACK, SoundCategory.PLAYERS, 1f, 1f);
         attacker.playSound(attacker.getLocation(), Sound.ENTITY_TURTLE_EGG_CRACK, SoundCategory.PLAYERS, 0.2f, 1f);
-        attacker.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 20 * cooldown, 4, false, false, true));
+        attacker.addPotionEffect(new PotionEffect(PotionEffectType.MINING_FATIGUE, 20 * cooldown / 1000, 4, false, false, true));
 
         Location loc = attacker.getEyeLocation().add(attacker.getLocation().getDirection().multiply(1.5));
         attacker.getWorld().spawnParticle(Particle.SWEEP_ATTACK, loc, 1);
 
         // check for glass to break
-        breakGlassListener.breakGlass(loc.getBlock());
+        var block = attacker.getTargetBlockExact(4);
+        if (block != null) {
+            breakGlassListener.breakGlass(block);
+        }
 
         for (Entity entity : attacker.getWorld().getNearbyEntities(loc, 1.5, 1.5, 1.5)) {
             if (entity instanceof LivingEntity livingEntity) {
@@ -83,7 +97,7 @@ public class ShoveListener extends GameListener {
                 if (knockBack) {
                     livingEntity.setVelocity(livingEntity.getVelocity().add(attacker.getLocation().getDirection().setY(0).multiply(0.6)));
                     livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 20 * 3, 9, false, false, false));
-                    livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 3, 9, false, false, false));
+                    livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 20 * 3, 9, false, false, false));
                 }
             }
         }
@@ -121,5 +135,14 @@ public class ShoveListener extends GameListener {
         }
         boolean isSuccessful = onShove(e.getPlayer());
         if (isSuccessful) e.setCancelled(true);
+    }
+
+    private static class ShoveData {
+        public long timeSinceLastShove;
+        public int numberOfRecentShoves;
+        public ShoveData() {
+            timeSinceLastShove = 0;
+            numberOfRecentShoves = 0;
+        }
     }
 }

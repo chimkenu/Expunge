@@ -1,9 +1,9 @@
 package me.chimkenu.expunge.listeners.game;
 
+import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.listeners.GameListener;
-import me.chimkenu.expunge.utils.Utils;
-import me.chimkenu.expunge.items.weapons.guns.Gun;
+import me.chimkenu.expunge.items.Gun;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -12,11 +12,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffectType;
 
 public class InventoryListener extends GameListener {
-    public InventoryListener(JavaPlugin plugin, GameManager gameManager) {
+    public InventoryListener(Expunge plugin, GameManager gameManager) {
         super(plugin, gameManager);
     }
 
@@ -40,8 +39,8 @@ public class InventoryListener extends GameListener {
         }
 
         // display ammo if gun
-        if (Utils.getGameItemFromItemStack(item) instanceof Gun gun) {
-            player.setLevel(ShootListener.getAmmo(item));
+        if (plugin.getItems().toGameItem(item) instanceof Gun gun) {
+            player.setLevel(gun.getAmmo(item));
         }
     }
 

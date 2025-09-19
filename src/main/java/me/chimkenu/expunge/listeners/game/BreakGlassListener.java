@@ -9,6 +9,8 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.block.BlockBreakEvent;
 
 import java.util.HashMap;
 
@@ -18,6 +20,17 @@ public class BreakGlassListener extends GameListener implements CleanUp {
     public BreakGlassListener(Expunge plugin, GameManager gameManager) {
         super(plugin, gameManager);
         glassLocations = new HashMap<>();
+    }
+
+    @EventHandler
+    public void onBreak(BlockBreakEvent e) {
+        var player = e.getPlayer();
+        if (!gameManager.getPlayers().contains(player)) {
+            return;
+        }
+
+        e.setCancelled(true);
+        breakGlass(e.getBlock());
     }
 
     @Override

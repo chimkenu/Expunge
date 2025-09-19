@@ -1,55 +1,54 @@
 package me.chimkenu.expunge.listeners.game;
 
+import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.enums.Achievements;
+import me.chimkenu.expunge.enums.Modifiers;
 import me.chimkenu.expunge.game.GameManager;
-import me.chimkenu.expunge.game.director.ItemHandler;
-import me.chimkenu.expunge.items.utilities.throwable.FreshAir;
+import me.chimkenu.expunge.game.PlayerStatsable;
 import me.chimkenu.expunge.listeners.GameListener;
+import me.chimkenu.expunge.utils.ChatUtil;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerItemHeldEvent;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
-import org.spigotmc.event.entity.EntityDismountEvent;
 
 public class MobListener extends GameListener {
-    public MobListener(JavaPlugin plugin, GameManager gameManager) {
+    public MobListener(Expunge plugin, GameManager gameManager) {
         super(plugin, gameManager);
     }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onMobTarget(EntityTargetEvent e) {
-        if (e.getEntity().getWorld() != gameManager.getWorld()) {
+        var entity = e.getEntity();
+        if (!gameManager.getEntities().contains(entity)) {
             return;
         }
-        if (!(e.getTarget() instanceof Player target)) {
-            e.setCancelled(true);
+
+        var target = e.getTarget();
+        if (target == null) {
             return;
         }
-        if (target.getGameMode() != GameMode.ADVENTURE) {
-            e.setCancelled(true);
-            return;
-        }
-        // common infected tags
-        Entity entity = e.getEntity();
+
+        // wanderer tags
         if (entity.getScoreboardTags().contains("WANDERER")) {
-            if (e.getEntity().getLocation().distanceSquared(target.getLocation()) < 7 * 7)
+            var lastDamage = entity.getLastDamageCause();
+            if (lastDamage == null && entity.getLocation().distanceSquared(target.getLocation()) > 5 * 5) {
                 e.setCancelled(true);
-            else
-                e.getEntity().removeScoreboardTag("WANDERER");
+            }
         }
     }
 
     // BOOMER
     private void boom(Entity explode) {
         World world = explode.getWorld();
-        world.spawnParticle(Particle.EXPLOSION_HUGE, explode.getLocation(), 1);
+        world.spawnParticle(Particle.EXPLOSION_EMITTER, explode.getLocation(), 1);
         world.playSound(explode.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, SoundCategory.HOSTILE, 1, 1);
         // damage players
         for (Entity entity : world.getNearbyEntities(explode.getLocation(), 4, 4, 4)) {
@@ -61,9 +60,9 @@ public class MobListener extends GameListener {
             }
             if (livingEntity instanceof Player player && player.getGameMode() == GameMode.ADVENTURE) {
                 player.damage(2, explode);
-                player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 20 * 15, 0, false, true, false));
-                world.spawnParticle(Particle.BLOCK_CRACK, livingEntity.getLocation().add(0, .5, 0), 50, 0.2, 0.2, 0.2, Material.NETHER_WART_BLOCK.createBlockData());
-                gameManager.getDirector().bile(plugin, player, 25);
+                player.addPotionEffect(new PotionEffect(PotionEffectType.NAUSEA, 20 * 15, 0, false, true, false));
+                world.spawnParticle(Particle.BLOCK, livingEntity.getLocation().add(0, .5, 0), 50, 0.2, 0.2, 0.2, Material.NETHER_WART_BLOCK.createBlockData());
+                gameManager.getDirector().bile(player, 25);
             }
         }
         explode.remove();
@@ -78,8 +77,8 @@ public class MobListener extends GameListener {
             boom(e.getEntity());
         }
         else if (e.getEntity().getScoreboardTags().contains("ROBOT")) {
-            Item item = e.getEntity().getWorld().dropItemNaturally(e.getEntity().getLocation(), new FreshAir().get());
-            gameManager.getDirector().getItemHandler().addEntity(item);
+            Item item = e.getEntity().getWorld().dropItemNaturally(e.getEntity().getLocation(), plugin.getItems().toGameItem("FRESH_AIR").toItem());
+            gameManager.addEntity(item);
         }
 
         // achievement
@@ -111,11 +110,15 @@ public class MobListener extends GameListener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onSwitch(PlayerItemHeldEvent e) {
-        if (e.getPlayer().getWorld() != gameManager.getWorld()) {
+        var player = e.getPlayer();
+        if (player.getWorld() != gameManager.getWorld()) {
             return;
         }
-        if (!e.getPlayer().getPassengers().isEmpty()) {
+        if (!player.getPassengers().isEmpty()) {
             e.setCancelled(true); // This stops you from switching between items while you're being disabled by a mob
+        } else {
+            Modifiers.NULLIFY.remove(player, Attribute.MOVEMENT_SPEED);
+            Modifiers.NULLIFY.remove(player, Attribute.JUMP_STRENGTH);
         }
     }
 
@@ -168,15 +171,15 @@ public class MobListener extends GameListener {
 
         // charger knocks down player
         if (damager.getScoreboardTags().contains("CHARGER")) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 5, 2, false, false, true));
-            if (damager.hasPotionEffect(PotionEffectType.CONFUSION) && player.getVehicle() == null && damager.getVehicle() == null) {
-                disable(player, gameManager.getDirector().getItemHandler());
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 20 * 5, 2, false, false, true));
+            if (damager.hasPotionEffect(PotionEffectType.NAUSEA) && player.getVehicle() == null && damager.getVehicle() == null) {
+                disable(player, gameManager);
                 player.addPassenger(damager);
             }
         }
     }
 
-    public static void disable(Player player, ItemHandler itemHandler) {
+    public static void disable(Player player, GameManager manager) {
         Location loc = player.getLocation();
         player.getInventory().setHeldItemSlot(6);
         while (loc.getBlock().getType().equals(Material.AIR)) {
@@ -191,7 +194,7 @@ public class MobListener extends GameListener {
         armorStand.setSmall(true);
         armorStand.addScoreboardTag("KNOCKED");
         armorStand.addPassenger(player);
-        itemHandler.addEntity(armorStand);
+        manager.addEntity(armorStand);
     }
 
     @EventHandler
@@ -220,6 +223,28 @@ public class MobListener extends GameListener {
     public void onEntityTeleport(EntityTeleportEvent e) {
         if (e.getEntity().getWorld().equals(gameManager.getWorld()) && e.getEntity() instanceof Enderman) {
             e.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onMobDeath(EntityDeathEvent e) {
+        var dead = e.getEntity();
+        var killer = dead.getKiller();
+        if (killer == null) {
+            return;
+        }
+        if (!gameManager.getPlayers().contains(killer)) {
+            return;
+        }
+
+        // TODO persistent data container to check special infected type
+        var isSpecialInfected = false;
+        if (isSpecialInfected) {
+            ((PlayerStatsable) gameManager.getState()).getPlayerStat(killer).addSpecialKill();
+            gameManager.getWorld().getPlayers().forEach(player ->
+                    ChatUtil.sendError(player, killer.getName() + " killed " + dead.getName()));
+        } else {
+            ((PlayerStatsable) gameManager.getState()).getPlayerStat(killer).addCommonKill();
         }
     }
 }

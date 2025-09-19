@@ -1,6 +1,5 @@
 package me.chimkenu.expunge.events;
 
-import me.chimkenu.expunge.game.GameManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;

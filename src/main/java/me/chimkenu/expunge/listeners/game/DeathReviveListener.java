@@ -1,31 +1,29 @@
 package me.chimkenu.expunge.listeners.game;
 
+import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.enums.Achievements;
-import me.chimkenu.expunge.enums.GameItems;
 import me.chimkenu.expunge.events.DeathEvent;
+import me.chimkenu.expunge.game.campaign.CampaignGameManager;
 import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.game.PlayerStats;
 import me.chimkenu.expunge.listeners.GameListener;
-import me.chimkenu.expunge.utils.Utils;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
+import me.chimkenu.expunge.utils.ChatUtil;
+import me.chimkenu.expunge.utils.ItemUtil;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.entity.EntityDismountEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
-import org.jetbrains.annotations.NotNull;
-import org.spigotmc.event.entity.EntityDismountEvent;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -33,14 +31,15 @@ import java.util.Objects;
 public class DeathReviveListener extends GameListener {
     public final ArrayList<Player> beingRevived = new ArrayList<>();
 
-    public DeathReviveListener(JavaPlugin plugin, GameManager gameManager) {
+    public DeathReviveListener(Expunge plugin, GameManager gameManager) {
         super(plugin, gameManager);
     }
 
     private void dead(Player player) {
-        new DeathEvent(player).callEvent();
+        DeathEvent event = new DeathEvent(player);
+        Bukkit.getPluginManager().callEvent(event);
 
-        gameManager.getWorld().getPlayers().forEach(player1 -> player1.sendMessage(player.name().color(NamedTextColor.RED).append(Component.text(" died.", NamedTextColor.RED))));
+        gameManager.getWorld().getPlayers().forEach(player1 -> ChatUtil.sendError(player1, player.getName() + " died."));
         PlayerStats playerStats = gameManager.getPlayerStat(player);
         if (playerStats == null) {
             return;
@@ -48,7 +47,7 @@ public class DeathReviveListener extends GameListener {
 
         // spawn in an armor stand which can be revived
         for (ArmorStand armorStand : spawnDeadArmorStand(player)) {
-            gameManager.getDirector().getItemHandler().addEntity(armorStand);
+            gameManager.addEntity(armorStand);
         }
 
         player.setGameMode(GameMode.SPECTATOR);
@@ -59,7 +58,7 @@ public class DeathReviveListener extends GameListener {
                 ItemStack item = inventory.getItem(i + (j * 9));
                 if (item != null) {
                     Item dropItem = player.getWorld().dropItem(player.getLocation(), item);
-                    gameManager.getDirector().getItemHandler().addEntity(dropItem);
+                    gameManager.addEntity(dropItem);
                 }
                 inventory.setItem(i + (j * 9), new ItemStack(Material.AIR));
             }
@@ -77,7 +76,9 @@ public class DeathReviveListener extends GameListener {
             return;
         }
 
-        e.setCancelled(true);
+        // cancel death
+        player.setHealth(player.getAttribute(Attribute.MAX_HEALTH).getValue());
+        e.setDeathMessage("");
 
         if (!gameManager.getPlayerStat(player).isAlive()) {
             // player died while down
@@ -89,7 +90,7 @@ public class DeathReviveListener extends GameListener {
 
             // lives check
             if (gameManager.getPlayerStat(player).getLives() > 1) {
-                gameManager.getWorld().getPlayers().forEach(player1 -> player1.sendMessage(player.name().color(NamedTextColor.RED).append(Component.text(" is down.", NamedTextColor.RED))));
+                gameManager.getWorld().getPlayers().forEach(player1 -> ChatUtil.sendError(player1, player.getName() + " is down."));
                 Location loc = player.getEyeLocation();
                 while (loc.getBlock().getType().equals(Material.AIR)) {
                     loc.subtract(0, 0.25, 0);
@@ -102,7 +103,7 @@ public class DeathReviveListener extends GameListener {
                 armorStand.setInvisible(true);
                 armorStand.setSmall(true);
                 armorStand.addPassenger(player);
-                gameManager.getDirector().getItemHandler().addEntity(armorStand);
+                gameManager.addEntity(armorStand);
                 player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 20 * 6000, 0, false, false, false));
 
                 // save hotbar in inventory and replace with pistol
@@ -111,7 +112,7 @@ public class DeathReviveListener extends GameListener {
                     inventory.setItem(i + 9, inventory.getItem(i));
                     inventory.setItem(i, new ItemStack(Material.AIR));
                 }
-                inventory.setItem(5, GameItems.PISTOL.getGameItem().get());
+                inventory.setItem(5, plugin.getItems().toGameItem("PISTOL").toItem());
 
             } else {
                 dead(player);
@@ -126,7 +127,7 @@ public class DeathReviveListener extends GameListener {
         }
 
         // this is reached if all players are dead
-        gameManager.getWorld().getPlayers().forEach(player1 -> player1.sendMessage(Component.text("All players have died, returning to last checkpoint...", NamedTextColor.RED)));
+        gameManager.getWorld().getPlayers().forEach(player1 -> ChatUtil.sendError(player1, "All players have died, returning to last checkpoint..."));
         for (Player p : gameManager.getPlayers()) {
             p.setGameMode(GameMode.SPECTATOR);
             p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 3, 4, false, false, false));
@@ -135,7 +136,7 @@ public class DeathReviveListener extends GameListener {
         new BukkitRunnable() {
             @Override
             public void run() {
-                gameManager.restartMap();
+                ((CampaignGameManager) gameManager).restartMap();
             }
         }.runTaskLater(plugin, 20 * 3);
     }
@@ -166,7 +167,7 @@ public class DeathReviveListener extends GameListener {
             targetStats.setLives(targetStats.getLives() - 1);
 
             target.setHealth(1d);
-            Objects.requireNonNull(target.getAttribute(Attribute.GENERIC_MAX_ABSORPTION)).setBaseValue(20);
+            Objects.requireNonNull(target.getAttribute(Attribute.MAX_ABSORPTION)).setBaseValue(20);
             target.setAbsorptionAmount(5d);
             target.removePotionEffect(PotionEffectType.GLOWING);
 
@@ -233,7 +234,7 @@ public class DeathReviveListener extends GameListener {
                 continue;
             }
             if (beingRevived.contains(target)) {
-                player.sendActionBar(target.name().color(NamedTextColor.AQUA).append(Component.text(" is already being revived.", NamedTextColor.YELLOW)));
+                ChatUtil.sendActionBar(player, "&b" + target.getName() + "&e is already being revived.");
                 continue;
             }
             if (gameManager.getPlayerStat(target).isAlive()) {
@@ -252,49 +253,32 @@ public class DeathReviveListener extends GameListener {
                 @Override
                 public void run() {
                     i--;
-                    Component progressBar = getProgressBar();
-                    Component prefix = Component.text("Reviving ", NamedTextColor.YELLOW).append(target.name().color(NamedTextColor.AQUA).append(Component.text("...", NamedTextColor.YELLOW)));
-                    player.sendActionBar(prefix.append(Component.space()).append(progressBar));
-                    prefix = Component.text("Being revived by ", NamedTextColor.YELLOW).append(player.name().color(NamedTextColor.AQUA));
-                    target.sendActionBar(prefix.append(Component.space()).append(progressBar));
+                    String progressBar = ChatUtil.progressBar(time, i);
+                    String prefix = "&eReviving &b" +  target.getName() + "&e...";
+                    ChatUtil.sendActionBar(player, prefix + " " + progressBar);
+                    prefix = "&eBeing revived by &b" + player.getName() + "&e...";
+                    ChatUtil.sendActionBar(target, prefix + " " + progressBar);
 
                     if (loc.distanceSquared(player.getLocation().toVector()) > 1) {
-                        player.sendActionBar(Component.text("Stopped.", NamedTextColor.RED).append(Component.text(" (You moved too far)", NamedTextColor.GRAY)));
-                        target.sendActionBar(Component.text("Stopped.", NamedTextColor.RED));
+                        ChatUtil.sendActionBar(player, "&cStopped. &8(You moved too far)");
+                        ChatUtil.sendActionBar(target, "&cStopped.");
                         beingRevived.remove(target);
                         this.cancel();
                     }
                     if (!player.isSneaking()) {
-                        player.sendActionBar(Component.text("Stopped.", NamedTextColor.RED));
-                        target.sendActionBar(Component.text("Stopped.", NamedTextColor.RED));
+                        ChatUtil.sendActionBar(player, "&cStopped.");
+                        ChatUtil.sendActionBar(target, "&cStopped.");
                         beingRevived.remove(target);
                         this.cancel();
                     }
                     if (i <= 0) {
                         // revived player
-                        player.sendActionBar(Component.text("Successful.", NamedTextColor.GREEN));
-                        target.sendActionBar(Component.text("Successful.", NamedTextColor.GREEN));
+                        ChatUtil.sendActionBar(player, "&aSuccessful.");
+                        ChatUtil.sendActionBar(target, "&aSuccessful.");
                         revive(target, player);
                         beingRevived.remove(target);
                         this.cancel();
                     }
-                }
-
-                @NotNull
-                private Component getProgressBar() {
-                    double percentage = (double) (time - i) / time;
-                    int progress = (int) (percentage * 10);
-                    percentage = (int) (percentage * 100);
-
-                    // create progress bar
-                    Component progressBarComplete = Component.text("|".repeat(Math.max(0, progress)), NamedTextColor.GREEN);
-                    Component progressBarIncomplete = Component.text("|".repeat(Math.max(0, 10 - progress)), NamedTextColor.GRAY);
-                    return Component.text("Progress: ", NamedTextColor.YELLOW)
-                            .append(Component.text("[", NamedTextColor.GRAY))
-                            .append(progressBarComplete)
-                            .append(progressBarIncomplete)
-                            .append(Component.text("]", NamedTextColor.GRAY))
-                            .append(Component.text(" [" + percentage + "%]", NamedTextColor.DARK_GRAY));
                 }
             }.runTaskTimer(plugin, 1, 1);
         }
@@ -315,11 +299,11 @@ public class DeathReviveListener extends GameListener {
         for (ArmorStand a : armorStand) {
             a.setInvulnerable(true);
             a.setGravity(false);
-            a.setBodyYaw(loc.getYaw());
-            Utils.putOnRandomClothes(a.getEquipment());
+            // a.setBodyYaw(loc.getYaw());
+            ItemUtil.putOnRandomClothes(a.getEquipment());
         }
 
-        upper.getEquipment().setHelmet(Utils.getSkull(player));
+        upper.getEquipment().setHelmet(ItemUtil.getSkull(player));
         upper.getEquipment().setLeggings(new ItemStack(Material.AIR));
         upper.getEquipment().setBoots(new ItemStack(Material.AIR));
         upper.setLeftArmPose(new EulerAngle(-1.22, -0.524, -0.175));
