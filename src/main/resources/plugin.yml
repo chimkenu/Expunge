@@ -1,7 +1,7 @@
 name: Expunge
 version: '${version}'
 main: me.chimkenu.expunge.Expunge
-api-version: 1.20
+api-version: 1.21
 authors: [ Chimkenu ]
 description: A Left4Dead inspired Minecraft mini-game
 commands:
