@@ -1,7 +1,7 @@
 package me.chimkenu.expunge;
 
 import me.chimkenu.expunge.campaigns.Campaign;
-import me.chimkenu.expunge.enums.Difficulty;
+import me.chimkenu.expunge.enums.CampaignDifficulty;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.entity.Player;
@@ -19,13 +19,14 @@ public class Queue implements Listener {
     private final Lobby lobby;
     private final int minPlayers;
     private final int maxPlayers;
-    private Campaign.List campaign;
-    private Difficulty difficulty;
+    private Campaign campaign;
+    private CampaignDifficulty difficulty;
     private final Player creator;
     private final Set<Player> queue;
     private boolean isDone;
 
-    public Queue(JavaPlugin plugin, Lobby lobby, int minPlayers, int maxPlayers, Campaign.List campaign, Difficulty difficulty, Player creator) {
+    // NOTE: NO LONGER USED AS OF v3, opting to use only a single game instance per server
+    public Queue(JavaPlugin plugin, Lobby lobby, int minPlayers, int maxPlayers, Campaign campaign, CampaignDifficulty difficulty, Player creator) {
         this.plugin = plugin;
         this.lobby = lobby;
         this.minPlayers = minPlayers;
@@ -70,26 +71,26 @@ public class Queue implements Listener {
             return;
         }
 
-        lobby.createGame(plugin, campaign.get(), difficulty, queue);
+        // lobby.createGame(plugin, campaign.get(), difficulty, queue);
     }
 
     public int getMaxPlayers() {
         return maxPlayers;
     }
 
-    public Campaign.List getCampaign() {
+    public Campaign getCampaign() {
         return campaign;
     }
 
-    public void setCampaign(Campaign.List campaign) {
+    public void setCampaign(Campaign campaign) {
         this.campaign = campaign;
     }
 
-    public Difficulty getDifficulty() {
+    public CampaignDifficulty getDifficulty() {
         return difficulty;
     }
 
-    public void setDifficulty(Difficulty difficulty) {
+    public void setDifficulty(CampaignDifficulty difficulty) {
         this.difficulty = difficulty;
     }
 

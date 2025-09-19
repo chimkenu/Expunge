@@ -1,34 +1,130 @@
 package me.chimkenu.expunge;
 
 import me.chimkenu.expunge.campaigns.Campaign;
-import me.chimkenu.expunge.enums.Difficulty;
+import me.chimkenu.expunge.enums.Campaigns;
 import me.chimkenu.expunge.game.GameManager;
-import me.chimkenu.expunge.game.LocalGameManager;
+import me.chimkenu.expunge.utils.ChatUtil;
+import me.chimkenu.expunge.utils.FileUtil;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.util.Vector;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.io.File;
+import java.io.IOException;
+import java.util.Objects;
 
 public class Lobby {
     private final JavaPlugin plugin;
-    private final World world;
-    private final Location lobbySpawn;
-    private final Set<GameManager> games = new HashSet<>();
-    private final Set<Queue> queues = new HashSet<>();
+    private final World lobbyWorld;
+    private final String gameWorldPrefix;
 
-    public Lobby(JavaPlugin plugin, World world, Vector lobbySpawn) {
-        this.plugin = plugin;
-        this.world = world;
-        this.lobbySpawn = lobbySpawn.toLocation(world);
+    private String currentGameWorld;
+    private GameManager currentGame;
+
+    public Lobby(JavaPlugin plugin, String lobbyWorldName, String gameWorldPrefix) {
+        this(plugin, lobbyWorldName, gameWorldPrefix, Campaigns.THE_DEPARTURE);
+    }
+
+    public Lobby(JavaPlugin plugin, String lobbyWorldName, String gameWorldPrefix, Campaign initialCampaign) {
+        this.plugin = Objects.requireNonNull(plugin);
+        this.lobbyWorld = Objects.requireNonNull(Bukkit.getWorld(lobbyWorldName), "Lobby must be a valid (loaded) world");
+        this.gameWorldPrefix = Objects.requireNonNull(gameWorldPrefix);
+        this.currentGameWorld = gameWorldPrefix;
+
+        // load initial map
+        changeMap(initialCampaign);
+    }
+
+    public void startNewGame(GameManager manager) {
+        if (currentGame != null && currentGame.isRunning()) {
+            currentGame.stop(true);
+        }
+        currentGame = manager;
+    }
+
+    public void stopGame() {
+        if (currentGame != null) {
+            currentGame.stop(true);
+        }
+    }
+
+    public void changeMap(Campaign campaign) {
+        plugin.getLogger().info("changing map...");
+        String mapSourcePath = new File(plugin.getDataFolder(), campaign.directoryName()).getPath();
+        String newGameWorldName = gameWorldPrefix + System.currentTimeMillis();
+        File newGameWorldDir = new File(Bukkit.getWorldContainer(), newGameWorldName);
+        File oldGameWorldDir = new File(Bukkit.getWorldContainer(), currentGameWorld);
+
+        plugin.getLogger().info("copying from source...");
+        // copy from source
+        try {
+            if (newGameWorldDir.exists()) {
+                FileUtil.deleteDirectory(newGameWorldDir.toPath());
+            }
+            FileUtil.copyDirectory(mapSourcePath, newGameWorldDir.getPath());
+        } catch (IOException e) {
+            plugin.getLogger().severe("Failed to copy source (" + mapSourcePath + ") to world folder " + newGameWorldName);
+            e.printStackTrace();
+            return;
+        }
+
+        plugin.getLogger().info("loading new map...");
+        // load new world
+        World newWorld = Bukkit.createWorld(new WorldCreator(newGameWorldName));
+        if (newWorld == null) {
+            plugin.getLogger().severe("failed to load new world");
+            return;
+        }
+
+        // unload and delete old world
+        World oldWorld = getGameWorld();
+        if (oldWorld != null) {
+            plugin.getLogger().info("unloading old world...");
+            oldWorld.getPlayers().forEach(p -> p.teleport(newWorld.getSpawnLocation()));
+            Bukkit.unloadWorld(oldWorld, false);
+        }
+        if (oldGameWorldDir.exists()) {
+            plugin.getLogger().info("deleting old world...");
+            try {
+                FileUtil.deleteDirectory(oldGameWorldDir.toPath());
+            } catch (IOException e) {
+                plugin.getLogger().severe("failed to delete old world...");
+                e.printStackTrace();
+                return;
+            }
+        }
+
+        Bukkit.broadcastMessage(ChatUtil.format("&aMap changed to " + mapSourcePath + "!"));
+        currentGameWorld = newGameWorldName;
+    }
+
+    public void unload() {
+        if (currentGame != null && currentGame.isRunning()) {
+            currentGame.stop(true);
+            currentGame = null;
+        }
+
+        var world = getGameWorld();
+        if (world != null) {
+            world.getPlayers().forEach(p -> p.teleport(lobbyWorld.getSpawnLocation()));
+            Bukkit.unloadWorld(world, false);
+        }
+
+        var worldFolder = new File(Bukkit.getWorldContainer().getParentFile(), currentGameWorld);
+        if (worldFolder.exists()) {
+            try {
+                FileUtil.deleteDirectory(worldFolder.toPath());
+            } catch (IOException e) {
+                plugin.getLogger().severe("Failed to delete " + worldFolder);
+                e.printStackTrace();
+            }
+        }
     }
 
     public void teleportToLobby(Player player) {
-        player.teleport(lobbySpawn);
+        player.teleport(lobbyWorld.getSpawnLocation());
     }
 
     public void setSpectator(Player player) {
@@ -50,30 +146,15 @@ public class Lobby {
         player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 999999, 0, false, false, false));
     }
 
-    public World getWorld() {
-        return world;
+    public World getLobbyWorld() {
+        return lobbyWorld;
     }
 
-    public Queue createQueue(Campaign.List campaign, Difficulty difficulty, Player creator) {
-        final int MIN_PLAYERS = 1;
-        final int MAX_PLAYERS = 4;
-
-        Queue queue = new Queue(plugin, this, MIN_PLAYERS, MAX_PLAYERS, campaign, difficulty, creator);
-        queues.add(queue);
-        return queue;
+    public World getGameWorld() {
+        return Bukkit.getWorld(currentGameWorld);
     }
 
-    public Set<Queue> getQueues() {
-        queues.removeIf(Queue::isDone);
-        return queues;
-    }
-
-    public void createGame(JavaPlugin plugin, Campaign campaign, Difficulty difficulty, Set<Player> queue) {
-        games.add(new LocalGameManager((Expunge) plugin, campaign, difficulty, 0, queue));
-    }
-
-    public Set<GameManager> getGames() {
-        games.removeIf(game -> !game.isRunning());
-        return games;
+    public GameManager getCurrentGame() {
+        return currentGame;
     }
 }
