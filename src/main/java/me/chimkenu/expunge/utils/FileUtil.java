@@ -9,7 +9,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.Comparator;
 import java.util.stream.Stream;
 
-public class FileUtils {
+public class FileUtil {
     public static void copyDirectory(String sourceDirectory, String destinationDirectory) throws IOException {
         try (Stream<Path> walk = Files.walk(Paths.get(sourceDirectory))) {
             walk.forEach(source -> {
