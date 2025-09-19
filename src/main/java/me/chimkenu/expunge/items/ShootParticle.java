@@ -2,9 +2,8 @@ package me.chimkenu.expunge.items;
 
 import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.events.ShootEvent;
+import me.chimkenu.expunge.utils.ChatUtil;
 import me.chimkenu.expunge.utils.RayTrace;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
@@ -55,25 +54,27 @@ public class ShootParticle {
                     // achievement
                     if (livingEntity instanceof ArmorStand armorStand && !hasSpoken) {
                         if (armorStand.getScoreboardTags().contains("ZOEY")) {
-                            world.getPlayers().forEach(player -> player.sendMessage(Component.text("Zoey").append(Component.text(" » ", NamedTextColor.DARK_GRAY)).append(Component.text("Watch where you're shooting!"))));
+                            world.getPlayers().forEach(player -> player.sendMessage(ChatUtil.format("Zoey &8»&r Watch where you're shooting!")));
                             hasSpoken = true;
                             Achievements.THE_BIG_LEAGUES.grant(shooter);
                         }
                         else if (armorStand.getScoreboardTags().contains("FRANCIS")) {
-                            world.getPlayers().forEach(player -> player.sendMessage(Component.text("Francis").append(Component.text(" » ", NamedTextColor.GRAY)).append(Component.text("Will you knock it off!"))));
+                            world.getPlayers().forEach(player -> player.sendMessage(ChatUtil.format("Francis &8»&r Will you knock it off!")));
                             hasSpoken = true;
                             Achievements.THE_BIG_LEAGUES.grant(shooter);
                         }
                         else if (armorStand.getScoreboardTags().contains("BILL")) {
-                            world.getPlayers().forEach(player -> player.sendMessage(Component.text("Bill").append(Component.text(" » ", NamedTextColor.GRAY)).append(Component.text("I'm getting too old for this horse shit."))));
+                            world.getPlayers().forEach(player -> player.sendMessage(ChatUtil.format("Bill &8»&r I'm getting too old for this horse shit.")));
                             hasSpoken = true;
                             Achievements.THE_BIG_LEAGUES.grant(shooter);
                         }
                         else if (armorStand.getScoreboardTags().contains("LOUIS")) {
-                            world.getPlayers().forEach(player -> player.sendMessage(Component.text("Louis").append(Component.text(" » ", NamedTextColor.GRAY)).append(Component.text("Hey man, that hurt!"))));
+                            world.getPlayers().forEach(player -> player.sendMessage(ChatUtil.format("Louis &8»&r Hey man, that hurt!")));
                             hasSpoken = true;
                             Achievements.THE_BIG_LEAGUES.grant(shooter);
                         }
+
+                        armorStand.damage(1, shooter);
                         continue;
                     }
 
@@ -81,7 +82,7 @@ public class ShootParticle {
                     if (intersection != null) {
                         if (livingEntity.getScoreboardTags().contains("ROBOT")) {
                             livingEntity.getWorld().playSound(livingEntity.getLocation(), Sound.BLOCK_ANVIL_PLACE, SoundCategory.HOSTILE, 1f, 2f);
-                            livingEntity.getWorld().spawnParticle(Particle.SMOKE_NORMAL, intersection.toLocation(livingEntity.getWorld()), 10, 0, 0, 0, 0.05);
+                            livingEntity.getWorld().spawnParticle(Particle.SMOKE, intersection.toLocation(livingEntity.getWorld()), 10, 0, 0, 0, 0.05);
                         } else {
                             entities.add(livingEntity);
                         }
@@ -103,11 +104,11 @@ public class ShootParticle {
             boolean isHeadshot = HeadshotCalculator.isHeadshot(ray, e, range);
             if (isHeadshot) {
                 e.damage(newDMG + (newDMG * 0.5), shooter);
-                shooter.sendActionBar(Component.text("Headshot!", NamedTextColor.GOLD));
+                ChatUtil.sendActionBar(shooter, "&6Headshot!");
             } else
                 e.damage(newDMG, shooter);
             hitEntities.put(e, isHeadshot);
-            e.getWorld().spawnParticle(Particle.BLOCK_CRACK, e.getLocation().add(0, .5, 0), 50, 0.2, 0.2, 0.2, Material.NETHER_WART_BLOCK.createBlockData());
+            e.getWorld().spawnParticle(Particle.BLOCK, e.getLocation().add(0, .5, 0), 50, 0.2, 0.2, 0.2, Material.NETHER_WART_BLOCK.createBlockData());
             e.setNoDamageTicks(0);
             e.setVelocity(vec);
         }
