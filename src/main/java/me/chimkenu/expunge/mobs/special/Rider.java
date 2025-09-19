@@ -1,52 +1,43 @@
 package me.chimkenu.expunge.mobs.special;
 
+import me.chimkenu.expunge.Expunge;
+import me.chimkenu.expunge.game.GameManager;
+import me.chimkenu.expunge.mobs.MobSettings;
+import org.bukkit.Color;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.World;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Spider;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.potion.PotionEffect;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Mob;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
 
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.Objects;
 
-public class Rider extends Special {
-    public Rider(JavaPlugin plugin, World world, Vector locationToSpawn) {
-        super(plugin, world, locationToSpawn, Spider.class, mob -> {
-            if (mob.getVehicle() instanceof Player target) {
-                mob.setTarget(target);
-                target.getInventory().setHeldItemSlot(5);
-                target.setVelocity(target.getVelocity().add(mob.getEyeLocation().getDirection()));
-                target.damage(0.5, mob);
-            } else {
-                if (mob.getTarget() instanceof Player player) {
-                    if (!player.getPassengers().isEmpty()) {
-                        mob.setTarget(getRandomPlayer(world));
-                        return;
-                    }
+public class Rider extends Pouncer {
+    private int tickCounter = 0;
 
-                    double distance = mob.getLocation().distanceSquared(mob.getTarget().getLocation());
-                    int speed = 1;
-                    if (distance > 10 * 10) speed += 2;
-                    mob.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20, speed, false, false));
-                    if (distance < 3 * 3 && ThreadLocalRandom.current().nextDouble() < 0.5) {
-                        mob.setVelocity(mob.getVelocity().add(mob.getEyeLocation().getDirection().normalize().multiply(2)).add(new Vector(0, 0.25, 0)));
-                        new BukkitRunnable() {
-                            @Override
-                            public void run() {
-                                if (mob.getTarget() != null && mob.getLocation().distanceSquared(mob.getTarget().getLocation()) < 4 * 4) {
-                                    player.getInventory().setHeldItemSlot(5);
-                                    player.addPassenger(mob);
-                                }
-                            }
-                        }.runTaskLater(plugin, 3);
-                    }
-                } else mob.setTarget(getRandomPlayer(world));
-            }
-        });
-        getMob().addScoreboardTag("JOCKEY");
+    public Rider(GameManager manager, Mob mob, MobSettings settings) {
+        super(manager, mob, settings);
+    }
+
+    @Override
+    public boolean canUse() {
+        var target = mob.getTarget();
+        if (target == null) {
+            return false;
+        }
+
+        super.canUse();
+
+        tickCounter++;
+        if (tickCounter == 20) {
+            mob.getWorld().playSound(mob, Objects.requireNonNull(mob.getHurtSound()), 2, 1);
+        } else if (tickCounter >= 30) {
+            pounce(mob, target);
+            tickCounter = 0;
+        }
+
+        return false;
     }
 
     @Override
@@ -54,13 +45,41 @@ public class Rider extends Special {
         final float[] pitches = new float[]{0.529732f, 0.561231f, 0.529732f, 0.561231f, 0.529732f, 0.561231f, 0.529732f, 0.561231f, 0.529732f, 0.594604f, 0.529732f, 0.594604f, 0.529732f, 0.561231f, 0.529732f, 0.561231f};
         for (int i = 0; i < pitches.length / 2; i++) {
             final int finalI = i;
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    getMob().getWorld().playSound(getMob(), Sound.BLOCK_NOTE_BLOCK_HARP, 2, pitches[finalI * 2]);
-                    getMob().getWorld().playSound(getMob(), Sound.BLOCK_NOTE_BLOCK_HARP, 2, pitches[finalI * 2 + 1]);
-                }
-            }.runTaskLater(plugin, i * 4);
+            manager.addTask(
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            mob.getWorld().playSound(mob, Sound.BLOCK_NOTE_BLOCK_HARP, 2, pitches[finalI * 2]);
+                            mob.getWorld().playSound(mob, Sound.BLOCK_NOTE_BLOCK_HARP, 2, pitches[finalI * 2 + 1]);
+                        }
+                    }.runTaskLater(manager.getPlugin(), i * 4)
+            );
         }
+    }
+
+    @Override
+    public void pounce(LivingEntity source, LivingEntity target) {
+        var dir = target.getEyeLocation().subtract(source.getLocation()).toVector().normalize();
+        source.setVelocity(dir.multiply(0.5));
+        manager.addTask(
+                new BukkitRunnable() {
+                    int t = 10;
+                    @Override
+                    public void run() {
+                        if (t <= 0) {
+                            cancel();
+                            return;
+                        }
+                        source.getWorld().spawnParticle(Particle.ENTITY_EFFECT, source.getLocation(), 5, 0.25, 0.2, 0.25, 0, Color.fromRGB(5, 161, 13));
+                        source.getNearbyEntities(1, 1, 1).forEach(e -> {
+                            if (e == target) {
+                                target.addPassenger(source);
+                                cancel();
+                            }
+                        });
+                        t--;
+                    }
+                }.runTaskTimer(Expunge.getPlugin(Expunge.class), 0, 1)
+        );
     }
 }

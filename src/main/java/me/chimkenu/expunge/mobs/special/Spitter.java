@@ -1,34 +1,54 @@
 package me.chimkenu.expunge.mobs.special;
 
 import me.chimkenu.expunge.game.GameManager;
-import me.chimkenu.expunge.items.utilities.throwable.Spit;
+import me.chimkenu.expunge.items.Throwable;
+import me.chimkenu.expunge.mobs.MobGoal;
+import me.chimkenu.expunge.mobs.MobSettings;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
-import org.bukkit.World;
-import org.bukkit.entity.ZombieVillager;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.entity.Mob;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
 
-public class Spitter extends Special {
-    public Spitter(JavaPlugin plugin, GameManager gameManager, World world, Vector locationToSpawn) {
-        super(plugin, world, locationToSpawn, ZombieVillager.class, mob -> {
-            double distance = 0;
-            if (mob.getTarget() == null) mob.setTarget(getRandomPlayer(world));
-            else distance = mob.getLocation().distanceSquared(mob.getTarget().getLocation());
-            if (!mob.hasPotionEffect(PotionEffectType.CONFUSION) && distance < 10 * 10) {
-                // spit at player direction
-                mob.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 200, 0, true, true, false));
-                new Spit().use(plugin, gameManager, mob);
+import java.util.Objects;
 
-                // TODO: run away
-            }
-            mob.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20, 1, false, false));
-        });
+public class Spitter extends MobGoal {
+    public Spitter(GameManager manager, Mob mob, MobSettings settings) {
+        super(manager, mob, settings);
+    }
 
-        getMob().addScoreboardTag("SPITTER");
+    @Override
+    public boolean canUse() {
+        var target = mob.getTarget();
+        if (target == null) {
+            return false;
+        }
+
+        double distance = mob.getLocation().distanceSquared(mob.getTarget().getLocation());
+        if (distance > 10 * 10) {
+            return false;
+        }
+
+        return super.canUse();
+    }
+
+    @Override
+    public void start() {
+        var target = mob.getTarget();
+        if (target == null) {
+            return;
+        }
+
+        attackFrameTicks = 20;
+        executionTick = 10;
+        pendingAttack = () -> ((Throwable) manager.getPlugin().getItems().toGameItem("SPIT")).use(manager, mob);
+        playTellAnimation("");
+    }
+
+    @Override
+    public void playTellAnimation(String type) {
+        mob.getWorld().playSound(mob, Objects.requireNonNull(mob.getHurtSound()), 2, 0.5f);
     }
 
     @Override
@@ -36,12 +56,14 @@ public class Spitter extends Special {
         final float[] pitches = new float[]{0.594604f, 0.629961f, 0.561231f, 0.594604f};
         for (int i = 0; i < pitches.length; i++) {
             final int finalI = i;
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    getMob().getWorld().playSound(getMob(), Sound.BLOCK_NOTE_BLOCK_BELL, SoundCategory.HOSTILE, 2, pitches[finalI]);
-                }
-            }.runTaskLater(plugin, i * 7);
+            manager.addTask(
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            mob.getWorld().playSound(mob, Sound.BLOCK_NOTE_BLOCK_BELL, SoundCategory.HOSTILE, 2, pitches[finalI]);
+                        }
+                    }.runTaskLater(manager.getPlugin(), i * 7)
+            );
         }
     }
 }

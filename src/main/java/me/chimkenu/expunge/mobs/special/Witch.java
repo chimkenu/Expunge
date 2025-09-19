@@ -1,32 +1,24 @@
 package me.chimkenu.expunge.mobs.special;
 
+import me.chimkenu.expunge.game.GameManager;
+import me.chimkenu.expunge.mobs.MobGoal;
+import me.chimkenu.expunge.mobs.MobSettings;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
-import org.bukkit.World;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.entity.Enderman;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.entity.Mob;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
 
-import java.util.Objects;
+public class Witch extends MobGoal {
+    public Witch(GameManager manager, Mob mob, MobSettings settings) {
+        super(manager, mob, settings);
+    }
 
-public class Witch extends Special {
-    public Witch(JavaPlugin plugin, World world, Vector locationToSpawn) {
-        super(plugin, world, locationToSpawn, Enderman.class, mob -> {});
-        setBehavior(mob -> {
-            if (mob.getTarget() == null) {
-                mob.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20, 200, false, false, false));
-            } else {
-                mob.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20, 2, false, false, false));
-            }
-        });
-        Objects.requireNonNull(getMob().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)).setBaseValue(39);
-        Objects.requireNonNull(getMob().getAttribute(Attribute.GENERIC_MAX_HEALTH)).setBaseValue(1000);
-        getMob().setHealth(1000);
-        getMob().addScoreboardTag("WITCH");
+    @Override
+    public boolean canUse() {
+        mob.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 20, 200, false, false));
+        return mob.getTarget() != null;
     }
 
     @Override
@@ -35,12 +27,14 @@ public class Witch extends Special {
         for (int t = 0; t < 4; t++) {
             for (int i = 0; i < pitches.length; i++) {
                 final int finalI = i;
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        getMob().getWorld().playSound(getMob(), Sound.BLOCK_NOTE_BLOCK_HARP, SoundCategory.HOSTILE, 2, pitches[finalI]);
-                    }
-                }.runTaskLater(plugin, t * pitches.length * 3 + i * 3);
+                manager.addTask(
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                mob.getWorld().playSound(mob, Sound.BLOCK_NOTE_BLOCK_HARP, SoundCategory.HOSTILE, 2, pitches[finalI]);
+                            }
+                        }.runTaskLater(manager.getPlugin(), t * pitches.length * 3 + i * 3)
+                );
             }
         }
     }
