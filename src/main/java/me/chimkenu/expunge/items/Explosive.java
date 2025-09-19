@@ -5,7 +5,7 @@ import me.chimkenu.expunge.enums.Slot;
 import me.chimkenu.expunge.enums.Tier;
 import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.utils.ChatUtil;
-import me.chimkenu.expunge.utils.ItemUtils;
+import me.chimkenu.expunge.utils.ItemUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -28,7 +28,8 @@ public record Explosive(
         String texture,
         boolean canBePickedUp,
         boolean canSwitchSlot,
-        EffectType.Land interactionType
+        EffectType.Land interactionType,
+        int effectDuration
 ) implements Interactable {
     public Explosive {
         if (material == null) material = Material.PLAYER_HEAD;
@@ -47,7 +48,7 @@ public record Explosive(
 
     @Override
     public void onDamage(GameManager manager, Entity interactable, Entity actor) {
-        interactionType().trigger(manager, interactable.getLocation(), actor, 20);
+        interactionType().trigger(manager, interactable.getLocation(), actor, effectDuration());
         interactable.remove();
     }
 
@@ -76,7 +77,7 @@ public record Explosive(
 
     @Override
     public ItemStack toItem() {
-        ItemStack item = ItemUtils.getSkull(texture());
+        ItemStack item = ItemUtil.getSkull(texture());
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
             meta.setDisplayName(ChatUtil.format(name()));
