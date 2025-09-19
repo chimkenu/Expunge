@@ -1,7 +1,5 @@
 package me.chimkenu.expunge.utils;
 
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -13,24 +11,48 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class ItemUtils {
+public class ItemUtil {
+    public static ItemStack setDestroyable(ItemStack item, List<Material> blocks) {
+        var serialized = item.serialize();
+        serialized.putIfAbsent("components", new LinkedHashMap<>());
+        @SuppressWarnings("unchecked")
+        var o = (Map<String, String>) serialized.get("components");
+        o.put("minecraft:can_break", "[" + listToNbt(blocks) + "]");
+        return ItemStack.deserialize(serialized);
+    }
+
+    private static String listToNbt(List<Material> blocks) {
+        StringBuilder s = new StringBuilder();
+        for (var b : blocks) {
+            s.append("{blocks:\"minecraft:").append(b.toString().toLowerCase()).append("\"},");
+        }
+        return s.substring(0, s.length() - 1);
+    }
+
     public static void putOnRandomClothes(EntityEquipment equipment) {
         equipment.setChestplate(getDyedArmor(Material.LEATHER_CHESTPLATE));
         equipment.setLeggings(getDyedArmor(Material.LEATHER_LEGGINGS));
         equipment.setBoots(getDyedArmor(Material.LEATHER_BOOTS));
     }
 
-    public static ItemStack getDyedArmor(Material material) {
+    public static ItemStack getDyedArmor(Material material, int red, int green, int blue) {
         ItemStack item = new ItemStack(material);
         LeatherArmorMeta meta = (LeatherArmorMeta) item.getItemMeta();
         if (meta != null) {
-            meta.setColor(Color.fromRGB(ThreadLocalRandom.current().nextInt(255), ThreadLocalRandom.current().nextInt(255), ThreadLocalRandom.current().nextInt(255)));
+            meta.setColor(Color.fromRGB(red, green, blue));
             item.setItemMeta(meta);
         }
         return item;
+    }
+
+    public static ItemStack getDyedArmor(Material material) {
+        return getDyedArmor(material, ThreadLocalRandom.current().nextInt(255), ThreadLocalRandom.current().nextInt(255), ThreadLocalRandom.current().nextInt(255));
     }
 
     // TAKEN FROM https://www.spigotmc.org/threads/how-to-create-heads-with-custom-base64-texture.352562
