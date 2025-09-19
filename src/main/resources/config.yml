@@ -1,13 +1,11 @@
-lobby-spawn:
-  x: 0
-  y: 0
-  z: 0
+lobby-world: "world"
+game-world-prefix: "w_expunge_"
 gun:
   ladder-offset: 0.005
   jumping-offset: 0.05
   moving-offset: 0.005
   downed-offset: 0.25
 director:
-  spawn-radius: 40
-  too-close-radius: 15
+  spawn-radius: 8
+  too-close-radius: 8
   depth: 2
