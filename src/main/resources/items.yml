@@ -24,7 +24,7 @@
   swapCooldown: 10
   damage: 5
   pierceNumber: 3
-  range: 10
+  range: 30
   shotType: SPREAD
   shotCooldown: 3
   offset: 11
@@ -60,7 +60,7 @@
   swapCooldown: 10
   damage: 5
   pierceNumber: 2
-  range: 10
+  range: 20
   shotType: SPREAD
   shotCooldown: 10
   offset: 8
@@ -96,7 +96,7 @@
   swapCooldown: 10
   damage: 6
   pierceNumber: 4
-  range: 10
+  range: 30
   shotType: SPREAD
   shotCooldown: 3
   offset: 9
@@ -242,7 +242,7 @@
   swapCooldown: 10
   damage: 5
   pierceNumber: 1
-  range: 10
+  range: 20
   shotType: SPREAD
   shotCooldown: 10
   offset: 10
@@ -567,6 +567,7 @@
   canBePickedUp: true
   canSwitchSlot: true
   interactionType: FLAME
+  effectDuration: 600
 - type: Explosive
   id: "OXYGEN_TANK"
   name: "&2Oxygen Tank"
@@ -576,6 +577,7 @@
   canBePickedUp: true
   canSwitchSlot: true
   interactionType: ATTRACT
+  effectDuration: 60
 - type: Explosive
   id: "PROPANE_TANK"
   name: "&fPropane Tank"
@@ -585,3 +587,4 @@
   canBePickedUp: true
   canSwitchSlot: true
   interactionType: EXPLODE
+  effectDuration: 0
