@@ -1,7 +1,6 @@
 package me.chimkenu.expunge.campaigns;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
+import me.chimkenu.expunge.utils.ChatUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -11,6 +10,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
+// TODO: Keep? Will probably delete this in the future.
 public class Dialogue {
     public static void display(JavaPlugin plugin, Collection<Player> playerCollection, String[] strings) {
         List<Player> players = new ArrayList<>(playerCollection.stream().toList());
@@ -33,8 +33,8 @@ public class Dialogue {
                 players.set(i, p);
             }
         }
-        Component speakerA = players.get(0).displayName();
-        Component speakerB = players.get(Math.min(1, players.size() - 1)).displayName();
+        String speakerA = players.getFirst().getDisplayName();
+        String speakerB = players.get(Math.min(1, players.size() - 1)).getDisplayName();
         int totalTime = 0;
         double wordsPerSecond = 2.5;
         for (int i = 0; i < dialogue.size(); i++) {
@@ -46,10 +46,10 @@ public class Dialogue {
                 public void run() {
                     for (Player p : players) {
                         String speaker = speakers.get(index);
-                        Component speakerComponent;
+                        String speakerComponent;
                         if (speaker.trim().equalsIgnoreCase("a")) speakerComponent = speakerA;
                         else speakerComponent = speakerB;
-                        Component message = speakerComponent.color(NamedTextColor.WHITE).append(Component.text(" \u00BB", NamedTextColor.DARK_GRAY)).append(Component.text(dialogue.get(index), NamedTextColor.WHITE));
+                        String message = ChatUtil.format(speakerComponent + " &8»&r" + dialogue.get(index));
                         p.sendMessage(message);
                     }
                 }
