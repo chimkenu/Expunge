@@ -6,9 +6,10 @@ import me.chimkenu.expunge.mobs.MobSettings;
 import org.bukkit.Color;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Mob;
-import org.bukkit.potion.PotionEffectType;
+import org.bukkit.entity.Spider;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Objects;
@@ -18,6 +19,9 @@ public class Rider extends Pouncer {
 
     public Rider(GameManager manager, Mob mob, MobSettings settings) {
         super(manager, mob, settings);
+        if (mob instanceof Spider spider) {
+            Objects.requireNonNull(spider.getAttribute(Attribute.SCALE)).setBaseValue(0.7);
+        }
     }
 
     @Override
