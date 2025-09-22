@@ -26,7 +26,6 @@ public class CampaignDirector implements Director {
     private static final int RECOMPUTE_COOLDOWN = 2000;
     private static final int MAX_QUEUE = 30;
     private static final int WANDERER_LOOKAHEAD = 8;
-    private static final int PROGRESS_THRESHOLD = 6 * 6;
     private static final int SPECIAL_DEQUEUE_FREQUENCY = 20;
     private static final int MAX_IDLE_DISTANCE = 30 * 30;
     private static final int MAX_ACTIVE_DISTANCE = 20 * 20;
@@ -131,20 +130,11 @@ public class CampaignDirector implements Director {
     private void checkProgress() {
         var points = manager.getMap().escapePath();
         for (int i = points.size() - 1; i > furthestProgress; i--) {
-            var pos = points.get(i);
-            manager.getWorld().spawnParticle(Particle.END_ROD, pos.toLocation(manager.getWorld()).add(0, 0.2, 0), 1, 0, 0, 0, 0);
-
-            double min = PROGRESS_THRESHOLD + 1;
-            for (Player p : currentState.getPlayers()) {
-                if (p.getGameMode() != GameMode.ADVENTURE) {
-                    continue;
-                }
-
-                min = Math.min(min, pos.distanceSquared(p.getLocation().toVector()));
-                if (min < PROGRESS_THRESHOLD) {
-                    furthestProgress = i;
-                    break;
-                }
+            var path = points.get(i);
+            path.showPath(manager);
+            if (path.isWithin(getAlivePlayers())) {
+                furthestProgress = i;
+                break;
             }
         }
     }
@@ -176,11 +166,9 @@ public class CampaignDirector implements Director {
 
     private void generateSpawnBlocks() {
         var path = manager.getMap().escapePath();
-        blocks = SpawnUtil.getValidSurroundingBlocks(
-                manager,
-                path.subList(furthestProgress, Math.min(path.size(), furthestProgress + WANDERER_LOOKAHEAD)),
-                currentState.getPlayers()
-        );
+        for (var p : path) {
+            blocks.addAll(p.spawnBlocks(manager));
+        }
     }
 
     private void updateQueue() {

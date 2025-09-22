@@ -15,6 +15,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerAnimationType;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -23,84 +24,15 @@ import org.bukkit.util.BoundingBox;
 public class NextMapListener extends GameListener {
     public final CampaignGameManager gameManager;
 
-    private static final int MAX_CLICKS = 4;
-    private static final int INVALID = -1;
-    private int clicks = 0;
-    private long lastClick = 0;
+    private boolean isFinishedChecking = false;
 
     public NextMapListener(Expunge plugin, CampaignGameManager gameManager) {
         super(plugin, gameManager);
         this.gameManager = gameManager;
     }
 
-    private void check(Player player, Block block) {
-        if (block == null) {
-            return;
-        }
-
-        if (clicks == INVALID) {
-            return;
-        }
-
-        if (!gameManager.getPlayers().contains(player) || player.getGameMode() != GameMode.ADVENTURE) {
-            return;
-        }
-
-        var barriers = gameManager.getMap().barrierLocations();
-        var clickedLoc = block.getLocation().toVector();
-        if (!barriers.contains(new Barrier(clickedLoc, Material.BEEHIVE, true))) {
-            return;
-        }
-
-        var debounce = System.currentTimeMillis() - lastClick;
-        if (debounce < 100) {
-            return;
-        }
-        lastClick = System.currentTimeMillis();
-
-        BoundingBox endRegion = gameManager.getMap().endRegion();
-        for (Player p : gameManager.getPlayers()) {
-            if (p.getGameMode().equals(GameMode.ADVENTURE)) {
-                Location pLoc = p.getLocation();
-                if (!endRegion.contains(pLoc.getX(), pLoc.getY(), pLoc.getZ())) {
-                    ChatUtil.sendActionBar(player, "&cNot all alive players are in the safe-zone!");
-                    return;
-                }
-            }
-        }
-
-        // this is reached when all alive players reach the end region
-        var world = gameManager.getWorld();
-
-        // first do a little animation for breaking the barrier (click check)
-        clicks++;
-        float progress = Math.min(1, (float) clicks / MAX_CLICKS);
-        Bukkit.broadcastMessage(progress + "");
-        world.playSound(block.getLocation(), Sound.BLOCK_WOOD_HIT, 1, 1);
-        gameManager.getPlayers().forEach(p ->
-                barriers.forEach(b -> {
-                    if (b.isInit() && b.type() != Material.BARRIER) {
-                        p.sendBlockDamage(b.position().toLocation(world), progress, player);
-                    }
-                })
-        );
-        if (clicks <= MAX_CLICKS) {
-            return;
-        }
-        clicks = INVALID;
-
-        // runs when players have clicked the barrier MAX_CLICKS times
-        world.playSound(block.getLocation(), Sound.BLOCK_WOOD_BREAK, 1, 1);
-        barriers.forEach(b -> {
-            var loc = b.position().toLocation(world);
-            if (b.isInit()) {
-                world.setBlockData(loc, Material.BARRIER.createBlockData());
-                world.spawnParticle(Particle.BLOCK, loc, 50, 0.2, 0.2, 0.2, b.type().createBlockData());
-            } else {
-                world.setBlockData(loc, b.type().createBlockData());
-            }
-        });
-
+    private void nextMap() {
+        isFinishedChecking = true;
         gameManager.getWorld().getPlayers().forEach(p -> ChatUtil.sendFormatted(p, "&2Safe-zone reached!"));
         gameManager.endMap();
 
@@ -168,22 +100,34 @@ public class NextMapListener extends GameListener {
 
     @EventHandler
     public void onSwing(PlayerAnimationEvent e) {
-        if (!e.getAnimationType().equals(PlayerAnimationType.ARM_SWING)) {
+        if (isFinishedChecking) {
             return;
         }
 
-        check(e.getPlayer(), e.getPlayer().getTargetBlockExact(4));
+        if (gameManager.getMap().nextMapCondition().check(gameManager, e)) {
+            nextMap();
+        }
     }
 
     @EventHandler
     public void onPress(PlayerInteractEvent e) {
-        if (!gameManager.isRunning()) {
-            return;
-        }
-        if (!e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+        if (isFinishedChecking) {
             return;
         }
 
-        check(e.getPlayer(), e.getClickedBlock());
+        if (gameManager.getMap().nextMapCondition().check(gameManager, e)) {
+            nextMap();
+        }
+    }
+
+    @EventHandler
+    public void onMove(PlayerMoveEvent e) {
+        if (isFinishedChecking) {
+            return;
+        }
+
+        if (gameManager.getMap().nextMapCondition().check(gameManager, e)) {
+            nextMap();
+        }
     }
 }

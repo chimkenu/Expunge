@@ -20,12 +20,12 @@ public interface CampaignMap {
     Vector startLocation();
     BoundingBox endRegion();
 
-    List<Vector> escapePath();
+    List<Path> escapePath();
 
     List<Vector> spawnLocations();
     List<Vector> bossLocations();
     List<Vector> rescueClosetLocations();
-    List<Barrier> barrierLocations();
+    NextMapCondition nextMapCondition();
 
     List<ItemRandomizer> startItems();
     List<ItemRandomizer> mapItems();

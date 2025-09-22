@@ -14,9 +14,8 @@ import java.util.List;
 import java.util.Set;
 
 public class SpawnUtil {
-    public static Set<Block> getValidSurroundingBlocks(GameManager manager, List<Vector> path, Set<Player> players) {
+    public static Set<Block> getValidSurroundingBlocks(GameManager manager, List<Vector> path) {
         final int SPAWN_RADIUS = manager.getPlugin().getConfig().getInt("director.spawn-radius");
-        final int TOO_CLOSE_RADIUS = manager.getPlugin().getConfig().getInt("director.too-close-radius");
         final int DEPTH = manager.getPlugin().getConfig().getInt("director.depth");
 
         Set<Block> blocks = new HashSet<>();
@@ -24,27 +23,31 @@ public class SpawnUtil {
         // Gather all the possible spawn locations
         var world = manager.getWorld();
         for (var v : path) {
-            for (Block b : getSurroundingBlocks(world.getBlockAt(v.toLocation(world)), SPAWN_RADIUS, DEPTH)) {
+            blocks.addAll(getSurroundingBlocks(world.getBlockAt(v.toLocation(world)), SPAWN_RADIUS, DEPTH));
+        }
 
-                var isValid = true;
-                for (var p : players) {
-                    if (p.getGameMode() != GameMode.ADVENTURE) {
-                        continue;
-                    }
+        filterBlocks(manager, blocks);
+        return blocks;
+    }
 
-                    if (blocks.contains(b) || isLocationTooClose(p, b.getLocation(), TOO_CLOSE_RADIUS) || canBeSeenByPlayer(b, p)) {
-                        isValid = false;
-                        break;
-                    }
+    public static void filterBlocks(GameManager manager, Set<Block> blocks) {
+        final int TOO_CLOSE_RADIUS = manager.getPlugin().getConfig().getInt("director.too-close-radius");
+
+        // Filter blocks that cannot be used (assumes all blocks are already valid, just checking visibility)
+        Set<Block> blacklist = new HashSet<>();
+        for (Block b : blocks) {
+            for (var p : manager.getPlayers()) {
+                if (p.getGameMode() != GameMode.ADVENTURE) {
+                    continue;
                 }
-
-                if (isValid) {
-                    blocks.add(b);
+                if (isLocationTooClose(p, b.getLocation(), TOO_CLOSE_RADIUS) || canBeSeenByPlayer(b, p)) {
+                    blacklist.add(b);
+                    break;
                 }
             }
         }
 
-        return blocks;
+        blocks.removeAll(blacklist);
     }
 
     private static boolean canBeSeenByPlayer(Block block, Player player) {
@@ -68,7 +71,7 @@ public class SpawnUtil {
         return true;
     }
 
-    private static Set<Block> getSurroundingBlocks(Block block, int radius, int depth) {
+    public static Set<Block> getSurroundingBlocks(Block block, int radius, int depth) {
         Set<Block> blocks = new HashSet<>();
         for (int x = -radius; x <= radius; x++) {
             for (int z = -radius; z <= radius; z++) {
