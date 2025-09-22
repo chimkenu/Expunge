@@ -23,8 +23,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
@@ -39,12 +37,12 @@ public record Office(
         Vector startLocation,
         BoundingBox endRegion,
 
-        List<Vector> escapePath,
+        List<Path> escapePath,
 
         List<Vector> spawnLocations,
         List<Vector> bossLocations,
         List<Vector> rescueClosetLocations,
-        List<Barrier> barrierLocations,
+        NextMapCondition nextMapCondition,
 
         List<ItemRandomizer> startItems,
         List<ItemRandomizer> mapItems,
@@ -53,8 +51,7 @@ public record Office(
         GameAction runAtStart,
         GameAction runAtEnd
 ) implements CampaignMap, CampaignIntro {
-    // stupid workaround
-    public Office() { this(null, null, null, null, null, null, null, null, null, null, null, null, null, null); }
+    public static final Office instance = new Office(null, null, null, null, null, null, null, null, null, null, null, null, null, null);
 
     public Office {
         name = "Office";
@@ -62,39 +59,39 @@ public record Office(
         startLocation = new Vector(-103.5, 9, -327.5);
         endRegion = new BoundingBox(-178, 42, -286, -184, 48, -294);
         escapePath = List.of(
-                new Vector(-103.5, 9, -316.5),
-                new Vector(-103.5, 9, -309.5),
-                new Vector(-99.5, 9, -304.5),
-                new Vector(-96.5, 9, -297.5),
-                new Vector( -97.5, 9, -290.5),
-                new Vector(-104.5, 9, -290.5),
-                new Vector(-112.5, 9, -290.5),
-                new Vector(-120.5, 9, -291.5),
-                new Vector(-128, 9, -292),
-                new Vector(-205, 77, -287),
-                new Vector(-205, 77, -274),
-                new Vector(-205.5, 77, -263.5),
-                new Vector(-191.5, 77, -263.5),
-                new Vector(-185.5, 77, -273.5),
-                new Vector(-180.5, 78.17, -277.5),
-                new Vector(-187.5, 77, -282.5),
-                new Vector(-189, 77, -296),
-                new Vector(-188, 73, -302.5),
-                new Vector(-188, 69, -297.5),
-                new Vector(-188, 65, -302.5),
-                new Vector(-188, 61, -297.5),
-                new Vector(-188, 57, -302.5),
-                new Vector(-189, 53, -297),
-                new Vector(-188.5, 53, -285.5),
-                new Vector(-189.5, 53, -272.5),
-                new Vector(-192.5, 53, -268.5),
-                new Vector(-198.5, 54, -275.5),
-                new Vector(-204.5, 53, -281.5),
-                new Vector(-213.5, 53, -285.5),
-                new Vector(-221.5, 45, -287.5),
-                new Vector(-219, 44, -294),
-                new Vector(-212.5, 43.06, -286.5),
-                new Vector(-209.5, 46, -277.5)
+                new PathVector(-103.5, 9, -316.5),
+                new PathVector(-103.5, 9, -309.5),
+                new PathVector(-99.5, 9, -304.5),
+                new PathVector(-96.5, 9, -297.5),
+                new PathVector( -97.5, 9, -290.5),
+                new PathVector(-104.5, 9, -290.5),
+                new PathVector(-112.5, 9, -290.5),
+                new PathVector(-120.5, 9, -291.5),
+                new PathVector(-128, 9, -292),
+                new PathVector(-205, 77, -287),
+                new PathVector(-205, 77, -274),
+                new PathVector(-205.5, 77, -263.5),
+                new PathVector(-191.5, 77, -263.5),
+                new PathVector(-185.5, 77, -273.5),
+                new PathVector(-180.5, 78.17, -277.5),
+                new PathVector(-187.5, 77, -282.5),
+                new PathVector(-189, 77, -296),
+                new PathVector(-188, 73, -302.5),
+                new PathVector(-188, 69, -297.5),
+                new PathVector(-188, 65, -302.5),
+                new PathVector(-188, 61, -297.5),
+                new PathVector(-188, 57, -302.5),
+                new PathVector(-189, 53, -297),
+                new PathVector(-188.5, 53, -285.5),
+                new PathVector(-189.5, 53, -272.5),
+                new PathVector(-192.5, 53, -268.5),
+                new PathVector(-198.5, 54, -275.5),
+                new PathVector(-204.5, 53, -281.5),
+                new PathVector(-213.5, 53, -285.5),
+                new PathVector(-221.5, 45, -287.5),
+                new PathVector(-219, 44, -294),
+                new PathVector(-212.5, 43.06, -286.5),
+                new PathVector(-209.5, 46, -277.5)
         );
         spawnLocations = List.of(
                 new Vector(-84, 9, -321),
@@ -130,11 +127,11 @@ public record Office(
                 new Vector(-212.5, 43.06, -286.5)
         );
         rescueClosetLocations = List.of();
-        barrierLocations = List.of(
-                new Barrier(new Vector(-184, 43, -290), Material.BEEHIVE, true),
-                new Barrier(new Vector(-184, 44, -290), Material.BARRIER, true),
-                new Barrier(new Vector(-182, 43, -287), Material.BEEHIVE, false)
-        );
+        nextMapCondition = new Barrier(List.of(
+                new Barrier.Block(new Vector(-184, 43, -290), Material.BEEHIVE, true),
+                new Barrier.Block(new Vector(-184, 44, -290), Material.BARRIER, true),
+                new Barrier.Block(new Vector(-182, 43, -287), Material.BEEHIVE, false)
+        ));
         startItems = List.of(
                 new ItemRandomizer(-99, 10, -321.5, 1, ItemRandomizer.MATCH_PLAYER_COUNT, List.of("MEDKIT")),
                 new ItemRandomizer(-108, 10, -321.5, 1, 1, true, List.of("CROWBAR", "FIRE_AXE", "NIGHTSTICK")),
