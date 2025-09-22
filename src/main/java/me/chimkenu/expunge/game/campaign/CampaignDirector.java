@@ -7,7 +7,6 @@ import me.chimkenu.expunge.game.ItemRandomizer;
 import me.chimkenu.expunge.items.GameItem;
 import me.chimkenu.expunge.items.Interactable;
 import me.chimkenu.expunge.mobs.MobType;
-import me.chimkenu.expunge.mobs.common.Common;
 import me.chimkenu.expunge.utils.ChatUtil;
 import me.chimkenu.expunge.utils.SpawnUtil;
 import org.bukkit.*;
@@ -165,7 +164,8 @@ public class CampaignDirector implements Director {
     }
 
     private void generateSpawnBlocks() {
-        var path = manager.getMap().escapePath();
+        var escapePath = manager.getMap().escapePath();
+        var path = escapePath.subList(furthestProgress, Math.min(furthestProgress + WANDERER_LOOKAHEAD, escapePath.size()));
         for (var p : path) {
             blocks.addAll(p.spawnBlocks(manager));
         }
