@@ -20,6 +20,11 @@ public enum MobType {
         public Class<? extends MobGoal> goal() {
             return Common.class;
         }
+
+        @Override
+        public Classification classification() {
+            return Classification.COMMON;
+        }
     },
     ROBOT {
         @Override
@@ -30,6 +35,11 @@ public enum MobType {
         @Override
         public Class<? extends MobGoal> goal() {
             return Robot.class;
+        }
+
+        @Override
+        public Classification classification() {
+            return Classification.UNCOMMON;
         }
     },
     SOLDIER {
@@ -42,6 +52,11 @@ public enum MobType {
         public Class<? extends MobGoal> goal() {
             return Soldier.class;
         }
+
+        @Override
+        public Classification classification() {
+            return Classification.UNCOMMON;
+        }
     },
     CHARGER {
         @Override
@@ -52,6 +67,11 @@ public enum MobType {
         @Override
         public Class<? extends MobGoal> goal() {
             return Charger.class;
+        }
+
+        @Override
+        public Classification classification() {
+            return Classification.SPECIAL;
         }
     },
     CHOKER {
@@ -64,6 +84,11 @@ public enum MobType {
         public Class<? extends MobGoal> goal() {
             return Choker.class;
         }
+
+        @Override
+        public Classification classification() {
+            return Classification.SPECIAL;
+        }
     },
     POUNCER {
         @Override
@@ -74,6 +99,11 @@ public enum MobType {
         @Override
         public Class<? extends MobGoal> goal() {
             return Pouncer.class;
+        }
+
+        @Override
+        public Classification classification() {
+            return Classification.SPECIAL;
         }
     },
     RIDER {
@@ -86,6 +116,11 @@ public enum MobType {
         public Class<? extends MobGoal> goal() {
             return Rider.class;
         }
+
+        @Override
+        public Classification classification() {
+            return Classification.SPECIAL;
+        }
     },
     SPEWER {
         @Override
@@ -96,6 +131,11 @@ public enum MobType {
         @Override
         public Class<? extends MobGoal> goal() {
             return Spewer.class;
+        }
+
+        @Override
+        public Classification classification() {
+            return Classification.SPECIAL;
         }
     },
     SPITTER {
@@ -108,6 +148,11 @@ public enum MobType {
         public Class<? extends MobGoal> goal() {
             return Spitter.class;
         }
+
+        @Override
+        public Classification classification() {
+            return Classification.SPECIAL;
+        }
     },
     TANK {
         @Override
@@ -119,6 +164,11 @@ public enum MobType {
         public Class<? extends MobGoal> goal() {
             return Tank.class;
         }
+
+        @Override
+        public Classification classification() {
+            return Classification.BOSS;
+        }
     },
     WITCH {
         @Override
@@ -129,6 +179,11 @@ public enum MobType {
         @Override
         public Class<? extends MobGoal> goal() {
             return Witch.class;
+        }
+
+        @Override
+        public Classification classification() {
+            return Classification.BOSS;
         }
     };
 
@@ -150,4 +205,12 @@ public enum MobType {
 
     public abstract Class<? extends Mob> defaultMob();
     public abstract Class<? extends MobGoal> goal();
+    public abstract Classification classification();
+
+    public enum Classification {
+        COMMON,
+        UNCOMMON,
+        SPECIAL,
+        BOSS
+    }
 }
