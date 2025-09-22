@@ -205,7 +205,7 @@ public class CampaignDirector implements Director {
             return;
         }
         specialQueue--;
-        var specials = Arrays.stream(MobType.values()).filter(mobType -> !(mobType.goal().isAssignableFrom(Common.class))).toList();
+        var specials = Arrays.stream(MobType.values()).filter(mobType -> mobType.classification() == MobType.Classification.SPECIAL).toList();
         spawnMob(specials.get(ThreadLocalRandom.current().nextInt(specials.size())), 1, findSuitableSpawn(false), true);
     }
 
