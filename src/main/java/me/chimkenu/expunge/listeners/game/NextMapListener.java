@@ -1,30 +1,29 @@
 package me.chimkenu.expunge.listeners.game;
 
 import me.chimkenu.expunge.Expunge;
-import me.chimkenu.expunge.campaigns.Barrier;
 import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.game.campaign.CampaignGameManager;
-import me.chimkenu.expunge.game.campaign.CampaignGameState;
 import me.chimkenu.expunge.listeners.GameListener;
 import me.chimkenu.expunge.utils.ChatUtil;
-import org.bukkit.*;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerAnimationEvent;
-import org.bukkit.event.player.PlayerAnimationType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.BoundingBox;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class NextMapListener extends GameListener {
     public final CampaignGameManager gameManager;
 
+    private final Map<String, Object> data = new HashMap<>();
     private boolean isFinishedChecking = false;
+    private long lastCheck = 0;
 
     public NextMapListener(Expunge plugin, CampaignGameManager gameManager) {
         super(plugin, gameManager);
@@ -37,7 +36,7 @@ public class NextMapListener extends GameListener {
         gameManager.endMap();
 
         // check if it is the last scene then end the game
-        if (gameManager.getCampaign().maps().length - 1 <= ((CampaignGameState) gameManager.getState()).getCampaignMapIndex()) {
+        if (gameManager.getCampaign().maps().length - 1 <= gameManager.getState().getCampaignMapIndex()) {
             gameManager.getWorld().getPlayers().forEach(p -> ChatUtil.sendFormatted(p, "&2END OF GAME"));
 
             // achievements
@@ -98,36 +97,47 @@ public class NextMapListener extends GameListener {
         }.runTaskTimer(plugin, 1, 1);
     }
 
-    @EventHandler
-    public void onSwing(PlayerAnimationEvent e) {
+    private boolean debounceCheck() {
+        final int DEBOUNCE = 300;
+        var now = System.currentTimeMillis();
+        if (now - lastCheck > DEBOUNCE) {
+            lastCheck = now;
+            return true;
+        }
+        return false;
+    }
+
+    private void check(Event e) {
         if (isFinishedChecking) {
             return;
         }
-
-        if (gameManager.getMap().nextMapCondition().check(gameManager, e)) {
-            nextMap();
+        if (!gameManager.getMap().nextMapCondition().init(gameManager, e, data)) {
+            return;
         }
+        if (!debounceCheck()) {
+            return;
+        }
+        if (!gameManager.getMap().nextMapCondition().check(gameManager, e, data)) {
+            return;
+        }
+        if (!gameManager.getMap().nextMapCondition().sideEffect(gameManager, e, data)) {
+            return;
+        }
+        nextMap();
+    }
+
+    @EventHandler
+    public void onSwing(PlayerAnimationEvent e) {
+        check(e);
     }
 
     @EventHandler
     public void onPress(PlayerInteractEvent e) {
-        if (isFinishedChecking) {
-            return;
-        }
-
-        if (gameManager.getMap().nextMapCondition().check(gameManager, e)) {
-            nextMap();
-        }
+        check(e);
     }
 
     @EventHandler
     public void onMove(PlayerMoveEvent e) {
-        if (isFinishedChecking) {
-            return;
-        }
-
-        if (gameManager.getMap().nextMapCondition().check(gameManager, e)) {
-            nextMap();
-        }
+        check(e);
     }
 }
