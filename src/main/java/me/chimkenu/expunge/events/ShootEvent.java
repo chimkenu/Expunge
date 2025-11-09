@@ -1,5 +1,6 @@
 package me.chimkenu.expunge.events;
 
+import me.chimkenu.expunge.entities.survivor.Survivor;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -10,15 +11,15 @@ import java.util.HashMap;
 
 public class ShootEvent extends Event {
     private static final HandlerList HANDLERS = new HandlerList();
-    private final Player shooter;
+    private final Survivor shooter;
     private final HashMap<LivingEntity, Boolean> hitEntities;
 
-    public ShootEvent(Player shooter, HashMap<LivingEntity, Boolean> hitEntities) {
+    public ShootEvent(Survivor shooter, HashMap<LivingEntity, Boolean> hitEntities) {
         this.shooter = shooter;
         this.hitEntities = hitEntities;
     }
 
-    public Player getShooter() {
+    public Survivor getShooter() {
         return shooter;
     }
 

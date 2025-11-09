@@ -1,14 +1,13 @@
-package me.chimkenu.expunge.mobs.special;
+package me.chimkenu.expunge.entities.goals.special;
 
+import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.items.Throwable;
-import me.chimkenu.expunge.mobs.MobGoal;
-import me.chimkenu.expunge.mobs.MobSettings;
+import me.chimkenu.expunge.entities.goals.MobGoal;
+import me.chimkenu.expunge.entities.MobSettings;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.entity.Mob;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Objects;
@@ -25,7 +24,7 @@ public class Spitter extends MobGoal {
             return false;
         }
 
-        double distance = mob.getLocation().distanceSquared(mob.getTarget().getLocation());
+        double distance = mob.getLocation().distanceSquared(target.getLocation());
         if (distance > 10 * 10) {
             return false;
         }
@@ -42,7 +41,7 @@ public class Spitter extends MobGoal {
 
         attackFrameTicks = 20;
         executionTick = 10;
-        pendingAttack = () -> ((Throwable) manager.getPlugin().getItems().toGameItem("SPIT")).use(manager, mob);
+        pendingAttack = () -> ((Throwable) Expunge.getItems().toGameItem("SPIT").get()).use(manager, manager.getEntity(mob).get());
         playTellAnimation("");
     }
 

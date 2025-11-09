@@ -1,9 +1,10 @@
-package me.chimkenu.expunge.mobs.special;
+package me.chimkenu.expunge.entities.goals.special;
 
+import me.chimkenu.expunge.entities.item.MiscEntity;
 import me.chimkenu.expunge.enums.Modifiers;
 import me.chimkenu.expunge.game.GameManager;
-import me.chimkenu.expunge.mobs.MobGoal;
-import me.chimkenu.expunge.mobs.MobSettings;
+import me.chimkenu.expunge.entities.goals.MobGoal;
+import me.chimkenu.expunge.entities.MobSettings;
 import me.chimkenu.expunge.utils.RayTrace;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
@@ -82,7 +83,7 @@ public class Choker extends MobGoal {
             armorStand.setSmall(true);
             armorStand.addScoreboardTag("KNOCKED");
             victim.addPassenger(armorStand);
-            manager.addEntity(armorStand);
+            manager.addEntity(new MiscEntity(armorStand));
 
             attackFrameTicks--;
         }

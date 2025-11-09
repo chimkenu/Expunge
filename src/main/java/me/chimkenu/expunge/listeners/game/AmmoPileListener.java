@@ -12,9 +12,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public class AmmoPileListener extends GameListener {
-    public AmmoPileListener(Expunge plugin, GameManager gameManager) {
+    public AmmoPileListener(JavaPlugin plugin, GameManager gameManager) {
         super(plugin, gameManager);
     }
 
@@ -32,7 +33,7 @@ public class AmmoPileListener extends GameListener {
         Player player = e.getPlayer();
         // update ammo if holding gun
         ItemStack itemStack = player.getInventory().getItemInMainHand();
-        var gameItem = plugin.getItems().toGameItem(itemStack);
+        var gameItem = Expunge.getItems().toGameItem(itemStack).orElse(null);
         if (!(gameItem instanceof Gun gun)) {
             return;
         }

@@ -1,5 +1,6 @@
 package me.chimkenu.expunge.items.data;
 
+import me.chimkenu.expunge.entities.GameEntity;
 import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.items.Throwable;
 import me.chimkenu.expunge.utils.RayTrace;
@@ -11,6 +12,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Snowball;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
@@ -20,7 +22,7 @@ public class BouncyProjectile extends BukkitRunnable {
     final double RAY_TRACE_ACCURACY = 0.01;
     final GameManager manager;
     final Throwable throwable;
-    final LivingEntity shooter;
+    final GameEntity shooter;
 
     Snowball projectile;
     int t;
@@ -36,7 +38,7 @@ public class BouncyProjectile extends BukkitRunnable {
      * @param shooter the shooter of the projectile
      * @param projectile the projectile in question
      */
-    public BouncyProjectile(GameManager manager, Throwable throwable, LivingEntity shooter, Snowball projectile) {
+    public BouncyProjectile(GameManager manager, Throwable throwable, GameEntity shooter, Snowball projectile) {
         this.manager = manager;
         this.shooter = shooter;
         this.projectile = projectile;
@@ -67,7 +69,7 @@ public class BouncyProjectile extends BukkitRunnable {
         World world = projectile.getWorld();
         projectile = world.spawn(loc, Snowball.class);
         projectile.setItem(new ItemStack(throwable.thrownItem()));
-        projectile.setShooter(shooter);
+        projectile.setShooter((ProjectileSource) shooter.getHandle());
         projectile.getPersistentDataContainer().set(throwable.namespacedKey(), PersistentDataType.BOOLEAN, false);
 
         for (Vector v : rayTrace.traverse(RAY_TRACE_DISTANCE, RAY_TRACE_ACCURACY)) {

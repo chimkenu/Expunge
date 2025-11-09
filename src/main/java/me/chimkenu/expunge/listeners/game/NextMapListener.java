@@ -1,7 +1,5 @@
 package me.chimkenu.expunge.listeners.game;
 
-import me.chimkenu.expunge.Expunge;
-import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.game.campaign.CampaignGameManager;
 import me.chimkenu.expunge.listeners.GameListener;
 import me.chimkenu.expunge.utils.ChatUtil;
@@ -11,6 +9,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -25,7 +24,7 @@ public class NextMapListener extends GameListener {
     private boolean isFinishedChecking = false;
     private long lastCheck = 0;
 
-    public NextMapListener(Expunge plugin, CampaignGameManager gameManager) {
+    public NextMapListener(JavaPlugin plugin, CampaignGameManager gameManager) {
         super(plugin, gameManager);
         this.gameManager = gameManager;
     }
@@ -33,40 +32,12 @@ public class NextMapListener extends GameListener {
     private void nextMap() {
         isFinishedChecking = true;
         gameManager.getWorld().getPlayers().forEach(p -> ChatUtil.sendFormatted(p, "&2Safe-zone reached!"));
-        gameManager.endMap();
+        gameManager.moveToNextMap();
 
-        // check if it is the last scene then end the game
-        if (gameManager.getCampaign().maps().length - 1 <= gameManager.getState().getCampaignMapIndex()) {
-            gameManager.getWorld().getPlayers().forEach(p -> ChatUtil.sendFormatted(p, "&2END OF GAME"));
-
-            // achievements
-            boolean hasMrCookie = false;
-            for (Player p : gameManager.getPlayers()) {
-                Achievements.SURVIVOR.grant(p);
-
-                // the departure achievements TODO: bring ts back
-                // if (gameManager.getCampaign() instanceof TheDeparture) {
-                //     Achievements.THE_DEPARTURE.grant(p);
-                //     for (int i = 0; i < 5; i++) {
-                //         ItemStack item = p.getInventory().getItem(i);
-                //         if (item != null && item.getType() == Material.COOKIE) hasMrCookie = true;
-                //     }
-                // }
-            }
-
-            if (hasMrCookie) {
-                for (Player p : gameManager.getPlayers()) {
-                    Achievements.COOKIE_MONSTER.grant(p);
-                }
-            }
-
-            gameManager.stop(false);
-            return;
-        }
 
         for (Player p : gameManager.getPlayers()) {
             p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 10 * 20, 10 * 20, true, false));
-            p.sendMessage(gameManager.getState().displayStats());
+            // TODO: p.sendMessage(gameManager.getState().displayStats()); // DISPLAYING STATS
         }
 
         // increment scene index then start

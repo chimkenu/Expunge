@@ -1,4 +1,4 @@
-package me.chimkenu.expunge.mobs;
+package me.chimkenu.expunge.entities;
 
 public record MobSettings(
         double health,

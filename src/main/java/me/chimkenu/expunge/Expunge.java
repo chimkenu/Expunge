@@ -12,8 +12,33 @@ import java.util.Objects;
 import java.util.logging.Level;
 
 public final class Expunge extends JavaPlugin {
-    private Lobby lobby;
-    private Items items;
+    private static Expunge instance;
+    private static Lobby lobby;
+    private static Items items;
+
+    public static Expunge getInstance() {
+        if (instance == null) {
+            throw new RuntimeException("Expunge instance is null?");
+        }
+        return instance;
+    }
+
+    public static Lobby getLobby() {
+        if (lobby == null) {
+            lobby = new Lobby(getInstance(), getInstance().getConfig().getString("lobby-world"), getInstance().getConfig().getString("game-world"));
+        }
+        return lobby;
+    }
+
+    public static Items getItems() {
+        if (items == null) {
+            items = new Items(getInstance(), "items.yml");
+        }
+        if (items.list().isEmpty()) {
+            items.reload();
+        }
+        return items;
+    }
 
     @Override
     public void onEnable() {
@@ -32,6 +57,7 @@ public final class Expunge extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new GUIListener(), this);
         getServer().getPluginManager().registerEvents(new ItemGlowListener(), this);
 
+        instance = this;
         lobby = new Lobby(this, getConfig().getString("lobby-world"), getConfig().getString("game-world-prefix"));
         getItems();
     }
@@ -50,22 +76,5 @@ public final class Expunge extends JavaPlugin {
             lobby.unload();
         }
         super.reloadConfig();
-    }
-
-    public Lobby getLobby() {
-        if (lobby == null) {
-            lobby = new Lobby(this, getConfig().getString("lobby-world"), getConfig().getString("game-world"));
-        }
-        return lobby;
-    }
-
-    public Items getItems() {
-        if (items == null) {
-            items = new Items(this, "items.yml");
-        }
-        if (items.list().isEmpty()) {
-            items.reload();
-        }
-        return items;
     }
 }

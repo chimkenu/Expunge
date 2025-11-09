@@ -1,8 +1,9 @@
 package me.chimkenu.expunge.game;
 
+import me.chimkenu.expunge.Expunge;
+import me.chimkenu.expunge.entities.GameEntity;
 import me.chimkenu.expunge.enums.Tier;
 import me.chimkenu.expunge.items.*;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.util.Vector;
 
@@ -10,7 +11,7 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class ItemRandomizer {
-    public static final int MATCH_PLAYER_COUNT = -1;
+    public static final int MATCH_SURVIVOR_COUNT = -1;
 
     private final Vector pos;
     private final double chance;
@@ -50,80 +51,75 @@ public class ItemRandomizer {
         this(x, y, z, chance, count, false, preset);
     }
 
-    public void randomize(GameManager manager, Items items, int attempts) {
+    public void randomize(GameManager manager, int attempts, int survivorCount) {
         if (choice == null || attempts == 0) {
             if (ThreadLocalRandom.current().nextDouble() >= chance) {
                 return;
             }
 
-            var choices = resolve(items);
+            var choices = resolve();
             if (choices == null) {
                 assert(preset != null);
-                choices = preset.gameItems(items);
+                choices = preset.gameItems();
             }
             choice = choices.get((ThreadLocalRandom.current().nextInt(choices.size())));
         }
 
         var n = count;
-        if (count == MATCH_PLAYER_COUNT) {
-            n = manager.getPlayers().size();
+        if (count == MATCH_SURVIVOR_COUNT) {
+            n = survivorCount;
         }
         for (int i = 0; i < n; i++) {
-            spawn(manager);
+            manager.spawnItem(choice, pos, isInvulnerable);
         }
     }
 
-    private void spawn(GameManager manager) {
-        Entity entity;
-        if (choice instanceof Interactable interactable) {
-            entity = interactable.spawn(pos.toLocation(manager.getWorld()));
-        } else {
-            entity = manager.getWorld().dropItemNaturally(pos.toLocation(manager.getWorld()), choice.toItem());
-            entity.setInvulnerable(isInvulnerable);
-        }
-        manager.addEntity(entity);
-    }
-
-    private List<GameItem> resolve(Items items) {
+    private List<GameItem> resolve() {
         if (possibilities == null) {
             return null;
         }
 
-        return items.list(item -> possibilities.contains(item.id()));
+        return Expunge.getItems().list(item -> possibilities.contains(item.id()));
     }
 
     public enum Preset {
         TIER1_GUNS {
             @Override
-            public List<GameItem> gameItems(Items items) {
-                return items.list(item -> item instanceof Gun && item.tier() == Tier.COMMON);
+            public List<GameItem> gameItems() {
+                return Expunge.getItems().list(item -> item instanceof Gun && item.tier() == Tier.COMMON);
             }
         },
         TIER2_GUNS {
             @Override
-            public List<GameItem> gameItems(Items items) {
-                return items.list(item -> item instanceof Gun && item.tier() == Tier.RARE);
+            public List<GameItem> gameItems() {
+                return Expunge.getItems().list(item -> item instanceof Gun && item.tier() == Tier.RARE);
             }
         },
-        MELEE {
+        TIER1_MELEE {
             @Override
-            public List<GameItem> gameItems(Items items) {
-                return items.list(item -> item instanceof Melee && item.tier() != Tier.SPECIAL);
+            public List<GameItem> gameItems() {
+                return Expunge.getItems().list(item -> item instanceof Melee && item.tier() == Tier.COMMON);
+            }
+        },
+        TIER2_MELEE {
+            @Override
+            public List<GameItem> gameItems() {
+                return Expunge.getItems().list(item -> item instanceof Melee && item.tier() == Tier.RARE);
             }
         },
         TIER1_UTILITY {
             @Override
-            public List<GameItem> gameItems(Items items) {
-                return items.list(item -> item instanceof Utility && item.tier() == Tier.COMMON);
+            public List<GameItem> gameItems() {
+                return Expunge.getItems().list(item -> item instanceof Utility && item.tier() == Tier.COMMON);
             }
         },
         TIER2_UTILITY {
             @Override
-            public List<GameItem> gameItems(Items items) {
-                return items.list(item -> item instanceof Utility && item.tier() == Tier.RARE);
+            public List<GameItem> gameItems() {
+                return Expunge.getItems().list(item -> item instanceof Utility && item.tier() == Tier.RARE);
             }
         };
 
-        public abstract List<GameItem> gameItems(Items items);
+        public abstract List<GameItem> gameItems();
     }
 }

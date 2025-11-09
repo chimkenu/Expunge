@@ -1,20 +1,16 @@
 package me.chimkenu.expunge.campaigns.thedeparture.maps;
 
-import me.chimkenu.expunge.Expunge;
-import me.chimkenu.expunge.GameAction;
 import me.chimkenu.expunge.campaigns.*;
 import me.chimkenu.expunge.campaigns.thedeparture.DepartureDialogue;
 import me.chimkenu.expunge.enums.Achievements;
-import me.chimkenu.expunge.game.Director;
 import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.game.ItemRandomizer;
-import me.chimkenu.expunge.game.campaign.CampaignDirector;
-import me.chimkenu.expunge.mobs.MobType;
+import me.chimkenu.expunge.game.campaign.CampaignGameManager;
+import me.chimkenu.expunge.entities.MobType;
 import me.chimkenu.expunge.utils.ChatUtil;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -23,18 +19,23 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
 import java.awt.*;
 import java.util.List;
+import java.util.function.Consumer;
+
+import static me.chimkenu.expunge.campaigns.Campaign.playCrescendoEventEffect;
 
 public record Office(
         String name,
         String displayName,
 
         Vector startLocation,
+        BoundingBox startRegion,
         BoundingBox endRegion,
 
         List<Path> escapePath,
@@ -48,22 +49,23 @@ public record Office(
         List<ItemRandomizer> mapItems,
         List<Vector> ammoLocations,
 
-        GameAction runAtStart,
-        GameAction runAtEnd
+        Consumer<GameManager> runAtStart,
+        Consumer<GameManager> runAtEnd
 ) implements CampaignMap, CampaignIntro {
-    public static final Office instance = new Office(null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+    public static final Office instance = new Office(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
 
     public Office {
         name = "Office";
         displayName = ChatUtil.getColor(160, 75, 0) + name;
         startLocation = new Vector(-103.5, 9, -327.5);
+        startRegion = new BoundingBox(-112, 9, -319, -97, 20, -332);
         endRegion = new BoundingBox(-178, 42, -286, -184, 48, -294);
         escapePath = List.of(
                 new PathVector(-103.5, 9, -316.5),
                 new PathVector(-103.5, 9, -309.5),
                 new PathVector(-99.5, 9, -304.5),
                 new PathVector(-96.5, 9, -297.5),
-                new PathVector( -97.5, 9, -290.5),
+                new PathVector(-97.5, 9, -290.5),
                 new PathVector(-104.5, 9, -290.5),
                 new PathVector(-112.5, 9, -290.5),
                 new PathVector(-120.5, 9, -291.5),
@@ -133,7 +135,7 @@ public record Office(
                 new Barrier.Block(new Vector(-182, 43, -287), Material.BEEHIVE, false)
         ));
         startItems = List.of(
-                new ItemRandomizer(-99, 10, -321.5, 1, ItemRandomizer.MATCH_PLAYER_COUNT, List.of("MEDKIT")),
+                new ItemRandomizer(-99, 10, -321.5, 1, ItemRandomizer.MATCH_SURVIVOR_COUNT, List.of("MEDKIT")),
                 new ItemRandomizer(-108, 10, -321.5, 1, 1, true, List.of("CROWBAR", "FIRE_AXE", "NIGHTSTICK")),
                 new ItemRandomizer(-191.5, 54.19, -291.5, 1, 1, List.of("FRYING_PAN"))
         );
@@ -157,142 +159,147 @@ public record Office(
                 new ItemRandomizer(-201.5, 53, -259.5, 0.5, 1, ItemRandomizer.Preset.TIER1_GUNS)
         );
         ammoLocations = List.of();
-        runAtStart = (gameManager, player) -> {
-            gameManager.getWorld().setBlockData(new Location(gameManager.getWorld(), -132, 16, -296), Material.REDSTONE_BLOCK.createBlockData());
-            gameManager.getWorld().setBlockData(new Location(gameManager.getWorld(), -208, 85, -285), Material.REDSTONE_BLOCK.createBlockData());
-            Dialogue.display(gameManager.getPlugin(), gameManager.getPlayers(), DepartureDialogue.OFFICE_OPENING.pickRandom(gameManager.getPlayers().size()));
+        runAtStart = (manager) -> {
+            manager.getWorld().setBlockData(new Location(manager.getWorld(), -132, 16, -296), Material.REDSTONE_BLOCK.createBlockData());
+            manager.getWorld().setBlockData(new Location(manager.getWorld(), -208, 85, -285), Material.REDSTONE_BLOCK.createBlockData());
+            Dialogue.display(manager.getPlugin(), manager.getPlayers(), DepartureDialogue.OFFICE_OPENING.pickRandom(manager.getPlayers().size()));
         };
-        runAtEnd = null;
+        runAtEnd = (manager) -> {
+
+        };
     }
 
     @Override
-    public List<Listener> happenings(Expunge plugin, GameManager gameManager) {
+    public List<Listener> happenings(JavaPlugin plugin, GameManager gameManager) {
         return List.of(
                 new Listener() {
                     @EventHandler
                     public void onElevatorPress(PlayerInteractEvent e) {
-                        if (!gameManager.getPlayers().contains(e.getPlayer())) return;
-                        if (!gameManager.getPlayerStat(e.getPlayer()).isAlive()) return;
-                        if (e.getAction().equals(Action.RIGHT_CLICK_BLOCK) && e.getClickedBlock() != null && e.getClickedBlock().getType().toString().contains("_BUTTON")) {
-                            if (!gameManager.isRunning()) {
-                                return;
-                            }
-                            Vector buttonLoc = new Vector(-127, 10, -291);
-                            Vector clickedLoc = e.getClickedBlock().getLocation().toVector();
-                            if (!buttonLoc.equals(clickedLoc)) {
-                                return;
-                            }
+                        gameManager.getSurvivor(e.getPlayer()).ifPresent(survivor -> {
+                            if (!survivor.isAlive()) return;
+                            if (e.getAction().equals(Action.RIGHT_CLICK_BLOCK) && e.getClickedBlock() != null && e.getClickedBlock().getType().toString().contains("_BUTTON")) {
+                                Vector buttonLoc = new Vector(-127, 10, -291);
+                                Vector clickedLoc = e.getClickedBlock().getLocation().toVector();
+                                if (!buttonLoc.equals(clickedLoc)) return;
 
-                            BoundingBox elevator = new BoundingBox(-131, 7, -295, -126, 13, -289);
-                            for (Player p : gameManager.getPlayers()) {
-                                if (p.getGameMode().equals(GameMode.ADVENTURE)) {
-                                    Location pLoc = p.getLocation();
-                                    if (!elevator.contains(pLoc.getX(), pLoc.getY(), pLoc.getZ())) {
-                                        // a player is still not in the end zone
-                                        ChatUtil.sendActionBar(e.getPlayer(), "&aNot all alive players are in the elevator!");
-                                        return;
+                                BoundingBox elevator = new BoundingBox(-131, 7, -295, -126, 13, -289);
+                                for (Player p : gameManager.getPlayers()) {
+                                    if (p.getGameMode().equals(GameMode.ADVENTURE)) {
+                                        Location pLoc = p.getLocation();
+                                        if (!elevator.contains(pLoc.getX(), pLoc.getY(), pLoc.getZ())) {
+                                            // a player is still not in the end zone
+                                            ChatUtil.sendActionBar(e.getPlayer(), "&aNot all alive players are in the elevator!");
+                                            return;
+                                        }
                                     }
                                 }
-                            }
 
-                            gameManager.getWorld().setBlockData(new Location(gameManager.getWorld(), -132, 19, -296), Material.REDSTONE_BLOCK.createBlockData());
-                            Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.OFFICE_ELEVATOR.pickRandom(gameManager.getPlayers().size()));
-                            HandlerList.unregisterAll(this);
-                        }
+                                gameManager.getWorld().setBlockData(new Location(gameManager.getWorld(), -132, 19, -296), Material.REDSTONE_BLOCK.createBlockData());
+                                Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.OFFICE_ELEVATOR.pickRandom(gameManager.getPlayers().size()));
+                                HandlerList.unregisterAll(this);
+                            }
+                        });
                     }
                 },
                 new Listener() {
                     @EventHandler
                     public void officeRubble(PlayerMoveEvent e) {
-                        if (!gameManager.getPlayers().contains(e.getPlayer())) return;
-                        if (!gameManager.getPlayerStat(e.getPlayer()).isAlive()) return;
-                        BoundingBox box = new BoundingBox(-194, 76, -268, -185, 81, -260);
-                        if (!box.contains(e.getPlayer().getLocation().toVector()))
-                            return;
-                        Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.OFFICE_RUBBLE.pickRandom(gameManager.getPlayers().size()));
-                        HandlerList.unregisterAll(this);
+                        gameManager.getSurvivor(e.getPlayer()).ifPresent(s -> {
+                            if (!s.isAlive()) return;
+                            BoundingBox box = new BoundingBox(-194, 76, -268, -185, 81, -260);
+                            if (!box.contains(e.getPlayer().getLocation().toVector()))
+                                return;
+                            Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.OFFICE_RUBBLE.pickRandom(gameManager.getPlayers().size()));
+                            HandlerList.unregisterAll(this);
+                        });
                     }
                 },
                 new Listener() {
                     @EventHandler
                     public void officeJump(PlayerMoveEvent e) {
-                        if (!gameManager.getPlayers().contains(e.getPlayer())) return;
-                        if (!gameManager.getPlayerStat(e.getPlayer()).isAlive()) return;
-                        BoundingBox box = new BoundingBox(-208, 52, -285, -209, 57, -279);
-                        if (!box.contains(e.getPlayer().getLocation().toVector())) return;
+                        gameManager.getSurvivor(e.getPlayer()).ifPresent(s -> {
+                            if (!s.isAlive()) return;
+                            BoundingBox box = new BoundingBox(-208, 52, -285, -209, 57, -279);
+                            if (!box.contains(e.getPlayer().getLocation().toVector())) return;
 
-                        Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.OFFICE_JUMP.pickRandom(gameManager.getPlayers().size()));
-                        HandlerList.unregisterAll(this);
+                            Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.OFFICE_JUMP.pickRandom(gameManager.getPlayers().size()));
+                            HandlerList.unregisterAll(this);
+                        });
                     }
                 },
                 new Listener() {
                     @EventHandler
                     public void onEnterDevelopersRoom(PlayerMoveEvent e) {
-                        if (!gameManager.getPlayers().contains(e.getPlayer())) return;
-                        if (!gameManager.getPlayerStat(e.getPlayer()).isAlive()) return;
-                        if (new BoundingBox(-218, 42, -276, -214, 47, -272).contains(e.getPlayer().getLocation().toVector()))
-                            Achievements.THE_DEVELOPERS_ROOM.grant(e.getPlayer());
+                        gameManager.getSurvivor(e.getPlayer()).ifPresent(s -> {
+                            if (!s.isAlive()) return;
+                            if (new BoundingBox(-218, 42, -276, -214, 47, -272).contains(e.getPlayer().getLocation().toVector()))
+                                Achievements.THE_DEVELOPERS_ROOM.grant(e.getPlayer());
+                        });
                     }
                 },
                 new Listener() {
                     @EventHandler
                     public void officeVent(PlayerMoveEvent e) {
-                        if (!gameManager.getPlayers().contains(e.getPlayer())) return;
-                        if (!gameManager.getPlayerStat(e.getPlayer()).isAlive()) return;
-                        BoundingBox box = new BoundingBox(-218, 42, -278, -207, 47, -297);
-                        if (!box.contains(e.getPlayer().getLocation().toVector())) return;
+                        gameManager.getSurvivor(e.getPlayer()).ifPresent(s -> {
+                            if (!s.isAlive()) return;
+                            BoundingBox box = new BoundingBox(-218, 42, -278, -207, 47, -297);
+                            if (!box.contains(e.getPlayer().getLocation().toVector())) return;
 
-                        Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.OFFICE_VENTS.pickRandom(gameManager.getPlayers().size()));
-                        HandlerList.unregisterAll(this);
+                            Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.OFFICE_VENTS.pickRandom(gameManager.getPlayers().size()));
+                            HandlerList.unregisterAll(this);
+                        });
                     }
                 },
                 new Listener() {
                     @EventHandler
                     public void onEnterVent(PlayerInteractEvent e) {
                         Block block = e.getClickedBlock();
-                        if (!gameManager.getPlayers().contains(e.getPlayer())) return;
-                        if (!gameManager.getPlayerStat(e.getPlayer()).isAlive()) return;
-                        if (block == null || !(e.getAction().equals(Action.PHYSICAL) && block.getLocation().toVector().equals(new Vector(-210, 45, -275)))) {
-                            return;
-                        }
-
-                        CampaignDirector.playCrescendoEventEffect(gameManager.getPlayers());
-                        World world = gameManager.getWorld();
-                        new BukkitRunnable() {
-                            int i = 0;
-
-                            @Override
-                            public void run() {
-                                gameManager.getDirector().spawnMob(MobType.COMMON, 1, new Vector(-210.5, 49, -271.5), true);
-                                gameManager.getDirector().spawnMob(MobType.COMMON, 1, new Vector(-202.5, 48, -260.5), true);
-                                gameManager.getDirector().spawnMob(MobType.COMMON, 1, new Vector(-189.5, 49, -260.5), true);
-                                gameManager.getDirector().spawnMob(MobType.COMMON, 1, new Vector(-183.5, 49, -268.5), true);
-                                gameManager.getDirector().spawnMob(MobType.COMMON, 1, new Vector(-179.5, 49, -274.5), true);
-                                i++;
-                                if (i >= 5) {
-                                    this.cancel();
-                                }
-                                if (!gameManager.isRunning() || gameManager.getDirector().getPhase() == Director.Phase.DISABLED) {
-                                    this.cancel();
-                                }
+                        gameManager.getSurvivor(e.getPlayer()).ifPresent(s -> {
+                            if (!s.isAlive()) return;
+                            if (block == null || !(e.getAction().equals(Action.PHYSICAL) && block.getLocation().toVector().equals(new Vector(-210, 45, -275)))) {
+                                return;
                             }
-                        }.runTaskTimer(plugin, 1, 20 * 4);
 
-                        // crescendo events are only meant to happen once
-                        // hence it unregisters the event when it executes
-                        HandlerList.unregisterAll(this);
+                            playCrescendoEventEffect(gameManager.getPlayers());
+                            new BukkitRunnable() {
+                                int i = 0;
+
+                                @Override
+                                public void run() {
+                                    gameManager.spawnInfected(MobType.COMMON, new Vector(-210.5, 49, -271.5));
+                                    gameManager.spawnInfected(MobType.COMMON, new Vector(-202.5, 48, -260.5));
+                                    gameManager.spawnInfected(MobType.COMMON, new Vector(-189.5, 49, -260.5));
+                                    gameManager.spawnInfected(MobType.COMMON, new Vector(-183.5, 49, -268.5));
+                                    gameManager.spawnInfected(MobType.COMMON, new Vector(-179.5, 49, -274.5));
+                                    i++;
+                                    if (i >= 5) {
+                                        this.cancel();
+                                    }
+                                    if (!gameManager.isRunning() || !((CampaignGameManager) gameManager).isSpawningActive()) {
+                                        this.cancel();
+                                    }
+                                }
+                            }.runTaskTimer(plugin, 1, 20 * 4);
+
+                            // crescendo events are only meant to happen once
+                            // hence it unregisters the event when it executes
+                            HandlerList.unregisterAll(this);
+
+                        });
                     }
                 },
                 new Listener() {
                     @EventHandler
                     public void officeSafeRoom(PlayerMoveEvent e) {
-                        if (!gameManager.getPlayers().contains(e.getPlayer())) return;
-                        if (!gameManager.getPlayerStat(e.getPlayer()).isAlive()) return;
-                        BoundingBox box = new BoundingBox(-183, 42, -282, -179, 48, -275);
-                        if (!box.contains(e.getPlayer().getLocation().toVector())) return;
+                        gameManager.getSurvivor(e.getPlayer()).ifPresent(s -> {
+                            if (!s.isAlive()) return;
 
-                        Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.OFFICE_SAFE_ROOM.pickRandom(gameManager.getPlayers().size()));
-                        HandlerList.unregisterAll(this);
+                            BoundingBox box = new BoundingBox(-183, 42, -282, -179, 48, -275);
+                            if (!box.contains(e.getPlayer().getLocation().toVector())) return;
+
+                            Dialogue.display(plugin, gameManager.getPlayers(), DepartureDialogue.OFFICE_SAFE_ROOM.pickRandom(gameManager.getPlayers().size()));
+                            HandlerList.unregisterAll(this);
+                        });
                     }
                 }
         );

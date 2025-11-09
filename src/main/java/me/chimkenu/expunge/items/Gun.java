@@ -1,10 +1,13 @@
 package me.chimkenu.expunge.items;
 
+import me.chimkenu.expunge.Expunge;
+import me.chimkenu.expunge.entities.survivor.PlayerSurvivor;
+import me.chimkenu.expunge.entities.survivor.Survivor;
 import me.chimkenu.expunge.enums.ShotType;
 import me.chimkenu.expunge.enums.Slot;
 import me.chimkenu.expunge.enums.Tier;
 import me.chimkenu.expunge.game.GameManager;
-import me.chimkenu.expunge.tasks.PlayerTask;
+import me.chimkenu.expunge.tasks.SurvivorTask;
 import me.chimkenu.expunge.utils.ChatUtil;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -79,65 +82,74 @@ public record Gun(
         item.setItemMeta(meta);
     }
 
-    public Set<Block> fire(GameManager manager, Player player, double extraOffset) {
-        ItemStack item = player.getInventory().getItemInMainHand();
-        var meta = item.getItemMeta();
-        if (meta == null || !meta.getPersistentDataContainer().getKeys().contains(namespacedKey())) {
-            return null;
-        }
+    public Set<Block> fire(GameManager manager, Survivor survivor, double extraOffset) {
+        var opt = survivor.getActiveItem();
+        if (opt.isEmpty()) return null;
+        var item = opt.get();
+        if (item.item() != this) return null;
 
-        int currentAmmo = getAmmo(item);
+        int currentAmmo = getAmmo(item.stack());
         if (currentAmmo < 1) {
-            ChatUtil.sendActionBar(player, "&a&lOut of Ammo!");
+            ChatUtil.sendActionBar(survivor, "&a&lOut of Ammo!");
             return null;
         }
-        if (player.getCooldown(material()) > 0) {
+        if (survivor.getCooldown(item.item()) > 0) {
             return null;
         }
-        if (((Damageable) item.getItemMeta()).hasDamage()) {
+        if (((Damageable) item.stack().getItemMeta()).hasDamage()) {
             return null;
         }
 
         currentAmmo--;
-        setAmmo(item, currentAmmo);
-        player.setLevel(currentAmmo);
+        setAmmo(item.stack(), currentAmmo);
+        if (survivor instanceof PlayerSurvivor player) {
+            player.getHandle().setLevel(currentAmmo);
+        }
 
         Set<Block> toBreak = new HashSet<>();
         switch (shotType()) {
             case SINGLE ->
                     toBreak.addAll(ShootParticle.shoot(
                             particle(), range(), damage(),
-                            player, pierceNumber(), offset() + extraOffset, false
+                            survivor, pierceNumber(), offset() + extraOffset, false
                     ));
             case SPREAD -> {
                 extraOffset += ThreadLocalRandom.current().nextDouble(0.05, 0.1);
                 for (int i = 0; i < offset(); i++) {
                     toBreak.addAll(ShootParticle.shoot(
                             particle(), range(), damage(),
-                            player, pierceNumber(), extraOffset, true
+                            survivor, pierceNumber(), extraOffset, true
                     ));
                 }
             }
-            case GRENADE -> ((Throwable) manager.getPlugin().getItems()
-                    .toGameItem("GRENADE")).use(manager, player);
+            case GRENADE -> {
+                var grenade = Expunge.getItems().toGameItem("GRENADE");
+                if (grenade.isEmpty()) throw new RuntimeException("no grenade?");
+                ((Throwable) grenade.get()).use(manager, survivor);
+            }
         }
 
-        player.getWorld().playSound(player.getLocation(), sound(), SoundCategory.PLAYERS, 1, pitch());
-        player.setCooldown(material(), shotCooldown());
+        manager.getWorld().playSound(survivor.getLocation(), sound(), SoundCategory.PLAYERS, 1, pitch());
+        survivor.setCooldown(item.item(), shotCooldown());
 
-        if (item.getAmount() == 1) {
-            reload(manager, player);
+        if (item.stack().getAmount() == 1) {
+            reload(manager, survivor);
         } else {
-            item.setAmount(item.getAmount() - 1);
+            item.stack().setAmount(item.stack().getAmount() - 1);
         }
 
         return toBreak;
     }
 
-    public void reload(GameManager manager, Player player) {
-        ItemStack item = player.getInventory().getItemInMainHand();
+    public void reload(GameManager manager, Survivor survivor) {
+        var opt = survivor.getActiveItem();
+        if (opt.isEmpty()) return;
+        var item = opt.get().stack();
         var meta = item.getItemMeta();
         if (meta == null || !meta.getPersistentDataContainer().getKeys().contains(namespacedKey())) {
+            return;
+        }
+        if (meta instanceof Damageable d && d.hasDamage()) {
             return;
         }
 
@@ -157,7 +169,7 @@ public record Gun(
         }
 
         manager.addTask(
-                new PlayerTask(player) {
+                new SurvivorTask(survivor) {
                     int t = 1;
 
                     @Override
@@ -172,7 +184,7 @@ public record Gun(
                         }
 
                         if (t % 5 == 0) {
-                            player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, SoundCategory.PLAYERS, 0.1f, 0);
+                            manager.getWorld().playSound(survivor.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, SoundCategory.PLAYERS, 0.1f, 0);
                         }
 
                         double percentComplete = (double) t / reloadTime;

@@ -1,5 +1,6 @@
 package me.chimkenu.expunge.items;
 
+import me.chimkenu.expunge.entities.GameEntity;
 import me.chimkenu.expunge.enums.EffectType;
 import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.items.data.BouncyProjectile;
@@ -36,13 +37,17 @@ public record Throwable(
     }
 
     @Override
-    public boolean use(GameManager manager, LivingEntity thrower) {
+    public boolean use(GameManager manager, GameEntity thrower) {
+        if (!(thrower.getHandle() instanceof LivingEntity entity)) {
+            return false;
+        }
+
         manager.getWorld().playSound(
-                thrower, Sound.ENTITY_PLAYER_ATTACK_SWEEP,
-                thrower instanceof Player ? SoundCategory.PLAYERS : SoundCategory.HOSTILE,
+                entity, Sound.ENTITY_PLAYER_ATTACK_SWEEP,
+                entity instanceof Player ? SoundCategory.PLAYERS : SoundCategory.HOSTILE,
                 0.5f, 0
         );
-        var projectile = thrower.launchProjectile(Snowball.class);
+        var projectile = entity.launchProjectile(Snowball.class);
         projectile.setItem(new ItemStack(thrownItem()));
         projectile.getPersistentDataContainer().set(namespacedKey(), PersistentDataType.BOOLEAN, bounceVelocity() == 0);
         flightType().trigger(manager, this, thrower, projectile);
@@ -54,7 +59,7 @@ public record Throwable(
         return true;
     }
 
-    public void land(GameManager manager, Location loc, LivingEntity shooter) {
+    public void land(GameManager manager, Location loc, GameEntity shooter) {
         landType().trigger(manager, loc, shooter, effectDuration());
     }
 }

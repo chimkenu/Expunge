@@ -1,6 +1,5 @@
 package me.chimkenu.expunge.listeners.game;
 
-import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.events.ShootEvent;
 import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.game.PlayerStatsable;
@@ -12,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerAnimationType;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.concurrent.ThreadLocalRandom;
@@ -19,7 +19,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class ShootListener extends GameListener {
     private final BreakGlassListener breakGlassListener;
 
-    public ShootListener(Expunge plugin, GameManager gameManager, BreakGlassListener breakGlassListener) {
+    public ShootListener(JavaPlugin plugin, GameManager gameManager, BreakGlassListener breakGlassListener) {
         super(plugin, gameManager);
         this.breakGlassListener = breakGlassListener;
     }
@@ -30,12 +30,13 @@ public class ShootListener extends GameListener {
             return;
         }
 
-        Player player = e.getPlayer();
-        if (!gameManager.getPlayers().contains(player)) {
-            return;
-        }
+        var player = e.getPlayer();
+        var opt = gameManager.getSurvivor(player);
+        if (opt.isEmpty()) return;
+        var survivor = opt.get();
 
-        if (!(plugin.getItems().toGameItem(player.getInventory().getItemInMainHand()) instanceof Gun gun)) {
+        var heldItem = survivor.getActiveItem();
+        if (heldItem.isEmpty() || !(heldItem.get().item() instanceof Gun gun)) {
             return;
         }
 
@@ -45,7 +46,7 @@ public class ShootListener extends GameListener {
         }
 
         if (player.isSneaking()) {
-            gun.reload(gameManager, player);
+            gun.reload(gameManager, survivor);
             return;
         }
 
@@ -75,7 +76,7 @@ public class ShootListener extends GameListener {
         // is down
         if (player.getVehicle() != null) offset += plugin.getConfig().getDouble("gun.downed-offset");
 
-        var blocksToBreak = gun.fire(gameManager, player, offset);
+        var blocksToBreak = gun.fire(gameManager, survivor, offset);
         if (blocksToBreak == null) {
             return;
         }
@@ -96,6 +97,7 @@ public class ShootListener extends GameListener {
 
     @EventHandler
     public void onShoot(ShootEvent e) {
+        /* TODO FUCK STATS
         if (!(gameManager.getState() instanceof PlayerStatsable statsable)) {
             return;
         }
@@ -117,5 +119,6 @@ public class ShootListener extends GameListener {
         }
 
         statsable.getPlayerStat(player).addShot(shotHit, headshot);
+         */
     }
 }

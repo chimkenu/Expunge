@@ -1,6 +1,6 @@
 package me.chimkenu.expunge.game.campaign;
 
-import me.chimkenu.expunge.enums.CampaignDifficulty;
+import me.chimkenu.expunge.enums.Difficulty;
 import me.chimkenu.expunge.game.GameState;
 import me.chimkenu.expunge.game.PlayerStats;
 import me.chimkenu.expunge.game.PlayerStatsable;
@@ -15,11 +15,11 @@ import java.util.Set;
 public class CampaignGameState extends GameState implements PlayerStatsable {
     private final Map<Player, PlayerStats> players;
 
-    private CampaignDifficulty difficulty;
+    private Difficulty difficulty;
     private int campaignMapIndex;
     private int attempts;
 
-    public CampaignGameState(Set<Player> players, CampaignDifficulty difficulty, int campaignMapIndex) {
+    public CampaignGameState(Set<Player> players, Difficulty difficulty, int campaignMapIndex) {
         super();
         this.players = new HashMap<>();
         this.difficulty = difficulty;
@@ -39,10 +39,10 @@ public class CampaignGameState extends GameState implements PlayerStatsable {
         return players.get(player);
     }
 
-    public CampaignDifficulty getDifficulty() {
+    public Difficulty getDifficulty() {
         return difficulty;
     }
-    public void setDifficulty(CampaignDifficulty difficulty) {
+    public void setDifficulty(Difficulty difficulty) {
         this.difficulty = difficulty;
     }
 

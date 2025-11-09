@@ -1,7 +1,7 @@
-package me.chimkenu.expunge.mobs.common;
+package me.chimkenu.expunge.entities.goals.common;
 
 import me.chimkenu.expunge.game.GameManager;
-import me.chimkenu.expunge.mobs.MobSettings;
+import me.chimkenu.expunge.entities.MobSettings;
 import me.chimkenu.expunge.utils.ItemUtil;
 import org.bukkit.Material;
 import org.bukkit.entity.Ageable;

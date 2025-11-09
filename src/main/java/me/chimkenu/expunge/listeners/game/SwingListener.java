@@ -3,24 +3,16 @@ package me.chimkenu.expunge.listeners.game;
 import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.enums.MeleeType;
 import me.chimkenu.expunge.game.GameManager;
-import me.chimkenu.expunge.items.Gun;
 import me.chimkenu.expunge.items.Melee;
 import me.chimkenu.expunge.listeners.GameListener;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.damage.DamageSource;
-import org.bukkit.damage.DamageType;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.player.PlayerAnimationEvent;
-import org.bukkit.event.player.PlayerAnimationType;
 import org.bukkit.event.player.PlayerItemDamageEvent;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -28,7 +20,7 @@ public class SwingListener extends GameListener {
     private final Set<Player> playersUsingChainsaw;
     private final Map<Player, Long> playersLastSwing;
 
-    public SwingListener(Expunge plugin, GameManager gameManager) {
+    public SwingListener(JavaPlugin plugin, GameManager gameManager) {
         super(plugin, gameManager);
         playersUsingChainsaw = new HashSet<>();
         playersLastSwing = new HashMap<>();
@@ -152,10 +144,8 @@ public class SwingListener extends GameListener {
         }
 
         var heldItem = player.getInventory().getItemInMainHand();
-        var item = plugin.getItems().toGameItem(heldItem);
-        if (!(item instanceof Melee melee)) {
-            return;
-        }
+        var itemOpt = Expunge.getItems().toGameItem(heldItem);
+        if (itemOpt.isEmpty() || !(itemOpt.get() instanceof Melee melee)) return;
 
         // shove threshold (or spam attack)
         if (e.getDamage() < 10) {

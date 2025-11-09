@@ -1,6 +1,8 @@
 package me.chimkenu.expunge.listeners.game;
 
 import me.chimkenu.expunge.Expunge;
+import me.chimkenu.expunge.entities.item.ItemEntity;
+import me.chimkenu.expunge.entities.item.MiscEntity;
 import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.enums.Modifiers;
 import me.chimkenu.expunge.game.GameManager;
@@ -14,13 +16,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 public class MobListener extends GameListener {
-    public MobListener(Expunge plugin, GameManager gameManager) {
+    public MobListener(JavaPlugin plugin, GameManager gameManager) {
         super(plugin, gameManager);
     }
 
@@ -62,7 +65,7 @@ public class MobListener extends GameListener {
                 player.damage(2, explode);
                 player.addPotionEffect(new PotionEffect(PotionEffectType.NAUSEA, 20 * 15, 0, false, true, false));
                 world.spawnParticle(Particle.BLOCK, livingEntity.getLocation().add(0, .5, 0), 50, 0.2, 0.2, 0.2, Material.NETHER_WART_BLOCK.createBlockData());
-                gameManager.getDirector().bile(player, 25);
+                // TODO: gameManager.getDirector().bile(player, 25); // BILE
             }
         }
         explode.remove();
@@ -77,8 +80,11 @@ public class MobListener extends GameListener {
             boom(e.getEntity());
         }
         else if (e.getEntity().getScoreboardTags().contains("ROBOT")) {
-            Item item = e.getEntity().getWorld().dropItemNaturally(e.getEntity().getLocation(), plugin.getItems().toGameItem("FRESH_AIR").toItem());
-            gameManager.addEntity(item);
+            var freshAirOpt = Expunge.getItems().toGameItem("FRESH_AIR");
+            if (freshAirOpt.isEmpty()) return;
+            var freshAir = freshAirOpt.get();
+            Item item = e.getEntity().getWorld().dropItemNaturally(e.getEntity().getLocation(), freshAir.toItem());
+            gameManager.addEntity(new ItemEntity(freshAir, item));
         }
 
         // achievement
@@ -194,7 +200,7 @@ public class MobListener extends GameListener {
         armorStand.setSmall(true);
         armorStand.addScoreboardTag("KNOCKED");
         armorStand.addPassenger(player);
-        manager.addEntity(armorStand);
+        manager.addEntity(new MiscEntity(armorStand));
     }
 
     @EventHandler
@@ -238,6 +244,8 @@ public class MobListener extends GameListener {
         }
 
         // TODO persistent data container to check special infected type
+        // TODO Player stats
+        /*
         var isSpecialInfected = false;
         if (isSpecialInfected) {
             ((PlayerStatsable) gameManager.getState()).getPlayerStat(killer).addSpecialKill();
@@ -246,5 +254,6 @@ public class MobListener extends GameListener {
         } else {
             ((PlayerStatsable) gameManager.getState()).getPlayerStat(killer).addCommonKill();
         }
+         */
     }
 }

@@ -1,5 +1,7 @@
 package me.chimkenu.expunge.enums;
 
+import me.chimkenu.expunge.entities.GameEntity;
+import me.chimkenu.expunge.entities.item.MiscEntity;
 import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.items.Throwable;
 import me.chimkenu.expunge.utils.RayTrace;
@@ -22,14 +24,14 @@ public class EffectType {
     public enum Flight {
         NOTHING {
             @Override
-            public void trigger(GameManager manager, Throwable throwable, LivingEntity shooter, Entity projectile) {}
+            public void trigger(GameManager manager, Throwable throwable, GameEntity shooter, Entity projectile) {}
         },
 
         ATTRACT {
             @Override
-            public void trigger(GameManager manager, Throwable throwable, LivingEntity shooter, Entity projectile) {
+            public void trigger(GameManager manager, Throwable throwable, GameEntity shooter, Entity projectile) {
                 final ArmorStand armorStand = manager.getWorld().spawn(projectile.getLocation(), ArmorStand.class);
-                manager.addEntity(armorStand);
+                manager.addEntity(new MiscEntity(armorStand));
                 armorStand.setInvisible(true);
                 armorStand.setMarker(true);
                 armorStand.setSmall(true);
@@ -68,13 +70,13 @@ public class EffectType {
 
                                 if (t < 20) {
                                     if (t % 2 == 0)
-                                        loc.getWorld().playSound(loc, Sound.BLOCK_NOTE_BLOCK_HARP, SoundCategory.PLAYERS, 1.5f, 2);
+                                        p.getWorld().playSound(loc, Sound.BLOCK_NOTE_BLOCK_HARP, SoundCategory.PLAYERS, 1.5f, 2);
                                 } else if (t < 60) {
                                     if (t % 5 == 0)
-                                        loc.getWorld().playSound(loc, Sound.BLOCK_NOTE_BLOCK_HARP, SoundCategory.PLAYERS, 1.5f, 2);
+                                        p.getWorld().playSound(loc, Sound.BLOCK_NOTE_BLOCK_HARP, SoundCategory.PLAYERS, 1.5f, 2);
                                 } else {
                                     if (t % 10 == 0)
-                                        loc.getWorld().playSound(loc, Sound.BLOCK_NOTE_BLOCK_HARP, SoundCategory.PLAYERS, 1.5f, 2);
+                                        p.getWorld().playSound(loc, Sound.BLOCK_NOTE_BLOCK_HARP, SoundCategory.PLAYERS, 1.5f, 2);
                                 }
 
                                 t--;
@@ -142,13 +144,13 @@ public class EffectType {
             }
         };
 
-        public abstract void trigger(GameManager manager, Throwable throwable, LivingEntity shooter, Entity projectile);
+        public abstract void trigger(GameManager manager, Throwable throwable, GameEntity shooter, Entity projectile);
     }
 
     public enum Land {
         EXPLODE {
             @Override
-            public void trigger(GameManager manager, Location loc, Entity shooter, int duration) {
+            public void trigger(GameManager manager, Location loc, GameEntity shooter, int duration) {
                 manager.getWorld().spawnParticle(Particle.EXPLOSION_EMITTER,loc,1);
                 manager.getWorld().playSound(loc, Sound.ENTITY_GENERIC_EXPLODE, SoundCategory.PLAYERS,1,1);
                 int numOfMobs = 0;
@@ -161,12 +163,12 @@ public class EffectType {
                     }
                     if (livingEntity instanceof Player player) {
                         if (player.getGameMode() == GameMode.ADVENTURE)
-                            livingEntity.damage(1, shooter);
+                            livingEntity.damage(1, shooter.getHandle());
                         continue;
                     }
                     numOfMobs++;
                     livingEntity.getWorld().spawnParticle(Particle.BLOCK, livingEntity.getLocation().add(0, .5, 0), 50, 0.2, 0.2, 0.2, Material.NETHER_WART_BLOCK.createBlockData());
-                    livingEntity.damage(80, shooter);
+                    livingEntity.damage(80, shooter.getHandle());
                 }
 
                 // achievement
@@ -177,7 +179,7 @@ public class EffectType {
         },
         FLAME {
             @Override
-            public void trigger(GameManager manager, Location loc, Entity shooter, int duration) {
+            public void trigger(GameManager manager, Location loc, GameEntity shooter, int duration) {
                 manager.getWorld().playSound(loc, Sound.ITEM_FIRECHARGE_USE, 1, 0);
                 manager.addTask(
                         new BukkitRunnable() {
@@ -200,7 +202,7 @@ public class EffectType {
                                                 livingEntity.damage(0.25d);
                                                 livingEntity.setFireTicks(40);
                                             } else {
-                                                livingEntity.damage(10, shooter);
+                                                livingEntity.damage(10, shooter.getHandle());
                                                 livingEntity.setFireTicks(20 * 60);
                                             }
                                         }
@@ -213,7 +215,7 @@ public class EffectType {
         },
         FLAME_SPREAD {
             @Override
-            public void trigger(GameManager manager, Location loc, Entity shooter, int duration) {
+            public void trigger(GameManager manager, Location loc, GameEntity shooter, int duration) {
                 Location location = loc.add(0, 1.4, 0);
                 FLAME.trigger(manager, location, shooter, ThreadLocalRandom.current().nextInt(duration));
                 for (int i = 0; i < 6; i++) {
@@ -230,7 +232,7 @@ public class EffectType {
         },
         ATTRACT {
             @Override
-            public void trigger(GameManager manager, Location loc, Entity shooter, int duration) {
+            public void trigger(GameManager manager, Location loc, GameEntity shooter, int duration) {
                 World world = manager.getWorld();
                 world.playSound(loc, Sound.BLOCK_GLASS_BREAK, SoundCategory.PLAYERS, 1, 0);
                 world.playSound(loc, Sound.ENTITY_PLAYER_SPLASH_HIGH_SPEED, SoundCategory.PLAYERS, 1, 2);
@@ -271,7 +273,7 @@ public class EffectType {
         },
         LEVITATE {
             @Override
-            public void trigger(GameManager manager, Location loc, Entity shooter, int duration) {
+            public void trigger(GameManager manager, Location loc, GameEntity shooter, int duration) {
                 World world = manager.getWorld();
                 world.spawnParticle(Particle.EFFECT, loc, 200, 2, 0.5, 2, 0);
                 world.playSound(loc, Sound.BLOCK_GLASS_BREAK, SoundCategory.PLAYERS, 1, 0);
@@ -292,7 +294,7 @@ public class EffectType {
                     livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 20 * 10, 0, false, true, false));
                 }
 
-                // achievement
+                // TODO: achievement
                 if (numOfMobs >= 20 && shooter instanceof Player player) {
                     Achievements.ZERO_GRAVITY.grant(player);
                 }
@@ -300,7 +302,7 @@ public class EffectType {
         },
         ACID {
             @Override
-            public void trigger(GameManager manager, Location loc, Entity shooter, int duration) {
+            public void trigger(GameManager manager, Location loc, GameEntity shooter, int duration) {
                 World world = manager.getWorld();
                 Block origin = loc.getBlock();
                 BlockFace[] faces = new BlockFace[]{BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
@@ -380,7 +382,7 @@ public class EffectType {
                         }
                         for (Player player : players) {
                             Vector velocity = player.getVelocity();
-                            player.damage(0.4, shooter);
+                            player.damage(0.4, shooter.getHandle());
                             player.setVelocity(velocity);
                             player.setNoDamageTicks(1);
                         }
@@ -391,6 +393,6 @@ public class EffectType {
             }
         };
 
-        public abstract void trigger(GameManager manager, Location loc, Entity shooter, int duration);
+        public abstract void trigger(GameManager manager, Location loc, GameEntity shooter, int duration);
     }
 }

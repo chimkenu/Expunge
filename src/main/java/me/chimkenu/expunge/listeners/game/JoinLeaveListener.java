@@ -1,17 +1,15 @@
 package me.chimkenu.expunge.listeners.game;
 
-import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.listeners.GameListener;
 import me.chimkenu.expunge.utils.ChatUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerQuitEvent;
-
-import java.util.logging.Level;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public class JoinLeaveListener extends GameListener {
-    public JoinLeaveListener(Expunge plugin, GameManager gameManager) {
+    public JoinLeaveListener(JavaPlugin plugin, GameManager gameManager) {
         super(plugin, gameManager);
     }
 

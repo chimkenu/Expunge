@@ -1,5 +1,6 @@
-package me.chimkenu.expunge.mobs;
+package me.chimkenu.expunge.entities.goals;
 
+import me.chimkenu.expunge.entities.MobSettings;
 import me.chimkenu.expunge.game.GameManager;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.*;

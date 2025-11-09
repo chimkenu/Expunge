@@ -1,5 +1,7 @@
 package me.chimkenu.expunge.utils;
 
+import me.chimkenu.expunge.entities.survivor.PlayerSurvivor;
+import me.chimkenu.expunge.entities.survivor.Survivor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
@@ -27,6 +29,10 @@ public final class ChatUtil {
 
     public static void sendActionBar(Player recipient, String s) {
         recipient.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(format(s)));
+    }
+
+    public static void sendActionBar(Survivor recipient, String s) {
+        if (recipient instanceof PlayerSurvivor player) sendActionBar(player.getHandle(), s);
     }
 
     public static String getColor(int r, int g, int b) {

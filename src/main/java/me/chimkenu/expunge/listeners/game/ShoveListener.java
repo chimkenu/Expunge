@@ -1,6 +1,5 @@
 package me.chimkenu.expunge.listeners.game;
 
-import me.chimkenu.expunge.Expunge;
 import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.listeners.GameListener;
 import org.bukkit.*;
@@ -9,6 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -24,7 +24,7 @@ public class ShoveListener extends GameListener {
     private final BreakGlassListener breakGlassListener;
     private final Map<Player, ShoveData> shoveData;
 
-    public ShoveListener(Expunge plugin, GameManager gameManager, BreakGlassListener breakGlassListener) {
+    public ShoveListener(JavaPlugin plugin, GameManager gameManager, BreakGlassListener breakGlassListener) {
         super(plugin, gameManager);
         this.breakGlassListener = breakGlassListener;
         this.shoveData = new HashMap<>();

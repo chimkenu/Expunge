@@ -1,10 +1,10 @@
 package me.chimkenu.expunge.campaigns;
 
-import me.chimkenu.expunge.game.GameManager;
+import me.chimkenu.expunge.entities.survivor.Survivor;
 import me.chimkenu.expunge.utils.SpawnUtil;
 import org.bukkit.Particle;
+import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import java.util.List;
@@ -25,17 +25,17 @@ public record PathVector(
     }
 
     @Override
-    public boolean isWithin(Player player) {
-        return player.getLocation().toVector().distanceSquared(vector) <= radius * radius;
+    public boolean isWithin(Survivor survivor) {
+        return survivor.getLocation().toVector().distanceSquared(vector) <= radius * radius;
     }
 
     @Override
-    public void showPath(GameManager manager) {
-        manager.getWorld().spawnParticle(Particle.END_ROD, vector.toLocation(manager.getWorld()).add(0, 0.2, 0), 1, 0, 0, 0, 0);
+    public void showPath(World world) {
+        world.spawnParticle(Particle.END_ROD, vector.toLocation(world).add(0, 0.2, 0), 1, 0, 0, 0, 0);
     }
 
     @Override
-    public Set<Block> spawnBlocks(GameManager manager) {
-        return SpawnUtil.getValidSurroundingBlocks(manager, List.of(vector));
+    public Set<Block> spawnBlocks(World world, Set<Survivor> survivors) {
+        return SpawnUtil.getValidSurroundingBlocks(world, survivors, List.of(vector));
     }
 }

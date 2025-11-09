@@ -1,5 +1,6 @@
 package me.chimkenu.expunge.items;
 
+import me.chimkenu.expunge.entities.survivor.Survivor;
 import me.chimkenu.expunge.enums.Achievements;
 import me.chimkenu.expunge.events.ShootEvent;
 import me.chimkenu.expunge.utils.ChatUtil;
@@ -19,13 +20,13 @@ public class ShootParticle {
     private static final double ACCURACY_PARTICLES = 0.3;
     private static final double ACCURACY_TRUE = 0.1;
 
-    public static Set<Block> shoot(Particle particle, int range, double damage, Player shooter, int entitiesToHit, double offset, boolean decreaseDamage) {
+    public static Set<Block> shoot(Particle particle, int range, double damage, Survivor shooter, int entitiesToHit, double offset, boolean decreaseDamage) {
         Vector direction = shooter.getEyeLocation().getDirection();
         if (offset > 0) direction = direction.add(new Vector(ThreadLocalRandom.current().nextDouble(-offset, offset),ThreadLocalRandom.current().nextDouble(-offset, offset), ThreadLocalRandom.current().nextDouble(-offset, offset)));
         RayTrace ray = new RayTrace(shooter.getEyeLocation().toVector(), direction);
         ArrayList<Vector> positions = ray.traverse(range, ACCURACY_PARTICLES);
         ArrayList<LivingEntity> entities = new ArrayList<>();
-        World world = shooter.getWorld();
+        World world = shooter.getHandle().getWorld();
         int wallsThrough = ThreadLocalRandom.current().nextInt(1, 4);
         boolean hasSpoken = false; // boolean for achievement - so that it does not trigger more than once per shot
 
@@ -53,6 +54,7 @@ public class ShootParticle {
 
                     // achievement
                     if (livingEntity instanceof ArmorStand armorStand && !hasSpoken) {
+                        /*
                         if (armorStand.getScoreboardTags().contains("ZOEY")) {
                             world.getPlayers().forEach(player -> player.sendMessage(ChatUtil.format("Zoey &8»&r Watch where you're shooting!")));
                             hasSpoken = true;
@@ -73,8 +75,9 @@ public class ShootParticle {
                             hasSpoken = true;
                             Achievements.THE_BIG_LEAGUES.grant(shooter);
                         }
+                         */
 
-                        armorStand.damage(1, shooter);
+                        armorStand.damage(1, shooter.getHandle());
                         continue;
                     }
 
@@ -103,10 +106,10 @@ public class ShootParticle {
             Vector vec = e.getVelocity();
             boolean isHeadshot = HeadshotCalculator.isHeadshot(ray, e, range);
             if (isHeadshot) {
-                e.damage(newDMG + (newDMG * 0.5), shooter);
+                e.damage(newDMG + (newDMG * 0.5), shooter.getHandle());
                 ChatUtil.sendActionBar(shooter, "&6Headshot!");
             } else
-                e.damage(newDMG, shooter);
+                e.damage(newDMG, shooter.getHandle());
             hitEntities.put(e, isHeadshot);
             e.getWorld().spawnParticle(Particle.BLOCK, e.getLocation().add(0, .5, 0), 50, 0.2, 0.2, 0.2, Material.NETHER_WART_BLOCK.createBlockData());
             e.setNoDamageTicks(0);

@@ -1,11 +1,12 @@
-package me.chimkenu.expunge.mobs;
+package me.chimkenu.expunge.entities;
 
+import me.chimkenu.expunge.entities.goals.MobGoal;
 import me.chimkenu.expunge.game.GameManager;
-import me.chimkenu.expunge.mobs.common.Common;
-import me.chimkenu.expunge.mobs.special.*;
-import me.chimkenu.expunge.mobs.special.Witch;
-import me.chimkenu.expunge.mobs.common.Robot;
-import me.chimkenu.expunge.mobs.common.Soldier;
+import me.chimkenu.expunge.entities.goals.common.Common;
+import me.chimkenu.expunge.entities.goals.special.*;
+import me.chimkenu.expunge.entities.goals.special.Witch;
+import me.chimkenu.expunge.entities.goals.common.Robot;
+import me.chimkenu.expunge.entities.goals.common.Soldier;
 import org.bukkit.entity.*;
 import org.bukkit.util.Vector;
 

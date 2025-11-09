@@ -1,14 +1,14 @@
 package me.chimkenu.expunge.enums;
 
 import me.chimkenu.expunge.game.DifficultySettings;
-import me.chimkenu.expunge.mobs.MobSettings;
-import me.chimkenu.expunge.mobs.MobType;
+import me.chimkenu.expunge.entities.MobSettings;
+import me.chimkenu.expunge.entities.MobType;
 import me.chimkenu.expunge.utils.ChatUtil;
 import org.bukkit.Material;
 
 import java.util.HashMap;
 
-public enum CampaignDifficulty {
+public enum Difficulty {
     EASY {
         @Override
         public String displayName() {

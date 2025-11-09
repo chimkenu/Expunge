@@ -12,10 +12,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffectType;
 
 public class InventoryListener extends GameListener {
-    public InventoryListener(Expunge plugin, GameManager gameManager) {
+    public InventoryListener(JavaPlugin plugin, GameManager gameManager) {
         super(plugin, gameManager);
     }
 
@@ -39,9 +40,9 @@ public class InventoryListener extends GameListener {
         }
 
         // display ammo if gun
-        if (plugin.getItems().toGameItem(item) instanceof Gun gun) {
-            player.setLevel(gun.getAmmo(item));
-        }
+        var opt = Expunge.getItems().toGameItem(item);
+        if (opt.isEmpty() || !(opt.get() instanceof Gun gun)) return;
+        player.setLevel(gun.getAmmo(item));
     }
 
     @EventHandler

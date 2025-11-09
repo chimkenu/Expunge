@@ -1,6 +1,8 @@
 package me.chimkenu.expunge.listeners.game;
 
 import me.chimkenu.expunge.Expunge;
+import me.chimkenu.expunge.entities.item.MiscEntity;
+import me.chimkenu.expunge.entities.survivor.Survivor;
 import me.chimkenu.expunge.events.DeathEvent;
 import me.chimkenu.expunge.game.campaign.CampaignGameManager;
 import me.chimkenu.expunge.game.GameManager;
@@ -40,11 +42,11 @@ public class RescueClosetListener extends GameListener {
 
     @EventHandler
     public void onOpen(PlayerInteractEvent e) {
-        Player savior = e.getPlayer();
-        if (!gameManager.getPlayers().contains(savior)) {
-            return;
-        }
-        if (!gameManager.getPlayerStat(savior).isAlive()) {
+        var opt = gameManager.getSurvivor(e.getPlayer());
+        if (opt.isEmpty()) return;
+        var savior = opt.get();
+
+        if (!savior.isAlive()) {
             return;
         }
         if (e.getClickedBlock() == null) {
@@ -77,23 +79,18 @@ public class RescueClosetListener extends GameListener {
         armorStands.clear();
 
         // Respawn dead players
-        for (Player p : gameManager.getPlayers()) {
-            PlayerStats s = gameManager.getPlayerStat(p);
+        for (Survivor s : gameManager.getSurvivors()) {
             if (s.isAlive()) {
                 continue;
             }
-
             s.revive();
-            p.teleport(block.getLocation().add(0.5, -1, 0.5));
-            p.removePotionEffect(PotionEffectType.GLOWING);
-            p.setGameMode(GameMode.ADVENTURE);
-            // TODO: broadcast message
+            s.setLocation(block.getLocation().add(0.5, -1, 0.5));
         }
     }
 
     @EventHandler
     public void onPlayerDeath(DeathEvent e) {
-        if (!gameManager.getPlayers().contains(e.getPlayer())) {
+        if (!gameManager.getSurvivors().contains(e.getSurvivor())) {
             return;
         }
 
@@ -116,10 +113,10 @@ public class RescueClosetListener extends GameListener {
                 armorStand.setRightLegPose(new EulerAngle(6.17847f,0,0.10472f));
 
                 armorStands.add(armorStand);
-                gameManager.addEntity(armorStand);
+                gameManager.addEntity(new MiscEntity(armorStand));
 
                 ItemUtil.putOnRandomClothes(armorStand.getEquipment());
-                armorStand.getEquipment().setHelmet(ItemUtil.getSkull(e.getPlayer()));
+                armorStand.getEquipment().setHelmet(ItemUtil.getSkull((Player) e.getSurvivor().getHandle()));
 
                 new BukkitRunnable() {
                     final float headXMin = 0.174533f;

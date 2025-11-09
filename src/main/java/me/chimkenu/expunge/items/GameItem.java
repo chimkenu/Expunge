@@ -3,13 +3,18 @@ package me.chimkenu.expunge.items;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import me.chimkenu.expunge.Expunge;
+import me.chimkenu.expunge.entities.GameEntity;
+import me.chimkenu.expunge.entities.item.ItemEntity;
 import me.chimkenu.expunge.enums.Slot;
 import me.chimkenu.expunge.enums.Tier;
 import me.chimkenu.expunge.utils.ChatUtil;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.World;
+import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.util.Vector;
 
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
@@ -43,5 +48,11 @@ public sealed interface GameItem
             item.setItemMeta(meta);
         }
         return item;
+    }
+    default GameEntity spawn(World world, Vector position, boolean isInvulnerable) {
+        Item item = world.spawn(position.toLocation(world), Item.class, false, null);
+        item.setItemStack(toItem());
+        item.setInvulnerable(isInvulnerable);
+        return new ItemEntity(this, item);
     }
 }

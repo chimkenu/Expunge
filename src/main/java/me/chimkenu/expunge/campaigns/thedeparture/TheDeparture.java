@@ -14,10 +14,10 @@ import java.awt.*;
 public class TheDeparture extends Campaign {
     public TheDeparture() {
         super(new CampaignMap[]{
-                new Office(),
-                new Streets(),
-                new Subway(),
-                new Stadium()
+                Office.instance,
+                Streets.instance,
+                Subway.instance,
+                Stadium.instance
         });
     }
 

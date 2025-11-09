@@ -1,23 +1,28 @@
 package me.chimkenu.expunge.campaigns;
 
-import me.chimkenu.expunge.Expunge;
-import me.chimkenu.expunge.GameAction;
 import me.chimkenu.expunge.game.campaign.CampaignGameManager;
 import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.game.ItemRandomizer;
 import me.chimkenu.expunge.listeners.GameListener;
 import me.chimkenu.expunge.listeners.game.*;
+import me.chimkenu.expunge.utils.ChatUtil;
+import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public interface CampaignMap {
     String name();
     String displayName();
 
     Vector startLocation();
+    BoundingBox startRegion();
     BoundingBox endRegion();
 
     List<Path> escapePath();
@@ -31,11 +36,11 @@ public interface CampaignMap {
     List<ItemRandomizer> mapItems();
     List<Vector> ammoLocations();
 
-    GameAction runAtStart();
-    GameAction runAtEnd();
-    List<Listener> happenings(Expunge plugin, GameManager gameManager);
+    Consumer<GameManager> runAtStart();
+    Consumer<GameManager> runAtEnd();
+    List<Listener> happenings(JavaPlugin plugin, GameManager gameManager);
 
-    default GameListener[] gameListeners(Expunge plugin, GameManager gameManager) {
+    default GameListener[] gameListeners(JavaPlugin plugin, GameManager gameManager) {
         BreakGlassListener breakGlassListener = new BreakGlassListener(plugin, gameManager);
         return new GameListener[]{
                 new AmmoPileListener(plugin, gameManager),

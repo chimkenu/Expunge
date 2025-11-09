@@ -6,5 +6,10 @@ public enum Slot {
     TERTIARY,
     QUATERNARY,
     QUINARY,
-    SENARY
+    SENARY,
+
+    // hypothetically we will never use this
+    SEVEN,
+    EIGHT,
+    NINE
 }

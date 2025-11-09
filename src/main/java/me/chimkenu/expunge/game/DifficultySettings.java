@@ -1,7 +1,7 @@
 package me.chimkenu.expunge.game;
 
-import me.chimkenu.expunge.mobs.MobSettings;
-import me.chimkenu.expunge.mobs.MobType;
+import me.chimkenu.expunge.entities.MobSettings;
+import me.chimkenu.expunge.entities.MobType;
 
 import java.util.Map;
 

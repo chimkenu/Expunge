@@ -23,10 +23,6 @@ public class Lobby {
     private String currentGameWorld;
     private GameManager currentGame;
 
-    public Lobby(JavaPlugin plugin, String lobbyWorldName, String gameWorldPrefix) {
-        this(plugin, lobbyWorldName, gameWorldPrefix, Campaigns.THE_DEPARTURE);
-    }
-
     public Lobby(JavaPlugin plugin, String lobbyWorldName, String gameWorldPrefix, Campaign initialCampaign) {
         this.plugin = Objects.requireNonNull(plugin);
         this.lobbyWorld = Objects.requireNonNull(Bukkit.getWorld(lobbyWorldName), "Lobby must be a valid (loaded) world");
@@ -37,17 +33,8 @@ public class Lobby {
         changeMap(initialCampaign);
     }
 
-    public void startNewGame(GameManager manager) {
-        if (currentGame != null && currentGame.isRunning()) {
-            currentGame.stop(true);
-        }
-        currentGame = manager;
-    }
-
-    public void stopGame() {
-        if (currentGame != null) {
-            currentGame.stop(true);
-        }
+    public Lobby(JavaPlugin plugin, String lobbyWorldName, String gameWorldPrefix) {
+        this(plugin, lobbyWorldName, gameWorldPrefix, Campaigns.THE_DEPARTURE);
     }
 
     public void changeMap(Campaign campaign) {
@@ -82,7 +69,7 @@ public class Lobby {
         World oldWorld = getGameWorld();
         if (oldWorld != null) {
             plugin.getLogger().info("unloading old world...");
-            oldWorld.getPlayers().forEach(p -> p.teleport(newWorld.getSpawnLocation()));
+            oldWorld.getPlayers().forEach(this::teleportToLobby);
             Bukkit.unloadWorld(oldWorld, false);
         }
         if (oldGameWorldDir.exists()) {
@@ -100,6 +87,19 @@ public class Lobby {
         currentGameWorld = newGameWorldName;
     }
 
+    public void startNewGame(GameManager manager) {
+        if (currentGame != null && currentGame.isRunning()) {
+            currentGame.stop(true);
+        }
+        currentGame = manager;
+    }
+
+    public void stopGame() {
+        if (currentGame != null) {
+            currentGame.stop(true);
+        }
+    }
+
     public void unload() {
         if (currentGame != null && currentGame.isRunning()) {
             currentGame.stop(true);
@@ -108,7 +108,7 @@ public class Lobby {
 
         var world = getGameWorld();
         if (world != null) {
-            world.getPlayers().forEach(p -> p.teleport(lobbyWorld.getSpawnLocation()));
+            world.getPlayers().forEach(this::teleportToLobby);
             Bukkit.unloadWorld(world, false);
         }
 

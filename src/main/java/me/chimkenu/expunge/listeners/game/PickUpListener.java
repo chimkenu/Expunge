@@ -1,6 +1,7 @@
 package me.chimkenu.expunge.listeners.game;
 
 import me.chimkenu.expunge.Expunge;
+import me.chimkenu.expunge.entities.item.ItemEntity;
 import me.chimkenu.expunge.game.GameManager;
 import me.chimkenu.expunge.items.GameItem;
 import me.chimkenu.expunge.listeners.GameListener;
@@ -20,11 +21,12 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
 
 public class PickUpListener extends GameListener {
-    public PickUpListener(Expunge plugin, GameManager gameManager) {
+    public PickUpListener(JavaPlugin plugin, GameManager gameManager) {
         super(plugin, gameManager);
     }
 
@@ -40,13 +42,10 @@ public class PickUpListener extends GameListener {
         if (!(e.getEntity() instanceof Player player)) {
             return;
         }
-        if (!gameManager.getPlayers().contains(player)) {
-            return;
-        }
-        if (!gameManager.getPlayerStat(player).isAlive()) {
-            e.setCancelled(true);
-            return;
-        }
+        var opt = gameManager.getSurvivor(player);
+        if (opt.isEmpty()) return;
+        var survivor = opt.get();
+
         if (player.getCooldown(player.getInventory().getItemInMainHand().getType()) > 0) {
             e.setCancelled(true);
             return;
@@ -57,10 +56,8 @@ public class PickUpListener extends GameListener {
             return;
         }
 
-        Item item = e.getItem();
-        ItemStack itemStack = item.getItemStack();
-        GameItem gameItem = plugin.getItems().toGameItem(itemStack);
-        if (gameItem == null) {
+        var itemEntityOpt = gameManager.getEntity(e.getItem());
+        if (itemEntityOpt.isEmpty() || !(itemEntityOpt.get() instanceof ItemEntity itemEntity)) {
             ChatUtil.sendActionBar(player, "&cYou can't pick this up.");
             e.setCancelled(true);
             return;
@@ -72,22 +69,22 @@ public class PickUpListener extends GameListener {
         }
         pickUp.put(player, System.currentTimeMillis());
 
-        int hotbarSlot = gameItem.slot().ordinal();
+        var itemEntityStack = itemEntity.getItem();
+        var hotbarSlot = itemEntityStack.item().slot();
 
-        if (player.getInventory().containsAtLeast(item.getItemStack(), 1)) {
+        if (player.getInventory().containsAtLeast(itemEntityStack.stack(), 1)) {
             e.setCancelled(true);
 
             // add to ammo if gun
-            if (gameItem instanceof Gun gun) {
-                ItemStack gunInHotbar = player.getInventory().getItem(hotbarSlot);
-                if (gunInHotbar != null) {
-                    gun.setAmmo(gunInHotbar, Math.min(gun.getAmmo(gunInHotbar) + gun.getAmmo(item.getItemStack()), gun.maxAmmo()));
-                }
+            if (itemEntityStack.item() instanceof Gun gun) {
+                survivor.getItemSlot(hotbarSlot).ifPresent(gunInHotbar ->
+                        gun.setAmmo(gunInHotbar.stack(), Math.min(gun.getAmmo(gunInHotbar.stack()) + gun.getAmmo(e.getItem().getItemStack()), gun.maxAmmo()))
+                );
 
                 player.playSound(player.getLocation(), Sound.ITEM_ARMOR_EQUIP_LEATHER, SoundCategory.PLAYERS, 1, 1);
                 ChatUtil.sendActionBar(player, "&9+Ammo");
-                item.setPickupDelay(20);
-                if (!item.isInvulnerable()) item.remove();
+                e.getItem().setPickupDelay(20);
+                if (!e.getItem().isInvulnerable()) e.getItem().remove();
                 return;
             }
             ChatUtil.sendActionBar(player, "&cYou cannot carry any more of this item.");
@@ -95,25 +92,24 @@ public class PickUpListener extends GameListener {
         }
 
         e.setCancelled(true);
-        player.getWorld().playSound(item.getLocation(), Sound.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 1f, 1f);
+        player.getWorld().playSound(e.getItem(), Sound.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 1f, 1f);
 
-        ItemStack hotbarItem = player.getInventory().getItem(hotbarSlot);
-
-        if (hotbarItem != null && !(hotbarItem.getType().equals(Material.AIR))) {
-            ItemMeta meta = hotbarItem.getItemMeta();
+        survivor.getItemSlot(hotbarSlot).ifPresent(hotbarItem -> {
+            ItemMeta meta = hotbarItem.stack().getItemMeta();
             if (!(meta != null && meta.getLore() != null && meta.getLore().contains("invulnerable"))) {
-                Item itemSwapped = player.getWorld().dropItem(player.getLocation(), hotbarItem);
+                Item itemSwapped = player.getWorld().dropItem(player.getLocation(), hotbarItem.stack());
                 itemSwapped.setPickupDelay(20);
-                gameManager.addEntity(itemSwapped);
+                gameManager.addEntity(new ItemEntity(hotbarItem.item(), itemSwapped));
             }
-        }
+        });
 
-        player.getInventory().setItem(hotbarSlot, item.getItemStack());
+        survivor.setItemSlot(hotbarSlot, itemEntityStack);
         // invulnerable items can be picked up more than once
-        if (item.isInvulnerable())
-            item.setPickupDelay(20);
-        else
-            item.remove();
+        if (e.getItem().isInvulnerable()) {
+            e.getItem().setPickupDelay(20);
+        } else {
+            e.getItem().remove();
+        }
     }
 
     private void cancelDrop(PlayerDropItemEvent e) {
@@ -127,21 +123,22 @@ public class PickUpListener extends GameListener {
 
     @EventHandler
     public void onDrop(PlayerDropItemEvent e) {
-        Player player = e.getPlayer();
+        var player = e.getPlayer();
         if (e.isCancelled()) {
             return;
         }
-        if (!gameManager.getPlayers().contains(player)) {
-            return;
-        }
-        if (!gameManager.getPlayerStat(player).isAlive()) {
+        var opt = gameManager.getSurvivor(player);
+        if (opt.isEmpty()) return;
+        var survivor = opt.get();
+        if (!survivor.isAlive()) {
             cancelDrop(e);
             return;
         }
 
         Item entity = e.getItemDrop();
         ItemStack item = entity.getItemStack();
-        if (plugin.getItems().toGameItem(item) == null) {
+        var itemOpt = Expunge.getItems().toGameItem(item);
+        if (itemOpt.isEmpty()) {
             // fix item if broken
             if (item.getItemMeta() instanceof Damageable damageable) {
                 // this is added to fix reload as it breaks when opening the inventory, however it can be abused
@@ -161,7 +158,7 @@ public class PickUpListener extends GameListener {
         item.setAmount(player.getInventory().getItemInMainHand().getAmount() + 1);
         player.getInventory().remove(item.getType());
         entity.setItemStack(item);
-        gameManager.addEntity(entity);
+        gameManager.addEntity(new ItemEntity(itemOpt.get(), entity));
     }
 
     @EventHandler

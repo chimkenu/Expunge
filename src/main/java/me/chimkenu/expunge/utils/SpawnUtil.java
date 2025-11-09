@@ -1,9 +1,11 @@
 package me.chimkenu.expunge.utils;
 
+import me.chimkenu.expunge.entities.survivor.Survivor;
 import me.chimkenu.expunge.game.GameManager;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -14,33 +16,31 @@ import java.util.List;
 import java.util.Set;
 
 public class SpawnUtil {
-    public static Set<Block> getValidSurroundingBlocks(GameManager manager, List<Vector> path) {
-        final int SPAWN_RADIUS = manager.getPlugin().getConfig().getInt("director.spawn-radius");
-        final int DEPTH = manager.getPlugin().getConfig().getInt("director.depth");
+    public static final int SPAWN_RADIUS = 8;
+    public static final int TOO_CLOSE_RADIUS = 8;
+    public static final int DEPTH = 2;
 
+    public static Set<Block> getValidSurroundingBlocks(World world, Set<Survivor> survivors, List<Vector> path) {
         Set<Block> blocks = new HashSet<>();
 
         // Gather all the possible spawn locations
-        var world = manager.getWorld();
         for (var v : path) {
             blocks.addAll(getSurroundingBlocks(world.getBlockAt(v.toLocation(world)), SPAWN_RADIUS, DEPTH));
         }
 
-        filterBlocks(manager, blocks);
+        filterBlocks(survivors, blocks);
         return blocks;
     }
 
-    public static void filterBlocks(GameManager manager, Set<Block> blocks) {
-        final int TOO_CLOSE_RADIUS = manager.getPlugin().getConfig().getInt("director.too-close-radius");
-
+    public static void filterBlocks(Set<Survivor> survivors, Set<Block> blocks) {
         // Filter blocks that cannot be used (assumes all blocks are already valid, just checking visibility)
         Set<Block> blacklist = new HashSet<>();
         for (Block b : blocks) {
-            for (var p : manager.getPlayers()) {
-                if (p.getGameMode() != GameMode.ADVENTURE) {
+            for (var s : survivors) {
+                if (!s.isAlive()) {
                     continue;
                 }
-                if (isLocationTooClose(p, b.getLocation(), TOO_CLOSE_RADIUS) || canBeSeenByPlayer(b, p)) {
+                if (isLocationTooClose(s.getLocation(), b.getLocation(), TOO_CLOSE_RADIUS) || canBeSeenByPlayer(b, s)) {
                     blacklist.add(b);
                     break;
                 }
@@ -50,21 +50,22 @@ public class SpawnUtil {
         blocks.removeAll(blacklist);
     }
 
-    private static boolean canBeSeenByPlayer(Block block, Player player) {
-        final Vector playerToBlock = block.getLocation().toVector().subtract(player.getEyeLocation().toVector());
+    private static boolean canBeSeenByPlayer(Block block, Survivor survivor) {
+        var eyeLoc = survivor.getEyeLocation();
+        final Vector playerToBlock = block.getLocation().toVector().subtract(eyeLoc.toVector());
         final double maxAngle = 60 * Math.PI / 180;
         final double accuracy = 0.5;
 
-        if (playerToBlock.angle(player.getEyeLocation().getDirection()) > maxAngle)
+        if (playerToBlock.angle(eyeLoc.getDirection()) > maxAngle)
             return false;
 
         // Ray cast
         Vector target = block.getLocation().toVector().add(new Vector(0.5, 2.5, 0.5));
-        RayTrace ray = new RayTrace(player.getEyeLocation().toVector(), target.clone().subtract(player.getEyeLocation().toVector()).normalize());
+        RayTrace ray = new RayTrace(eyeLoc.toVector(), target.clone().subtract(eyeLoc.toVector()).normalize());
         for (Vector v : ray.traverse(playerToBlock.length(), accuracy)) {
-            if (v.distanceSquared(player.getEyeLocation().toVector()) > target.distanceSquared(player.getEyeLocation().toVector()))
+            if (v.distanceSquared(eyeLoc.toVector()) > target.distanceSquared(eyeLoc.toVector()))
                 continue;
-            if (!player.getWorld().getBlockAt(v.toLocation(player.getWorld())).isPassable()) {
+            if (!survivor.getHandle().getWorld().getBlockAt(v.toLocation(survivor.getHandle().getWorld())).isPassable()) {
                 return false;
             }
         }
@@ -105,14 +106,14 @@ public class SpawnUtil {
         return block;
     }
 
-    private static boolean isLocationTooClose(Player p, Location l, int distance) {
-        return p.getLocation().distanceSquared(l) < distance * distance;
+    private static boolean isLocationTooClose(Location from, Location to, int distance) {
+        return from.distanceSquared(to) < distance * distance;
     }
 
-    public static double playerNearestDistanceFrom(Collection<Player> players, Vector vector) {
+    public static double nearestDistanceFrom(Collection<Location> locations, Location target) {
         double nearestDistance = Double.MAX_VALUE;
-        for (var p : players) {
-            nearestDistance = Math.min(nearestDistance, p.getLocation().toVector().distanceSquared(vector));
+        for (var loc : locations) {
+            nearestDistance = Math.min(nearestDistance, loc.distanceSquared(target));
         }
         return nearestDistance;
     }

@@ -1,8 +1,8 @@
-package me.chimkenu.expunge.mobs.special;
+package me.chimkenu.expunge.entities.goals.special;
 
 import me.chimkenu.expunge.game.GameManager;
-import me.chimkenu.expunge.mobs.MobGoal;
-import me.chimkenu.expunge.mobs.MobSettings;
+import me.chimkenu.expunge.entities.goals.MobGoal;
+import me.chimkenu.expunge.entities.MobSettings;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.entity.LivingEntity;

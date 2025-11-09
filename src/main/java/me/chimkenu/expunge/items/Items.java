@@ -61,45 +61,40 @@ public final class Items {
         }
     }
 
-    public GameItem toGameItem(String id) {
-        var item = items.values().stream().filter(gi -> Objects.equals(gi.id(), id)).findFirst();
-        return item.orElse(null);
+    public Optional<GameItem> toGameItem(String id) {
+        return items.values().stream().filter(gi -> Objects.equals(gi.id(), id)).findFirst();
     }
 
-    public GameItem toGameItem(ItemStack itemStack) {
+    public Optional<GameItem> toGameItem(ItemStack itemStack) {
         var meta = itemStack.getItemMeta();
-        if (meta == null) {
-            return null;
-        }
-        var keys = meta.getPersistentDataContainer().getKeys();
-        for (var key : keys) {
-            if (items.containsKey(key)) {
-                return items.get(key);
+        if (meta != null) {
+            for (var key : meta.getPersistentDataContainer().getKeys()) {
+                if (items.containsKey(key)) {
+                    return Optional.of(items.get(key));
+                }
             }
         }
-        return null;
+        return Optional.empty();
     }
 
-    public Throwable toThrowable(Projectile projectile) {
-        var keys = projectile.getPersistentDataContainer().getKeys();
-        for (var key : keys) {
+    public Optional<Throwable> toThrowable(Projectile projectile) {
+        for (var key : projectile.getPersistentDataContainer().getKeys()) {
             var item = items.get(key);
             if (item instanceof Throwable throwable) {
-                return throwable;
+                return Optional.of(throwable);
             }
         }
-        return null;
+        return Optional.empty();
     }
 
-    public Interactable toInteractable(Entity entity) {
-        var keys = entity.getPersistentDataContainer().getKeys();
-        for (var key : keys) {
+    public Optional<Interactable> toInteractable(Entity entity) {
+        for (var key : entity.getPersistentDataContainer().getKeys()) {
             var item = items.get(key);
             if (item instanceof Interactable interactable) {
-                return interactable;
+                return Optional.of(interactable);
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     public Collection<GameItem> list() {

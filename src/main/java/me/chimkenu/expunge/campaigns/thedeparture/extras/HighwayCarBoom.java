@@ -1,9 +1,7 @@
 package me.chimkenu.expunge.campaigns.thedeparture.extras;
 
 import me.chimkenu.expunge.campaigns.Cutscene;
-import me.chimkenu.expunge.game.Director;
 import me.chimkenu.expunge.game.GameManager;
-import me.chimkenu.expunge.game.campaign.CampaignDirector;
 import me.chimkenu.expunge.game.campaign.CampaignGameManager;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -11,6 +9,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
+
+import static me.chimkenu.expunge.campaigns.Campaign.playCrescendoEventEffect;
 
 public class HighwayCarBoom implements Cutscene {
     @Override
@@ -27,8 +27,8 @@ public class HighwayCarBoom implements Cutscene {
         }
         if (viewers.isEmpty()) return 0;
 
-        final int sceneAttempt = gameManager.getState().getAttempts();
-        gameManager.getDirector().setPhase(Director.Phase.DISABLED);
+        final int sceneAttempt = gameManager.getAttempts();
+        gameManager.setSpawningActive(false);
         // TODO: gameManager.getDirector().clearEntities();
 
         new BukkitRunnable() {
@@ -36,7 +36,7 @@ public class HighwayCarBoom implements Cutscene {
             final Location loc = new Location(gameManager.getWorld(), -93.5, 36, 223.5);
             @Override
             public void run() {
-                if (!gameManager.isRunning() || gameManager.getState().getAttempts() != sceneAttempt) {
+                if (!gameManager.isRunning() || gameManager.getAttempts() != sceneAttempt) {
                     this.cancel();
                     return;
                 }
@@ -55,13 +55,13 @@ public class HighwayCarBoom implements Cutscene {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (!gameManager.isRunning() && gameManager.getState().getAttempts() != sceneAttempt) {
+                if (!gameManager.isRunning() && gameManager.getAttempts() != sceneAttempt) {
                     this.cancel();
                     return;
                 }
 
-                CampaignDirector.playCrescendoEventEffect(gameManager.getPlayers());
-                gameManager.getDirector().setPhase(Director.Phase.BUILD);
+                playCrescendoEventEffect(gameManager.getPlayers());
+                gameManager.setSpawningActive(true);
                 // TODO: spawn horde
                 for (Player p : viewers.keySet()) {
                     p.teleport(viewers.get(p));

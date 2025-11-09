@@ -3,7 +3,6 @@ package me.chimkenu.expunge.campaigns;
 import me.chimkenu.expunge.game.campaign.CampaignGameManager;
 import me.chimkenu.expunge.utils.ChatUtil;
 import org.bukkit.*;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerAnimationEvent;
@@ -62,9 +61,8 @@ public class Barrier implements NextMapCondition {
         }
 
         BoundingBox endRegion = manager.getMap().endRegion();
-        for (Player p : manager.getDirector().getAlivePlayers().toList()) {
-            Location pLoc = p.getLocation();
-            if (!endRegion.contains(pLoc.getX(), pLoc.getY(), pLoc.getZ())) {
+        for (var s : manager.getSurvivors()) {
+            if (!endRegion.contains(s.getLocation().toVector())) {
                 ChatUtil.sendActionBar(player, "&cNot all players are in the safe-zone!");
                 return false;
             }
@@ -115,6 +113,17 @@ public class Barrier implements NextMapCondition {
         });
 
         return true;
+    }
+
+    public void place(World world, boolean init) {
+        for (Block b : blocks) {
+            var loc = b.position().toLocation(world);
+            if (b.isInit() == init) {
+                world.setBlockData(loc, b.type().createBlockData());
+            } else {
+                world.setBlockData(loc, Material.AIR.createBlockData());
+            }
+        }
     }
 
     public record Block(Vector position, Material type, boolean isInit) {

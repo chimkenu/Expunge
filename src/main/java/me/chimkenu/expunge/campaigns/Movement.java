@@ -1,5 +1,6 @@
 package me.chimkenu.expunge.campaigns;
 
+import me.chimkenu.expunge.entities.survivor.Survivor;
 import me.chimkenu.expunge.game.campaign.CampaignGameManager;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -23,7 +24,7 @@ public record Movement(
         if (!manager.getPlayers().contains(e.getPlayer())) {
             return false;
         }
-        return manager.getDirector().getAlivePlayers().allMatch(p -> box.contains(p.getLocation().toVector()));
+        return manager.getSurvivors().stream().filter(Survivor::isAlive).allMatch(s -> box.contains(s.getLocation().toVector()));
     }
 
     @Override

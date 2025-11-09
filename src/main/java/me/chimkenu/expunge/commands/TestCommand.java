@@ -30,13 +30,17 @@ public class TestCommand implements CommandExecutor {
             return true;
         }
 
+        if (args.length < 100) {
+            return true;
+        }
+
         GameMode gameMode = player.getGameMode();
         new BukkitRunnable() {
             @Override
             public void run() {
                 if (player.getGameMode() == gameMode) {
                     for (Block b : getValidSurroundingBlocks(Bukkit.getWorld("world").getPlayers())) {
-                        b.getWorld().spawnParticle(Particle.REDSTONE, b.getLocation().add(0.5, 1.1, 0.5), 1, new Particle.DustOptions(Color.GREEN, 0.5f));
+                        b.getWorld().spawnParticle(Particle.DUST, b.getLocation().add(0.5, 1.1, 0.5), 1, new Particle.DustOptions(Color.GREEN, 0.5f));
                     }
                 } else {
                     this.cancel();
@@ -101,7 +105,7 @@ public class TestCommand implements CommandExecutor {
         for (Vector v : ray.traverse(playerToBlock.length(), accuracy)) {
             if (v.distanceSquared(player.getEyeLocation().toVector()) > target.distanceSquared(player.getEyeLocation().toVector()))
                 continue;
-            if (player.getWorld().getBlockAt(v.toLocation(player.getWorld())).isSolid()) {
+            if (!player.getWorld().getBlockAt(v.toLocation(player.getWorld())).isPassable()) {
                 return false;
             }
         }

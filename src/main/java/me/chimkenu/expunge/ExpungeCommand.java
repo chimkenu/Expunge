@@ -1,14 +1,15 @@
 package me.chimkenu.expunge;
 
 import me.chimkenu.expunge.campaigns.Campaign;
+import me.chimkenu.expunge.commands.TestCommand;
+import me.chimkenu.expunge.enums.Campaigns;
 import me.chimkenu.expunge.enums.Difficulty;
-import me.chimkenu.expunge.enums.GameItems;
-import me.chimkenu.expunge.enums.InfectedTypes;
+import me.chimkenu.expunge.game.campaign.CampaignGameManager;
+import me.chimkenu.expunge.entities.MobType;
 import me.chimkenu.expunge.game.GameManager;
-import me.chimkenu.expunge.game.director.Director;
 import me.chimkenu.expunge.guis.MenuGUI;
 import me.chimkenu.expunge.items.GameItem;
-import me.chimkenu.expunge.items.interactables.Interactable;
+import me.chimkenu.expunge.items.Interactable;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.Bukkit;
@@ -17,22 +18,18 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.UUID;
 
 public class ExpungeCommand implements CommandExecutor, TabCompleter {
-    private final JavaPlugin plugin;
-    private final Lobby lobby;
+    private final Expunge plugin;
 
-    public ExpungeCommand(JavaPlugin plugin, Lobby lobby) {
+    public ExpungeCommand(Expunge plugin) {
         this.plugin = plugin;
-        this.lobby = lobby;
     }
 
     @Override
@@ -44,7 +41,7 @@ public class ExpungeCommand implements CommandExecutor, TabCompleter {
 
         if (args.length < 1) {
             if (sender instanceof Player player) {
-                new MenuGUI(lobby, player).open(player);
+                new MenuGUI(Expunge.getLobby(), player).open(player);
                 return true;
             }
 
@@ -62,6 +59,7 @@ public class ExpungeCommand implements CommandExecutor, TabCompleter {
             case "get" -> handleGet(sender, args);
             case "spawn" -> handleSpawn(sender, args);
             case "reload" -> handleReload(sender);
+            case "test" -> new TestCommand(plugin).onCommand(sender, command, label, args);
             default -> sendUsage(sender, "Insufficient arguments.", "/expunge [tutorial|stats|start|stop|get|spawn|reload]");
         }
 
@@ -87,8 +85,8 @@ public class ExpungeCommand implements CommandExecutor, TabCompleter {
                 }
                 case "start" -> {
                     if (args.length < 3) {
-                        for (Campaign.List campaign : Campaign.List.values()) {
-                            tabComplete.add(campaign.toString());
+                        for (Campaign campaign : Campaigns.values()) {
+                            tabComplete.add(campaign.directoryName());
                         }
                     } else if (args.length < 4) {
                         for (Difficulty difficulty : Difficulty.values()) {
@@ -101,29 +99,27 @@ public class ExpungeCommand implements CommandExecutor, TabCompleter {
                     }
                 }
                 case "stop" -> {
-                    for (GameManager gameManager : lobby.getGames()) {
-                        tabComplete.add(gameManager.getUUID().toString());
-                    }
+                    return tabComplete;
                 }
                 case "get" -> {
                     if (args.length > 2) {
                         break;
                     }
-                    for (GameItems gameItems : GameItems.values()) {
-                        tabComplete.add(gameItems.name());
+                    for (GameItem item : Expunge.getItems().list()) {
+                        if (item.id().contains(args[1])) {
+                            tabComplete.add(item.id());
+                        }
                     }
                 }
                 case "spawn" -> {
                     if (args.length == 2) {
-                        for (InfectedTypes infectedTypes : InfectedTypes.values()) {
+                        for (MobType infectedTypes : MobType.values()) {
                             tabComplete.add(infectedTypes.name());
                         }
-                        for (GameItems interactable : GameItems.getInteractables()) {
-                            tabComplete.add(interactable.name());
-                        }
-                    } else if (args.length == 3) {
-                        for (GameManager gameManager : lobby.getGames()) {
-                            tabComplete.add(gameManager.getUUID().toString());
+                        for (GameItem interactable : Expunge.getItems().list(item -> item instanceof Interactable)) {
+                            if (interactable.id().contains(args[1])) {
+                                tabComplete.add(interactable.id());
+                            }
                         }
                     }
                 }
@@ -161,17 +157,17 @@ public class ExpungeCommand implements CommandExecutor, TabCompleter {
     }
 
     private void handleStats(CommandSender sender) {
-        for (GameManager gameManager : lobby.getGames()) {
-            sender.sendMessage("Game: " + gameManager.getUUID());
-            sender.sendMessage("World: " + gameManager.getWorld().getName());
-            sender.sendMessage("Difficulty: " + gameManager.getDifficulty());
-            Director director = gameManager.getDirector();
-            sender.sendMessage("sceneTime: " + director.getSceneTime());
-            sender.sendMessage("sceneAttempts: " + director.getSceneAttempts());
-            sender.sendMessage("isSpawningEnabled: " + director.getMobHandler().isSpawningEnabled());
-            sender.sendMessage("activeMobsSize: " + director.getMobHandler().getActiveMobs().size());
-            sender.sendMessage("totalKills: " + director.getStatsHandler().getTotalKills());
-        }
+        /* TODO bruh
+        var gameManager = plugin.getLobby().getCurrentGame();
+        sender.sendMessage("World: " + gameManager.getWorld().getName());
+        sender.sendMessage("Difficulty: " + gameManager.getDifficulty());
+        CampaignDirector director = gameManager.getDirector();
+        sender.sendMessage("sceneTime: " + director.getSceneTime());
+        sender.sendMessage("sceneAttempts: " + director.getSceneAttempts());
+        sender.sendMessage("isSpawningEnabled: " + director.getMobHandler().isSpawningEnabled());
+        sender.sendMessage("activeMobsSize: " + director.getMobHandler().getActiveMobs().size());
+        sender.sendMessage("totalKills: " + director.getStatsHandler().getTotalKills());
+         */
     }
 
     private void handleStart(CommandSender sender, String[] args) {
@@ -188,9 +184,9 @@ public class ExpungeCommand implements CommandExecutor, TabCompleter {
             return;
         }
 
-        Campaign.List campaign;
+        Campaign campaign;
         try {
-            campaign = Campaign.List.valueOf(args[1]);
+            campaign = Campaigns.valueOf(args[1]);
         } catch (IllegalArgumentException e) {
             var error = new ComponentBuilder("Unknown campaign ").color(ChatColor.RED)
                     .append("'" + args[1] + "'").color(ChatColor.GRAY)
@@ -216,7 +212,8 @@ public class ExpungeCommand implements CommandExecutor, TabCompleter {
             }
 
             sendInfo(sender, "Starting a game...");
-            lobby.createGame(plugin, campaign.get(), difficulty, new HashSet<>(List.of(player)));
+            Expunge.getLobby().changeMap(campaign);
+            Expunge.getLobby().startNewGame(new CampaignGameManager(plugin, Expunge.getLobby().getGameWorld(), new HashSet<>(List.of(player)), campaign, difficulty, 0));
             return;
         }
 
@@ -234,7 +231,8 @@ public class ExpungeCommand implements CommandExecutor, TabCompleter {
         }
 
         sender.spigot().sendMessage(new ComponentBuilder("Starting a game...").color(ChatColor.YELLOW).create());
-        lobby.createGame(plugin, campaign.get(), difficulty, players);
+        Expunge.getLobby().changeMap(campaign);
+        Expunge.getLobby().startNewGame(new CampaignGameManager(plugin, Expunge.getLobby().getGameWorld(), players, campaign, difficulty, 0));
     }
 
     private void handleStop(CommandSender sender, String[] args) {
@@ -247,22 +245,7 @@ public class ExpungeCommand implements CommandExecutor, TabCompleter {
             return;
         }
 
-        UUID id;
-        GameManager gameManager = null;
-        try {
-            id = UUID.fromString(args[1]);
-            for (GameManager gm : lobby.getGames()) {
-                if (gm.getUUID().equals(id)) {
-                    gameManager = gm;
-                }
-            }
-            if (gameManager == null) throw new IllegalArgumentException();
-        } catch (IllegalArgumentException e) {
-            sender.spigot().sendMessage(new ComponentBuilder("No game with that ID exists.").color(ChatColor.RED).create());
-            return;
-        }
-
-        gameManager.stop(true);
+        Expunge.getLobby().stopGame();
     }
 
     private void handleGet(CommandSender sender, String[] args) {
@@ -279,19 +262,15 @@ public class ExpungeCommand implements CommandExecutor, TabCompleter {
             return;
         }
 
-        GameItem gameItem;
-        try {
-            gameItem = GameItems.valueOf(args[1]).getGameItem();
-        } catch (IllegalArgumentException e) {
+        Expunge.getItems().toGameItem(args[1]).ifPresentOrElse(gameItem -> {
+            sender.spigot().sendMessage(new ComponentBuilder("Here you go.").color(ChatColor.GREEN).create());
+            player.getInventory().addItem(gameItem.toItem());
+        }, () -> {
             var error = new ComponentBuilder("Unknown item ").color(ChatColor.RED)
                     .append("'" + args[1] + "'").color(ChatColor.GRAY)
                     .create();
             sender.spigot().sendMessage(error);
-            return;
-        }
-
-        sender.spigot().sendMessage(new ComponentBuilder("Here you go.").color(ChatColor.GREEN).create());
-        player.getInventory().addItem(gameItem.get());
+        });
     }
 
     private void handleSpawn(CommandSender sender, String[] args) {
@@ -308,41 +287,51 @@ public class ExpungeCommand implements CommandExecutor, TabCompleter {
             return;
         }
 
-        UUID id;
-        GameManager gameManager = null;
-        try {
-            id = UUID.fromString(args[2]);
-            for (GameManager gm : lobby.getGames()) {
-                if (gm.getUUID().equals(id)) {
-                    gameManager = gm;
-                }
-            }
-            if (gameManager == null) throw new IllegalArgumentException();
-        } catch (IllegalArgumentException e) {
-            sendError(sender, "No game with that ID exists.");
+        GameManager gameManager = Expunge.getLobby().getCurrentGame();
+        if (gameManager == null || !gameManager.isRunning()) {
+            sendError(sender, "No active game.");
             return;
         }
 
-        InfectedTypes infectedType = null;
+        MobType infectedType = null;
         Interactable interactable = null;
         try {
-            infectedType = InfectedTypes.valueOf(args[1]);
+            infectedType = MobType.valueOf(args[1]);
         } catch (IllegalArgumentException ignored) {
         }
         try {
-            interactable = (Interactable) GameItems.valueOf(args[1]).getGameItem();
+            interactable = (Interactable) Expunge.getItems().toGameItem(args[1]).get();
         } catch (Exception ignored) {
         }
 
         if (infectedType != null) {
-            gameManager.getDirector().getMobHandler().addMob(infectedType.spawn(plugin, gameManager, player.getLocation().toVector(), gameManager.getDifficulty()));
+            gameManager.spawnInfected(infectedType, player.getLocation().toVector());
             sendInfo(sender, "Spawned.");
         } else if (interactable != null) {
-            gameManager.getDirector().getItemHandler().addEntity(interactable.spawn(player.getLocation()));
+            gameManager.addEntity(interactable.spawn(player.getWorld(), player.getLocation().toVector(), false));
             sendInfo(sender, "Spawned.");
         } else {
             sendError(sender, "Unknown entity.");
         }
+    }
+
+    private void handleSpwan(CommandSender sender, String[] args) {
+        if (!sender.hasPermission("expunge.spawn")) {
+            sendNoPermission(sender);
+            return;
+        }
+        if (!(sender instanceof Player player)) {
+            sendPlayerOnly(sender);
+            return;
+        }
+        if (args.length < 3) {
+            sendUsage(sender, "Insufficient arguments.", "/expunge spawn <entity> <type> <game-id>");
+            return;
+        }
+
+        String entityName = args[1].toUpperCase();
+        String goalName = args[2].toUpperCase();
+        String gameId = args[3];
     }
 
     private void handleReload(CommandSender sender) {
